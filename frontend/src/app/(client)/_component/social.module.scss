@@ -1,0 +1,49 @@
+.social{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  > hr {
+    position: relative;
+    bottom: -8px;
+    display: block;
+    margin: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--bg-ddd);
+    border: none;
+  }
+  > span {
+    font-size: 1.2rem;
+    background: var(--bg-main);
+    padding: 0 8px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+}
+.social_btn{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  > button{
+    width: 100%;
+    border-radius: 5px;
+    height: 5rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+  }
+}
+.social_kakao{
+  background: #FAE500;
+}
+.social_naver{
+  background: #1EC800;
+  color: #fff;
+}
+.social_google{
+  background: #f8f8f8;
+}

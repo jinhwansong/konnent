@@ -1,0 +1,33 @@
+.check{
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+    font-size: 1.4rem;
+    font-weight: 500;
+    line-height: 1;
+   cursor: pointer;
+    span{
+    font-size: 1.2rem;
+    color: var(--text-subTitle);
+   }
+}
+.weight700{
+    font-weight: 700;
+}
+.checkbox{
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    width: 2rem;
+    height: 2rem;
+    background: var(--bg-main);
+    border: var(--border-main);
+    border-radius: 0.3rem;
+    &:checked{
+        background: var(--major-main) url("../../asset/check.png") no-repeat center center;
+        border: var(--major-main);
+        position: relative;
+        
+    }
+}

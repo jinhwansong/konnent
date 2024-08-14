@@ -1,0 +1,30 @@
+
+.title{
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+}
+.form{
+    > input{
+        margin-bottom: 1rem;
+    }
+    > a{
+        text-align: right;
+        display: block;
+        margin-bottom: 2rem;
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: var(--text-subTitle);
+    }
+}
+.signup{
+    display: block;
+    text-align: center;
+    margin-block: 2rem 3rem;
+    font-size: 1.2rem;
+    font-weight: 500;
+    > span{
+        color: var(--text-subTitle);
+    }
+}

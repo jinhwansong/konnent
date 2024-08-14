@@ -1,0 +1,22 @@
+.title{
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-block: 7rem 3rem;
+}
+.tap_warp{
+    display: flex;
+    gap: 2rem;
+    > button{
+        font-size: 1.4rem;
+        font-weight: 500;
+        border: var(--border-main);
+        padding: 1.2rem 1.5rem;
+        border-radius: 3rem;
+    }
+    .tap_active{
+         border: var(--border-major);
+         color:var(--major-main) ;
+         background:var(--bg-FCDAD3)
+    }
+}

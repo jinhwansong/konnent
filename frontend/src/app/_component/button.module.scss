@@ -1,0 +1,16 @@
+.button{
+  width: 100%;
+  font-size: 1.4rem;
+  height:5rem;
+  font-weight: 500;
+  border-radius:0.5rem;
+  background:var(--major-main);
+  color:var(--text-white);
+  &:disabled{
+    background: var(--bg-F1F4F6);
+    color:var(--text-title);
+  }
+}
+.width80{
+  width: 8rem;
+}

@@ -4,13 +4,13 @@ const nextConfig = {
     compiler: {
         reactRemoveProperties: true,
         removeConsole: {
-            exclude: ['log'],
+            exclude: ['log','error'],
         },
     },
     images: {
         remotePatterns: [{
             protocol: 'https',
-            hostname: 'picsum.photos',
+            hostname: 'loremflickr.com',
             port: '',
         }],
     },

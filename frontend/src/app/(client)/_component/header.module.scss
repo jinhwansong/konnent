@@ -74,3 +74,56 @@
         }
     }
 }
+.profile{
+    position: relative;
+}
+.profileImg{
+    border-radius: 3.5rem;
+    overflow: hidden;
+    font-size: 0;
+}
+.profile_tap{
+    position: absolute;
+    width: 20rem;
+    border-radius: 0.5rem;
+    background: var(--bg-main);
+    box-shadow: rgba(0, 0, 0, 0.6) 0px 0px 4.6px;
+    right: 0;
+    top: 4rem;
+    z-index: 99;
+    overflow: hidden;
+    > div{
+        
+        border-bottom: var(--border-main);
+        &:last-child{
+            border-bottom: 0;
+        }
+        padding-block: 1rem;
+        &:first-child{
+            padding: 1.5rem 2rem ;
+        }
+    }
+    > div em{
+        font-size: 1.6rem;
+        font-weight: 600;
+    }
+    > div p{
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: var(--text-subTitle);
+        margin-top: 0.5rem;
+    }
+    > div a, > div button{
+        display: block;
+        text-align: left;
+        font-size: 1.4rem;
+        font-weight: 500;
+        padding: 1rem 2rem ;
+        width: 100%;
+        &:hover{
+            background: var(--bg-FCDAD3);
+            color: var(--major-main);
+        }
+    }
+    
+}

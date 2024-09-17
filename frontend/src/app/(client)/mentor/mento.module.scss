@@ -1,0 +1,22 @@
+.article{
+    margin: 0 auto;
+    padding-block: 2rem;
+    width: 55rem;
+    > h4{
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+    > p{
+        font-size: 1.4rem;
+        font-weight: 600;
+        line-height: 1.4;
+        color: var(--text-subTitle);
+         text-align: center;
+    }
+    > p span{
+        color: var(--major-main);
+    }
+}

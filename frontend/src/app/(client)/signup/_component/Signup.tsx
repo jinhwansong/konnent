@@ -84,7 +84,7 @@ export default function Signup() {
       error: nicknameError,
     },
     {
-      type: 'tel',
+      type: 'number',
       value: phone,
       onChange: changePhone,
       label: '휴대폰번호',

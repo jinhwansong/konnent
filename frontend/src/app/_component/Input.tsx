@@ -28,7 +28,6 @@ export default function Input({
     style.input,
     bg && style[`bg${bg as string}`],
     height && style[`height${height as string}`],
-    height && style[`height${height as string}`],
     flex && style[`flex${flex as string}`],
   ]
     .filter(Boolean)

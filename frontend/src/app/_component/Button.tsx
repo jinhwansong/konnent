@@ -1,5 +1,5 @@
 import React from "react";
-import style from "./button.module.scss";
+import styles from "./button.module.scss";
 
 interface Input {
   type: "submit" | "button";
@@ -22,10 +22,10 @@ export default function Button({
   disabled,
 }: Input) {
   const button = [
-    style.button,
-    bg && style[`bg${bg as string}`],
-    width && style[`width${width as string}`],
-    height && style[`height${height as string}`],
+    styles.button,
+    bg && styles[`bg${bg as string}`],
+    width && styles[`width${width as string}`],
+    height && styles[`height${height as string}`],
   ]
     .filter(Boolean)
     .join(" ");

@@ -3,7 +3,7 @@ import React from 'react'
 import { useRouter } from 'next/navigation';
 import Button from '@/app/_component/Button';
 import Checkbox from '@/app/_component/Checkbox';
-import { check } from '../mock/check';
+import { check } from '../../config/check';
 import style from './terms.module.scss';
 import { useCheck } from '@/hooks';
 import { useCheckboxStore } from '@/store/useCheck';

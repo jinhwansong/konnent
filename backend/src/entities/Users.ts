@@ -50,7 +50,7 @@ export class Users {
   name: string;
   // 전화번호
   @Column('varchar', { name: 'phone', length: 11, unique: true })
-  phone: string;
+  phone: number;
   // 프로필이미지
   @Column('varchar', { name: 'image', length: 200, nullable: true })
   image: string;

@@ -12,6 +12,15 @@ import { Likes } from './Likes';
 import { Mentos } from './Mentos';
 import { Comments } from './Comments';
 import { Payments } from './Payments';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsBase64,
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
 
 // 회원등급
 export enum UserRole {
@@ -29,9 +38,17 @@ export enum SocialLoginProvider {
 @Entity({ schema: 'konnect', name: 'users' })
 export class Users {
   // 키값
+  @ApiProperty({ example: 1, description: 'id', required: true })
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
   // 이메일
+  @IsEmail()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: 'example@gmail.com',
+    description: '이메일',
+    required: true,
+  })
   @Column('varchar', {
     name: 'email',
     length: 30,
@@ -40,22 +57,58 @@ export class Users {
   })
   email: string;
   // 비밀번호
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: '123456Q!',
+    description: '비밀번호',
+    required: true,
+  })
   @Column('varchar', { name: 'password', length: 100, nullable: true })
   password: string | null;
   //닉네임
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: '지젤',
+    description: '닉네임',
+    required: true,
+  })
   @Column('varchar', { name: 'nickname', length: 30, unique: true })
   nickname: string;
   // 이름
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: '지젤',
+    description: '이름',
+    required: true,
+  })
   @Column('varchar', { name: 'name', length: 30 })
   name: string;
   // 전화번호
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: '01012345678',
+    description: '휴대폰번호',
+    required: true,
+  })
   @Column('varchar', { name: 'phone', length: 11, unique: true })
   phone: number;
   // 프로필이미지
+  @IsBase64()
+  @ApiProperty({
+    required: true,
+    example:
+      'https://fastly.picsum.photos/id/1062/200/300.jpg?hmac=e6D9R3lyQ0AtilxM2LGviSrodxvroxcpCRm2FdfNwZg',
+    description: '유저프로필',
+  })
   @Column('varchar', { name: 'image', length: 200, nullable: true })
   image: string;
   // 소셜로그인
   // 일반회원일수 잇기때문에 null로 설정
+  @IsEnum(SocialLoginProvider)
   @Column('enum', {
     enum: SocialLoginProvider,
     nullable: true,
@@ -63,8 +116,18 @@ export class Users {
   })
   socialLoginProvider: SocialLoginProvider | null;
   // snsid
-  @Column('varchar', { name: 'snsid', nullable: true })
+  @ApiProperty({
+    example: 'example@gmail.com',
+    description: 'snsid',
+    required: false,
+  })
+  @Column('varchar', { name: 'snsid', nullable: true, unique: true })
+  snsId: string | null;
   // 유저등급
+  @ApiProperty({
+    example: 'user',
+    description: '유저등급',
+  })
   @Column('enum', { enum: UserRole, default: UserRole.USER })
   role: UserRole;
   @CreateDateColumn()
@@ -72,7 +135,7 @@ export class Users {
   @UpdateDateColumn()
   updatedAt: Date;
   @DeleteDateColumn()
-  deleteAt: Date;
+  deletedAt: Date;
   // 멘토 신청 관계설정
   @OneToOne(() => Mentos, (mento) => mento.users)
   mentos: Mentos;

@@ -48,6 +48,7 @@ import { Users } from './entities/Users';
         Users,
       ],
     }),
+    TypeOrmModule.forFeature([Users]),
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -12,7 +12,7 @@ export class UsersController {
 
   @ApiResponse({
     status: 200,
-    description: '사용자 정보 입니다.',
+    description: '사용자 정보 입니다',
     type: UserDtoByPassword,
   })
   @ApiResponse({
@@ -34,15 +34,16 @@ export class UsersController {
     description: '서버 에러',
   })
   @ApiOperation({ summary: '회원가입' })
-  @Get()
-  postUser(@Body() data: JoinRequestDto) {
-    this.userService.postUser(
-      data.email,
-      data.password,
-      data.name,
-      data.nickname,
-      data.phone,
+  @Post()
+  async Join(@Body() body: JoinRequestDto) {
+    await this.userService.Join(
+      body.email,
+      body.password,
+      body.name,
+      body.nickname,
+      body.phone,
     );
+    return undefined;
   }
   @ApiResponse({
     status: 201,

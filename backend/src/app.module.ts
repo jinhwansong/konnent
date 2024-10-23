@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { MentoModule } from './mento/mento.module';
+import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Likes } from './entities/Likes';
 import { Comments } from './entities/Comments';
@@ -22,6 +23,7 @@ import { Users } from './entities/Users';
     }),
     UsersModule,
     MentoModule,
+    AuthModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',

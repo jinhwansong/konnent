@@ -1,12 +1,8 @@
 'use client';
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useFormState } from 'react-dom';
+import { useRouter } from 'next/navigation';
 import { useCheckboxStore } from '@/store/useCheck';
-import Button from '@/app/_component/Button';
-import Input from '@/app/_component/Input';
-import Social from '@/app/(client)/_component/Social';
-
 import { useVaild } from '@/hooks';
 import {
   onEmail,
@@ -16,6 +12,10 @@ import {
   onPhone,
 } from '@/hooks/useSign';
 import {onSubmit} from '@/app/_lib/signup';
+import { useCheckEmail, useCheckNickname } from '@/app/_lib/check';
+import Button from '@/app/_component/Button';
+import Input from '@/app/_component/Input';
+import Social from '@/app/(client)/_component/Social';
 import style from './signup.module.scss';
 
 export default function Signup() {
@@ -26,14 +26,31 @@ export default function Signup() {
       router.replace('/signup/terms');
     }
   }, [checks, router]);
-  const [email, changeEmail, emailError] = useVaild('', onEmail);
+  const [email, changeEmail, emailError, emailvaild, setEmailVaild] = useVaild(
+    '',
+    onEmail
+  );
+  const [checkEmail, setCheckEmail] = useState({
+    isValid: false,
+    message: '',
+  });
   const [password, changePassword, passwordError] = useVaild('', onPassword);
   const [passwordCheack, changePasswordCheack, passwordCheackError] = useVaild(
     '',
     (value) => onPasswordCheack(password, value)
   );
   const [name, changeName, nameError] = useVaild('', onName);
-  const [nickname, changeNickname, nicknameError] = useVaild('', onName);
+  const [
+    nickname,
+    changeNickname,
+    nicknameError,
+    nicknamevaild,
+    setNicknameVaild,
+  ] = useVaild('', onName);
+  const [checkNickname, setCheckNickname] = useState({
+    isValid: false,
+    message: '',
+  });
   const [phone, changePhone, phoneError] = useVaild('', onPhone);
   // 데이터 보내기
   const [state, formAction] = useFormState(onSubmit, { message: null });
@@ -93,6 +110,81 @@ export default function Signup() {
       error: phoneError,
     },
   ];
+  // 중복이메일
+  const checkEmailMutation = useCheckEmail();
+  // 중복닉네임
+  const checkNicknameMutation = useCheckNickname();
+  const onDuplication = useCallback(
+    (name: string) => {
+      const mutation =
+        name === 'email' ? checkEmailMutation : checkNicknameMutation;
+      const value = name === 'email' ? email : nickname;
+      const check = name === 'email' ? setCheckEmail : setCheckNickname;
+      const setVaild = name === 'email' ? setEmailVaild : setNicknameVaild;
+      // 중복체크
+      mutation.mutate(value, {
+        onSuccess: (data) => {
+          check({ isValid: true, message: data.message });
+          setVaild(true);
+        },
+        onError: (err: unknown) => {
+          if (typeof err === 'object' || err !== null)
+            check({ isValid: false, message: (err as any).data });
+          setVaild(false);
+        },
+      });
+    },
+    [
+      email,
+      nickname,
+      checkNicknameMutation,
+      checkEmailMutation,
+      setEmailVaild,
+      setNicknameVaild,
+    ]
+  );
+  // 서버에러메시지
+  const getErrorMessage = (name: string) => {
+    if (
+      name === 'email' &&
+      checkEmail.message !== '이메일 형식이 올바르지 않습니다.' &&
+      !checkEmail.isValid
+    ) {
+      return checkEmail.message;
+    }
+    if (
+      name === 'nickname' &&
+      checkNickname.message !== '2글자 이상 7글자 이하로 작성해주세요' &&
+      !checkNickname.isValid
+    ) {
+      return checkNickname.message;
+    }
+    return '';
+  };
+  // 서버성공메시지
+  const getSuccessMessage = (name: string) => {
+    if (name === 'email' && checkEmail.isValid && emailvaild) {
+      return checkEmail.message;
+    }
+    if (name === 'nickname' && checkNickname.isValid && nicknamevaild) {
+      return checkNickname.message;
+    }
+    return '';
+  };
+  // 버튼 활성화
+  const buttonDisabled = () => {
+    const empty = [email, password, passwordCheack, name, nickname, phone].every((l) => l.length > 0) 
+    const err = [
+      emailError,
+      passwordError,
+      passwordCheackError,
+      nameError,
+      nicknameError,
+      phoneError,
+    ].every((l) => l === '');
+    const vaild = checkNickname.isValid &&checkEmail.isValid &&nicknamevaild && emailvaild
+    return empty && err && vaild
+  };
   return (
     <>
       <form className={style.form} action={formAction}>
@@ -110,32 +202,24 @@ export default function Signup() {
                 flex="on"
               />
               {(signs.name === 'email' || signs.name === 'nickname') && (
-                <Button type="button" width="80">
+                <Button
+                  type="button"
+                  width="80"
+                  onClick={() => onDuplication(signs.name)}
+                >
                   중복확인
                 </Button>
               )}
             </div>
-            <p>{signs.error}</p>
+            <div className={style.vaild}>
+              <p>{signs.error}</p>
+              <p>{getErrorMessage(signs.name)}</p>
+              <p className={style.successVaild}>{getSuccessMessage(signs.name)}</p>
+            </div>
           </div>
         ))}
 
-        <Button
-          type="submit"
-          disabled={
-            email.length === 0 ||
-            password.length === 0 ||
-            passwordCheack.length === 0 ||
-            name.length === 0 ||
-            nickname.length === 0 ||
-            phone.length === 0 ||
-            emailError !== '' ||
-            passwordError !== '' ||
-            passwordCheackError !== '' ||
-            nameError !== '' ||
-            nicknameError !== '' ||
-            phoneError !== ''
-          }
-        >
+        <Button type="submit" disabled={!buttonDisabled()}>
           회원가입
         </Button>
       </form>

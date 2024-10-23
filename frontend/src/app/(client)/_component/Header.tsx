@@ -26,7 +26,7 @@ export default function Header() {
     });
     onPopup();
   }, [router, onPopup]);
- 
+  console.log(me)
   return (
     <header className={styles.header}>
       <div className={styles.header_inner}>

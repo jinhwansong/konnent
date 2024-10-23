@@ -21,7 +21,7 @@ export class UsersService {
     password: string,
     name: string,
     nickname: string,
-    phone: number,
+    phone: string,
   ) {
     const user = await this.userRepository.findOne({ where: { email } });
     if (!email) {
@@ -50,5 +50,29 @@ export class UsersService {
       nickname,
       phone,
     });
+  }
+  async checkEmail(email: string) {
+    const user = await this.userRepository.findOne({ where: { email } });
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      throw new BadRequestException('이메일 형식이 올바르지 않습니다.');
+    }
+    if (user) {
+      throw new BadRequestException('중복된 이메일이 존재합니다');
+    }
+    return { message: '사용 가능한 이메일 입니다.' };
+  }
+  async checkNickname(nickname: string) {
+    const user = await this.userRepository.findOne({ where: { nickname } });
+    const nameRegex = /^[가-힣a-zA-Z]{2,7}$/;
+
+    if (!nameRegex.test(nickname)) {
+      throw new BadRequestException('2글자 이상 7글자 이하로 작성해주세요');
+    }
+    if (user) {
+      throw new BadRequestException('중복된 닉네임이 존재합니다');
+    }
+    return { message: '사용 가능한 닉네임 입니다.' };
   }
 }

@@ -2,7 +2,7 @@
 import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
 
-export  const onSubmit = async (prevState:any, formData: FormData) => {
+export const onSubmit = async (prevState:any, formData: FormData) => {
     if (!formData.get('email') || !(formData.get('email') as string)?.trim()) {
       return { message: 'no_email' };
     }
@@ -32,19 +32,24 @@ export  const onSubmit = async (prevState:any, formData: FormData) => {
     }
     
     let shouldRedirect = false;
+    const formDataObject = Object.fromEntries(formData);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         // 쿠키전달
         credentials: 'include',
-        body: formData,
+        body: JSON.stringify(formDataObject),
       });
       const data = await res.json();
-      console.log(data)
+      console.log('회원가입', data);
       shouldRedirect = true;
+      // 회원가입후 자동로그인
       await signIn('credentials', {
-        username: formData.get('email'),
-        password: formData.get('password'),
+        username: formDataObject.email,
+        password: formDataObject.password,
         redirect: false,
       });
     } catch (error) {

@@ -1,6 +1,6 @@
+import { faker } from '@faker-js/faker';
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { NextResponse } from 'next/server';
 
 export const {
   handlers: { GET, POST },
@@ -18,14 +18,14 @@ export const {
     CredentialsProvider({
       async authorize(credentials) {
         const authResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/login`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/login`,
           {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              id: credentials.username,
+              email: credentials.username,
               password: credentials.password,
             }),
           }
@@ -37,8 +37,9 @@ export const {
         const user = await authResponse.json();
         return {
           ...user,
+          email: user.email,
           name: user.nickname,
-          image: user.profileImage,
+          image: faker.image.url(),
         };
       },
     }),

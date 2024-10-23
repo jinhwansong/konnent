@@ -64,7 +64,12 @@ export class Users {
     description: '비밀번호',
     required: true,
   })
-  @Column('varchar', { name: 'password', length: 100, nullable: true })
+  @Column('varchar', {
+    name: 'password',
+    length: 100,
+    nullable: true,
+    select: false,
+  })
   password: string | null;
   //닉네임
   @IsString()
@@ -87,7 +92,7 @@ export class Users {
   @Column('varchar', { name: 'name', length: 30 })
   name: string;
   // 전화번호
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
   @ApiProperty({
     example: '01012345678',
@@ -95,7 +100,7 @@ export class Users {
     required: true,
   })
   @Column('varchar', { name: 'phone', length: 11, unique: true })
-  phone: number;
+  phone: string;
   // 프로필이미지
   @IsBase64()
   @ApiProperty({

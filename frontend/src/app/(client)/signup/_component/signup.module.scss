@@ -12,18 +12,22 @@
         margin-bottom: 1rem;
         display: block;
     }
-    > div{
+    > div:nth-child(2){
         display: flex;
         gap: 1rem;
     }
-    > p{
-        color: var(--text-red);
-        font-size:1.2rem;
-        margin-top: 1rem;
-        font-weight: 500;
-    }
 }
-
+.vaild{
+    margin-top: 1rem;
+ > p{
+    color: var(--text-red);
+    font-size:1.2rem;
+    font-weight: 500;
+ }
+ .successVaild{
+     color: var( --text-green);
+ }
+}
 
 .input{
     width: 100%;

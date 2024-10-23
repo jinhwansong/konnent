@@ -7,6 +7,7 @@ export default function useVaild<T>(
 ) {
   const [name, setName] = useState(initialValue);
   const [error, setError] = useState("");
+  const [vaild,setVaild] = useState(false);
   const onName = useCallback(
     (
       e:
@@ -15,6 +16,7 @@ export default function useVaild<T>(
     ) => {
       const value = e.target.value as T;
       setName(value);
+      setVaild(false)
       if (validator) {
         const errorMessage = validator(value);
         setError(errorMessage);
@@ -22,6 +24,5 @@ export default function useVaild<T>(
     },
     [validator]
   );
-
-  return [name, onName, error] as const;
+  return [name, onName, error, vaild, setVaild] as const;
 }

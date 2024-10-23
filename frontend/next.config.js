@@ -10,7 +10,7 @@ const nextConfig = {
     images: {
         remotePatterns: [{
             protocol: 'https',
-            hostname: 'loremflickr.com',
+            hostname: 'picsum.photos',
             port: '',
         }],
     },

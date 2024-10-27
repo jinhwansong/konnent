@@ -1,6 +1,5 @@
 'use server'
 import { redirect } from 'next/navigation';
-import { signIn } from '@/auth';
 
 export const onSubmit = async (prevState:any, formData: FormData) => {
     if (!formData.get('email') || !(formData.get('email') as string)?.trim()) {
@@ -44,14 +43,8 @@ export const onSubmit = async (prevState:any, formData: FormData) => {
         body: JSON.stringify(formDataObject),
       });
       const data = await res.json();
-      console.log('회원가입', data);
       shouldRedirect = true;
-      // 회원가입후 자동로그인
-      await signIn('credentials', {
-        username: formDataObject.email,
-        password: formDataObject.password,
-        redirect: false,
-      });
+
     } catch (error) {
       return { message: error };
     }

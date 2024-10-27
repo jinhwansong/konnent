@@ -3,30 +3,51 @@ import React, { useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { signOut, useSession } from 'next-auth/react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useLogout } from '@/app/_lib/check';
 import { FcManager, FcHome, FcQuestions } from 'react-icons/fc';
 import { BiSearch } from 'react-icons/bi';
 import Input from '@/app/_component/Input';
 import { useInput, usePopup } from '@/hooks';
 import { usePopupStore } from '@/store/usePopupStore';
-import { IcLogo } from '@/asset';
+import { IcLogo, IcProfile } from '@/asset';
 import styles from './header.module.scss';
 
-
-
 export default function Header() {
+  const queryClient = useQueryClient();
   const [search, changeSearch] = useInput('');
   const router = useRouter();
-  const { data: me } = useSession();
-   const { onPopup, popup } = usePopupStore();
-   const { popupRef } = usePopup();
+  const { onPopup, popup } = usePopupStore();
+  const { popupRef } = usePopup();
+  // 내정보
+  const { data } = useQuery({
+    queryKey: ['mydata'],
+    queryFn: async () => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/users`,
+        {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const res = await response.json();
+      return res;
+    },
+  });
+  // 로그아웃
+  const logoutMutation = useLogout();
   const onLogout = useCallback(() => {
-    signOut({ redirect: false }).then(() => {
-      router.replace('/');
-    });
+    logoutMutation.mutate();
+    queryClient.setQueryData(['mydata'], null);
+    router.replace('/');
     onPopup();
-  }, [router, onPopup]);
-  console.log(me)
+   
+  }, [router, onPopup, logoutMutation, queryClient]);
+
+  console.log(data);
   return (
     <header className={styles.header}>
       <div className={styles.header_inner}>
@@ -36,7 +57,7 @@ export default function Header() {
           </Link>
           <div className={styles.header_link}>
             <Link href="/mentor">멘토지원</Link>
-            {me?.user ? (
+            {data ? (
               <div className={styles.profile}>
                 <button
                   className={styles.profileImg}
@@ -44,8 +65,8 @@ export default function Header() {
                   onMouseDown={(e) => e.stopPropagation()}
                 >
                   <Image
-                    src={me.user.image as string}
-                    alt={me.user.name as string}
+                    src={data.image || IcProfile}
+                    alt={data.name as string}
                     height={35}
                     width={35}
                   />
@@ -53,8 +74,8 @@ export default function Header() {
                 {popup && (
                   <div className={styles.profile_tap} ref={popupRef}>
                     <div>
-                      <em>{me.user.name}</em>
-                      <p>{me.user.email}</p>
+                      <em>{data.nickname}</em>
+                      <p>{data.email || data.snsId}</p>
                     </div>
                     <div>
                       <Link href="/mypage">내 정보</Link>

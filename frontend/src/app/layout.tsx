@@ -5,7 +5,6 @@ import "swiper/swiper-bundle.css";
 import "swiper/css/pagination";
 import "normalize.css";
 import "./globals.css";
-import AuthSession from "./_component/AuthSession";
 
 export const metadata: Metadata = {
   title: '커넥트 - 한 걸음 더 나아가는 연결',
@@ -25,10 +24,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="kr" className={pretendard.variable}>
-      <link rel="icon" href="/images/favicon.ico" sizes="any" />
+      <link rel="icon" href="favicon.svg" sizes="any" />
       <body className={pretendard.className}>
         <MSWComponent />
-        <AuthSession>{children}</AuthSession>
+        {children}
       </body>
     </html>
   );

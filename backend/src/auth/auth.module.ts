@@ -5,6 +5,9 @@ import { LocalSerializer } from './local.serializer';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from 'src/entities/Users';
+import { KakaoStrategy } from './kakao.strategy';
+import { GoogleStrategy } from './google.strategy';
+import { NaverStrategy } from './naver.strategy';
 
 @Module({
   imports: [
@@ -12,6 +15,14 @@ import { Users } from 'src/entities/Users';
     PassportModule.register({ session: true }),
     TypeOrmModule.forFeature([Users]),
   ],
-  providers: [AuthService, LocalStrategy, LocalSerializer],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    LocalSerializer,
+    KakaoStrategy,
+    GoogleStrategy,
+    NaverStrategy,
+  ],
+  exports: [AuthService],
 })
 export class AuthModule {}

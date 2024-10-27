@@ -13,21 +13,32 @@ export class LocalSerializer extends PassportSerializer {
   ) {
     super();
   }
+
   // 유저의 id만 뽑아서 세션 저장
   serializeUser(user: Users, done: CallableFunction) {
-    console.log(user);
-    done(null, user.id);
+    try {
+      done(null, user.id);
+    } catch (error) {
+      done(error);
+    }
   }
   // 세션에서 id를 받아서 사용자 데이터를 꺼내옴
   async deserializeUser(userId: string, done: CallableFunction) {
     return await this.usersRepository
-      .findOneOrFail({
+      .findOne({
         where: { id: +userId },
-        select: ['id', 'email', 'nickname', 'name', 'image', 'role'],
-        relations: ['mentos', 'mentoringprograms'],
+        select: [
+          'id',
+          'email',
+          'nickname',
+          'name',
+          'image',
+          'role',
+          'phone',
+          'snsId',
+        ],
       })
       .then((user) => {
-        console.log('user', user);
         done(null, user);
       })
       .catch((err) => done(err));

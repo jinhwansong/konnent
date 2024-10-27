@@ -1,16 +1,28 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  ExecutionContext,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
 export class LocalAuthGuard extends AuthGuard('local') {
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const can = await super.canActivate(context);
-    console.log(can);
-    if (can) {
-      const req = context.switchToHttp().getRequest();
-      console.log(req);
-      await super.logIn(req);
+    try {
+      const can = await super.canActivate(context);
+      if (can) {
+        const request = context.switchToHttp().getRequest();
+        await super.logIn(request);
+      }
+      return true;
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(
+        '인증 처리 중 오류가 발생했습니다.',
+      );
     }
-    return true;
   }
 }

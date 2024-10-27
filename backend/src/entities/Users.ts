@@ -18,7 +18,6 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
-  IsNumber,
   IsString,
 } from 'class-validator';
 
@@ -93,13 +92,12 @@ export class Users {
   name: string;
   // 전화번호
   @IsString()
-  @IsNotEmpty()
   @ApiProperty({
     example: '01012345678',
     description: '휴대폰번호',
     required: true,
   })
-  @Column('varchar', { name: 'phone', length: 11, unique: true })
+  @Column('varchar', { name: 'phone', length: 11 })
   phone: string;
   // 프로필이미지
   @IsBase64()

@@ -4,4 +4,4 @@ export { default as IcMainSlide02 } from './mainslide02.svg';
 export { default as IcGoogle } from './google.svg';
 export { default as IcKakao } from './kakao.svg';
 export { default as IcNaver } from './naver.svg';
-
+export { default as IcProfile } from './thumb_profile.jpg';

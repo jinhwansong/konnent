@@ -17,6 +17,10 @@ import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { NotLoggedInGuard } from 'src/auth/not-logged-in.guard';
 import { LoggedInGuard } from 'src/auth/logged-in.guard';
 import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedToNull.Interceptor';
+import { KakaoAuthGuard } from 'src/auth/kakao-auth.guard';
+import { Response } from 'express';
+import { NaverAuthGuard } from 'src/auth/naver-auth.guard';
+import { GoogleAuthGuard } from 'src/auth/google-auth.guard';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('유저정보')
@@ -113,6 +117,66 @@ export class UsersController {
     return user;
   }
   @ApiResponse({
+    status: 200,
+    description: '카카오 로그인 성공',
+    type: UserDtoByPassword,
+  })
+  @ApiResponse({
+    status: 500,
+    description: '서버에러',
+  })
+  @ApiOperation({ summary: '카카오로그인' })
+  @UseGuards(KakaoAuthGuard)
+  @Get('auth/kakao')
+  kakaoLogin() {
+    return;
+  }
+  @UseGuards(KakaoAuthGuard)
+  @Get('auth/kakao/callback')
+  async kakaoCallback(@Res() res: Response) {
+    return res.redirect(`${process.env.CLIENT}`);
+  }
+  @ApiResponse({
+    status: 200,
+    description: '구글 로그인 성공',
+    type: UserDtoByPassword,
+  })
+  @ApiResponse({
+    status: 500,
+    description: '서버에러',
+  })
+  @ApiOperation({ summary: '구글 로그인' })
+  @UseGuards(GoogleAuthGuard)
+  @Get('auth/google')
+  googleLogin() {
+    return;
+  }
+  @UseGuards(GoogleAuthGuard)
+  @Get('auth/google/callback')
+  async googleCallback(@Res() res: Response) {
+    return res.redirect(`${process.env.CLIENT}`);
+  }
+  @ApiResponse({
+    status: 200,
+    description: '네이버 로그인 성공',
+    type: UserDtoByPassword,
+  })
+  @ApiResponse({
+    status: 500,
+    description: '서버에러',
+  })
+  @ApiOperation({ summary: '네이버 로그인' })
+  @UseGuards(NaverAuthGuard)
+  @Get('auth/naver')
+  naverLogin() {
+    return;
+  }
+  @UseGuards(NaverAuthGuard)
+  @Get('auth/naver/callback')
+  async naverCallback(@Res() res: Response) {
+    return res.redirect(`${process.env.CLIENT}`);
+  }
+  @ApiResponse({
     status: 201,
     description: '로그아웃 하셨습니다.',
   })
@@ -124,8 +188,23 @@ export class UsersController {
   @ApiOperation({ summary: '로그아웃' })
   @Post('logout')
   LogOut(@Req() req, @Res() res) {
-    req.logout();
-    res.clearCookie('connect.sid', { httpOnly: true });
-    res.send('ok');
+    req.logout((err) => {
+      if (err) {
+        return res.status(500).json({ message: '로그아웃 실패했습니다' });
+      }
+      req.session.destroy((err) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ message: '세션키 삭제를 실패했습니다' });
+        }
+        res.clearCookie('connect.sid', {
+          httpOnly: true,
+          path: '/',
+          secure: false,
+        });
+        return res.status(200).send('로그아웃 하셨습니다');
+      });
+    });
   }
 }

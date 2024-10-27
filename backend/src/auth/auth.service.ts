@@ -1,8 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import bcrypt from 'bcrypt';
 import { Users } from 'src/entities/Users';
 import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { SnsJoinRequestDto } from 'src/users/dto/join.requset.dto';
 
 @Injectable()
 export class AuthService {
@@ -14,18 +19,73 @@ export class AuthService {
     // const user = await this.usersService.findByEmail(email);
     const user = await this.usersRepository.findOne({
       where: { email },
-      select: ['id', 'email', 'name', 'nickname', 'image', 'role', 'password'], // select로 columns만 가져오기.
+      select: [
+        'email',
+        'name',
+        'nickname',
+        'image',
+        'role',
+        'password',
+        'phone',
+      ], // select로 columns만 가져오기.
     });
-    // console.log(email, password, user);
+    // 사용자가 없는 경우
     if (!user) {
-      return null;
+      throw new UnauthorizedException('존재하지 않는 이메일입니다.');
     }
     const result = await bcrypt.compare(password, user.password);
+    // 비밀번호가 틀린 경우
+    if (!result) {
+      throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
+    }
     if (result) {
       // 패스워드를 빼고 나머지에 대한 데이터 가져오기.
       const { password, ...userWithoutpassword } = user;
       return userWithoutpassword;
     }
-    return null;
+  }
+  async snsUser(snsuser: SnsJoinRequestDto) {
+    try {
+      const user = await this.usersRepository.findOne({
+        where: { snsId: snsuser.snsId },
+        select: [
+          'name',
+          'nickname',
+          'image',
+          'role',
+          'password',
+          'phone',
+          'snsId',
+        ],
+      });
+      // 기존 회원 업데이트
+      if (user) {
+        const updatedUser = await this.usersRepository.update(
+          { snsId: snsuser.snsId },
+          {
+            name: snsuser.name,
+            nickname: snsuser.nickname,
+            phone: snsuser.phone,
+            image: snsuser.image,
+            updatedAt: new Date(),
+          },
+        );
+        return await this.usersRepository.findOne({
+          where: { snsId: snsuser.snsId },
+        });
+      }
+      // sns회원이 없을경우 db에 저장
+      const newUser = this.usersRepository.create({
+        snsId: snsuser.snsId,
+        name: snsuser.name,
+        nickname: snsuser.nickname,
+        phone: snsuser.phone,
+        image: snsuser.image,
+        socialLoginProvider: snsuser.socialLoginProvider,
+      });
+      return await this.usersRepository.save(newUser);
+    } catch (error) {
+      throw new BadRequestException('회원정보를 찾을수 없습니다');
+    }
   }
 }

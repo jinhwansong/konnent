@@ -6,9 +6,9 @@
     margin-bottom: 2rem;
 }
 .form{
-    > input{
-        margin-bottom: 1rem;
-    }
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
     > a{
         text-align: right;
         display: block;
@@ -17,14 +17,24 @@
         font-weight: 500;
         color: var(--text-subTitle);
     }
+    > p{
+        color: var(--text-red);
+        font-size:1.2rem;
+        font-weight: 500;
+    }
 }
 .signup{
-    display: block;
-    text-align: center;
+    display: flex;
+    justify-content: center;
     margin-block: 2rem 3rem;
     font-size: 1.2rem;
     font-weight: 500;
-    > span{
-        color: var(--text-subTitle);
+    >a{
+        border-right: 1px solid #ddd;
+        padding: 0 1rem;
     }
+    >a:last-child{
+        border:none
+    }
+   
 }

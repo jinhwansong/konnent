@@ -40,7 +40,11 @@ export class UsersController {
   @ApiOperation({ summary: '내정보 조회' })
   @Get()
   getUser(@User() user) {
-    return user;
+    if (!user) {
+      return null; // 비로그인 상태에서 호출된 경우
+    }
+    const { id, ...userWithoutId } = user; // 필요한 필드만 선택
+    return userWithoutId;
   }
   @ApiResponse({
     status: 200,

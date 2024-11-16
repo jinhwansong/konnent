@@ -14,12 +14,10 @@ export class NaverAuthGuard extends AuthGuard('naver') {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
 
-    //console.log('Request session:', req);
     try {
       // naver 인증 시도
       const result = (await super.canActivate(context)) as boolean;
       // 인증 성공 시 세션에 저장
-      // console.log('Auth result:', result);
       if (result) {
         await super.logIn(req); // 세션에 저장
       }

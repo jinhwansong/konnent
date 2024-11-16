@@ -24,8 +24,8 @@ export class LocalSerializer extends PassportSerializer {
   }
   // 세션에서 id를 받아서 사용자 데이터를 꺼내옴
   async deserializeUser(userId: string, done: CallableFunction) {
-    return await this.usersRepository
-      .findOne({
+    try {
+      const res = await this.usersRepository.findOne({
         where: { id: +userId },
         select: [
           'id',
@@ -37,10 +37,10 @@ export class LocalSerializer extends PassportSerializer {
           'phone',
           'snsId',
         ],
-      })
-      .then((user) => {
-        done(null, user);
-      })
-      .catch((err) => done(err));
+      });
+      done(null, res);
+    } catch (error) {
+      done(error);
+    }
   }
 }

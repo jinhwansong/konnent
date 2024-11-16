@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link';
-import styles from './footer.module.scss';
+import style from './footer.module.scss';
 
 export default function Footer() {
     const services = [
@@ -33,14 +33,14 @@ export default function Footer() {
       },
     ];
   return (
-    <footer className={styles.footer}>
+    <footer className={style.footer}>
       <div>
-        <div className={styles.footer_left}>
+        <div className={style.footer_left}>
           <p>
             <span>커넥트</span>
-            <span className={styles.line} />
+            <span className={style.line} />
             <span>대표 플러팅</span>
-            <span className={styles.line} />
+            <span className={style.line} />
             <span>사업자등록번호: 123-45-67890</span>
             <br />
 
@@ -50,14 +50,14 @@ export default function Footer() {
 
             <br />
             <span>주소: 경기도 고양시 일산서구 덕산로 3080</span>
-            <span className={styles.line} />
+            <span className={style.line} />
             <span>대표번호: 010-1234-5678</span>
             <br />
             <span>호스팅서비스 제공자 : Vercel</span>
           </p>
           <em>© 2024 커넥팅, Inc. All rights reserved.</em>
         </div>
-        <ul className={styles.footer_right}>
+        <ul className={style.footer_right}>
           <li>
             <em>이용약관</em>
             {terms.map((service) => (

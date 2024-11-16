@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import { IcGoogle, IcKakao, IcNaver } from "@/asset";
-import styles from './social.module.scss'
+import style from './social.module.scss'
 import { useRouter } from 'next/navigation';
 
 
@@ -27,21 +27,21 @@ export default function Social({ text }: ISocial) {
     [router]
   );
   return (
-    <div className={styles.social}>
+    <div className={style.social}>
       <hr />
       <span>간편{text}</span>
-      <div className={styles.social_btn}>
+      <div className={style.social_btn}>
         <button
           type="button"
           onClick={() => onSocial('kakao')}
-          className={styles.social_kakao}
+          className={style.social_kakao}
         >
           <IcKakao />
           카카오로 {text}
         </button>
         <button
           type="button"
-          className={styles.social_naver}
+          className={style.social_naver}
           onClick={() => onSocial('naver')}
         >
           <IcNaver />
@@ -49,7 +49,7 @@ export default function Social({ text }: ISocial) {
         </button>
         <button
           type="button"
-          className={styles.social_google}
+          className={style.social_google}
           onClick={() => onSocial('google')}
         >
           <IcGoogle />

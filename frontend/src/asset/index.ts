@@ -5,3 +5,8 @@ export { default as IcGoogle } from './google.svg';
 export { default as IcKakao } from './kakao.svg';
 export { default as IcNaver } from './naver.svg';
 export { default as IcProfile } from './thumb_profile.jpg';
+export { default as IcNetwork } from './network.png';
+export { default as IcRate } from './rate.png';
+export { default as IcInfo } from './info.png';
+export { default as IcShare } from './share.png';
+export { default as IcMentobg } from './mentobg.svg';

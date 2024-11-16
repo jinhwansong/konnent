@@ -3,15 +3,16 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import bcrypt from 'bcrypt';
 import { Users } from 'src/entities/Users';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { SnsJoinRequestDto } from 'src/users/dto/join.requset.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
+    @InjectDataSource() private dataSource: DataSource,
     @InjectRepository(Users) private usersRepository: Repository<Users>,
   ) {}
   async validateUser(email: string, password: string) {
@@ -20,6 +21,7 @@ export class AuthService {
     const user = await this.usersRepository.findOne({
       where: { email },
       select: [
+        'id',
         'email',
         'name',
         'nickname',
@@ -41,14 +43,21 @@ export class AuthService {
     if (result) {
       // 패스워드를 빼고 나머지에 대한 데이터 가져오기.
       const { password, ...userWithoutpassword } = user;
+
       return userWithoutpassword;
     }
   }
   async snsUser(snsuser: SnsJoinRequestDto) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    // db에 연결
+    await queryRunner.connect();
+    // 트랜잭션을 시작
+    await queryRunner.startTransaction();
     try {
-      const user = await this.usersRepository.findOne({
+      const user = await queryRunner.manager.getRepository(Users).findOne({
         where: { snsId: snsuser.snsId },
         select: [
+          'id',
           'name',
           'nickname',
           'image',
@@ -60,7 +69,7 @@ export class AuthService {
       });
       // 기존 회원 업데이트
       if (user) {
-        const updatedUser = await this.usersRepository.update(
+        await this.usersRepository.update(
           { snsId: snsuser.snsId },
           {
             name: snsuser.name,
@@ -70,12 +79,18 @@ export class AuthService {
             updatedAt: new Date(),
           },
         );
-        return await this.usersRepository.findOne({
-          where: { snsId: snsuser.snsId },
-        });
+        const updatedUser = await queryRunner.manager
+          .getRepository(Users)
+          .findOne({
+            where: { snsId: snsuser.snsId },
+          });
+
+        // 트랜잭션 커밋
+        await queryRunner.commitTransaction();
+        return updatedUser;
       }
       // sns회원이 없을경우 db에 저장
-      const newUser = this.usersRepository.create({
+      const newUser = queryRunner.manager.getRepository(Users).create({
         snsId: snsuser.snsId,
         name: snsuser.name,
         nickname: snsuser.nickname,
@@ -83,9 +98,16 @@ export class AuthService {
         image: snsuser.image,
         socialLoginProvider: snsuser.socialLoginProvider,
       });
-      return await this.usersRepository.save(newUser);
+      const savedUser = await queryRunner.manager.save(Users, newUser);
+
+      // 트랜잭션 커밋
+      await queryRunner.commitTransaction();
+      return savedUser;
     } catch (error) {
+      await queryRunner.rollbackTransaction();
       throw new BadRequestException('회원정보를 찾을수 없습니다');
+    } finally {
+      await queryRunner.release();
     }
   }
 }

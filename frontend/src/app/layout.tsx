@@ -9,6 +9,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: '커넥트 - 한 걸음 더 나아가는 연결',
   description: '한 걸음 더 나아가는 연결, 커넥트',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 const pretendard = localFont({
   src: "../fonts/PretendardVariable.woff2",
@@ -24,7 +27,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="kr" className={pretendard.variable}>
-      <link rel="icon" href="favicon.svg" sizes="any" />
       <body className={pretendard.className}>
         <MSWComponent />
         {children}

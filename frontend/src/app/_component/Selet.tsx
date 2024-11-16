@@ -2,7 +2,7 @@
 import React from 'react';
 import { BiCaretDown, BiCaretUp } from 'react-icons/bi';
 import { usePopup } from '@/hooks';
-import styles from './selet.module.scss';
+import style from './selet.module.scss';
 
 interface ISelet {
   list: string[];
@@ -11,7 +11,8 @@ interface ISelet {
   onPopup: () => void;
   text: string;
   onSelet: (selet: string) => void;
-  width?:string
+  width?: string;
+  name: string;
 }
 export default function Selet({
   onPopup,
@@ -21,13 +22,15 @@ export default function Selet({
   text,
   onSelet,
   width,
+  name,
 }: ISelet) {
   const { popupRef } = usePopup();
-  const seletbox = [styles.seletbox, width && styles[`width${width as string}`]]
+  const seletbox = [style.seletbox, width && style[`width${width as string}`]]
     .filter(Boolean)
-    .join(' ');;
+    .join(' ');
   return (
-    <div className={styles.selet}>
+    <div className={style.selet}>
+      <input type="hidden" name={name} value={seletText} />
       <button
         onClick={onPopup}
         onMouseDown={(e) => e.stopPropagation()}

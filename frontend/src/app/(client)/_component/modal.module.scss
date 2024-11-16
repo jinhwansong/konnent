@@ -1,0 +1,23 @@
+.modalBg{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba($color: #000000, $alpha: 0.7);
+        display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.modalback{
+    background: var(--bg-main);
+    padding: 2rem;
+    border-radius: 1rem;
+    position: relative;
+    > button{
+        font-size: 2.5rem;
+        position: absolute;
+        right: 2rem;
+        top: 2rem;
+    }
+}

@@ -2,6 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class mentoringRequsetDto {
   @ApiProperty({
+    example: '네카라쿠베',
+    description: '멘토 현직',
+    required: true,
+  })
+  public office: string;
+  @ApiProperty({
     example: '멘토링 제목을 적어주세요',
     description: '멘토링 제목',
     required: true,

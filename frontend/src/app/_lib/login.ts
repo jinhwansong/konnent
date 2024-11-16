@@ -12,7 +12,6 @@ export const onSubmit = async (prevState: any, formData: FormData) => {
   ) {
     return { message: '비밀번호를 적어주세요' };
   }
-  let shouldRedirect = false;
   const formDataObject = Object.fromEntries(formData);
   try {
     const response = await fetch(
@@ -36,11 +35,9 @@ export const onSubmit = async (prevState: any, formData: FormData) => {
       }
     }
     const data = await response.json();
-    if (!response.ok)
-      return { message: '아이디 또는 비밀번호가 일치하지 않습니다' };
+    if (!response.ok) return { message: '아이디 또는 비밀번호가 일치하지 않습니다' };
     return { ok: true, data };
   } catch (error) {
-    console.log(error)
     return { message: error };
   }
 };

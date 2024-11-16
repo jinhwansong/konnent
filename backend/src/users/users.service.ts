@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import bcrypt from 'bcrypt';
 import { Users } from 'src/entities/Users';
 
@@ -14,8 +14,14 @@ export class UsersService {
   constructor(
     @InjectRepository(Users)
     private userRepository: Repository<Users>,
+    private dataSource: DataSource,
   ) {}
-  getUser() {}
+  async findByEmail(phone: string) {
+    return this.userRepository.findOne({
+      where: { phone },
+      select: ['phone'],
+    });
+  }
   async Join(
     email: string,
     password: string,
@@ -23,7 +29,9 @@ export class UsersService {
     nickname: string,
     phone: string,
   ) {
-    const user = await this.userRepository.findOne({ where: { email } });
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     if (!email) {
       throw new BadRequestException('이메일을 작성해주세요');
     }
@@ -39,17 +47,31 @@ export class UsersService {
     if (!phone) {
       throw new BadRequestException('휴대폰번호를 작성해주세요');
     }
+    // 중복사용자
+    const user = await queryRunner.manager.getRepository(Users).findOne({
+      where: { email },
+    });
     if (user) {
       throw new UnauthorizedException('이미 존재하는 사용자입니다');
     }
+    // 비밀번호 해싱
     const hashedPassword = await bcrypt.hash(password, 12);
-    await this.userRepository.save({
-      email,
-      password: hashedPassword,
-      name,
-      nickname,
-      phone,
-    });
+    try {
+      // 회원가입
+      await queryRunner.manager.getRepository(Users).save({
+        email,
+        password: hashedPassword,
+        name,
+        nickname,
+        phone,
+      });
+      await queryRunner.commitTransaction();
+      return true;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
   async checkEmail(email: string) {
     const user = await this.userRepository.findOne({ where: { email } });

@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { useTap } from '@/hooks';
-import styles from './itemContent.module.scss';
+import style from './itemContent.module.scss';
 
 
 export default function ItemContent() {
@@ -14,13 +14,13 @@ export default function ItemContent() {
     
   return (
     <article>
-      <h4 className={styles.title}>관심있는 멘토에게 질문하기</h4>
-      <div className={styles.tap_warp}>
+      <h4 className={style.title}>관심있는 멘토에게 질문하기</h4>
+      <div className={style.tap_warp}>
         {taps.map((tap) => (
           <button
             key={tap.id}
             onClick={() => changeBtn(tap.id)}
-            className={`${tap.id === tapBtn ? styles.tap_active : ''}`}
+            className={`${tap.id === tapBtn ? style.tap_active : ''}`}
           >
             {tap.name}
           </button>

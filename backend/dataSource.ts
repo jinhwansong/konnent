@@ -26,7 +26,7 @@ const dataSource = new DataSource({
     Posts,
     Users,
   ],
-  migrations: [__dirname + './src/migrations/*.ts'],
+  migrations: [__dirname + '/src/migrations/*.ts'],
   charset: 'utf8mb4_general_ci',
   synchronize: false,
   logging: true,

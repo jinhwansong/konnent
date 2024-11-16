@@ -9,7 +9,7 @@ import Button from '@/app/_component/Button';
 import Input from '@/app/_component/Input';
 import Social from '@/app/(client)/_component/Social';
 import { useInput } from '@/hooks';
-import styles from './login.module.scss';
+import style from './login.module.scss';
 
 export default function Login() {
   const router = useRouter();
@@ -39,8 +39,8 @@ export default function Login() {
   }
   return (
     <>
-      <h4 className={styles.title}>커넥트 시작하기</h4>
-      <form action={formAction} className={styles.form}>
+      <h4 className={style.title}>커넥트 시작하기</h4>
+      <form action={formAction} className={style.form}>
         {input.map((inputs, i) => (
           <Input
             type={inputs.type}
@@ -55,7 +55,7 @@ export default function Login() {
 
         <Button type="submit">로그인</Button>
       </form>
-      <div className={styles.signup}>
+      <div className={style.signup}>
         <Link href="/password">아이디 찾기</Link>
         <Link href="/password">비밀번호 찾기</Link>
         <Link href="/signup/terms">회원가입</Link>

@@ -32,10 +32,11 @@ export const onName = (name: string) => {
   return "";
 };
 export const onPhone = (phone: string) => {
-  const phoneRegex = /^010-?([0-9]{4})-?([0-9]{4})$/;
+  const phoneNumber = phone.replace(/-/g, '');
+  const phoneRegex = /^010([0-9]{4})([0-9]{4})$/;
 
-  if (!phoneRegex.test(phone)) {
-    return "휴대폰 번호를 정확히 입력해주세요";
+  if (!phoneRegex.test(phoneNumber)) {
+    return '휴대폰 번호를 정확히 입력해주세요';
   }
   return "";
 };

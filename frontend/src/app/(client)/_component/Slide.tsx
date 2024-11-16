@@ -5,7 +5,7 @@ import { SwiperSlide, Swiper } from 'swiper/react';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { IcMainSlide01, IcMainSlide02 } from '@/asset';
 import { useSlide } from '@/hooks';
-import styles from './slide.module.scss';
+import style from './slide.module.scss';
 
 export default function Slide() {
     const { onPrevButton, onNextButton, swiperOptions, setSwiper } = useSlide();
@@ -29,16 +29,16 @@ export default function Slide() {
       },
     ];
   return (
-    <article className={styles.article}>
+    <article className={style.article}>
       <button
         onClick={onPrevButton}
-        className={`${styles.navi} ${styles.left_button}`}
+        className={`${style.navi} ${style.left_button}`}
       >
         <BiChevronLeft />
       </button>
       <button
         onClick={onNextButton}
-        className={`${styles.navi} ${styles.right_button}`}
+        className={`${style.navi} ${style.right_button}`}
       >
         <BiChevronRight />
       </button>
@@ -49,9 +49,9 @@ export default function Slide() {
       >
         {mainSlide.map((swipers) => (
           <SwiperSlide key={swipers.id}>
-            <Link href="/" className={styles.swiper}>
-              <div className={styles.swiperImg}>{swipers.img}</div>
-              <div className={styles.swiperText}>
+            <Link href="/" className={style.swiper}>
+              <div className={style.swiperImg}>{swipers.img}</div>
+              <div className={style.swiperText}>
                 <span>{swipers.premier}</span>
                 <em>{swipers.title}</em>
                 <em>{swipers.title2}</em>

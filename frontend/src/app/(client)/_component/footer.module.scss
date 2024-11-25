@@ -1,18 +1,21 @@
+
+@function Rem($size) {
+  @return $size / 16px * 1rem;
+}
 @mixin title {
-    font-size: 1.4rem;
+    font-size: Rem(14px);
     font-weight: 800;
     
 }
-
 .footer{
     border-top: var(--border-main);
     > div{
-        max-width: 110rem;
+        max-width: Rem(1100px);
         margin: 0 auto;
-        padding-block: 4rem;
+        padding-block: Rem(40px);
         display: flex;
         justify-content: space-between;
-        gap: 10rem;
+        gap: Rem(100px);
     }
 }
 .footer_left{
@@ -20,28 +23,28 @@
     border-right: var(--border-main);
     > a{
         @include title;
-        margin-bottom: 1.5rem;
-        margin-right: 2rem;
+        margin-bottom: Rem(15px);
+        margin-right: Rem(20px);
         display: inline-block;
     }
     > p{
-        font-size: 1.2rem;
+        font-size:Rem(12px);
         
         > span{
-            margin-top: 0.5rem;
+            margin-top:Rem(5px);
             display: inline-block;
         }
         > .line{
-            margin-inline: 1rem;
-            width: 0.1rem;
-            height: 0.8rem;
+            margin-inline:Rem(10px);
+            width: 1px;
+            height: 8px;
             background: var(--bg-ddd);
         }
     }
     > em{
-        font-size: 1.2rem;
+        font-size:Rem(12px);
         color: var(-text-subTitle);
-        margin-top: 1.5rem;
+        margin-top: Rem(15px);
         display: block;
     }
 }
@@ -52,13 +55,13 @@
     > li{
         display: flex;
         flex-direction: column;
-        gap: 1.5rem;
+        gap:  Rem(15px);
     }
     > li em{
         @include title;
     }
     > li a{
-        font-size: 1.4rem;
+        font-size:  Rem(14px);
         font-weight: 500;
         display: block;
     }

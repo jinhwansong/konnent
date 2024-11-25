@@ -77,10 +77,10 @@ interface FormData {
   career: string;
 }
 
-export const useMento = () => {
+export const useMentor = () => {
   return useMutation<FormData, unknown, FormData>({
     mutationFn: async (formData) => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/mento`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/Mentor`, {
         method: 'POST',
         credentials: 'include',
         headers: {

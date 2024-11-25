@@ -7,7 +7,7 @@ import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import bcrypt from 'bcrypt';
 import { Users } from 'src/entities/Users';
 import { DataSource, Repository } from 'typeorm';
-import { SnsJoinRequestDto } from 'src/users/dto/join.requset.dto';
+import { SnsJoinRequestDto } from 'src/users/dto/join.request.dto';
 
 @Injectable()
 export class AuthService {

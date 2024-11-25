@@ -1,18 +1,21 @@
+@function Rem($size) {
+  @return $size / 16px * 1rem;
+}
 .title{
-    font-size: 2.5rem;
+    font-size: Rem(25px);
     font-weight: 700;
     line-height: 1;
-    margin-block: 7rem 3rem;
+    margin-block: Rem(70px) Rem(30px);
 }
 .tap_warp{
     display: flex;
-    gap: 2rem;
+    gap: Rem(20px);
     > button{
-        font-size: 1.4rem;
+        font-size: Rem(14px);
         font-weight: 500;
         border: var(--border-main);
-        padding: 1.2rem 1.5rem;
-        border-radius: 3rem;
+        padding:Rem(12px) Rem(15px);
+        border-radius: Rem(30px);
     }
     .tap_active{
          border: var(--border-major);

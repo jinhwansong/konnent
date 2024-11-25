@@ -1,11 +1,11 @@
 import React from 'react'
-import Mento from '../_component/Mento'
-import style from './mento.module.scss';
+import Mentor from '../_component/Mentor'
+import style from './Mentor.module.scss';
 
 export default function page() {
   return (
     <article className={style.inner}>
-      <Mento />
+      <Mentor />
     </article>
   );
 }

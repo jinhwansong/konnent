@@ -13,14 +13,14 @@
     transform: translate(-50%, -50%);
     width: 100%;
     > h4{
-        font-size: 3.5rem;
+        font-size: 2rem;
         font-weight: 700;
         line-height: 1.3;
-        margin-bottom: 1.5rem;
+        margin-bottom: 0.9375rem;
         text-align: center;
     }
     > p{
-        font-size: 1.8rem;
+        font-size: 1.125rem;
         line-height: 1.4;
         color: var(--text-subTitle);
         text-align: center;
@@ -31,25 +31,25 @@
         color: var( --text-white);
         transition: .5s;
         background-size: 200% auto;
-        width: 19.6rem;
-        height: 6.5rem;
-        font-size: 1.6rem;
+        width: 12.25rem;
+        height: 4.0625rem;
+        font-size: 1rem;
         font-weight: 600;
         display: block;
         text-align: center;
-        line-height: 6.5rem;
+        line-height: 4.0625rem;
         border-radius: 19rem;
-        margin: 2rem auto 0;
+        margin: 1.25rem auto 0;
     }
 }
     
 .reasons{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+    gap: 1rem;
     > li{
         text-align: center;
-        padding: 2.5rem;
+        padding: 1.5625rem;
         border:var(--border-main);
         border-radius: 10px;
         > img{
@@ -58,12 +58,11 @@
         }
         > em{
             display: block;
-            margin-block: 2rem 1rem;
-            font-size: 1.6rem;
+            margin-block: 1.25rem 0.625rem;
             font-weight: 700;
         }
         > p{
-            font-size: 1.4rem;
+            font-size: 0.875rem;
             font-weight: 500;
             color: var(--text-subTitle);
             line-height: 1.4;
@@ -71,20 +70,20 @@
     }
 }
 .article03,.article02{
-    width: 110rem;
+    width: min(1100px, calc(1100px - 30px));
     margin: 0 auto;
 }
 .article03 > h4, .article02 > h4{
        
     font-weight: 700;
-    margin-block:5rem 3.5rem;
-    font-size: 2.5rem;
+    margin-block:3.125rem 2rem;
+    font-size: 1.5625rem;
     text-align: center;
     > span{
-        font-size: 1.4rem;
+        font-size: 0.875rem;
         font-weight: 500;
         line-height: 1;
-        margin-bottom: 1rem;
+        margin-bottom: 0.625rem;
         color: var(--text-subTitle);
         display: block;
     }

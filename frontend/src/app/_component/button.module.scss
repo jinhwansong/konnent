@@ -1,9 +1,9 @@
 .button{
   width: 100%;
-  font-size: 1.4rem;
-  height:5rem;
+  font-size: 0.875rem;
+  height:3.125rem;
   font-weight: 500;
-  border-radius:0.5rem;
+  border-radius:5px;
   background:var(--major-main);
   color:var(--text-white);
   &:disabled{
@@ -12,5 +12,5 @@
   }
 }
 .width80{
-  width: 8rem;
+  width: 5rem;
 }

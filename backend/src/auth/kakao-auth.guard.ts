@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 
 @Injectable()
 export class KakaoAuthGuard extends AuthGuard('kakao') {
-  constructor(private authService: AuthService) {
+  constructor(private readonly authService: AuthService) {
     super();
   }
   async canActivate(context: ExecutionContext): Promise<boolean> {

@@ -33,5 +33,5 @@ export class Payments {
   users: Users;
   // 멘토과의 관계
   @ManyToOne(() => MentoringPrograms, (programs) => programs.payments)
-  mentoringPrograms: MentoringPrograms;
+  MentoringPrograms: MentoringPrograms;
 }

@@ -15,10 +15,10 @@ type IItem = {
 
 export default function Item({ id, img, title, name, job, tag }: IItem) {
   return (
-    <Link href={`/mentors/${id}`}>
+    <Link href={`/Mentorrs/${id}`}>
       <div className={style.imgbox}>
         <Image src={img} alt={name} width={190} height={260} />
-        <div className={style.mento_textbox}>
+        <div className={style.Mentor_textbox}>
           <h5>{job}</h5>
           <p>{name} 멘토</p>
         </div>

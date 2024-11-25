@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 
 @Injectable()
 export class GoogleAuthGuard extends AuthGuard('google') {
-  constructor(private authService: AuthService) {
+  constructor(private readonly authService: AuthService) {
     super();
   }
   async canActivate(context: ExecutionContext): Promise<boolean> {

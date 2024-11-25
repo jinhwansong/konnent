@@ -10,52 +10,24 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedToNull.Interceptor';
-import { MentoService } from './mento.service';
-import { MentoApprovalDto, MentoRequsetDto } from './dto/mento.requset.dto';
-import { User } from 'src/common/decorators/user.decorator';
 import { LoggedInGuard } from 'src/auth/logged-in.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { RolesGuard } from 'src/common/guard/roles.guard';
+import { UserRole } from 'src/entities/Users';
+import {
+  MentorApprovalDto,
+  MentorRequestDto,
+} from 'src/mento/dto/mentor.request.dto';
 import { PaginationDto } from 'src/common/dto/page.dto';
+import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedToNull.Interceptor';
+import { AdminService } from './admin.service';
+import { UserDtoByPassword } from 'src/common/dto/user.dto';
 
 @UseInterceptors(UndefinedToNullInterceptor)
-@ApiTags('멘토')
-@Controller('mento')
-export class MentoController {
-  constructor(private mentoService: MentoService) {}
-  @ApiResponse({
-    status: 201,
-    description: '멘토신청이 완료되었습니다.',
-    type: MentoRequsetDto,
-    schema: {
-      properties: {
-        message: { type: 'string', example: '멘토신청이 완료되었습니다.' },
-      },
-    },
-  })
-  @ApiResponse({
-    status: 400,
-    description: '이미 멘토신청을 완료했습니다.',
-    schema: {
-      properties: {
-        statusCode: { type: 'number', example: 400 },
-        message: { type: 'string', example: '이미 멘토신청을 완료했습니다.' },
-      },
-    },
-  })
-  @UseGuards(new LoggedInGuard())
-  @ApiOperation({ summary: '멘토 신청' })
-  @Post()
-  async mentorApplication(@Body() body: MentoRequsetDto, @User() user) {
-    return await this.mentoService.mentorApplication(
-      user.id,
-      body.email,
-      body.job,
-      body.introduce,
-      body.portfolio,
-      body.career,
-    );
-  }
-
+@ApiTags('관리자')
+@Controller('admin')
+export class AdminController {
+  constructor(private readonly AdminService: AdminService) {}
   @ApiResponse({
     status: 201,
     description: '멘토 승인이 완료되었습니다.',
@@ -81,14 +53,15 @@ export class MentoController {
       },
     },
   })
-  @UseGuards(new LoggedInGuard())
+  @UseGuards(new LoggedInGuard(), RolesGuard)
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: '멘토 승인/거절' })
   @Post('approve/:id')
   async approveMentor(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body: MentoApprovalDto,
+    @Body() body: MentorApprovalDto,
   ) {
-    return await this.mentoService.approveMentor(
+    return await this.AdminService.approveMentor(
       id,
       body.approved,
       body.reason,
@@ -97,7 +70,7 @@ export class MentoController {
   @ApiResponse({
     status: 201,
     description: '멘토 신청 목록 조회 성공',
-    type: MentoRequsetDto,
+    type: MentorRequestDto,
   })
   @ApiResponse({
     status: 500,
@@ -118,22 +91,56 @@ export class MentoController {
   @ApiOperation({ summary: '멘토 신청 목록 조회' })
   @Get('applications')
   async getApplications(@Query() { page, limit }: PaginationDto) {
-    return await this.mentoService.getApplications(page, limit);
+    return await this.AdminService.getApplications(page, limit);
   }
 
   @ApiResponse({
     status: 201,
     description: '멘토 신청 상세 조회 성공',
-    type: MentoRequsetDto,
+    type: MentorRequestDto,
   })
   @ApiResponse({
     status: 404,
     description: '멘토 신청 정보를 찾을 수 없습니다.',
   })
-  @UseGuards(new LoggedInGuard())
+  @UseGuards(new LoggedInGuard(), RolesGuard)
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: '멘토 신청 상세 조회' })
   @Get('applications/:id')
   async getApplicationsDetail(@Param('id', ParseIntPipe) id: number) {
-    return await this.mentoService.findOneApplicationDetail(id);
+    return await this.AdminService.findOneApplicationDetail(id);
+  }
+  @ApiResponse({
+    status: 201,
+    description: '사용자 목록 조회 성공',
+    type: UserDtoByPassword,
+  })
+  @ApiResponse({
+    status: 404,
+    description: '사용자 목록 를 찾을 수 없습니다.',
+  })
+  @UseGuards(new LoggedInGuard(), RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: '사용자 목록 조회' })
+  @Get('users')
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  async user(@Query() { page, limit }: PaginationDto) {
+    return await this.AdminService.findAllUser(page, limit);
+  }
+  @ApiResponse({
+    status: 201,
+    description: '멘토 신청 상세 조회 성공',
+    type: MentorRequestDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: '멘토 신청 정보를 찾을 수 없습니다.',
+  })
+  @UseGuards(new LoggedInGuard(), RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: '사용자 상세 정보 조회' })
+  async getUserDetail(@Param('id', ParseIntPipe) id: number) {
+    return this.AdminService.findUser(id);
   }
 }

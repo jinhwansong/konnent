@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Likes } from './Likes';
-import { Mentos } from './Mentos';
+import { Mentors } from './Mentors';
 import { Comments } from './Comments';
 
 @Entity({ schema: 'konnect', name: 'posts' })
@@ -28,8 +28,8 @@ export class Posts {
   @OneToMany(() => Comments, (comment) => comment.posts)
   comments: Comments[];
   // 멘토과 관계설정
-  @ManyToOne(() => Mentos, (mento) => mento.posts)
-  mentos: Mentos[];
+  @ManyToOne(() => Mentors, (Mentor) => Mentor.posts)
+  Mentors: Mentors[];
 
   @CreateDateColumn()
   createdAt: Date;

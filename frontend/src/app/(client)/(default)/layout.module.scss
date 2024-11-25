@@ -1,6 +1,6 @@
+
 .section{
-    width: 110rem;
+    width: min(1100px, 100% - 30px);
     margin: 0 auto;
-    padding-block: 4rem 8rem;
-    min-height: calc(100vh - 27.4rem);
+    padding-block: 2.5rem 5rem
 }

@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useUserData } from '@/app/_lib/useUserData';
-import { IcInfo, IcMentobg, IcNetwork, IcRate, IcShare } from '@/asset';
+import { IcInfo, IcMentorbg, IcNetwork, IcRate, IcShare } from '@/asset';
 import FaqItem from './_component/FaqItem';
 import style from './mento.module.scss';
 
@@ -130,7 +130,7 @@ export default function Page() {
     if (!data) {
       return router.push('/login');
     }
-    router.push('/mentor/info');
+    router.push('/Mentorr/info');
   }, [data, router]);
   return (
     <>
@@ -146,8 +146,8 @@ export default function Page() {
           </p>
           <button onClick={() => onRouter()}>멘토 지원하기</button>
         </div>
-        <IcMentobg />
-        {/* <Mento /> */}
+        <IcMentorbg />
+        {/* <Mentor /> */}
       </article>
       <article className={style.article02}>
         <h4>

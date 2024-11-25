@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class mentoringRequsetDto {
+export class MentoringRequestDto {
   @ApiProperty({
     example: '네카라쿠베',
     description: '멘토 현직',

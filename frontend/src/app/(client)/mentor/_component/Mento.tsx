@@ -6,11 +6,11 @@ import Input from '@/app/_component/Input';
 import Selet from '@/app/_component/Selet';
 import Button from '@/app/_component/Button';
 import { joblist, careerlist } from '@/app/(client)/config/job';
-import style from './mento.module.scss';
+import style from './Mentor.module.scss';
 import { useUserData } from '@/app/_lib/useUserData';
-import { useMento } from '@/app/_lib/check';
+import { useMentor } from '@/app/_lib/check';
 
-export default function Mento() {
+export default function Mentor() {
   // 팝업관련...
   const { onPopup2, popup2 } = usePopupStore();
   const { onPopup3, popup3 } = usePopupStore();
@@ -81,16 +81,16 @@ export default function Mento() {
   // 내정보
   const { data } = useUserData();
   // 멘토등록
-  const mentoMutation = useMento()
-  const onMento = useCallback(
+  const MentorMutation = useMentor()
+  const onMentor = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      mentoMutation.mutate(
+      MentorMutation.mutate(
         { email, job, introduce, portfolio, career },
         
       );
     },
-    [mentoMutation, email, job, introduce, portfolio, career]
+    [MentorMutation, email, job, introduce, portfolio, career]
   );
   return (
     <>
@@ -100,7 +100,7 @@ export default function Mento() {
         <br />
         아래 정보가 필요해요.
       </h4>
-      <form className={style.form} onSubmit={onMento}>
+      <form className={style.form} onSubmit={onMentor}>
         {fieldValues.map((value) => {
           return (
             <div key={value?.id}>

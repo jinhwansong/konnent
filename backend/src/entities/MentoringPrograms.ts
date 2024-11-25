@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Mentos } from './Mentos';
+import { Mentors } from './Mentors';
 import { Payments } from './Payments';
 
 @Entity({ schema: 'konnect', name: 'MentoringPrograms' })
@@ -32,9 +32,9 @@ export class MentoringPrograms {
   @UpdateDateColumn()
   updatedAt: Date;
   // 멘토신청과의 관계설정
-  @ManyToOne(() => Mentos, (mento) => mento.mentoringPrograms)
-  mentos: Mentos;
+  @ManyToOne(() => Mentors, (Mentor) => Mentor.MentoringPrograms)
+  Mentors: Mentors;
   // 결제 관계설정
-  @OneToMany(() => Payments, (payment) => payment.mentoringPrograms)
+  @OneToMany(() => Payments, (payment) => payment.MentoringPrograms)
   payments: Payments[];
 }

@@ -9,4 +9,7 @@ export { default as IcNetwork } from './network.png';
 export { default as IcRate } from './rate.png';
 export { default as IcInfo } from './info.png';
 export { default as IcShare } from './share.png';
-export { default as IcMentobg } from './mentobg.svg';
+export { default as IcMentorbg } from './mentobg.svg';
+export { default as IcU1 } from './u1.jpg';
+export { default as IcU2 } from './u2.jpg';
+export { default as IcU3 } from './u3.jpg';

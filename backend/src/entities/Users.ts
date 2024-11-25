@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Likes } from './Likes';
-import { Mentos } from './Mentos';
+import { Mentors } from './Mentors';
 import { Comments } from './Comments';
 import { Payments } from './Payments';
 import { ApiProperty } from '@nestjs/swagger';
@@ -24,7 +24,7 @@ import {
 // 회원등급
 export enum UserRole {
   USER = 'user',
-  MENTOR = 'mentor',
+  Mentor = 'Mentor',
   ADMIN = 'admin',
 }
 // 소셜로그인
@@ -140,8 +140,8 @@ export class Users {
   @DeleteDateColumn()
   deletedAt: Date;
   // 멘토 신청 관계설정
-  @OneToOne(() => Mentos, (mento) => mento.users)
-  mentos: Mentos;
+  @OneToOne(() => Mentors, (Mentor) => Mentor.users)
+  Mentors: Mentors;
   // 게시물 댓글 관계설정
   @OneToMany(() => Comments, (Comment) => Comment.users)
   comments: Comments[];

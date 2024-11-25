@@ -31,7 +31,7 @@ html, body {
   color: var(--text-title);
   background: var(--bg-main);
   transition: background 0.2s ease-in, color 0.2s ease-in;
-  font-size: 62.5%;
+  font-size: 16px;
   font-weight:400;
   font-family: 'pretendard', 'sans-serif';
 }

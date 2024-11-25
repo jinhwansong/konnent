@@ -1,3 +1,6 @@
+@function Rem($size) {
+  @return $size / 16px * 1rem;
+}
 .social{
   display: flex;
   flex-direction: column;
@@ -13,10 +16,10 @@
     border: none;
   }
   > span {
-    font-size: 1.2rem;
+    font-size: Rem(12px);
     background: var(--bg-main);
     padding: 0 8px;
-    margin-bottom: 16px;
+    margin-bottom: 1rem;
     position: relative;
   }
 }
@@ -27,9 +30,9 @@
   width: 100%;
   > button{
     width: 100%;
-    border-radius: 5px;
-    height: 5rem;
-    font-size: 1.4rem;
+    border-radius:Rem(5px);
+    height:Rem(50px);
+    font-size: Rem(14px);
     font-weight: 700;
     display: flex;
     align-items: center;

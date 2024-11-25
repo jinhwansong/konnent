@@ -1,11 +1,11 @@
 import React from 'react'
-import Mento from '../../_component/Mento'
+import Mentor from '../../_component/Mentor'
 import Modal from '@/app/(client)/_component/Modal'
 
 export default function page() {
   return (
     <Modal>
-      <Mento/>
+      <Mentor/>
     </Modal>
   )
 }

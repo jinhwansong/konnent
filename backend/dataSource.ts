@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { Comments } from './src/entities/Comments';
 import { Likes } from './src/entities/Likes';
 import { MentoringPrograms } from './src/entities/MentoringPrograms';
-import { Mentos } from './src/entities/Mentos';
+import { Mentors } from './src/entities/Mentors';
 import { Payments } from './src/entities/Payments';
 import { Posts } from './src/entities/Posts';
 import { Users } from './src/entities/Users';
@@ -21,7 +21,7 @@ const dataSource = new DataSource({
     Comments,
     Likes,
     MentoringPrograms,
-    Mentos,
+    Mentors,
     Payments,
     Posts,
     Users,

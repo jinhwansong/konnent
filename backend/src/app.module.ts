@@ -1,20 +1,21 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { LoggerMiddelware } from './middlewares/logger.middleware';
+import { LoggerMiddelware } from './middlewares/logger.middelware';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
-import { MentoModule } from './mento/mento.module';
+import { MentorModule } from './mento/mentor.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Likes } from './entities/Likes';
 import { Comments } from './entities/Comments';
 import { MentoringPrograms } from './entities/MentoringPrograms';
-import { Mentos } from './entities/Mentos';
+import { Mentors } from './entities/Mentors';
 import { Payments } from './entities/Payments';
 import { Posts } from './entities/Posts';
 import { Users } from './entities/Users';
 import { UsersService } from './users/users.service';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { UsersService } from './users/users.service';
       isGlobal: true,
     }),
     UsersModule,
-    MentoModule,
+    MentorModule,
     AuthModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
@@ -46,11 +47,12 @@ import { UsersService } from './users/users.service';
       Comments,
       Likes,
       MentoringPrograms,
-      Mentos,
+      Mentors,
       Payments,
       Posts,
       Users,
     ]),
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService, UsersService],

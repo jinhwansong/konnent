@@ -7,7 +7,6 @@ import style from "./notfound.module.scss";
 
 export default function NotFound() {
     return (
-      <>
         <section className={style.section}>
           
           <em>문제가 발생했습니다</em>
@@ -17,9 +16,8 @@ export default function NotFound() {
           </p>
           <Link href="/">
             <BiSolidHome />
-            트랜드셀러 홈으로가기
+            커넥트 홈으로가기
           </Link>
         </section>
-      </>
     );
 }

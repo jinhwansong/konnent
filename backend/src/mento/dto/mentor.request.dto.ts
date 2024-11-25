@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsOptional, IsString } from 'class-validator';
 
-export class MentoRequsetDto {
+export class MentorRequestDto {
   @ApiProperty({
     example: 'example@gmail.com',
     description: '연락받을 이메일 주소',
@@ -35,7 +35,7 @@ export class MentoRequsetDto {
   public portfolio: string;
 }
 // 멘토 승인/거절 DTO
-export class MentoApprovalDto {
+export class MentorApprovalDto {
   @ApiProperty({
     example: true,
     description: '승인 여부',

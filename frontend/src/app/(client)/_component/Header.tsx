@@ -62,7 +62,7 @@ export default function Header() {
                     </div>
                     <div>
                       <Link href="/mypage">내 정보</Link>
-                      <Link href="/mentorings">멘토링 신청 내역</Link>
+                      <Link href="/Mentorrings">멘토링 신청 내역</Link>
                       <Link href="/bookmarks">북마크</Link>
                       <Link href="/follows">팔로우</Link>
                     </div>

@@ -1,7 +1,7 @@
 'use server';
 import { cookies } from 'next/headers';
 
-export const onMento = async (prevState: any, formData: FormData) => {
+export const onMentor = async (prevState: any, formData: FormData) => {
   if (!formData.get('email') || !(formData.get('email') as string)?.trim()) {
     return { message: '이메일을 입력해주세요' };
   }
@@ -28,7 +28,7 @@ export const onMento = async (prevState: any, formData: FormData) => {
     const cookieStore = cookies();
     const sessionCookie = cookieStore.get('connect.sid');
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/mento`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/Mentor`,
       {
         method: 'POST',
         headers: {

@@ -85,9 +85,10 @@ export class AdminController {
       },
     },
   })
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  @UseGuards(new LoggedInGuard())
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  @UseGuards(new LoggedInGuard(), RolesGuard)
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: '멘토 신청 목록 조회' })
   @Get('applications')
   async getApplications(@Query() { page, limit }: PaginationDto) {
@@ -127,20 +128,5 @@ export class AdminController {
   @ApiQuery({ name: 'limit', required: false })
   async user(@Query() { page, limit }: PaginationDto) {
     return await this.AdminService.findAllUser(page, limit);
-  }
-  @ApiResponse({
-    status: 201,
-    description: '멘토 신청 상세 조회 성공',
-    type: MentorRequestDto,
-  })
-  @ApiResponse({
-    status: 404,
-    description: '멘토 신청 정보를 찾을 수 없습니다.',
-  })
-  @UseGuards(new LoggedInGuard(), RolesGuard)
-  @Roles(UserRole.ADMIN)
-  @ApiOperation({ summary: '사용자 상세 정보 조회' })
-  async getUserDetail(@Param('id', ParseIntPipe) id: number) {
-    return this.AdminService.findUser(id);
   }
 }

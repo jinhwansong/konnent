@@ -1,21 +1,24 @@
 'use client';
 import React, { FormEvent, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { usePopupStore } from '@/store/usePopupStore';
-import { useInput, useSelect } from '@/hooks';
+import { useInput, useSelect, useVaild } from '@/hooks';
+import { onEmail } from '@/hooks/useSign';
 import Input from '@/app/_component/Input';
 import Selet from '@/app/_component/Selet';
 import Button from '@/app/_component/Button';
 import { joblist, careerlist } from '@/app/(client)/config/job';
-import style from './Mentor.module.scss';
 import { useUserData } from '@/app/_lib/useUserData';
 import { useMentor } from '@/app/_lib/check';
+import style from './mento.module.scss';
 
 export default function Mentor() {
+  const router = useRouter();
   // 팝업관련...
   const { onPopup2, popup2 } = usePopupStore();
   const { onPopup3, popup3 } = usePopupStore();
   // 연락받을 이메일
-  const [email, changeEmail] = useInput('');
+  const [email, changeEmail, error] = useVaild('', onEmail);
   // 희망분야
   const [job, onJob] = useSelect('', onPopup2);
   // 자기소개
@@ -87,15 +90,19 @@ export default function Mentor() {
       e.preventDefault();
       MentorMutation.mutate(
         { email, job, introduce, portfolio, career },
-        
+        {
+          onSuccess: () => {
+            router.back();
+          },
+        }
       );
     },
-    [MentorMutation, email, job, introduce, portfolio, career]
+    [MentorMutation, email, job, introduce, portfolio, career, router]
   );
   return (
     <>
       <h4 className={style.title}>
-        감사합니다, {data.nickname} 님<br />
+        감사합니다, <span>{data.nickname}</span> 님<br />
         지식공유자가 되기 위해서
         <br />
         아래 정보가 필요해요.
@@ -141,7 +148,7 @@ export default function Mentor() {
             </div>
           );
         })}
-        <Button type="submit" disabled={!buttonDisabled}>
+        <Button type="submit" disabled={!buttonDisabled || error !== ""}>
           멘토지원
         </Button>
       </form>

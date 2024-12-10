@@ -10,7 +10,7 @@ import {
 import { Mentors } from './Mentors';
 import { Payments } from './Payments';
 
-@Entity({ schema: 'konnect', name: 'MentoringPrograms' })
+@Entity({ schema: 'konnect', name: 'mentoringprograms' })
 export class MentoringPrograms {
   // 키값
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })

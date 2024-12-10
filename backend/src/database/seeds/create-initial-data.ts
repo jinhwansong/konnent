@@ -22,5 +22,8 @@ export default class UserSeeder implements Seeder {
         socialLoginProvider: SocialLoginProvider.LOCAL,
       },
     ]);
+    // 일반사용자 20명
+    const userFactory = factoryManager.get(Users);
+    await userFactory.saveMany(50);
   }
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { RQProvider } from '@/hooks';
 import Header from './components/Header';
 import Nav from './components/Nav';
 import style from './layout.module.scss'
@@ -12,8 +13,11 @@ export default function RootLayout({
     <div className={style.mainwrapper}>
       <Nav />
       <section>
-        <Header />
-        <article>{children}</article>
+        <RQProvider>
+          <Header />
+
+          <article>{children}</article>
+        </RQProvider>
       </section>
     </div>
   );

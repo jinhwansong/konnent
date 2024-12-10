@@ -130,7 +130,7 @@ export default function Page() {
     if (!data) {
       return router.push('/login');
     }
-    router.push('/Mentorr/info');
+    router.push('/mentor/info');
   }, [data, router]);
   return (
     <>
@@ -147,7 +147,6 @@ export default function Page() {
           <button onClick={() => onRouter()}>멘토 지원하기</button>
         </div>
         <IcMentorbg />
-        {/* <Mentor /> */}
       </article>
       <article className={style.article02}>
         <h4>

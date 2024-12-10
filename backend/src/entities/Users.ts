@@ -141,7 +141,7 @@ export class Users {
   deletedAt: Date;
   // 멘토 신청 관계설정
   @OneToOne(() => Mentors, (Mentor) => Mentor.users)
-  Mentors: Mentors;
+  mentors: Mentors;
   // 게시물 댓글 관계설정
   @OneToMany(() => Comments, (Comment) => Comment.users)
   comments: Comments[];

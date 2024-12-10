@@ -9,6 +9,7 @@ export class JoinRequestDto extends PickType(Users, [
   'nickname',
   'phone',
   'role',
+  'image',
 ] as const) {}
 export class SnsJoinRequestDto extends PickType(Users, [
   'snsId',

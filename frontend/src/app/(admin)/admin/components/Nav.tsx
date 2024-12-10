@@ -32,7 +32,7 @@ export default function Nav() {
       id: 3,
       title: '멘토 신청 관리',
       icon: <HiOutlineUserPlus />,
-      href: '/admin/mentors',
+      href: '/admin/mentors' ,
     },
     {
       id: 4,
@@ -47,6 +47,12 @@ export default function Nav() {
       href: '/admin/support',
     },
   ];
+  const active = (href:string) => {
+    if(href === '/admin'){
+      return pathname === '/admin'
+    }
+    return pathname.includes(href)
+  }
   return (
     <aside className={style.aside}>
       <div>
@@ -60,7 +66,7 @@ export default function Nav() {
             {navItems.map((item) => (
               <li
                 key={item.id}
-                className={pathname === item.href ? style.active : ''}
+                className={active(item.href) ? style.active : ''}
               >
                 <Link href={item.href}>
                   {item.icon}

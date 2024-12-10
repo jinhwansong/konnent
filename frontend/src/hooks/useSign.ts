@@ -1,6 +1,6 @@
 export const onEmail = (email: string) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
+const emailRegex = /^[^\s@]+@[^\s@]+\.(com|net)$/;  
+if (!emailRegex.test(email)) {
     return "이메일 형식이 올바르지 않습니다.";
   }
   return "";

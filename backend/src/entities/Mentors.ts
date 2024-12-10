@@ -13,7 +13,7 @@ import { Posts } from './Posts';
 import { MentoringPrograms } from './MentoringPrograms';
 import { Status } from '../common/enum/status.enum';
 
-@Entity({ schema: 'konnect', name: 'Mentors' })
+@Entity({ schema: 'konnect', name: 'mentors' })
 export class Mentors {
   // 키값
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
@@ -46,8 +46,8 @@ export class Mentors {
   updatedAt: Date;
 
   // 유저와 관계 설정
-  @OneToOne(() => Users, (user) => user.Mentors)
-  @JoinColumn()
+  @OneToOne(() => Users, (user) => user.mentors)
+  @JoinColumn({ name: 'userId' })
   users: Users;
   // 멘토링 프로그램과의 관계설정
   @OneToMany(() => MentoringPrograms, (program) => program.Mentors)

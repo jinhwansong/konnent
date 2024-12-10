@@ -10,7 +10,7 @@ import { Users } from './Users';
 import { MentoringPrograms } from './MentoringPrograms';
 import { Status } from '../common/enum/status.enum';
 
-@Entity({ schema: 'konnect', name: 'Payments' })
+@Entity({ schema: 'konnect', name: 'payments' })
 export class Payments {
   // 키값
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })

@@ -26,3 +26,38 @@
         }
     }
 }
+.header_right{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+.header_right_icons{
+    border-left: var(--border-main);
+    padding-left: 1.25rem;
+     display: flex;
+      gap: 1.25rem;
+      font-size: 0;
+      > button > svg{
+        font-size: 1.25rem;
+        color: var(--text-subTitle);
+        &:hover{
+            color: var(--major-main);
+        }
+      }
+}
+.header_right_profile{
+    
+    display: flex;
+    gap: 0.625rem;
+    align-items: center;
+    > img{
+        border-radius: 50%;
+        overflow: hidden;
+    }
+    > span{
+        font-size: 0.875rem;
+        color: var(--text-subTitle);
+        font-weight: 600;
+    }
+
+}

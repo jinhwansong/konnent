@@ -53,6 +53,7 @@ export class MentorService {
         },
         order: { createdAt: 'DESC' },
       });
+
       if (Mentor) {
         if (Mentor.status === Status.PENDING) {
           throw new BadRequestException('이미 멘토 신청을 하셨습니다');
@@ -96,6 +97,7 @@ export class MentorService {
       return { message: '멘토신청이 완료되었습니다.' };
     } catch (error) {
       await queryRunner.rollbackTransaction();
+      throw error;
     } finally {
       await queryRunner.release();
     }

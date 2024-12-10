@@ -72,24 +72,36 @@ export class AdminService {
   async getApplications(pages: number = 1, limit: number = 10) {
     try {
       const queryBuilder = this.mentorRepository
-        .createQueryBuilder('Mentor')
-        .leftJoinAndSelect('Mentor.user', 'user') // user 테이블과 조인
+        .createQueryBuilder('mentor')
+        .leftJoinAndSelect('mentor.users', 'users') // user 테이블과 조인
         .select([
-          'Mentor.id',
-          'user.name',
-          'Mentor.job',
-          'Mentor.career',
-          'Mentor.status',
-          'Mentor.createdAt',
+          'mentor.id',
+          'users.name',
+          'users.image',
+          'mentor.email',
+          'mentor.job',
+          'mentor.career',
+          'mentor.status',
+          'mentor.createdAt',
         ])
-        .orderBy('Mentor.createdAt', 'DESC');
+        .orderBy('mentor.createdAt', 'DESC');
 
       // 페이지 네이션 적용
       const skip = (pages - 1) * limit;
       queryBuilder.skip(skip).take(limit);
 
       // 데이터와 전체 개수 조회
-      const [page, total] = await queryBuilder.getManyAndCount();
+      const [results, total] = await queryBuilder.getManyAndCount();
+      const page = results.map((mentor) => ({
+        id: mentor.id,
+        name: mentor.users.name,
+        image: mentor.users.image,
+        email: mentor.email,
+        job: mentor.job,
+        career: mentor.career,
+        status: mentor.status,
+        createdAt: mentor.createdAt,
+      }));
       return {
         page,
         totalPage: Math.ceil(total / limit),
@@ -116,6 +128,8 @@ export class AdminService {
       return {
         id: Mentor.id,
         name: Mentor.users.name,
+        nickname: Mentor.users.nickname,
+        phone: Mentor.users.phone,
         email: Mentor.email,
         job: Mentor.job,
         career: Mentor.career,
@@ -134,18 +148,19 @@ export class AdminService {
   async findAllUser(pages: number = 1, limit: number = 10) {
     try {
       const queryBuilder = this.userRepository
-        .createQueryBuilder('User')
+        .createQueryBuilder('user')
         .select([
+          'user.id',
           'user.email',
           'user.name',
-          'user.nickname',
           'user.phone',
+          'user.image',
+          'user.nickname',
           'user.role',
           'user.snsId',
           'user.createdAt',
         ])
         .orderBy('user.createdAt', 'DESC');
-
       // 페이지 네이션 적용
       const skip = (pages - 1) * limit;
       queryBuilder.skip(skip).take(limit);
@@ -160,33 +175,6 @@ export class AdminService {
     } catch (error) {
       throw new InternalServerErrorException(
         '사용자 목록 조회 중 오류가 발생했습니다.',
-      );
-    }
-  }
-  // 사용자 상세정보
-  async findUser(id: number) {
-    try {
-      const user = await this.userRepository.findOne({
-        where: { id },
-      });
-      if (!user) {
-        throw new BadRequestException(
-          '조회하신 사용자 정보를 찾을 수 없습니다.',
-        );
-      }
-      return {
-        email: user.email,
-        name: user.name,
-        nickname: user.nickname,
-        phone: user.phone,
-        image: user.image,
-        role: user.role,
-        snsId: user.snsId,
-        createdAt: user.createdAt,
-      };
-    } catch (error) {
-      throw new InternalServerErrorException(
-        '사용자 목록 상세 정보 조회 중 오류가 발생했습니다.',
       );
     }
   }

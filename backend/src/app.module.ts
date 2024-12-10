@@ -35,13 +35,21 @@ import { AdminModule } from './admin/admin.module';
       database: process.env.DB_DATABASE,
       // 직접 만들고 db에 만들때 처음에 만들때만 true로
       synchronize: false,
+      // 연결유지
+      keepConnectionAlive: true,
       logging: true,
       migrations: [__dirname + '/migrations/*.ts'],
-      keepConnectionAlive: true,
-      connectTimeout: 60000,
       // 이모티콘을 사용하기 위해 쓰는거
       charset: 'utf8mb4_general_ci',
       autoLoadEntities: true,
+      extra: {
+        connectionLimit: 10, // 동시 연결 수 제한
+        connectTimeout: 60000, // 연결 시도 제한 시간 (ms)
+        acquireTimeout: 60000, // 연결 획득 제한 시간 (ms)
+        timeout: 60000, // 쿼리 제한 시간 (ms)
+        enableKeepAlive: true, // TCP Keep-Alive 활성화
+        keepAliveInitialDelay: 30000, // Keep-Alive 초기 지연 시간 (ms)
+      },
     }),
     TypeOrmModule.forFeature([
       Comments,

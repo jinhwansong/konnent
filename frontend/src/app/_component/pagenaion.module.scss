@@ -1,0 +1,23 @@
+.pagenation{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    > button{
+       
+        background: var(--bg-f7f7f7);
+        width: 2.1875rem;
+        height: 2.1875rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+         &:first-child,&:last-child{
+            background: var(--bg-none);
+        }
+        &:hover{
+            background: var(--major-main);
+            color: var(--text-white);
+        }
+    }
+}

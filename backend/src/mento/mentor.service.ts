@@ -79,7 +79,7 @@ export class MentorService {
         canDate.setDate(canDate.getDate() + days);
         if (new Date() < canDate) {
           throw new BadRequestException(
-            `재신청은 거절 후 ${days}일 이후에 가능합니다.` +
+            `재신청은 거절 후 ${days}일 이후에 가능합니다. \n` +
               `재신청 가능일은 : ${canDate.toLocaleDateString()}`,
           );
         }

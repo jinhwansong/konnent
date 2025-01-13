@@ -16,8 +16,8 @@ export const onPassword = (password:string) => {
     return "";
 };
 
-export const onPasswordCheack = (password: string, passwordCheack:string) => {
-  if (password !== passwordCheack) {
+export const onPasswordcheck = (password: string, passwordcheck:string) => {
+  if (password !== passwordcheck) {
     return "비밀번호가 일치하지 않습니다.";
   }
   return "";

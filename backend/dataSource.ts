@@ -7,6 +7,8 @@ import { Mentors } from './src/entities/Mentors';
 import { Payments } from './src/entities/Payments';
 import { Posts } from './src/entities/Posts';
 import { Users } from './src/entities/Users';
+import { join } from 'path';
+import { MentorProfile } from 'src/entities/MentorProfile';
 
 dotenv.config();
 
@@ -25,16 +27,17 @@ const dataSource = new DataSource({
     Payments,
     Posts,
     Users,
+    MentorProfile,
   ],
-  migrations: [__dirname + '/src/migrations/*.ts'],
+  migrations: [join(__dirname, 'src/migrations/**/*{.ts,.js}')],
+  migrationsRun: true,
+  migrationsTableName: 'migrations',
   charset: 'utf8mb4_general_ci',
   synchronize: false,
   logging: true,
   extra: {
     connectionLimit: 10, // 동시 연결 수 제한
     connectTimeout: 60000, // 연결 시도 제한 시간 (ms)
-    acquireTimeout: 60000, // 연결 획득 제한 시간 (ms)
-    timeout: 60000, // 쿼리 제한 시간 (ms)
     enableKeepAlive: true, // TCP Keep-Alive 활성화
     keepAliveInitialDelay: 30000, // Keep-Alive 초기 지연 시간 (ms)
     retryAttempts: 3,

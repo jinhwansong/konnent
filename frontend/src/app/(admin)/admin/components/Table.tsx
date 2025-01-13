@@ -23,11 +23,9 @@ export default function Table({
     const router = useRouter();
   return (
     <div className={style.tablebg}>
-      {title && (
-        <div>
-          <h4 className={style.title}>{title}</h4>
-        </div>
-      )}
+      <div>
+        <h4 className={style.title}>{title}</h4>
+      </div>
 
       <div>
         <table className={style.table}>

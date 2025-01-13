@@ -19,11 +19,17 @@ export class Payments {
   @Column('int', { name: 'price' })
   price: number;
   // 결제상태
-  @Column('enum', { name: 'statue', enum: Status, default: Status.PENDING })
+  @Column('enum', { name: 'status', enum: Status, default: Status.PENDING })
   status: Status;
   // 결제 고유 아이디
   @Column('varchar', { name: 'transactionId', length: 100, nullable: true })
   transactionId: string;
+  // 결제 방식
+  @Column('varchar', { name: 'paymentType', length: 20 })
+  paymentType: string;
+  // 환불 정보
+  @Column('boolean', { name: 'refuded', default: false })
+  refuded: boolean;
   @CreateDateColumn()
   createdAt: Date;
   @UpdateDateColumn()

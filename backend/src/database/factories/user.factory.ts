@@ -1,7 +1,8 @@
 import { faker } from '@faker-js/faker';
-import { SocialLoginProvider, UserRole, Users } from '../../entities/Users';
+import { Users } from '../../entities/Users';
 import { setSeederFactory } from 'typeorm-extension';
 import bcrypt from 'bcrypt';
+import { SocialLoginProvider, UserRole } from 'src/common/enum/status.enum';
 
 export default setSeederFactory(Users, async () => {
   const user = new Users();

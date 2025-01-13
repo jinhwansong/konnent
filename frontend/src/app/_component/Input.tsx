@@ -4,7 +4,7 @@ import style from './input.module.scss';
 interface Input {
   type: string;
   value?: string;
-  placeholder: string;
+  placeholder?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   bg?: string;
   name: string;

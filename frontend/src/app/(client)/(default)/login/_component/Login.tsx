@@ -4,7 +4,7 @@ import { useFormState } from 'react-dom';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
-import { onSubmit } from '@/app/_lib/login';
+import { onSubmit } from '@/app/_lib/useLogin';
 import Button from '@/app/_component/Button';
 import Input from '@/app/_component/Input';
 import Social from '@/app/(client)/_component/Social';

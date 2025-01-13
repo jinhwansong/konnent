@@ -1,4 +1,4 @@
-export interface IErr {
+export interface IErr extends Error{
   code: number;
   data: string
   seccess: boolean
@@ -45,4 +45,18 @@ export interface IPage {
 }
 export interface IPages extends IPage {
   totalPage: number;
+}
+export interface MentorApprovalParams {
+  approved: boolean;
+  reason?: string;
+  id: number;
+}
+
+
+export interface IMentorMutation {
+  email: string;
+  job: string;
+  introduce: string;
+  portfolio: string;
+  career: string;
 }

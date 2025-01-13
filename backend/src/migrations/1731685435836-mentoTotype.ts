@@ -7,7 +7,9 @@ export class MentorTotype1731685435836 implements MigrationInterface {
     await queryRunner.query(`ALTER TABLE \`Mentors\` DROP COLUMN \`email\``);
     await queryRunner.query(`ALTER TABLE \`Mentors\` DROP COLUMN \`job\``);
     await queryRunner.query(`ALTER TABLE \`Mentors\` DROP COLUMN \`career\``);
-    await queryRunner.query(`ALTER TABLE \`Mentors\` DROP COLUMN \`portfolio\``);
+    await queryRunner.query(
+      `ALTER TABLE \`Mentors\` DROP COLUMN \`portfolio\``,
+    );
     await queryRunner.query(`ALTER TABLE \`Mentors\` DROP COLUMN \`status\``);
   }
 
@@ -29,7 +31,9 @@ export class MentorTotype1731685435836 implements MigrationInterface {
     );
     await queryRunner.query(`ALTER TABLE \`users\` DROP COLUMN \`snsid\``);
     await queryRunner.query(`ALTER TABLE \`Mentors\` DROP COLUMN \`status\``);
-    await queryRunner.query(`ALTER TABLE \`Mentors\` DROP COLUMN \`portfolio\``);
+    await queryRunner.query(
+      `ALTER TABLE \`Mentors\` DROP COLUMN \`portfolio\``,
+    );
     await queryRunner.query(`ALTER TABLE \`Mentors\` DROP COLUMN \`career\``);
     await queryRunner.query(`ALTER TABLE \`Mentors\` DROP COLUMN \`job\``);
     await queryRunner.query(`ALTER TABLE \`Mentors\` DROP COLUMN \`email\``);

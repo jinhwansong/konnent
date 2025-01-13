@@ -8,9 +8,11 @@ import Input from '@/app/_component/Input';
 import Selet from '@/app/_component/Selet';
 import Button from '@/app/_component/Button';
 import { joblist, careerlist } from '@/app/(client)/config/job';
-import { useUserData } from '@/app/_lib/useUserData';
-import { useMentor } from '@/app/_lib/check';
+import { useUserData } from '@/app/_lib/useUser';
+import { useMentor } from '@/app/_lib/useCheck';
 import style from './mento.module.scss';
+import { useToastStore } from '@/store/useToastStore';
+import { IErr } from '@/type';
 
 export default function Mentor() {
   const router = useRouter();
@@ -47,7 +49,6 @@ export default function Mentor() {
       popup: popup2,
       onPopup: onPopup2,
     },
-    ,
     {
       id: 'career',
       label: '멘토 경력',
@@ -80,24 +81,41 @@ export default function Mentor() {
   // 버튼활성화
   const buttonDisabled = [email, job, introduce, portfolio, career].every(
     (l) => l.length > 0
-  ); 
+  );
+  // toast팝업
+  const showToast = useToastStore((state) => state.showToast);
   // 내정보
   const { data } = useUserData();
   // 멘토등록
-  const MentorMutation = useMentor()
+  const MentorMutation = useMentor();
   const onMentor = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       MentorMutation.mutate(
         { email, job, introduce, portfolio, career },
         {
-          onSuccess: () => {
+          onSuccess: (data) => {
             router.back();
+            showToast(data.message, 'success');
+          },
+          onError: (error: Error) => {
+            const customError = error as IErr;
+            router.back();
+            showToast(customError.data, 'error');
           },
         }
       );
     },
-    [MentorMutation, email, job, introduce, portfolio, career, router]
+    [
+      MentorMutation,
+      email,
+      job,
+      introduce,
+      portfolio,
+      career,
+      router,
+      showToast,
+    ]
   );
   return (
     <>
@@ -148,7 +166,7 @@ export default function Mentor() {
             </div>
           );
         })}
-        <Button type="submit" disabled={!buttonDisabled || error !== ""}>
+        <Button type="submit" disabled={!buttonDisabled || error !== ''}>
           멘토지원
         </Button>
       </form>

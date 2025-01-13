@@ -6,17 +6,26 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { HttpExceptionFilter } from './httpException.fliter';
 import { ValidationPipe } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import path from 'path';
 
 declare const module: any;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
-  app.enableCors({
-    origin: 'http://localhost:3000',
-    credentials: true,
-  });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  if (process.env.NODE_ENV === 'production') {
+    app.enableCors({
+      origin: 'http://localhost:3000',
+      credentials: true,
+    });
+  } else {
+    app.enableCors({
+      origin: 'http://localhost:3000',
+      credentials: true,
+    });
+  }
   app.use(cookieParser());
+
   app.use(
     session({
       // 매요청마다 저장 x
@@ -36,6 +45,10 @@ async function bootstrap() {
   );
   app.use(passport.initialize());
   app.use(passport.session());
+  // 이미지 정적 파일
+  app.useStaticAssets(path.join(__dirname, '..', 'uploads'), {
+    prefix: '/uploads',
+  });
   // 예외처리
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new HttpExceptionFilter());

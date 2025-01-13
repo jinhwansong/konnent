@@ -2,14 +2,13 @@ import React from "react";
 import style from "./button.module.scss";
 
 interface Input {
-  type: "submit" | "button";
+  type: 'submit' | 'button';
   bg?: string;
   children: string;
   width?: string;
   height?: string;
   onClick?: () => void;
-  disabled?:boolean;
-  
+  disabled?: boolean;
 }
 
 export default function Button({
@@ -28,7 +27,7 @@ export default function Button({
     height && style[`height${height as string}`],
   ]
     .filter(Boolean)
-    .join(" ");
+    .join(' ');
   return (
     <button
       type={type}

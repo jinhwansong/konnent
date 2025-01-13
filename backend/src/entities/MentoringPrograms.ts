@@ -7,8 +7,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Mentors } from './Mentors';
 import { Payments } from './Payments';
+import { MentorProfile } from './MentorProfile';
 
 @Entity({ schema: 'konnect', name: 'mentoringprograms' })
 export class MentoringPrograms {
@@ -26,14 +26,15 @@ export class MentoringPrograms {
   price: number;
   // 멘토링 가능날짜
   @Column('json', { name: 'date' })
-  data: string;
+  date: string;
+  // 멘토링 진행상태
   @CreateDateColumn()
   createdAt: Date;
   @UpdateDateColumn()
   updatedAt: Date;
-  // 멘토신청과의 관계설정
-  @ManyToOne(() => Mentors, (Mentor) => Mentor.MentoringPrograms)
-  Mentors: Mentors;
+  // 멘토프로필과의 관계설정
+  @ManyToOne(() => MentorProfile, (profile) => profile.programs)
+  profile: MentorProfile;
   // 결제 관계설정
   @OneToMany(() => Payments, (payment) => payment.MentoringPrograms)
   payments: Payments[];

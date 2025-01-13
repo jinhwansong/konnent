@@ -4,9 +4,9 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Status } from 'src/common/enum/status.enum';
+import { Status, UserRole } from 'src/common/enum/status.enum';
 import { Mentors } from 'src/entities/Mentors';
-import { UserRole, Users } from 'src/entities/Users';
+import { Users } from 'src/entities/Users';
 import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
@@ -19,13 +19,13 @@ export class AdminService {
     private readonly dataSource: DataSource,
   ) {}
   // 멘토 승인/거절
-  async approveMentor(MentorId: number, approved: boolean, reason?: string) {
+  async approveMentor(id: number, approved: boolean, reason?: string) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
       const Mentor = await queryRunner.manager.getRepository(Mentors).findOne({
-        where: { id: MentorId },
+        where: { id },
         relations: ['users'],
         select: ['id', 'status', 'users'],
       });
@@ -38,7 +38,7 @@ export class AdminService {
       // 멘토 신청 상태 업데이트
       await queryRunner.manager.update(
         Mentors,
-        { id: MentorId },
+        { id },
         {
           status: approved ? Status.APPROVED : Status.REJECTED,
           reason: !approved ? reason : null,
@@ -49,17 +49,20 @@ export class AdminService {
         await queryRunner.manager.update(
           Users,
           { id: Mentor.users.id },
-          { role: UserRole.Mentor },
+          { role: UserRole.MENTOR },
         );
       }
       await queryRunner.commitTransaction();
       return {
         message: approved
           ? '멘토 승인이 완료되었습니다.'
-          : '멘토 신청을 거절되었습니다.',
+          : '멘토 신청이 거절되었습니다.',
       };
     } catch (error) {
       await queryRunner.rollbackTransaction();
+      if (error instanceof BadRequestException) {
+        throw error; // 원래 에러를 그대로 던짐
+      }
       throw new InternalServerErrorException(
         '멘토 승인/거절 처리 중 오류가 발생했습니다.',
       );
@@ -118,7 +121,7 @@ export class AdminService {
     try {
       const Mentor = await this.mentorRepository.findOne({
         where: { id },
-        relations: ['user'],
+        relations: ['users'],
       });
       if (!Mentor) {
         throw new BadRequestException(
@@ -129,6 +132,7 @@ export class AdminService {
         id: Mentor.id,
         name: Mentor.users.name,
         nickname: Mentor.users.nickname,
+        image: Mentor.users.image,
         phone: Mentor.users.phone,
         email: Mentor.email,
         job: Mentor.job,

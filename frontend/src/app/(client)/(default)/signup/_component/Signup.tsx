@@ -7,12 +7,12 @@ import { useVaild } from '@/hooks';
 import {
   onEmail,
   onPassword,
-  onPasswordCheack,
+  onPasswordcheck,
   onName,
   onPhone,
 } from '@/hooks/useSign';
-import {onSubmit} from '@/app/_lib/signup';
-import { useCheckEmail, useCheckNickname } from '@/app/_lib/check';
+import {onSubmit} from '@/app/_lib/useSignup';
+import { useCheckEmail, useCheckNickname } from '@/app/_lib/useCheck';
 import Button from '@/app/_component/Button';
 import Input from '@/app/_component/Input';
 import Social from '@/app/(client)/_component/Social';
@@ -35,9 +35,9 @@ export default function Signup() {
     message: '',
   });
   const [password, changePassword, passwordError] = useVaild('', onPassword);
-  const [passwordCheack, changePasswordCheack, passwordCheackError] = useVaild(
+  const [passwordcheck, changePasswordcheck, passwordcheckError] = useVaild(
     '',
-    (value) => onPasswordCheack(password, value)
+    (value) => onPasswordcheck(password, value)
   );
   const [name, changeName, nameError] = useVaild('', onName);
   const [
@@ -75,12 +75,12 @@ export default function Signup() {
     },
     {
       type: 'password',
-      value: passwordCheack,
-      onChange: changePasswordCheack,
+      value: passwordcheck,
+      onChange: changePasswordcheck,
       label: '비밀번호 확인',
-      name: 'passwordCheack',
+      name: 'passwordcheck',
       placeholder: '8자이상 영문 숫자 특수문자 포함',
-      error: passwordCheackError,
+      error: passwordcheckError,
     },
     {
       type: 'text',
@@ -104,7 +104,7 @@ export default function Signup() {
       type: 'number',
       value: phone,
       onChange: changePhone,
-      label: '휴대폰번호',
+      label: '휴대폰 번호',
       name: 'phone',
       placeholder: '-없이 숫자만 입력',
       error: phoneError,
@@ -173,11 +173,11 @@ export default function Signup() {
   };
   // 버튼 활성화
   const buttonDisabled = () => {
-    const empty = [email, password, passwordCheack, name, nickname, phone].every((l) => l.length > 0) 
+    const empty = [email, password, passwordcheck, name, nickname, phone].every((l) => l.length > 0) 
     const err = [
       emailError,
       passwordError,
-      passwordCheackError,
+      passwordcheckError,
       nameError,
       nicknameError,
       phoneError,

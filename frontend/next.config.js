@@ -24,15 +24,20 @@ const nextConfig = {
             protocol: 'https',
             hostname: 'picsum.photos',
             port: '',
+        }, {
+            protocol: 'http',
+            hostname: 'localhost',
+            port: '3030',
         }],
     },
     webpack: config => {
+        // svg설정
         config.module.rules.push({
             test: /\.svg$/,
             use: ["@svgr/webpack"],
         });
-        
         return config;
+
     },
 };
 

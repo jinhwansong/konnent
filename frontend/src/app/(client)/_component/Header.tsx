@@ -4,14 +4,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
-import { useLogout } from '@/app/_lib/check';
+import { useLogout } from '@/app/_lib/useLogout';
 import { FcManager, FcHome, FcQuestions } from 'react-icons/fc';
 import { BiSearch } from 'react-icons/bi';
 import Input from '@/app/_component/Input';
 import { useInput, usePopup } from '@/hooks';
 import { usePopupStore } from '@/store/usePopupStore';
 import { IcLogo, IcProfile } from '@/asset';
-import { useUserData } from '@/app/_lib/useUserData';
+import { useUserData } from '@/app/_lib/useUser';
 import style from './header.module.scss';
 
 export default function Header() {
@@ -61,10 +61,18 @@ export default function Header() {
                       <p>{data.email || data.snsId}</p>
                     </div>
                     <div>
-                      <Link href="/mypage">내 정보</Link>
-                      <Link href="/Mentorrings">멘토링 신청 내역</Link>
-                      <Link href="/bookmarks">북마크</Link>
-                      <Link href="/follows">팔로우</Link>
+                      <Link href="/user/mypage">내 정보</Link>
+
+                      <Link href="/user/messages">알림</Link>
+                      <Link href="/user/bookmarks">북마크</Link>
+                      <Link href="/user/relationships">팔로우</Link>
+                      <Link href="/mentoring/applications">
+                        멘토링 신청 내역
+                      </Link>
+                      <Link href="/mentoring/payments">결제/환불 내역</Link>
+                      {data.role === 'admin' && (
+                        <Link href="/admin">관리자페이지</Link>
+                      )}
                     </div>
                     <div>
                       <button onClick={onLogout}>로그아웃</button>

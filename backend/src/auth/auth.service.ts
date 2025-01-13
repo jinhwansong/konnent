@@ -68,41 +68,46 @@ export class AuthService {
         ],
       });
       // 기존 회원 업데이트
-      if (user) {
-        await this.usersRepository.update(
-          { snsId: snsuser.snsId },
-          {
-            name: snsuser.name,
-            nickname: snsuser.nickname,
-            phone: snsuser.phone,
-            image: snsuser.image,
-            updatedAt: new Date(),
-          },
-        );
-        const updatedUser = await queryRunner.manager
-          .getRepository(Users)
-          .findOne({
-            where: { snsId: snsuser.snsId },
-          });
+      // if (user) {
+      //   await this.usersRepository.update(
+      //     { snsId: snsuser.snsId },
+      //     {
+      //       name: snsuser.name,
+      //       nickname: snsuser.nickname,
+      //       phone: snsuser.phone,
+      //       image: snsuser.image,
+      //       updatedAt: new Date(),
+      //     },
+      //   );
+      //   const updatedUser = await queryRunner.manager
+      //     .getRepository(Users)
+      //     .findOne({
+      //       where: { snsId: snsuser.snsId },
+      //     });
+
+      //   // 트랜잭션 커밋
+      //   await queryRunner.commitTransaction();
+      //   return updatedUser;
+      // }
+      // sns회원이 없을경우 db에 저장
+      if (!user) {
+        const newUser = queryRunner.manager.getRepository(Users).create({
+          snsId: snsuser.snsId,
+          name: snsuser.name,
+          nickname: snsuser.nickname,
+          phone: snsuser.phone,
+          image: snsuser.image,
+          socialLoginProvider: snsuser.socialLoginProvider,
+        });
+        const savedUser = await queryRunner.manager.save(Users, newUser);
 
         // 트랜잭션 커밋
         await queryRunner.commitTransaction();
-        return updatedUser;
+        return savedUser;
+      } else {
+        await queryRunner.commitTransaction();
+        return user;
       }
-      // sns회원이 없을경우 db에 저장
-      const newUser = queryRunner.manager.getRepository(Users).create({
-        snsId: snsuser.snsId,
-        name: snsuser.name,
-        nickname: snsuser.nickname,
-        phone: snsuser.phone,
-        image: snsuser.image,
-        socialLoginProvider: snsuser.socialLoginProvider,
-      });
-      const savedUser = await queryRunner.manager.save(Users, newUser);
-
-      // 트랜잭션 커밋
-      await queryRunner.commitTransaction();
-      return savedUser;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw new BadRequestException('회원정보를 찾을수 없습니다');

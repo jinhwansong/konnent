@@ -2,9 +2,11 @@ import {
   Body,
   Controller,
   Get,
+  Patch,
   Post,
   Req,
   Res,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -12,6 +14,13 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { UserDtoByPassword } from 'src/common/dto/user.dto';
 import { JoinRequestDto } from './dto/join.request.dto';
+import {
+  UpdateEmailDto,
+  UpdateImageDto,
+  UpdateNicknameDto,
+  UpdatePasswordDto,
+  UpdatePhoneDto,
+} from './dto/update.requset.dto';
 import { User } from 'src/common/decorators/user.decorator';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { NotLoggedInGuard } from 'src/auth/not-logged-in.guard';
@@ -21,6 +30,17 @@ import { KakaoAuthGuard } from 'src/auth/kakao-auth.guard';
 import { Response } from 'express';
 import { NaverAuthGuard } from 'src/auth/naver-auth.guard';
 import { GoogleAuthGuard } from 'src/auth/google-auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+
+// 업로드 폴더 생성
+try {
+  fs.readdirSync('uploads');
+} catch (error) {
+  fs.mkdirSync('uploads');
+}
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('유저정보')
@@ -69,13 +89,9 @@ export class UsersController {
     return { message: '회원가입이 완료되었습니다.' };
   }
   @ApiResponse({
-    status: 201,
+    status: 200,
     description: '사용 가능한 이메일 입니다.',
-    schema: {
-      properties: {
-        message: { type: 'string', example: '사용 가능한 이메일 입니다.' },
-      },
-    },
+    type: UpdateEmailDto,
   })
   @ApiResponse({
     status: 400,
@@ -89,21 +105,28 @@ export class UsersController {
   })
   @ApiOperation({ summary: '이메일 중복검사' })
   @Post('checkEmail')
-  async checkEmail(@Body('email') email: string) {
-    return this.userService.checkEmail(email);
+  async checkEmail(@Body() body: UpdateEmailDto) {
+    return this.userService.checkEmail(body.email);
   }
   @ApiResponse({
     status: 201,
     description: '사용가능한 닉네임입니다.',
+    type: UpdateNicknameDto,
   })
   @ApiResponse({
-    status: 403,
+    status: 400,
     description: '이미 사용 중인 닉네임입니다.',
+    schema: {
+      properties: {
+        statusCode: { type: 'number', example: 400 },
+        message: { type: 'string', example: '이미 사용 중인 닉네임입니다.' },
+      },
+    },
   })
   @ApiOperation({ summary: '닉네임 중복검사' })
   @Post('checkNickname')
-  checkNickname(@Body('nickname') nickname: string) {
-    return this.userService.checkNickname(nickname);
+  checkNickname(@Body() body: UpdateNicknameDto) {
+    return this.userService.checkNickname(body.nickname);
   }
   @ApiResponse({
     status: 200,
@@ -122,7 +145,7 @@ export class UsersController {
   }
   @ApiResponse({
     status: 200,
-    description: '카카오 로그인 성공',
+    description: '카카오 로그인을 성공했습니다.',
     type: UserDtoByPassword,
   })
   @ApiResponse({
@@ -142,7 +165,7 @@ export class UsersController {
   }
   @ApiResponse({
     status: 200,
-    description: '구글 로그인 성공',
+    description: '구글 로그인을 성공했습니다.',
     type: UserDtoByPassword,
   })
   @ApiResponse({
@@ -162,7 +185,7 @@ export class UsersController {
   }
   @ApiResponse({
     status: 200,
-    description: '네이버 로그인 성공',
+    description: '네이버 로그인을 성공했습니다.',
     type: UserDtoByPassword,
   })
   @ApiResponse({
@@ -191,7 +214,7 @@ export class UsersController {
   @UseGuards(new LoggedInGuard())
   @ApiOperation({ summary: '로그아웃' })
   @Post('logout')
-  LogOut(@Req() req, @Res() res) {
+  logOut(@Req() req, @Res() res) {
     req.logout((err) => {
       if (err) {
         return res.status(500).json({ message: '로그아웃 실패했습니다' });
@@ -210,5 +233,109 @@ export class UsersController {
         return res.status(200).send('로그아웃 하셨습니다');
       });
     });
+  }
+  @ApiResponse({
+    status: 200,
+    description: '닉네임이 변경되었습니다.',
+    type: UpdateNicknameDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: '이미 존재하는 닉네임입니다.',
+    schema: {
+      properties: {
+        statusCode: { type: 'number', example: 400 },
+        message: { type: 'string', example: '이미 존재하는 닉네임입니다.' },
+      },
+    },
+  })
+  @UseGuards(new LoggedInGuard())
+  @ApiOperation({ summary: '닉네임 변경' })
+  @Patch('nickname')
+  nickname(@Body() body: UpdateNicknameDto, @User() user) {
+    return this.userService.updateNickname(body.nickname, user.id);
+  }
+  @ApiResponse({
+    status: 200,
+    description: '비밀번호가 변경되었습니다.',
+    type: UpdatePasswordDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: '현재 비밀번호가 일치하지 않습니다.',
+    schema: {
+      properties: {
+        statusCode: { type: 'number', example: 400 },
+        message: {
+          type: 'string',
+          example: '현재 비밀번호가 일치하지 않습니다.',
+        },
+      },
+    },
+  })
+  @UseGuards(new LoggedInGuard())
+  @ApiOperation({ summary: '비밀번호 변경' })
+  @Patch('password')
+  password(@Body() body: UpdatePasswordDto, @User() user) {
+    return this.userService.updatePassword(
+      body.currentPassword,
+      body.newPassword,
+      user.id,
+    );
+  }
+  @ApiResponse({
+    status: 200,
+    description: '휴대폰번호가 변경되었습니다.',
+    type: UpdatePhoneDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: '이미 존재하는 휴대폰 번호입니다.',
+    schema: {
+      properties: {
+        statusCode: { type: 'number', example: 400 },
+        message: {
+          type: 'string',
+          example: '이미 존재하는 휴대폰 번호입니다.',
+        },
+      },
+    },
+  })
+  @UseGuards(new LoggedInGuard())
+  @ApiOperation({ summary: '휴대폰번호 변경' })
+  @Patch('phone')
+  phone(@Body() body: UpdatePhoneDto, @User() user) {
+    return this.userService.updatePhone(body.phone, user.id);
+  }
+  @ApiResponse({
+    status: 200,
+    description: '프로필이미지가 변경되었습니다.',
+    type: UpdateImageDto,
+  })
+  @ApiResponse({
+    status: 500,
+    description: '파일 업로드 중 오류가 발생했습니다.',
+  })
+  @UseGuards(new LoggedInGuard())
+  @ApiOperation({ summary: '프로필이미지 변경' })
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: multer.diskStorage({
+        // 업로드 위치
+        destination(req, file, cb) {
+          cb(null, 'uploads/');
+        },
+        // 파일명 조작
+        filename(req, file, cb) {
+          const ext = path.extname(file.originalname);
+          cb(null, path.basename(file.originalname, ext) + Date.now() + ext);
+        },
+      }),
+      limits: { fileSize: 2 * 1024 * 1024 }, // 2mb
+    }),
+  )
+  @Patch('profile')
+  profile(@UploadedFile() file: Express.Multer.File, @User() user) {
+    return this.userService.updateProfile(file, user.id);
   }
 }

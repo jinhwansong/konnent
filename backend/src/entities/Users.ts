@@ -20,20 +20,8 @@ import {
   IsNotEmpty,
   IsString,
 } from 'class-validator';
+import { SocialLoginProvider, UserRole } from 'src/common/enum/status.enum';
 
-// 회원등급
-export enum UserRole {
-  USER = 'user',
-  Mentor = 'Mentor',
-  ADMIN = 'admin',
-}
-// 소셜로그인
-export enum SocialLoginProvider {
-  GOOGLE = 'google',
-  KAKAO = 'kakao',
-  NAVER = 'naver',
-  LOCAL = 'local',
-}
 @Entity({ schema: 'konnect', name: 'users' })
 export class Users {
   // 키값
@@ -92,12 +80,13 @@ export class Users {
   name: string;
   // 전화번호
   @IsString()
+  @IsNotEmpty()
   @ApiProperty({
     example: '01012345678',
     description: '휴대폰번호',
     required: true,
   })
-  @Column('varchar', { name: 'phone', length: 11 })
+  @Column('varchar', { name: 'phone', length: 11, unique: true })
   phone: string;
   // 프로필이미지
   @IsBase64()

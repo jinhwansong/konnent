@@ -1,16 +1,41 @@
+@import '@/styles/_functions.scss';
 .button{
   width: 100%;
-  font-size: 0.875rem;
-  height:3.125rem;
+  font-size: size(14px);
+  height: size(50px);
   font-weight: 500;
   border-radius:5px;
   background:var(--major-main);
   color:var(--text-white);
+  &:hover {
+    background-color: #E83A0D;
+  }
   &:disabled{
     background: var(--bg-F1F4F6);
     color:var(--text-title);
   }
 }
 .width80{
-  width: 5rem;
+  width: size(80px);
+}
+.bgborder{
+  background: var(--bg-main);
+  border: var(--border-main);
+  color: var(--text-subTitle);
+  &:hover {
+    border: 1px solid #E83A0D;
+    color:var(--text-white);
+  }
+}
+.widthSmall {
+  width: size(60px);
+  height: size(35px);
+  font-size: size(12px);
+}
+.bgnone{
+    background: #6B7280;
+    color: var(--text-white);
+    &:hover{
+        background: #4B5563;
+    }
 }

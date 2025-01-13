@@ -16,6 +16,9 @@ import { Posts } from './entities/Posts';
 import { Users } from './entities/Users';
 import { UsersService } from './users/users.service';
 import { AdminModule } from './admin/admin.module';
+import { DataSource } from 'typeorm';
+import { join } from 'path';
+import { MentorProfile } from './entities/MentorProfile';
 
 @Module({
   imports: [
@@ -37,16 +40,17 @@ import { AdminModule } from './admin/admin.module';
       synchronize: false,
       // 연결유지
       keepConnectionAlive: true,
-      logging: true,
-      migrations: [__dirname + '/migrations/*.ts'],
+      logging: ['error', 'warn', 'info'],
+      poolSize: 20,
+      migrations: [join(__dirname, './migrations/**/*{.ts,.js}')],
+      migrationsRun: true,
+      migrationsTableName: 'migrations',
       // 이모티콘을 사용하기 위해 쓰는거
       charset: 'utf8mb4_general_ci',
       autoLoadEntities: true,
       extra: {
         connectionLimit: 10, // 동시 연결 수 제한
         connectTimeout: 60000, // 연결 시도 제한 시간 (ms)
-        acquireTimeout: 60000, // 연결 획득 제한 시간 (ms)
-        timeout: 60000, // 쿼리 제한 시간 (ms)
         enableKeepAlive: true, // TCP Keep-Alive 활성화
         keepAliveInitialDelay: 30000, // Keep-Alive 초기 지연 시간 (ms)
       },
@@ -59,6 +63,7 @@ import { AdminModule } from './admin/admin.module';
       Payments,
       Posts,
       Users,
+      MentorProfile,
     ]),
     AdminModule,
   ],
@@ -66,6 +71,36 @@ import { AdminModule } from './admin/admin.module';
   providers: [AppService, UsersService],
 })
 export class AppModule implements NestModule {
+  constructor(private dataSource: DataSource) {}
+  async onModuleInit() {
+    try {
+      if (!this.dataSource.isInitialized) {
+        await this.dataSource.initialize();
+      }
+
+      // 연결 상태 모니터링
+      setInterval(async () => {
+        try {
+          if (!this.dataSource.isInitialized) {
+            await this.dataSource.initialize();
+            console.log('Database reconnected successfully');
+          }
+
+          // 연결 테스트를 위한 간단한 쿼리 실행
+          await this.dataSource.query('SELECT 1');
+        } catch (error) {
+          console.error('Database connection error:', error);
+          // 연결이 끊어진 경우 재연결 시도
+          if (this.dataSource.isInitialized) {
+            await this.dataSource.destroy();
+          }
+          await this.dataSource.initialize();
+        }
+      }, 5000); // 5초마다 체크
+    } catch (error) {
+      console.error('Failed to initialize database connection:', error);
+    }
+  }
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddelware).forRoutes('*');
   }

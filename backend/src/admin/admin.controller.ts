@@ -13,7 +13,6 @@ import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoggedInGuard } from 'src/auth/logged-in.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { RolesGuard } from 'src/common/guard/roles.guard';
-import { UserRole } from 'src/entities/Users';
 import {
   MentorApprovalDto,
   MentorRequestDto,
@@ -22,6 +21,7 @@ import { PaginationDto } from 'src/common/dto/page.dto';
 import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedToNull.Interceptor';
 import { AdminService } from './admin.service';
 import { UserDtoByPassword } from 'src/common/dto/user.dto';
+import { UserRole } from 'src/common/enum/status.enum';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('관리자')

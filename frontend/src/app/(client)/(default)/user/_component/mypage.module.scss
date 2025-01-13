@@ -1,0 +1,35 @@
+@import '@/styles/_mixins.module.scss';
+@import '@/styles/_functions.scss';
+.mypage_section{
+     flex: 1;
+}
+.mypage_aticle{
+    width: 100%;
+    border-radius: 10px;
+    border: var(--border-main);
+    padding: size(20px) size(30px);
+    &:first-child{
+        margin-bottom: size(15px);
+    }
+}
+.mypage_title {
+    font-weight: 700;
+    margin-bottom: size(20px);
+}
+.info_item{
+    @include flex;
+}
+.item_title{
+    @include title;
+}
+.img_button{
+    width: size(100px);
+    height: size(100px);
+    border-radius: 10px;
+    overflow: hidden;
+    > img{
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+    }
+}

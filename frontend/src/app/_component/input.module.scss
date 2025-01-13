@@ -1,21 +1,11 @@
-@mixin search {
-    background:var(--bg-F1F4F6);
-    border:var(--border-search);
-    &::placeholder{
-        color: var(--text-9094A8);
-    }
-}
-@function calculateRem($size) {
-  @return $size / 16px * 1rem;
-}
 
 .input{
     width: 100%;
-    height: calculateRem(50px);
-    border-radius: calculateRem(5px);
+    height: 3.125rem;
+    border-radius:5px;
     border:var(--border-main);
-    font-size: calculateRem(14px);
-    padding-inline: calculateRem(15px);
+    font-size: 0.875rem;
+    padding-inline: 1rem;
     letter-spacing: -0.3px;
     -moz-appearance: textfield;
     appearance: textfield;
@@ -24,9 +14,17 @@
     }
 }
 .bgsearch{
-    @include search;
-    width: calculateRem(400px);
-    height: calculateRem(40px);
+    background:var(--bg-F1F4F6);
+    border:var(--border-search);
+    &::placeholder{
+        color: var(--text-9094A8);
+    }
+    width: 25rem;
+    height: 2.5rem;
+}
+
+.height40{
+    height: 2.5rem;
 }
 
 .flexon{

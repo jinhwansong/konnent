@@ -1,6 +1,3 @@
-@function Rem($size) {
-  @return $size / 16px * 1rem;
-}
 .modalBg{
     position: fixed;
     top: 0;
@@ -14,13 +11,24 @@
 }
 .modalback{
     background: var(--bg-main);
-    padding: Rem(20px);
+    padding: 1.25rem;
     border-radius: 1rem;
     position: relative;
+    // width: 32rem;
     > button{
-        font-size: Rem(25px);
+        font-size: 1.5625rem;
         position: absolute;
-        right:Rem(20px);
-        top: Rem(20px);
+        right:1.25rem;
+        top: 1.25rem;
     }
+}
+.title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    > p{
+        font-size: 1rem;
+        font-weight: 700;
+    };
 }

@@ -1,0 +1,42 @@
+@import '@/styles/_functions.scss';
+@import '@/styles/_mixins.module.scss';
+
+.info_item{
+    margin-top: size(10px);
+    @include flex
+}
+.item_title{
+    @include title;
+   line-height: size(30px);
+}
+.item_on_title{
+    @include title;
+    line-height: size(50px);
+}
+.item_right{
+    @include flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+}
+.item_on{
+    @include flex;
+    flex-direction: column;
+    gap: size(5px);
+}
+.item_text{
+    font-size: size(14px);
+    font-weight: 600;
+}
+.button_wrap{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: size(10px);
+}
+
+.error{
+    color: var(--text-red);
+    font-size:size(12px);
+    font-weight: 500;
+}

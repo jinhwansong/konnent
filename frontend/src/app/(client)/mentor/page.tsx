@@ -2,7 +2,7 @@
 import React, { useCallback } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useUserData } from '@/app/_lib/useUserData';
+import { useUserData } from '@/app/_lib/useUser';
 import { IcInfo, IcMentorbg, IcNetwork, IcRate, IcShare } from '@/asset';
 import FaqItem from './_component/FaqItem';
 import style from './mento.module.scss';

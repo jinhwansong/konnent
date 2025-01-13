@@ -33,6 +33,12 @@ export class MentorRequestDto {
     required: true,
   })
   public portfolio: string;
+  // @ApiProperty({
+  //   example: '네카라쿠베',
+  //   description: '재직 직장',
+  //   required: true,
+  // })
+  // public company: string;
 }
 // 멘토 승인/거절 DTO
 export class MentorApprovalDto {

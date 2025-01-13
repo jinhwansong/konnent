@@ -1,5 +1,5 @@
 import React from "react";
-import style from "./layout.module.scss";
+import style from '@/styles/_common.module.scss';
 
 export default function layout({
   children,
@@ -10,9 +10,9 @@ export default function layout({
 }) {
 
   return (
-    <section className={style.section}>
+    <main className={style.container}>
       {children}
       {modal}
-    </section>
+    </main>
   );
 }

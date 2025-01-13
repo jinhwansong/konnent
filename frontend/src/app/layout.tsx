@@ -3,8 +3,7 @@ import localFont from "next/font/local";
 import MSWComponent from './_component/MSWComponent';
 import "swiper/swiper-bundle.css";
 import "swiper/css/pagination";
-import "normalize.css";
-import "./globals.css";
+import "@/styles/globals.scss";
 
 export const metadata: Metadata = {
   title: '커넥트 - 한 걸음 더 나아가는 연결',

@@ -17,7 +17,6 @@ export default function layout({
       <RQProvider>
         <Header />
         {children}
-
         <Footer />
       </RQProvider>
       <ToastPopup />

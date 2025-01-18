@@ -25,6 +25,7 @@ module.exports = {
     "prettier/prettier": ["error", {
       "endOfLine": "auto"
     }],
+    'prefer-const':'off',
     "@typescript-eslint/no-unused-vars":'off'
   },
 };

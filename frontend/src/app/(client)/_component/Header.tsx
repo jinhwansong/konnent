@@ -48,7 +48,10 @@ export default function Header() {
                   onMouseDown={(e) => e.stopPropagation()}
                 >
                   <Image
-                    src={data.image || IcProfile}
+                    src={
+                      `${process.env.NEXT_PUBLIC_API_BASE_URL}${data.image}` ||
+                      IcProfile
+                    }
                     alt={data.name as string}
                     height={35}
                     width={35}

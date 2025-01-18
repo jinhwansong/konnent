@@ -2,13 +2,15 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Users } from './Users';
-import { MentoringPrograms } from './MentoringPrograms';
 import { Status } from '../common/enum/status.enum';
+import { Reservations } from './Reservations';
 
 @Entity({ schema: 'konnect', name: 'payments' })
 export class Payments {
@@ -37,7 +39,10 @@ export class Payments {
   // 유저과의 관계
   @ManyToOne(() => Users, (user) => user.payments)
   users: Users;
-  // 멘토과의 관계
-  @ManyToOne(() => MentoringPrograms, (programs) => programs.payments)
-  MentoringPrograms: MentoringPrograms;
+  // 멘토 예약과의 관계
+  @OneToOne(
+    () => Reservations,
+    (reservations) => reservations.availableSchedule,
+  )
+  reservation: Reservations;
 }

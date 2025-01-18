@@ -36,5 +36,5 @@ export class Posts {
   comments: Comments[];
   // 멘토프로필과 관계설정
   @ManyToOne(() => MentorProfile, (profile) => profile.posts)
-  profile: MentorProfile[];
+  profile: MentorProfile;
 }

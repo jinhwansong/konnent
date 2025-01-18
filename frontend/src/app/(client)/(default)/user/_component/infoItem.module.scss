@@ -1,34 +1,41 @@
 @import '@/styles/_functions.scss';
 @import '@/styles/_mixins.module.scss';
 
+@mixin flex {
+    display: flex;
+    width: 100%;
+    flex: 1;
+}
+
 .info_item{
+    display: flex;
     margin-top: size(10px);
-    @include flex
 }
 .item_title{
     @include title;
-   line-height: size(30px);
+    line-height: 1;
+    padding-block: 10px;
 }
-.item_on_title{
+.item_title_on{
     @include title;
-    line-height: size(50px);
+    line-height:size(50px);
 }
 .item_right{
     @include flex;
     align-items: center;
     justify-content: space-between;
-    flex: 1;
+    
 }
 .item_on{
-    @include flex;
     flex-direction: column;
-    gap: size(5px);
+    @include flex;
 }
 .item_text{
     font-size: size(14px);
     font-weight: 600;
 }
 .button_wrap{
+    margin-top: size(10px);
     display: flex;
     align-items: center;
     justify-content: end;
@@ -39,4 +46,13 @@
     color: var(--text-red);
     font-size:size(12px);
     font-weight: 500;
+}
+.editor_text{
+    margin-top:9px;
+    flex: 1;
+}
+.editor_button{
+    display: flex;
+    width: 100%;
+    justify-content: end;
 }

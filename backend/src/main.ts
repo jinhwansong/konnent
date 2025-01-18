@@ -7,6 +7,7 @@ import session from 'express-session';
 import { HttpExceptionFilter } from './httpException.fliter';
 import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { createUploadFolder } from './common/utils/upload.utils';
 import path from 'path';
 
 declare const module: any;
@@ -45,6 +46,8 @@ async function bootstrap() {
   );
   app.use(passport.initialize());
   app.use(passport.session());
+  // 업로드 폴더 생성
+  createUploadFolder();
   // 이미지 정적 파일
   app.useStaticAssets(path.join(__dirname, '..', 'uploads'), {
     prefix: '/uploads',

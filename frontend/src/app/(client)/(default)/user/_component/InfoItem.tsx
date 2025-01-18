@@ -2,60 +2,39 @@ import React from 'react';
 import Input from '@/app/_component/Input';
 import Button from '@/app/_component/Button';
 import style from './infoItem.module.scss';
-
-interface IPasswordField {
-  label: string;
-  data: string;
-  error: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder: string;
-}
-
-interface IInfoItem {
-  label: string;
-  data: string;
-
-  type?: string;
-  error?: string;
-  prevKey?: string | null;
-  placeholder?: string;
-  name?: string;
-  checkPassword?: IPasswordField;
-  newPassword?: IPasswordField;
-  snsid?: string;
-
-  onButton?: () => void;
-  onCancel?: () => void;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSave?: () => void;
-}
+import { IInfoItem } from '@/type';
 
 export default function InfoItem({
-  prevKey,
-  onButton,
   label,
   data,
+  isEditing,
+  handleEdit,
+  handleSave,
   type,
+  placeholder,
+  handleCancel,
   error,
   onChange,
-  placeholder,
-  onCancel,
-  checkPassword,
-  name,
-  newPassword,
-  snsid,
-
-  onSave,
+  checkPasswordLabel,
+  checkPasswordData,
+  checkPasswordOnChange,
+  checkPasswordPlaceholder,
+  checkPasswordError,
+  newPasswordLabel,
+  newPasswordData,
+  newPasswordOnChange,
+  newPasswordPlaceholder,
+  newPasswordError,
+  sns,
 }: IInfoItem) {
+  const canEdit = label !== '이메일' && label !== '이름' && !sns && !isEditing;
   return (
     <div className={style.info_item}>
-      <em
-        className={prevKey === label ? style.item_on_title : style.item_title}
-      >
+      <em className={isEditing ? style.item_title_on : style.item_title}>
         {label}
       </em>
-      <div className={prevKey === label ? style.item_on : style.item_right}>
-        {prevKey === label ? (
+      <div className={isEditing ? style.item_on : style.item_right}>
+        {isEditing ? (
           <>
             <Input
               type={type as string}
@@ -69,27 +48,32 @@ export default function InfoItem({
               <>
                 <Input
                   type={type as string}
-                  name={newPassword?.label as string}
-                  onChange={newPassword?.onChange}
-                  placeholder={newPassword?.placeholder}
-                  value={newPassword?.data}
+                  name={newPasswordLabel as string}
+                  onChange={newPasswordOnChange}
+                  placeholder={newPasswordPlaceholder}
+                  value={newPasswordData}
                 />
-                <p className={style.error}>{newPassword?.error}</p>
+                <p className={style.error}>{newPasswordError}</p>
                 <Input
                   type={type as string}
-                  name={checkPassword?.label as string}
-                  onChange={checkPassword?.onChange}
-                  placeholder={checkPassword?.placeholder}
-                  value={checkPassword?.data}
+                  name={checkPasswordLabel as string}
+                  onChange={checkPasswordOnChange}
+                  placeholder={checkPasswordPlaceholder}
+                  value={checkPasswordData}
                 />
-                <p className={style.error}>{checkPassword?.error}</p>
+                <p className={style.error}>{checkPasswordError}</p>
               </>
             )}
             <div className={style.button_wrap}>
-              <Button type="button" onClick={onCancel} bg="none" width="Small">
+              <Button
+                type="button"
+                onClick={handleCancel}
+                bg="none"
+                width="Small"
+              >
                 취소
               </Button>
-              <Button type="button" onClick={onSave} width="Small">
+              <Button type="button" onClick={handleSave} width="Small">
                 변경
               </Button>
             </div>
@@ -97,25 +81,18 @@ export default function InfoItem({
         ) : (
           <>
             <p className={style.item_text}>
-              {snsid
-                ? '소셜로그인은 비밀번호 변경을 할수 없습니다.'
-                : label === '비밀번호'
-                ? name
-                : data}
+              {label === '비밀번호' ? sns : data}
             </p>
-            {label !== '이메일' &&
-              !snsid &&
-              label !== '이름' &&
-              (!prevKey || prevKey === label) && (
-                <Button
-                  type="button"
-                  bg="border"
-                  onClick={onButton}
-                  width="Small"
-                >
-                  설정
-                </Button>
-              )}
+            {canEdit && (
+              <Button
+                type="button"
+                bg="border"
+                onClick={handleEdit}
+                width="Small"
+              >
+                설정
+              </Button>
+            )}
           </>
         )}
       </div>

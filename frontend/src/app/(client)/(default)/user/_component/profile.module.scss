@@ -17,10 +17,11 @@
     margin-bottom: size(20px);
 }
 .info_item{
-    @include flex;
+    display: flex;
 }
 .item_title{
     @include title;
+    line-height:size(40px);
 }
 .img_button{
     width: size(100px);

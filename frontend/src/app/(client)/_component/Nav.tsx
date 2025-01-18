@@ -24,7 +24,6 @@ export default function Nav() {
     title: '프로필 관리',
     items: [
       { title: '내 정보', href: '/user/mypage' },
-      { title: '알림', href: '/user/messages' },
       { title: '북마크', href: '/user/bookmarks' },
       { title: '팔로우', href: '/user/relationships' },
     ],

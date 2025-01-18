@@ -9,7 +9,7 @@ import Selet from '@/app/_component/Selet';
 import Button from '@/app/_component/Button';
 import { joblist, careerlist } from '@/app/(client)/config/job';
 import { useUserData } from '@/app/_lib/useUser';
-import { useMentor } from '@/app/_lib/useCheck';
+import { useMentor } from '@/app/_lib/useMentor';
 import style from './mento.module.scss';
 import { useToastStore } from '@/store/useToastStore';
 import { IErr } from '@/type';
@@ -150,7 +150,6 @@ export default function Mentor() {
                   name={value.id}
                   text={value.placeholder}
                   onSelet={value.onSelet as (selet: string) => void}
-                  width="100"
                 />
               )}
               {value?.type === 'textarea' && (

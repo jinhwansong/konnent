@@ -1,12 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    swcMinify: true,
-    compiler: {
-        reactRemoveProperties: true,
-        removeConsole: {
-            exclude: ['log','error'],
-        },
-    },
+    // swcMinify: true,
+    // compiler: {
+    //     reactRemoveProperties: true,
+    //     removeConsole: {
+    //         exclude: ['log','error'],
+    //     },
+    // },
     images: {
         remotePatterns: [{
             protocol: 'http',
@@ -30,7 +30,17 @@ const nextConfig = {
             port: '3030',
         }],
     },
-    webpack: config => {
+    webpack: (config, {dev, isServer}) => {
+        if (dev) {
+            config.cache = {
+                type: 'filesystem',
+                // 빌드 의존성 설정
+                buildDependencies: {
+                    config: [__filename]
+                },
+                name: 'development-cache'
+            }
+        }
         // svg설정
         config.module.rules.push({
             test: /\.svg$/,
@@ -39,6 +49,16 @@ const nextConfig = {
         return config;
 
     },
+    experimental: {
+    turbo: {
+      rules: {
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.js',
+        },
+      },
+    },
+  },
 };
 
 module.exports = nextConfig

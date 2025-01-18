@@ -3,10 +3,13 @@ import { MentorController } from './mentor.controller';
 import { MentorService } from './mentor.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Mentors } from 'src/entities/Mentors';
-import { Users } from 'src/entities/Users';
+import { MentorProfile } from 'src/entities/MentorProfile';
+import { MentoringPrograms } from 'src/entities/MentoringPrograms';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Mentors, Users])],
+  imports: [
+    TypeOrmModule.forFeature([Mentors, MentorProfile, MentoringPrograms]),
+  ],
   controllers: [MentorController],
   providers: [MentorService],
 })

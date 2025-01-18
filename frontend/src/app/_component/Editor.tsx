@@ -1,142 +1,100 @@
 'use client'
-import React, { useCallback, useMemo, useRef, useState } from 'react'
-import ReactQuill, { Quill } from 'react-quill';
-import ImageResize from 'quill-image-resize-module-react';
-import { useDropzone } from 'react-dropzone';
-import QuillEditor from './QuillEditor';
-import 'react-quill/dist/quill.snow.css';
-import './editor.scss';
-Quill.register('modules/imageResize', ImageResize);
+import React, { useCallback } from 'react'
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Image from '@tiptap/extension-image';
+import TextStyle from '@tiptap/extension-text-style';
+import Color from '@tiptap/extension-color';
+import Toolbar from './Toolbar';
+import { useToastStore } from '@/store/useToastStore';
+import style from './toolbar.module.scss';
 
 interface IEditor {
-  setContent: React.Dispatch<React.SetStateAction<string>>;
-  content: string;
+  onIntroduce:(newContent: string) => void;
+  introduce: string;
 }
 
-export default function Editors({ setContent, content }: IEditor) {
-  const quillRef = useRef<ReactQuill>(null);
-
-  const formats = [
-    'font',
-    'header',
-    'bold',
-    'italic',
-    'underline',
-    'strike',
-    'blockquote',
-    'code-block',
-    'formula',
-    'list',
-    'bullet',
-    'indent',
-    'image',
-    'align',
-    'color',
-    'background',
-  ];
-  // 이미지 업로드
-  const handleImageUpload = useCallback(async (files: File[]) => {
-    const imageform = new FormData();
-    files.forEach((file) => {
-      imageform.append('image', file);
-    });
-
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/image`, {
-        method: 'POST',
-        credentials: 'include',
-        body: imageform,
+export default function Editor({ introduce, onIntroduce }: IEditor) {
+  // toast팝업
+    const { showToast } = useToastStore((state) => state);
+  // 이미지핸들러
+  const handleImageUpload = useCallback(
+    async (files: File[]) => {
+      const formData = new FormData();
+      files.forEach((file) => {
+        formData.append('images[]', file);
       });
-      const data = await res.json();
-      const editor = quillRef.current?.getEditor();
-      const range = editor?.getSelection()?.index || 0;
-      data.forEach((path: string, i: number) => {
-        const imgUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${path}`;
-        editor?.insertEmbed(range + i, 'image', imgUrl);
-      });
-    } catch (error) {
-      console.error('Image upload failed:', error);
-    }
-  }, []);
-  // 드래그앤 드랍
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      handleImageUpload(acceptedFiles);
-    },
-    [handleImageUpload]
-  );
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-  const imageHandler = useCallback(() => {
-    const input = document.createElement('input');
-    input.setAttribute('type', 'file');
-    input.setAttribute('accept', 'image/*');
-    input.setAttribute('multiple', 'multiple');
-    input.click();
-    input.onchange = async () => {
-      const files = input.files;
-      if (files) {
-        await handleImageUpload(Array.from(files));
+
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/mentor/images`,{
+            method: 'POST',
+            credentials: 'include',
+            body: formData,
+          }
+        );
+        const data = await res.json();
+        return data.url.map(
+          (path: string) => `${process.env.NEXT_PUBLIC_API_BASE_URL}${path}`
+        );
+      } catch (error: any) {
+        showToast(error.data, 'error');
+        return [];
       }
-    };
-  }, [handleImageUpload]);
-
-  // 모듈
-  const modules = useMemo(
-    () => ({
-      toolbar: {
-        container: [
-          [{ header: [1, 2, 3, 4, 5, 6, false] }],
-          ['bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block'],
-          [{ list: 'ordered' }, { list: 'bullet' }],
-          [{ align: [] }, { color: [] }, { background: [] }],
-          ['image'],
-        ],
-        handlers: { image: imageHandler },
-      },
-
-      clipboard: {
-        matchVisual: false,
-      },
-      imageDrop: undefined,
-      imageResize: {
-        parchment: Quill.import('parchment'),
-        modules: ['Resize', 'DisplaySize'],
-      },
-    }),
-    [imageHandler]
+    },
+    [showToast]
   );
-  const handleChange = (value: string) => setContent(value);
+  const editor = useEditor({
+    extensions: [
+      TextStyle,
+      Color,
+      StarterKit,
+      Image.configure({
+        HTMLAttributes: {
+          class: 'editor-image',
+        },
+      }),
+    ],
+    content: introduce,
+    onUpdate: ({ editor }) => {
+      onIntroduce(editor.getHTML());
+    },
+    editorProps: {
+      handleDrop: (view, e, slice, moved) => {
+        if (!moved && e.dataTransfer?.files.length) {
+          e.preventDefault();
+          const files = Array.from(e.dataTransfer.files).filter((file)=>{
+            file.type.startsWith('image/')
+          })
+          if (files.length) {
+            handleImageUpload(files).then((urls) => {
+              if (urls) {
+                const { tr } = view.state;
+                const pos = view.posAtCoords({
+                  left: e.clientX,
+                  top: e.clientY,
+                })?.pos;
+                if(pos){
+                  urls.forEach((url:string, i:number)=>{
+                    view.dispatch(tr.insert(pos +i, view.state.schema.nodes.image.create({src:url})))
+                  })
+                }
+              }
+            });
+            return true
+          }
+          
+        }
+        return false;
+      },
+    },
+  });
+
+  if (!editor) return null;
   return (
-    <div {...getRootProps()} style={{ position: 'relative' }}>
-      <input {...getInputProps()} />
-      {isDragActive && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0,
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            zIndex: 1000,
-          }}
-        >
-          이미지를 여기에 놓으세요
-        </div>
-      )}
-      <QuillEditor
-        modules={modules}
-        theme="snow"
-        value={content}
-        onChange={handleChange}
-        formats={formats}
-        forwardedRef={quillRef}
-        className="editor"
-      />
+    <div className={style.editor_wrap}>
+      <Toolbar editor={editor} onImageUpload={handleImageUpload} />
+      <EditorContent editor={editor} />
     </div>
   );
 }

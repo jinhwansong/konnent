@@ -1,10 +1,6 @@
-@mixin flex {
-    width: 100%;
-    display: flex;
-}
-@mixin title {
-   font-weight: 500;
-   font-size: size(14px);
-   width: size(100px);
-   display: block;
+@mixin title{
+font-weight: 500;
+    font-size: size(14px);
+    width: size(100px);
+    display: block;
 }

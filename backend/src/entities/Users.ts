@@ -21,6 +21,7 @@ import {
   IsString,
 } from 'class-validator';
 import { SocialLoginProvider, UserRole } from 'src/common/enum/status.enum';
+import { Reservations } from './Reservations';
 
 @Entity({ schema: 'konnect', name: 'users' })
 export class Users {
@@ -129,8 +130,8 @@ export class Users {
   @DeleteDateColumn()
   deletedAt: Date;
   // 멘토 신청 관계설정
-  @OneToOne(() => Mentors, (Mentor) => Mentor.users)
-  mentors: Mentors;
+  @OneToOne(() => Mentors, (Mentor) => Mentor.user)
+  mentor: Mentors;
   // 게시물 댓글 관계설정
   @OneToMany(() => Comments, (Comment) => Comment.users)
   comments: Comments[];
@@ -140,4 +141,7 @@ export class Users {
   // 결제 관계설정
   @OneToMany(() => Payments, (payment) => payment.users)
   payments: Payments[];
+  // 예약과의 관계
+  @OneToMany(() => Reservations, (reservations) => reservations.user)
+  reservations: Reservations[];
 }

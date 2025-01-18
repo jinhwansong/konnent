@@ -8,6 +8,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import bcrypt from 'bcrypt';
 import { Users } from 'src/entities/Users';
+import {
+  UpdateNicknameDto,
+  UpdatePasswordDto,
+  UpdatePhoneDto,
+} from './dto/update.requset.dto';
 
 @Injectable()
 export class UsersService {
@@ -89,54 +94,65 @@ export class UsersService {
     return { message: '사용 가능한 닉네임 입니다.' };
   }
 
-  async updatePhone(phone: string, id: number) {
-    const userPhone = await this.userRepository.findOne({ where: { phone } });
-    if (userPhone) {
+  async updatePhone(body: UpdatePhoneDto, id: number) {
+    const user = await this.userRepository.findOne({
+      where: { phone: body.phone },
+    });
+    if (user) {
       throw new BadRequestException('이미 존재하는 휴대폰 번호입니다.');
     }
-    await this.userRepository.update(id, { phone });
-    return { message: '휴대폰번호가 변경되었습니다.' };
+    await this.userRepository.update(id, { phone: body.phone });
+    const updatedUser = await this.userRepository.findOne({
+      where: { id },
+    });
+    return {
+      message: '휴대폰번호가 변경되었습니다.',
+      phone: updatedUser.phone,
+    };
   }
 
-  async updateNickname(nickname: string, id: number) {
-    const userPhone = await this.userRepository.findOne({
-      where: { nickname },
+  async updateNickname(body: UpdateNicknameDto, id: number) {
+    const user = await this.userRepository.findOne({
+      where: { nickname: body.nickname },
     });
-    if (userPhone) {
+    if (user) {
       throw new BadRequestException('이미 존재하는 닉네임입니다.');
     }
-    await this.userRepository.update(id, { nickname });
-    return { message: '닉네임이 변경되었습니다.' };
+    await this.userRepository.update(id, {
+      nickname: body.nickname,
+    });
+    const updatedUser = await this.userRepository.findOne({
+      where: { id },
+    });
+    return {
+      message: '닉네임이 변경되었습니다.',
+      nickname: updatedUser.nickname,
+    };
   }
-  async updatePassword(
-    currentPassword: string,
-    newPassword: string,
-    id: number,
-  ) {
+  async updatePassword(body: UpdatePasswordDto, id: number) {
     const user = await this.userRepository.findOne({
       where: { id },
       select: ['password'],
     });
     const isPasswordValid = await bcrypt.compare(
-      currentPassword,
+      body.currentPassword,
       user.password,
     );
     if (!isPasswordValid) {
       throw new BadRequestException('현재 비밀번호가 일치하지 않습니다.');
     }
-    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    const hashedPassword = await bcrypt.hash(body.newPassword, 12);
     await this.userRepository.update(id, { password: hashedPassword });
     return { message: '비밀번호가 변경되었습니다.' };
   }
   async updateProfile(file: Express.Multer.File, id: number) {
-    console.log('올라온 이미지', file);
     try {
       if (!file) {
         throw new BadRequestException('업로드된 파일이 없습니다.');
       }
-      const imageUrl = `${process.env.SERVER}/uploads/${file.filename}`;
+      const imageUrl = `/uploads/${file.filename}`;
       await this.userRepository.update(id, { image: imageUrl });
-      return { message: '프로필이미지가 변경되었습니다.' };
+      return { message: '프로필이미지가 변경되었습니다.', image: imageUrl };
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error; // 원래 에러를 그대로 던짐

@@ -46,7 +46,7 @@ export interface IPage {
 export interface IPages extends IPage {
   totalPage: number;
 }
-export interface MentorApprovalParams {
+export interface IMentorApprovalParams {
   approved: boolean;
   reason?: string;
   id: number;
@@ -59,4 +59,58 @@ export interface IMentorMutation {
   introduce: string;
   portfolio: string;
   career: string;
+}
+// 마이페이지 
+export interface InfoField  {
+  label: string;
+  data: string | undefined;
+  onButton?: () => void;
+  onSave?: () => void;
+  type?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+  error?: string;
+};
+// 마이페이지 
+interface IBaseField {
+  label: string;
+  data: string;
+  isEditing?: boolean;
+  handleEdit?: () => void;  
+  handleSave?: () => void;  
+  handleCancel?: () => void; 
+  
+}
+export interface IInfoItem extends IBaseField {
+  placeholder?: string;
+  type?: string;
+  error?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+
+  checkPasswordLabel?: string;
+  checkPasswordData?: string;
+  checkPasswordOnChange?: (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+  ) => void;
+  checkPasswordPlaceholder?: string;
+  checkPasswordError?: string;
+  newPasswordLabel?: string;
+  newPasswordData?: string;
+  newPasswordOnChange?: (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+  ) => void;
+  newPasswordPlaceholder?: string;
+  newPasswordError?: string;
+  sns?:string;
+}
+export interface ICareerItem extends IBaseField {
+  options: string[];
+  onSelet: (newValue: string) => void;
+  popup: boolean;
+  onPopup: () => void;
+  seletText:string;
 }

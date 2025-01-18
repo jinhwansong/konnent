@@ -1,4 +1,4 @@
-import { MentorApprovalParams } from "@/type";
+import { IMentorApprovalParams } from "@/type";
 import { useMutation } from "@tanstack/react-query";
 
 export const findMentorAll = async (page: number) => {
@@ -39,7 +39,7 @@ return data;
 
 export const useMentor = () => {
   return useMutation({
-    mutationFn: async ({ approved, reason, id }: MentorApprovalParams) => {
+    mutationFn: async ({ approved, reason, id }: IMentorApprovalParams) => {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/approve/${id}`,
         {

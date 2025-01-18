@@ -27,7 +27,7 @@ export class AdminService {
       const Mentor = await queryRunner.manager.getRepository(Mentors).findOne({
         where: { id },
         relations: ['users'],
-        select: ['id', 'status', 'users'],
+        select: ['id', 'status', 'user'],
       });
       if (!Mentor) {
         throw new BadRequestException('멘토 신청 정보를 찾을 수 없습니다.');
@@ -48,7 +48,7 @@ export class AdminService {
       if (approved) {
         await queryRunner.manager.update(
           Users,
-          { id: Mentor.users.id },
+          { id: Mentor.user.id },
           { role: UserRole.MENTOR },
         );
       }
@@ -76,29 +76,27 @@ export class AdminService {
     try {
       const queryBuilder = this.mentorRepository
         .createQueryBuilder('mentor')
-        .leftJoinAndSelect('mentor.users', 'users') // user 테이블과 조인
+        .leftJoinAndSelect('mentor.user', 'user') // user 테이블과 조인
         .select([
           'mentor.id',
-          'users.name',
-          'users.image',
+          'user.name',
+          'user.image',
           'mentor.email',
           'mentor.job',
           'mentor.career',
           'mentor.status',
           'mentor.createdAt',
         ])
-        .orderBy('mentor.createdAt', 'DESC');
-
-      // 페이지 네이션 적용
-      const skip = (pages - 1) * limit;
-      queryBuilder.skip(skip).take(limit);
+        .orderBy('mentor.createdAt', 'DESC')
+        .skip((pages - 1) * limit)
+        .take(limit);
 
       // 데이터와 전체 개수 조회
       const [results, total] = await queryBuilder.getManyAndCount();
       const page = results.map((mentor) => ({
         id: mentor.id,
-        name: mentor.users.name,
-        image: mentor.users.image,
+        name: mentor.user.name,
+        image: mentor.user.image,
         email: mentor.email,
         job: mentor.job,
         career: mentor.career,
@@ -130,10 +128,10 @@ export class AdminService {
       }
       return {
         id: Mentor.id,
-        name: Mentor.users.name,
-        nickname: Mentor.users.nickname,
-        image: Mentor.users.image,
-        phone: Mentor.users.phone,
+        name: Mentor.user.name,
+        nickname: Mentor.user.nickname,
+        image: Mentor.user.image,
+        phone: Mentor.user.phone,
         email: Mentor.email,
         job: Mentor.job,
         career: Mentor.career,

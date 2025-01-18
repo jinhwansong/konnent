@@ -19,6 +19,8 @@ import { AdminModule } from './admin/admin.module';
 import { DataSource } from 'typeorm';
 import { join } from 'path';
 import { MentorProfile } from './entities/MentorProfile';
+import { Reservations } from './entities/Reservations';
+import { ProgramExceptions } from './entities/ProgramExceptions';
 
 @Module({
   imports: [
@@ -64,6 +66,8 @@ import { MentorProfile } from './entities/MentorProfile';
       Posts,
       Users,
       MentorProfile,
+      Reservations,
+      ProgramExceptions,
     ]),
     AdminModule,
   ],

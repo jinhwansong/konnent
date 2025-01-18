@@ -31,16 +31,7 @@ import { Response } from 'express';
 import { NaverAuthGuard } from 'src/auth/naver-auth.guard';
 import { GoogleAuthGuard } from 'src/auth/google-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
-
-// 업로드 폴더 생성
-try {
-  fs.readdirSync('uploads');
-} catch (error) {
-  fs.mkdirSync('uploads');
-}
+import { multerImage } from 'src/common/utils/multer.options';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('유저정보')
@@ -253,7 +244,7 @@ export class UsersController {
   @ApiOperation({ summary: '닉네임 변경' })
   @Patch('nickname')
   nickname(@Body() body: UpdateNicknameDto, @User() user) {
-    return this.userService.updateNickname(body.nickname, user.id);
+    return this.userService.updateNickname(body, user.id);
   }
   @ApiResponse({
     status: 200,
@@ -277,11 +268,7 @@ export class UsersController {
   @ApiOperation({ summary: '비밀번호 변경' })
   @Patch('password')
   password(@Body() body: UpdatePasswordDto, @User() user) {
-    return this.userService.updatePassword(
-      body.currentPassword,
-      body.newPassword,
-      user.id,
-    );
+    return this.userService.updatePassword(body, user.id);
   }
   @ApiResponse({
     status: 200,
@@ -305,7 +292,7 @@ export class UsersController {
   @ApiOperation({ summary: '휴대폰번호 변경' })
   @Patch('phone')
   phone(@Body() body: UpdatePhoneDto, @User() user) {
-    return this.userService.updatePhone(body.phone, user.id);
+    return this.userService.updatePhone(body, user.id);
   }
   @ApiResponse({
     status: 200,
@@ -313,27 +300,21 @@ export class UsersController {
     type: UpdateImageDto,
   })
   @ApiResponse({
-    status: 500,
-    description: '파일 업로드 중 오류가 발생했습니다.',
+    status: 400,
+    description: '지원하지 않는 이미지 형식입니다.',
+    schema: {
+      properties: {
+        statusCode: { type: 'number', example: 400 },
+        message: {
+          type: 'string',
+          example: '지원하지 않는 이미지 형식입니다.',
+        },
+      },
+    },
   })
   @UseGuards(new LoggedInGuard())
   @ApiOperation({ summary: '프로필이미지 변경' })
-  @UseInterceptors(
-    FileInterceptor('image', {
-      storage: multer.diskStorage({
-        // 업로드 위치
-        destination(req, file, cb) {
-          cb(null, 'uploads/');
-        },
-        // 파일명 조작
-        filename(req, file, cb) {
-          const ext = path.extname(file.originalname);
-          cb(null, path.basename(file.originalname, ext) + Date.now() + ext);
-        },
-      }),
-      limits: { fileSize: 2 * 1024 * 1024 }, // 2mb
-    }),
-  )
+  @UseInterceptors(FileInterceptor('image', multerImage))
   @Patch('profile')
   profile(@UploadedFile() file: Express.Multer.File, @User() user) {
     return this.userService.updateProfile(file, user.id);

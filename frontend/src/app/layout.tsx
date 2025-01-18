@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import MSWComponent from './_component/MSWComponent';
 import "swiper/swiper-bundle.css";
 import "swiper/css/pagination";
 import "@/styles/globals.scss";
@@ -27,7 +26,6 @@ export default function RootLayout({
   return (
     <html lang="kr" className={pretendard.variable}>
       <body className={pretendard.className}>
-        <MSWComponent />
         {children}
       </body>
     </html>

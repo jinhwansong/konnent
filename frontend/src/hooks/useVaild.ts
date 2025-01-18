@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 export default function useVaild<T>(
   initialValue: T,
@@ -8,6 +8,9 @@ export default function useVaild<T>(
   const [name, setName] = useState(initialValue);
   const [error, setError] = useState("");
   const [vaild,setVaild] = useState(false);
+  useEffect(() => {
+    setName(initialValue);
+  }, [initialValue]);
   const onName = useCallback(
     (
       e:

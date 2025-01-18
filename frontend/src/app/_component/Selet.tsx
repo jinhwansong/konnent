@@ -36,7 +36,7 @@ export default function Selet({
         onMouseDown={(e) => e.stopPropagation()}
         type="button"
       >
-        {seletText ? seletText : <p>{text}</p>}
+        {seletText ? seletText : text}
         {open ? <BiCaretUp /> : <BiCaretDown />}
       </button>
       {open && (

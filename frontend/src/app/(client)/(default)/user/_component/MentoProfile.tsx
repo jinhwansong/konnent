@@ -1,14 +1,22 @@
 'use client';
 import React, { useCallback, useState } from 'react';
-import { useMentorData, useUpdateCareer, useUpdateCompony, useUpdateIntroduce, useUpdateJob, useUpdateProfile } from '@/app/_lib/useMentor';
-import { useSelect, useVaild } from '@/hooks';
-import useProfileActions from '@/hooks/useProfileActions';
-import { onName } from '@/hooks/useSign';
-import { usePopupStore } from '@/store/usePopupStore';
+import {
+  useMentorData,
+  useUpdateCareer,
+  useUpdateCompony,
+  useUpdateIntroduce,
+  useUpdateJob,
+  useUpdateProfile,
+} from '@/app/_lib/useMentor';
 import ProfileSection from './ProfileSection';
 import CareerItem from './CareerItem';
 import InfoItem from './InfoItem';
 import EditroItem from './EditroItem';
+import { usePopupStore } from '@/store/usePopupStore';
+import useProfileActions from '@/hooks/useProfileActions';
+import useSelect from '@/hooks/useSelect';
+import { onName } from '@/util/useSign';
+import useVaild from '@/hooks/useVaild';
 import { joblist, careerlist } from '@/app/(client)/config/job';
 import style from './profile.module.scss';
 
@@ -25,9 +33,7 @@ export default function MentoProfile() {
     data?.company ?? '현재 다니시는 회사명을 적어주세요.',
     onName
   );
-  const [introduce, setIntroduce] = useState(
-    data?.introduce
-  );
+  const [introduce, setIntroduce] = useState(data?.introduce);
   const onIntroduce = useCallback((newContent: string) => {
     setIntroduce(newContent);
   }, []);

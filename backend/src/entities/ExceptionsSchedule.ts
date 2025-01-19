@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { MentoringPrograms } from './MentoringPrograms';
+import { Mentors } from './Mentors';
 
 // 멘토링 예외일정
 enum Exceptions {
@@ -16,8 +16,8 @@ enum Exceptions {
   UNAVAILABLE = 'unavailable',
 }
 
-@Entity({ schema: 'konnect', name: 'program_exceptions' })
-export class ProgramExceptions {
+@Entity({ schema: 'konnect', name: 'exceptionsschedule' })
+export class ExceptionsSchedule {
   // 키값
   @ApiProperty({ example: 1, description: 'id', required: true })
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
@@ -38,7 +38,7 @@ export class ProgramExceptions {
 
   @UpdateDateColumn()
   updatedAt: Date;
-  // 프로그램과의 관계
-  @ManyToOne(() => MentoringPrograms, (programs) => programs.exceptions)
-  programs: MentoringPrograms;
+  // 멘토와의 관계
+  @ManyToOne(() => Mentors, (mentor) => mentor.exception)
+  mentor: Mentors;
 }

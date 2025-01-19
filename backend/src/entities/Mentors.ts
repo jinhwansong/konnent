@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -18,6 +19,8 @@ import {
   IsString,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { ExceptionsSchedule } from './ExceptionsSchedule';
+import { AvailableSchedule } from './AvailableSchedule';
 
 @Entity({ schema: 'konnect', name: 'mentors' })
 export class Mentors {
@@ -110,4 +113,10 @@ export class Mentors {
   @OneToOne(() => Users, (user) => user.mentor)
   @JoinColumn({ name: 'userId' })
   user: Users;
+  // 불가능한 스케줄
+  @OneToMany(() => ExceptionsSchedule, (exception) => exception.mentor)
+  exception: ExceptionsSchedule[];
+  // 가능한 스케줄
+  @OneToMany(() => AvailableSchedule, (available) => available.mentor)
+  available: AvailableSchedule[];
 }

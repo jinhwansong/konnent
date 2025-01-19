@@ -10,7 +10,8 @@ import { Users } from './src/entities/Users';
 import { join } from 'path';
 import { MentorProfile } from 'src/entities/MentorProfile';
 import { Reservations } from 'src/entities/Reservations';
-import { ProgramExceptions } from 'src/entities/ProgramExceptions';
+import { ExceptionsSchedule } from 'src/entities/ExceptionsSchedule';
+import { AvailableSchedule } from 'src/entities/AvailableSchedule';
 
 dotenv.config();
 
@@ -31,7 +32,8 @@ const dataSource = new DataSource({
     Users,
     MentorProfile,
     Reservations,
-    ProgramExceptions,
+    ExceptionsSchedule,
+    AvailableSchedule,
   ],
   migrations: [join(__dirname, 'src/migrations/**/*{.ts,.js}')],
   migrationsRun: true,

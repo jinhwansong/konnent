@@ -5,9 +5,9 @@ import Image from 'next/image';
 import Table from './Table';
 import { findMentorAll } from '../_lib/find.mentors';
 import usePage from '@/hooks/usePage';
-import { formatDate } from '@/hooks/useDate';
-import { IAdminMentors } from '@/type';
-import { IcProfile } from '@/asset';
+import { formatDate } from '@/util/formatDate';
+import { getImageUrl } from '@/util/getImageUrl';
+import { IAdminMentors, IColumn } from '@/type';
 import style from './table.module.scss';
 
 export default function Mentors() {
@@ -18,42 +18,40 @@ export default function Mentors() {
     staleTime: 60 * 1000,
     gcTime: 300 * 1000,
   });
-  const columns = [
-    { id: 1, name: '번호', key: 'id' },
+  const column: IColumn<IAdminMentors>[] = [
+    { id: 1, name: '번호', render: (item: IAdminMentors) => item.id },
     {
       id: 2,
       name: '멘토신청정보',
-      key: 'mentor',
-      render: (mentor: IAdminMentors) => (
+      render: (item: IAdminMentors) => (
         <div className={style.profile}>
           <Image
-            src={mentor.image || IcProfile}
-            alt={mentor.name}
+            src={getImageUrl(data?.image)}
+            alt={item.name as string}
             height={35}
             width={35}
           />
           <div>
-            <p>{mentor.name}</p>
-            <span>{mentor.email}</span>
+            <p>{item.name}</p>
+            <span>{item.email}</span>
           </div>
         </div>
       ),
     },
-    { id: 3, name: '직무', key: 'job' },
-    { id: 4, name: '경력', key: 'career' },
-    { id: 5, name: '상태', key: 'status' },
+    { id: 3, name: '직무', render: (item: IAdminMentors) => item.job },
+    { id: 4, name: '경력', render: (item: IAdminMentors) => item.career },
+    { id: 5, name: '상태', render: (item: IAdminMentors) => item.status },
     {
       id: 6,
       name: '신청일',
-      key: 'createdAt',
-      render: (user: IAdminMentors) => formatDate(user.createdAt),
+      render: (item: IAdminMentors) => formatDate(item.createdAt),
     },
   ];
 
   return (
     <Table
       title="멘토 신청 관리"
-      columns={columns}
+      column={column}
       data={data}
       currentPage={currentPage}
       onPrevPage={onPrevPage}

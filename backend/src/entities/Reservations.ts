@@ -1,10 +1,12 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Payments } from './Payments';
@@ -45,6 +47,11 @@ export class Reservations {
     default: MemtoringStatus.PENDING,
   })
   status: MemtoringStatus;
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
   // 결제 관계설정
   @OneToOne(() => Payments, (payment) => payment.reservation)
   @JoinColumn({ name: 'paymentId' })

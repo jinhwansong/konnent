@@ -1,10 +1,21 @@
-import React from 'react'
+import React from 'react';
 import { Editor } from '@tiptap/react';
-
-import { MdCode, MdFormatBold, MdFormatColorText, MdFormatItalic, MdFormatListBulleted, MdFormatListNumbered, MdFormatQuote, MdFormatStrikethrough, MdHorizontalRule, MdImage, MdTerminal } from 'react-icons/md';
-import style from './toolbar.module.scss';
-import { usePopup, useSelect } from '@/hooks';
+import {
+  MdCode,
+  MdFormatBold,
+  MdFormatColorText,
+  MdFormatItalic,
+  MdFormatListBulleted,
+  MdFormatListNumbered,
+  MdFormatQuote,
+  MdFormatStrikethrough,
+  MdHorizontalRule,
+  MdImage,
+  MdTerminal,
+} from 'react-icons/md';
 import { usePopupStore } from '@/store/usePopupStore';
+import usePopup from '@/hooks/usePopup';
+import style from './toolbar.module.scss';
 
 interface IToolbar {
   editor: Editor;
@@ -20,22 +31,21 @@ const COLORS = [
   '#495057', // 회색
 ];
 
-
 export default function Toolbar({ editor, onImageUpload }: IToolbar) {
-    // 이미지 인풋
-    const imageInput = async(e:React.ChangeEvent<HTMLInputElement>)=>{
-        if(e.target.files?.length){
-            const files = Array.from(e.target.files)
-            const urls = await onImageUpload(files)
-            urls.forEach((url)=>{
-                if(url){
-                    editor.chain().focus().setImage({src:url}).run();
-                }
-            })
+  // 이미지 인풋
+  const imageInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.length) {
+      const files = Array.from(e.target.files);
+      const urls = await onImageUpload(files);
+      urls.forEach((url) => {
+        if (url) {
+          editor.chain().focus().setImage({ src: url }).run();
         }
+      });
     }
-    const { popupRef } = usePopup();
-    const { onPopup2, popup2, closePop } = usePopupStore();
+  };
+  const { popupRef } = usePopup();
+  const { onPopup2, popup2, closePop } = usePopupStore();
   return (
     <div className={style.toolbar}>
       <div className={style.itemBox}>

@@ -35,12 +35,7 @@ import {
   UpdateJobDto,
 } from './dto/update.profile.dto';
 import { MentorRequestDto } from './dto/mentor.request.dto';
-import {
-  MentoingProgramCreateDto,
-  MentoingProgramDto,
-} from './dto/program.request.dto';
 import { multerImage } from 'src/common/utils/multer.options';
-import { PaginationDto } from 'src/common/dto/page.dto';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('멘토')
@@ -223,109 +218,5 @@ export class MentorController {
     @User() user,
   ) {
     return this.MentorService.uploadImage(files, user.id);
-  }
-  @ApiResponse({
-    status: 200,
-    description: '멘토님의 프로그램이 등록되었습니다.',
-    type: MentoingProgramDto,
-  })
-  @ApiResponse({
-    status: 500,
-    description: '멘토님의 프로그램 등록 중 오류가 발생했습니다.',
-    schema: {
-      properties: {
-        statusCode: { type: 'number', example: 500 },
-        message: {
-          type: 'string',
-          example: '멘토님의 프로그램 등록 중 오류가 발생했습니다.',
-        },
-      },
-    },
-  })
-  @UseGuards(new LoggedInGuard())
-  @ApiOperation({ summary: '멘토 프로그램등록' })
-  @Post('program')
-  registrationProgram(@Body() body: MentoingProgramCreateDto, @User() user) {
-    return this.MentorService.createProgram(body, user.id);
-  }
-  @ApiResponse({
-    status: 200,
-    description: '멘토님의 프로그램이 수정되었습니다.',
-    type: MentoingProgramDto,
-  })
-  @ApiResponse({
-    status: 500,
-    description: '멘토님의 프로그램 수정 중 오류가 발생했습니다.',
-    schema: {
-      properties: {
-        statusCode: { type: 'number', example: 500 },
-        message: {
-          type: 'string',
-          example: '멘토님의 프로그램 수정 중 오류가 발생했습니다.',
-        },
-      },
-    },
-  })
-  @UseGuards(new LoggedInGuard())
-  @ApiOperation({ summary: '멘토 프로그램 수정' })
-  @Patch('program/:programId')
-  updateProgram(
-    @Body() body: MentoingProgramDto,
-    @User() user,
-    @Param('programId', ParseIntPipe) programId: number,
-  ) {
-    return this.MentorService.updateProgram(body, user.id, programId);
-  }
-  @ApiResponse({
-    status: 200,
-    description: '멘토님의 프로그램이 삭제되었습니다.',
-  })
-  @ApiResponse({
-    status: 500,
-    description: '멘토님의 프로그램 삭제 중 오류가 발생했습니다.',
-    schema: {
-      properties: {
-        statusCode: { type: 'number', example: 500 },
-        message: {
-          type: 'string',
-          example: '멘토님의 프로그램 삭제 중 오류가 발생했습니다.',
-        },
-      },
-    },
-  })
-  @UseGuards(new LoggedInGuard())
-  @ApiOperation({ summary: '멘토 프로그램 삭제' })
-  @Delete('program/:programId')
-  deleteProgram(
-    @User() user,
-    @Param('programId', ParseIntPipe) programId: number,
-  ) {
-    return this.MentorService.deleteProgram(user.id, programId);
-  }
-  @ApiResponse({
-    status: 200,
-    description: '멘토님의 프로그램이 조회되었습니다.',
-    type: MentoingProgramDto,
-  })
-  @ApiResponse({
-    status: 500,
-    description: '멘토님의 프로그램 조회 중 오류가 발생했습니다.',
-    schema: {
-      properties: {
-        statusCode: { type: 'number', example: 500 },
-        message: {
-          type: 'string',
-          example: '멘토님의 프로그램 조회 중 오류가 발생했습니다.',
-        },
-      },
-    },
-  })
-  @ApiQuery({ name: 'page', required: false })
-  @ApiQuery({ name: 'limit', required: false })
-  @UseGuards(new LoggedInGuard())
-  @ApiOperation({ summary: '멘토 프로그램 조회' })
-  @Get('program')
-  getProgram(@Body() @User() user, @Query() { page, limit }: PaginationDto) {
-    return this.MentorService.getProgram(user.id, page, limit);
   }
 }

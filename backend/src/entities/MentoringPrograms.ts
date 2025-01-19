@@ -11,7 +11,6 @@ import { MentorProfile } from './MentorProfile';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Reservations } from './Reservations';
-import { ProgramExceptions } from './ProgramExceptions';
 
 // 프로그램 활성화
 export enum ProgramStatus {
@@ -19,7 +18,7 @@ export enum ProgramStatus {
   INACTIVITY = 'inactivity',
 }
 
-@Entity({ schema: 'konnect', name: 'mentoring_programs' })
+@Entity({ schema: 'konnect', name: 'mentoringprograms' })
 export class MentoringPrograms {
   // 키값
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
@@ -86,7 +85,4 @@ export class MentoringPrograms {
   // 예약일정 관계설정
   @OneToMany(() => Reservations, (reservation) => reservation.programs)
   reservations: Reservations[];
-  // 예외 일정 관계설정
-  @OneToMany(() => ProgramExceptions, (exceptions) => exceptions.programs)
-  exceptions: ProgramExceptions[];
 }

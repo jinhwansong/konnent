@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { BiCaretDown, BiCaretUp } from 'react-icons/bi';
-import { usePopup } from '@/hooks';
+import usePopup from '@/hooks/usePopup';
 import style from './selet.module.scss';
 
 interface ISelet {

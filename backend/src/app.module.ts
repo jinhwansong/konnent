@@ -20,7 +20,11 @@ import { DataSource } from 'typeorm';
 import { join } from 'path';
 import { MentorProfile } from './entities/MentorProfile';
 import { Reservations } from './entities/Reservations';
-import { ProgramExceptions } from './entities/ProgramExceptions';
+import { ExceptionsSchedule } from './entities/ExceptionsSchedule';
+import { AvailableSchedule } from './entities/AvailableSchedule';
+import { ProgramModule } from './program/program.module';
+import { ScheduleModule } from './schedule/schedule.module';
+import { ReservationModule } from './reservation/reservation.module';
 
 @Module({
   imports: [
@@ -28,9 +32,7 @@ import { ProgramExceptions } from './entities/ProgramExceptions';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    UsersModule,
-    MentorModule,
-    AuthModule,
+
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -67,9 +69,16 @@ import { ProgramExceptions } from './entities/ProgramExceptions';
       Users,
       MentorProfile,
       Reservations,
-      ProgramExceptions,
+      ExceptionsSchedule,
+      AvailableSchedule,
     ]),
     AdminModule,
+    ProgramModule,
+    ScheduleModule,
+    ReservationModule,
+    UsersModule,
+    MentorModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, UsersService],

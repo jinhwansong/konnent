@@ -4,15 +4,18 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
-import { useLogout } from '@/app/_lib/useLogout';
 import { FcManager, FcHome, FcQuestions } from 'react-icons/fc';
 import { BiSearch } from 'react-icons/bi';
 import Input from '@/app/_component/Input';
-import { useInput, usePopup } from '@/hooks';
+import { getImageUrl } from '@/util/getImageUrl';
+import usePopup from '@/hooks/usePopup';
+import useInput from '@/hooks/useInput';
 import { usePopupStore } from '@/store/usePopupStore';
-import { IcLogo, IcProfile } from '@/asset';
+import { IcLogo } from '@/asset';
 import { useUserData } from '@/app/_lib/useUser';
+import { useLogout } from '@/app/_lib/useLogout';
 import style from './header.module.scss';
+
 
 export default function Header() {
   const queryClient = useQueryClient();
@@ -31,6 +34,7 @@ export default function Header() {
     onPopup();
    
   }, [router, onPopup, logoutMutation, queryClient]);
+  console.log(data?.image);
   return (
     <header className={style.header}>
       <div className={style.header_inner}>
@@ -48,10 +52,7 @@ export default function Header() {
                   onMouseDown={(e) => e.stopPropagation()}
                 >
                   <Image
-                    src={
-                      `${process.env.NEXT_PUBLIC_API_BASE_URL}${data.image}` ||
-                      IcProfile
-                    }
+                    src={getImageUrl(data?.image)}
                     alt={data.name as string}
                     height={35}
                     width={35}

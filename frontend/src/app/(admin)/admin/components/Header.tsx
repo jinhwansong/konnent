@@ -1,15 +1,15 @@
 'use client';
 import React, { useCallback } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { BiSearch, BiLogOut, BiSun, BiMoon, BiBell } from 'react-icons/bi';
 import Input from '@/app/_component/Input';
 import { useUserData } from '@/app/_lib/useUser';
 import { useLogout } from '@/app/_lib/useLogout';
-import { useInput } from '@/hooks';
+import { getImageUrl } from '@/util/getImageUrl';
+import useInput from '@/hooks/useInput';
 import style from './header.module.scss';
-import Image from 'next/image';
-import { IcProfile } from '@/asset';
 
 export default function Header() {
   const queryClient = useQueryClient();
@@ -42,7 +42,7 @@ export default function Header() {
       <div className={style.header_right}>
         <div className={style.header_right_profile}>
           <Image
-            src={IcProfile}
+            src={getImageUrl(data?.image)}
             alt={data?.name as string}
             height={30}
             width={30}

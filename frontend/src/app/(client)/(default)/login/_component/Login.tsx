@@ -8,7 +8,7 @@ import { onSubmit } from '@/app/_lib/useLogin';
 import Button from '@/app/_component/Button';
 import Input from '@/app/_component/Input';
 import Social from '@/app/(client)/_component/Social';
-import { useInput } from '@/hooks';
+import useInput from '@/hooks/useInput';
 import style from './login.module.scss';
 
 export default function Login() {

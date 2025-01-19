@@ -1,9 +1,9 @@
 import React from 'react';
-import { RQProvider } from '@/hooks';
 import Header from './components/Header';
 import Nav from './components/Nav';
-import style from './layout.module.scss'
 import ToastPopup from '@/app/_component/ToastPopup';
+import RQProvider from '@/hooks/useRQProvider';
+import style from './layout.module.scss'
 
 export default function RootLayout({
   children,
@@ -16,7 +16,6 @@ export default function RootLayout({
       <section>
         <RQProvider>
           <Header />
-
           <article>{children}</article>
         </RQProvider>
         <ToastPopup />

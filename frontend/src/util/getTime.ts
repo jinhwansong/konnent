@@ -1,4 +1,4 @@
-export default function useTime(time:string) {
+export default function getTime(time:string) {
   const targetTime = new Date(time).getTime();
   const currentTime = new Date().getTime();
   const differentTime =  Math.floor(Number(currentTime - targetTime) / 1000);

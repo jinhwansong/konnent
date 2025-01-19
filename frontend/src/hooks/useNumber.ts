@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 
 export default function useNumber(initialValue: string) {
   const [number, setNumber] = useState(initialValue);

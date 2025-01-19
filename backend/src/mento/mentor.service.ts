@@ -15,11 +15,6 @@ import {
   UpdateJobDto,
 } from './dto/update.profile.dto';
 import { MentorRequestDto } from './dto/mentor.request.dto';
-import {
-  MentoingProgramCreateDto,
-  MentoingProgramDto,
-} from './dto/program.request.dto';
-import { MentoringPrograms } from 'src/entities/MentoringPrograms';
 
 @Injectable()
 export class MentorService {
@@ -29,8 +24,6 @@ export class MentorService {
     private readonly mentorRepository: Repository<Mentors>,
     @InjectRepository(MentorProfile)
     private readonly mentorProfileRepository: Repository<MentorProfile>,
-    @InjectRepository(MentoringPrograms)
-    private readonly mentorProgramRepository: Repository<MentoringPrograms>,
     private readonly dataSource: DataSource,
   ) {}
   // 멘토신청
@@ -355,142 +348,6 @@ export class MentorService {
       }
       throw new InternalServerErrorException(
         '멘토님의 경력 변경 중 오류가 발생했습니다.',
-      );
-    }
-  }
-  // 멘토링 프로그램 등록
-  async createProgram(body: MentoingProgramCreateDto, id: number) {
-    try {
-      const mentor = await this.mentorRepository.findOne({
-        where: { user: { id } },
-        relations: ['user'],
-      });
-      if (!mentor) {
-        throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
-      }
-      const newProgram = await this.mentorProgramRepository.create({
-        ...body,
-        profile: { id: mentor.id },
-      });
-      await this.mentorProgramRepository.save(newProgram);
-      return { massage: '멘토님의 프로그램이 등록되었습니다.' };
-    } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw error;
-      }
-      throw new InternalServerErrorException(
-        '멘토님의 프로그램 등록 중 오류가 발생했습니다.',
-      );
-    }
-  }
-  // 멘토링 프로그램 수정
-  async updateProgram(body: MentoingProgramDto, id: number, programId: number) {
-    try {
-      const mentor = await this.mentorRepository.findOne({
-        where: { user: { id } },
-        relations: ['user'],
-      });
-      if (!mentor) {
-        throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
-      }
-      const program = await this.mentorProgramRepository.findOne({
-        where: { id: programId },
-        relations: ['profile'],
-      });
-      if (!program) {
-        throw new BadRequestException('해당 프로그램을 찾을 수 없습니다.');
-      }
-      if (program.profile.id !== mentor.id) {
-        throw new BadRequestException('프로그램을 수정할 권한이 없습니다.');
-      }
-      await this.mentorProgramRepository.update(programId, body);
-      return { id: programId, massage: '멘토님의 프로그램이 수정되었습니다.' };
-    } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw error;
-      }
-      throw new InternalServerErrorException(
-        '멘토님의 프로그램 수정 중 오류가 발생했습니다.',
-      );
-    }
-  }
-  // 멘토링 프로그램 삭제
-  async deleteProgram(id: number, programId: number) {
-    try {
-      const mentor = await this.mentorRepository.findOne({
-        where: { user: { id } },
-        relations: ['user'],
-      });
-      if (!mentor) {
-        throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
-      }
-      const program = await this.mentorProgramRepository.findOne({
-        where: { id: programId },
-        relations: ['profile'],
-      });
-      if (!program) {
-        throw new BadRequestException('해당 프로그램을 찾을 수 없습니다.');
-      }
-      if (program.profile.id !== mentor.id) {
-        throw new BadRequestException('프로그램을 삭제할 권한이 없습니다.');
-      }
-      await this.mentorProgramRepository.delete(programId);
-      return { massage: '멘토님의 프로그램이 삭제되었습니다.' };
-    } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw error;
-      }
-      throw new InternalServerErrorException(
-        '멘토님의 프로그램 삭제 중 오류가 발생했습니다.',
-      );
-    }
-  }
-  // 멘토링 프로그램 조회
-  async getProgram(id: number, pages: number = 1, limit: number = 10) {
-    try {
-      const mentor = await this.mentorRepository.findOne({
-        where: { user: { id } },
-        relations: ['user'],
-      });
-      if (!mentor) {
-        throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
-      }
-      const program = await this.mentorProgramRepository
-        .createQueryBuilder('program')
-        .leftJoinAndSelect('program.profile', 'profile')
-        .where('program.id = :mentorId', { mentorId: mentor.id })
-        .orderBy('program.createAt', 'DESC')
-        .select([
-          'program.id',
-          'program.title',
-          'program.price',
-          'program.duration',
-          'program.status',
-          'program.createdAt',
-        ])
-        .skip((pages - 1) * limit)
-        .take(limit);
-      // 데이터와 전체 개수 조회
-      const [results, total] = await program.getManyAndCount();
-      const page = results.map((result) => ({
-        id: result.id,
-        title: result.title,
-        price: result.price,
-        duration: result.duration,
-        status: result.status,
-        createdAt: result.createdAt,
-      }));
-      return {
-        page,
-        totalPage: Math.ceil(total / limit),
-        message: '멘토님의 프로그램 목록을 조회했습니다.',
-      };
-    } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw error;
-      }
-      throw new InternalServerErrorException(
-        '멘토님의 프로그램 삭제 중 오류가 발생했습니다.',
       );
     }
   }

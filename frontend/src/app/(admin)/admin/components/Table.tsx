@@ -5,22 +5,22 @@ import Pagenation from '@/app/_component/Pagenation';
 import style from './table.module.scss';
 import { useRouter } from 'next/navigation';
 
-interface ITable extends IPage {
+interface ITable<T extends {id:number}> extends IPage {
   title: string;
-  columns: IColumn[];
-  data?: ITables;
+  column: IColumn<T>[];
+  data?: ITables<T>;
 }
 
-export default function Table({
+export default function Table<T extends {id:number}>({
   title,
-  columns,
+  column,
   currentPage,
   onPrevPage,
   onNextPage,
   onPage,
   data,
-}: ITable) {
-    const router = useRouter();
+}: ITable<T>) {
+  const router = useRouter();
   return (
     <div className={style.tablebg}>
       <div>
@@ -31,25 +31,23 @@ export default function Table({
         <table className={style.table}>
           <thead>
             <tr>
-              {columns?.map((column) => (
-                <th key={column.id}>{column.name}</th>
+              {column?.map((config) => (
+                <th key={config.id}>{config.name}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {data?.page.map((item) => (
+            {data?.items.map((item) => (
               <tr
-                key={(item as any).id}
+                key={item.id}
                 onClick={() =>
                   title === '멘토 신청 관리' &&
                   router.push(`/admin/mentors/${item.id}`)
                 }
                 className={title === '멘토 신청 관리' ? style.click : ''}
               >
-                {columns?.map((column) => (
-                  <td key={column.id}>
-                    {column.render ? column.render(item) : item[column.key]}
-                  </td>
+                {column?.map((config) => (
+                  <td key={config.id}>{config.render?.(item)}</td>
                 ))}
               </tr>
             ))}

@@ -4,6 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginationDto } from 'src/common/dto/page.dto';
 import { Status, UserRole } from 'src/common/enum/status.enum';
 import { Mentors } from 'src/entities/Mentors';
 import { Users } from 'src/entities/Users';
@@ -72,7 +73,7 @@ export class AdminService {
   }
 
   // 멘토 신청목록
-  async getApplications(pages: number = 1, limit: number = 10) {
+  async getApplications({ page = 1, limit = 10 }: PaginationDto) {
     try {
       const queryBuilder = this.mentorRepository
         .createQueryBuilder('mentor')
@@ -88,12 +89,12 @@ export class AdminService {
           'mentor.createdAt',
         ])
         .orderBy('mentor.createdAt', 'DESC')
-        .skip((pages - 1) * limit)
+        .skip((page - 1) * limit)
         .take(limit);
 
       // 데이터와 전체 개수 조회
       const [results, total] = await queryBuilder.getManyAndCount();
-      const page = results.map((mentor) => ({
+      const items = results.map((mentor) => ({
         id: mentor.id,
         name: mentor.user.name,
         image: mentor.user.image,
@@ -104,7 +105,7 @@ export class AdminService {
         createdAt: mentor.createdAt,
       }));
       return {
-        page,
+        items,
         totalPage: Math.ceil(total / limit),
         message: '멘토 신청 목록을 조회했습니다.',
       };
@@ -147,7 +148,7 @@ export class AdminService {
     }
   }
   // 사용자 목록
-  async findAllUser(pages: number = 1, limit: number = 10) {
+  async findAllUser({ page = 1, limit = 10 }: PaginationDto) {
     try {
       const queryBuilder = this.userRepository
         .createQueryBuilder('user')
@@ -162,15 +163,14 @@ export class AdminService {
           'user.snsId',
           'user.createdAt',
         ])
-        .orderBy('user.createdAt', 'DESC');
-      // 페이지 네이션 적용
-      const skip = (pages - 1) * limit;
-      queryBuilder.skip(skip).take(limit);
+        .orderBy('user.createdAt', 'DESC')
+        .skip((page - 1) * limit)
+        .take(limit);
 
       // 데이터와 전체 개수 조회
-      const [page, total] = await queryBuilder.getManyAndCount();
+      const [items, total] = await queryBuilder.getManyAndCount();
       return {
-        page,
+        items,
         totalPage: Math.ceil(total / limit),
         message: '사용자 목록을 조회했습니다.',
       };

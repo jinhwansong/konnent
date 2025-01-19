@@ -10,7 +10,7 @@ import {
   onPasswordcheck,
   onName,
   onPhone,
-} from '@/hooks/useSign';
+} from '@/util/useSign';
 import {onSubmit} from '@/app/_lib/useSignup';
 import { useCheckEmail, useCheckNickname } from '@/app/_lib/useCheck';
 import Button from '@/app/_component/Button';

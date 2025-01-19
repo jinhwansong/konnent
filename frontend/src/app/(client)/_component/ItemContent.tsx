@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { useTap } from '@/hooks';
+import useTap from '@/hooks/useTap';
 import style from './itemContent.module.scss';
 
 

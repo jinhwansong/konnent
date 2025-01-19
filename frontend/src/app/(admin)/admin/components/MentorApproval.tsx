@@ -3,16 +3,16 @@ import React, { useCallback } from 'react'
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { IcProfile } from '@/asset';
-import { formatDate } from '@/hooks/useDate';
 import Button from '@/app/_component/Button';
 import RejectModal from '@/app/(client)/_component/RejectModal';
 import { findMentorApproval, useMentor } from '../_lib/find.mentors';
 import { useToastStore } from '@/store/useToastStore';
 import { usePopupStore } from '@/store/usePopupStore';
+import useInput from '@/hooks/useInput';
+import { getImageUrl } from '@/util/getImageUrl';
+import { formatDate } from '@/util/formatDate';
 import { IErr } from '@/type';
 import style from './mentorApproval.module.scss';
-import { useInput } from '@/hooks';
 
 export default function MentorApproval() {
   // 캐시 무효화
@@ -76,7 +76,7 @@ export default function MentorApproval() {
         </h4>
         <div className={style.content}>
           <Image
-            src={data?.image || IcProfile}
+            src={getImageUrl(data?.image)}
             alt={data?.name}
             height={120}
             width={120}

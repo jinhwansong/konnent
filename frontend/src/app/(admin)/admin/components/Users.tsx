@@ -5,9 +5,9 @@ import Image from 'next/image';
 import Table from './Table'
 import { findUserAll } from '../_lib/find.user';
 import usePage from '@/hooks/usePage';
-import { formatDate } from '@/hooks/useDate';
-import { IAdminUsers } from '@/type';
-import { IcProfile } from '@/asset';
+import { formatDate } from '@/util/formatDate';
+import { getImageUrl } from '@/util/getImageUrl';
+import { IAdminUsers, IColumn } from '@/type';
 import style from './table.module.scss';
 
 
@@ -19,42 +19,40 @@ export default function Users() {
       staleTime: 60 * 1000,
       gcTime: 300 * 1000,
     });
-    const userColumns = [
-      { id: 1, name: '번호', key: 'id' },
+    console.log(data)
+    const column: IColumn<IAdminUsers>[] = [
+      { id: 1, name: '번호', render: (item: IAdminUsers) => item.id },
       {
         id: 2,
         name: '프로필',
-        key: 'profile',
-        render: (user: IAdminUsers) => (
+        render: (item: IAdminUsers) => (
           <div className={style.profile}>
             <Image
-              src={user.image || IcProfile}
-              alt={user.name}
+              src={getImageUrl(data?.image)}
+              alt={item.name as string}
               height={35}
               width={35}
             />
             <div>
-              <p>{user.name}</p>
-              <span>{user.email || user.snsId}</span>
+              <p>{item.name}</p>
+              <span>{item.email || item.snsId}</span>
             </div>
           </div>
         ),
       },
-      { id: 3, name: '닉네임', key: 'nickname' },
-      { id: 4, name: '전화번호', key: 'phone' },
-      { id: 5, name: '사용자 권한', key: 'role' },
+      { id: 3, name: '닉네임', render: (item: IAdminUsers) => item.nickname },
+      { id: 4, name: '전화번호', render: (item: IAdminUsers) => item.phone },
+      { id: 5, name: '사용자 권한', render: (item: IAdminUsers) => item.role },
       {
         id: 6,
         name: '가입일',
-        key: 'createdAt',
-        render: (user: IAdminUsers) => formatDate(user.createdAt),
+        render: (item: IAdminUsers) => formatDate(item.createdAt),
       },
     ];
-
   return (
     <Table
       title="사용자관리"
-      columns={userColumns}
+      column={column}
       data={data}
       currentPage={currentPage}
       onPrevPage={onPrevPage}

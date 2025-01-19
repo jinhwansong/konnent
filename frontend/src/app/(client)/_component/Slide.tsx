@@ -3,8 +3,8 @@ import React from 'react';
 import Link from 'next/link';
 import { SwiperSlide, Swiper } from 'swiper/react';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
+import useSlide from '@/hooks/useSlide';
 import { IcMainSlide01, IcMainSlide02 } from '@/asset';
-import { useSlide } from '@/hooks';
 import style from './slide.module.scss';
 
 export default function Slide() {

@@ -1,8 +1,7 @@
 import React, { useCallback } from 'react'
+import { useRouter } from 'next/navigation';
 import { IcGoogle, IcKakao, IcNaver } from "@/asset";
 import style from './social.module.scss'
-import { useRouter } from 'next/navigation';
-
 
 interface ISocial {
   text: string;

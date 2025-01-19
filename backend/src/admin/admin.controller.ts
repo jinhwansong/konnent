@@ -91,8 +91,8 @@ export class AdminController {
   @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: '멘토 신청 목록 조회' })
   @Get('applications')
-  async getApplications(@Query() { page, limit }: PaginationDto) {
-    return await this.AdminService.getApplications(page, limit);
+  async getApplications(@Query() paginationDto: PaginationDto) {
+    return await this.AdminService.getApplications(paginationDto);
   }
 
   @ApiResponse({
@@ -126,7 +126,7 @@ export class AdminController {
   @Get('users')
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
-  async user(@Query() { page, limit }: PaginationDto) {
-    return await this.AdminService.findAllUser(page, limit);
+  async user(@Query() paginationDto: PaginationDto) {
+    return await this.AdminService.findAllUser(paginationDto);
   }
 }

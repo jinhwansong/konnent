@@ -7,9 +7,9 @@ import {
   useUpdatePhone,
   useUpdateProfile,
 } from '@/app/_lib/useUser';
-import { useVaild } from '@/hooks';
-import { onName, onPassword, onPasswordcheck, onPhone } from '@/hooks/useSign';
+import { onName, onPassword, onPasswordcheck, onPhone } from '@/util/useSign';
 import useProfileActions from '@/hooks/useProfileActions';
+import useVaild from '@/hooks/useVaild';
 import ProfileSection from './ProfileSection';
 import style from './profile.module.scss';
 import InfoItem from './InfoItem';

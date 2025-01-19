@@ -14,7 +14,7 @@ import { IsBase64, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Mentors } from './Mentors';
 
-@Entity({ schema: 'konnect', name: 'mentor_profile' })
+@Entity({ schema: 'konnect', name: 'mentorprofile' })
 export class MentorProfile {
   // 키값
   @ApiProperty({ example: 1, description: 'id', required: true })

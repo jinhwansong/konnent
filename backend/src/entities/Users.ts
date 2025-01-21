@@ -20,8 +20,9 @@ import {
   IsNotEmpty,
   IsString,
 } from 'class-validator';
-import { SocialLoginProvider, UserRole } from 'src/common/enum/status.enum';
+import { SocialLoginProvider, UserRole } from '../common/enum/status.enum';
 import { Reservations } from './Reservations';
+import { MentorProfile } from './MentorProfile';
 
 @Entity({ schema: 'konnect', name: 'users' })
 export class Users {
@@ -132,6 +133,9 @@ export class Users {
   // 멘토 신청 관계설정
   @OneToOne(() => Mentors, (Mentor) => Mentor.user)
   mentor: Mentors;
+  // 멘토 프로필 관계설정
+  @OneToOne(() => MentorProfile, (profile) => profile.user)
+  profile: MentorProfile;
   // 게시물 댓글 관계설정
   @OneToMany(() => Comments, (Comment) => Comment.users)
   comments: Comments[];

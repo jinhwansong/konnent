@@ -2,7 +2,7 @@ import { DataSource } from 'typeorm';
 import bcrypt from 'bcrypt';
 import { Users } from '../../entities/Users';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
-import { SocialLoginProvider, UserRole } from 'src/common/enum/status.enum';
+import { SocialLoginProvider, UserRole } from '../../common/enum/status.enum';
 
 export default class UserSeeder implements Seeder {
   public async run(

@@ -6,8 +6,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { weeklyScheduleDto } from 'src/common/dto/time.dto';
-import { Mentors } from './Mentors';
+import { MentoringPrograms } from './MentoringPrograms';
+import { weeklyScheduleDto } from '../common/dto/time.dto';
 
 @Entity({ schema: 'konnect', name: 'availableschedule' })
 export class AvailableSchedule {
@@ -22,7 +22,7 @@ export class AvailableSchedule {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  // 멘토와의 관계
-  @ManyToOne(() => Mentors, (mentor) => mentor.available)
-  mentor: Mentors;
+  // 프로그램과 관계설정
+  @ManyToOne(() => MentoringPrograms, (program) => program.available)
+  programs: MentoringPrograms;
 }

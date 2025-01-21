@@ -8,10 +8,10 @@ import { Payments } from './src/entities/Payments';
 import { Posts } from './src/entities/Posts';
 import { Users } from './src/entities/Users';
 import { join } from 'path';
-import { MentorProfile } from 'src/entities/MentorProfile';
-import { Reservations } from 'src/entities/Reservations';
-import { ExceptionsSchedule } from 'src/entities/ExceptionsSchedule';
-import { AvailableSchedule } from 'src/entities/AvailableSchedule';
+import { MentorProfile } from './src/entities/MentorProfile';
+import { Reservations } from './src/entities/Reservations';
+import { ExceptionsSchedule } from './src/entities/ExceptionsSchedule';
+import { AvailableSchedule } from './src/entities/AvailableSchedule';
 
 dotenv.config();
 

@@ -5,10 +5,12 @@ import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { HttpExceptionFilter } from './httpException.fliter';
+import connectRedis from 'connect-redis';
+import { createClient } from 'redis';
+import path from 'path';
 import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { createUploadFolder } from './common/utils/upload.utils';
-import path from 'path';
 
 declare const module: any;
 
@@ -25,8 +27,12 @@ async function bootstrap() {
       credentials: true,
     });
   }
-  app.use(cookieParser());
-
+  // 레디스 클라이언트 생성
+  const redisClient = createClient({
+    url: `redis://${process.env.REDIS_USER}:${process.env.REDIS_PASSWORD}@${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+    legacyMode: true,
+  });
+  const RedisStore = connectRedis(session);
   app.use(
     session({
       // 매요청마다 저장 x
@@ -34,6 +40,11 @@ async function bootstrap() {
       // 데이터 없는 세션 저장 x
       saveUninitialized: false,
       secret: process.env.COOKIE_SECRET,
+      store: new RedisStore({
+        client: redisClient,
+        prefix: 'session:', // 세션 키에 사용할 접두사
+        ttl: 86400, // 세션 TTL (초 단위)
+      }),
       cookie: {
         httpOnly: true,
         secure: false,
@@ -44,6 +55,7 @@ async function bootstrap() {
       },
     }),
   );
+  app.use(cookieParser());
   app.use(passport.initialize());
   app.use(passport.session());
   // 업로드 폴더 생성

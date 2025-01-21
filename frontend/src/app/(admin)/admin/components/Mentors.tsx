@@ -19,14 +19,14 @@ export default function Mentors() {
     gcTime: 300 * 1000,
   });
   const column: IColumn<IAdminMentors>[] = [
-    { id: 1, name: '번호', render: (item: IAdminMentors) => item.id },
+    { id: 1, name: '번호', render: (item: IAdminMentors) => item?.id },
     {
       id: 2,
       name: '멘토신청정보',
       render: (item: IAdminMentors) => (
         <div className={style.profile}>
           <Image
-            src={getImageUrl(data?.image)}
+            src={getImageUrl(item?.image as string)}
             alt={item.name as string}
             height={35}
             width={35}
@@ -38,13 +38,13 @@ export default function Mentors() {
         </div>
       ),
     },
-    { id: 3, name: '직무', render: (item: IAdminMentors) => item.job },
-    { id: 4, name: '경력', render: (item: IAdminMentors) => item.career },
-    { id: 5, name: '상태', render: (item: IAdminMentors) => item.status },
+    { id: 3, name: '직무', render: (item: IAdminMentors) => item?.job },
+    { id: 4, name: '경력', render: (item: IAdminMentors) => item?.career },
+    { id: 5, name: '상태', render: (item: IAdminMentors) => item?.status },
     {
       id: 6,
       name: '신청일',
-      render: (item: IAdminMentors) => formatDate(item.createdAt),
+      render: (item: IAdminMentors) => formatDate(item?.createdAt),
     },
   ];
 

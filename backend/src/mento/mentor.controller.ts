@@ -1,13 +1,9 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
-  Param,
-  ParseIntPipe,
   Patch,
   Post,
-  Query,
   UploadedFile,
   UploadedFiles,
   UseGuards,
@@ -16,7 +12,6 @@ import {
 import {
   ApiConsumes,
   ApiOperation,
-  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';

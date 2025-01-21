@@ -26,7 +26,7 @@ export default function MentorApproval() {
   const showToast = useToastStore((state) => state.showToast);
   // 정보
   const { data } = useQuery({
-    queryKey: ['mentors', id],
+    queryKey: ['approval', id],
     queryFn: () => findMentorApproval(id),
     staleTime: 60 * 1000,
     gcTime: 300 * 1000,

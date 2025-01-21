@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationDto } from 'src/common/dto/page.dto';
 import { SearchDto } from 'src/common/dto/search.dto';
 import { MentoringPrograms } from 'src/entities/MentoringPrograms';
-import { Mentors } from 'src/entities/Mentors';
+import { MentorProfile } from 'src/entities/MentorProfile';
 import {
   MentoingProgramCreateDto,
   MentoingProgramDto,
@@ -17,24 +17,26 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class ProgramService {
   constructor(
-    @InjectRepository(Mentors)
-    private readonly mentorRepository: Repository<Mentors>,
+    @InjectRepository(MentorProfile)
+    private readonly mentorProfileRepository: Repository<MentorProfile>,
     @InjectRepository(MentoringPrograms)
     private readonly mentorProgramRepository: Repository<MentoringPrograms>,
   ) {}
   // 멘토링 프로그램 등록
   async create(body: MentoingProgramCreateDto, id: number) {
     try {
-      const mentor = await this.mentorRepository.findOne({
-        where: { user: { id } },
+      console.log(body);
+      // 프로필 조회
+      const profile = await this.mentorProfileRepository.findOne({
+        where: { userId: id },
         relations: ['user'],
       });
-      if (!mentor) {
+      if (!profile) {
         throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
       }
       const newProgram = await this.mentorProgramRepository.create({
         ...body,
-        profile: { id: mentor.id },
+        profile,
       });
       await this.mentorProgramRepository.save(newProgram);
       return { massage: '멘토님의 프로그램이 등록되었습니다.' };
@@ -50,21 +52,23 @@ export class ProgramService {
   // 멘토링 프로그램 수정
   async update(body: MentoingProgramDto, id: number, programId: number) {
     try {
-      const mentor = await this.mentorRepository.findOne({
-        where: { user: { id } },
+      // 프로필 조회
+      const profile = await this.mentorProfileRepository.findOne({
+        where: { userId: id },
         relations: ['user'],
       });
-      if (!mentor) {
+      if (!profile) {
         throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
       }
       const program = await this.mentorProgramRepository.findOne({
         where: { id: programId },
         relations: ['profile'],
       });
+      console.log('프로그램 수정', program);
       if (!program) {
         throw new BadRequestException('해당 프로그램을 찾을 수 없습니다.');
       }
-      if (program.profile.id !== mentor.id) {
+      if (program.profile.id !== program.id) {
         throw new BadRequestException('프로그램을 수정할 권한이 없습니다.');
       }
       await this.mentorProgramRepository.update(programId, body);
@@ -81,11 +85,12 @@ export class ProgramService {
   // 멘토링 프로그램 삭제
   async delete(id: number, programId: number) {
     try {
-      const mentor = await this.mentorRepository.findOne({
-        where: { user: { id } },
+      // 프로필 조회
+      const profile = await this.mentorProfileRepository.findOne({
+        where: { userId: id },
         relations: ['user'],
       });
-      if (!mentor) {
+      if (!profile) {
         throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
       }
       const program = await this.mentorProgramRepository.findOne({
@@ -95,8 +100,8 @@ export class ProgramService {
       if (!program) {
         throw new BadRequestException('해당 프로그램을 찾을 수 없습니다.');
       }
-      if (program.profile.id !== mentor.id) {
-        throw new BadRequestException('프로그램을 삭제할 권한이 없습니다.');
+      if (program.profile.id !== program.id) {
+        throw new BadRequestException('프로그램을 수정할 권한이 없습니다.');
       }
       await this.mentorProgramRepository.delete(programId);
       return { massage: '멘토님의 프로그램이 삭제되었습니다.' };
@@ -112,17 +117,18 @@ export class ProgramService {
   // 멘토링 프로그램 조회
   async get(id: number, { page = 1, limit = 10 }: PaginationDto) {
     try {
-      const mentor = await this.mentorRepository.findOne({
-        where: { user: { id } },
+      // 프로필 조회
+      const profile = await this.mentorProfileRepository.findOne({
+        where: { userId: id },
         relations: ['user'],
       });
-      if (!mentor) {
+      if (!profile) {
         throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
       }
       const program = await this.mentorProgramRepository
         .createQueryBuilder('program')
-        .where('program.profileId = :mentorId', { mentorId: mentor.id })
-        .orderBy('program.createAt', 'DESC')
+        .where('program.profileId = :profileId', { profileId: profile.id })
+        .orderBy('program.createdAt', 'DESC')
         .select([
           'program.id',
           'program.title',
@@ -153,17 +159,18 @@ export class ProgramService {
         throw error;
       }
       throw new InternalServerErrorException(
-        '멘토님의 프로그램 삭제 중 오류가 발생했습니다.',
+        '멘토님의 프로그램 조회 중 오류가 발생했습니다.',
       );
     }
   }
   // 멘토링 프로그램 상세 조회
   async detail(id: number, programId: number) {
-    const mentor = await this.mentorRepository.findOne({
-      where: { user: { id } },
+    // 프로필 조회
+    const profile = await this.mentorProfileRepository.findOne({
+      where: { userId: id },
       relations: ['user'],
     });
-    if (!mentor) {
+    if (!profile) {
       throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
     }
     const program = await this.mentorProgramRepository.findOne({
@@ -188,17 +195,18 @@ export class ProgramService {
     id: number,
     { page = 1, limit = 10, keyword, sort = 'latest' }: SearchDto,
   ) {
-    const mentor = await this.mentorRepository.findOne({
-      where: { user: { id } },
+    // 프로필 조회
+    const profile = await this.mentorProfileRepository.findOne({
+      where: { userId: id },
       relations: ['user'],
     });
-    if (!mentor) {
+    if (!profile) {
       throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
     }
     // 멘토의 모든 프로그램을 꺼냄
     const program = await this.mentorProgramRepository
       .createQueryBuilder('program')
-      .where('program.profileId = :mentorId', { mentorId: mentor.id });
+      .where('program.profileId = :profileId', { profileId: profile.id });
     if (keyword) {
       program.andWhere(
         '(program.title LIKE :keyword OR program.content LIKE :keyword)',

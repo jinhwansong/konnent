@@ -72,6 +72,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        cursor: pointer;
         >svg{
             font-size: Rem(18px);
         }
@@ -99,17 +100,6 @@
     top: Rem(40px);
     z-index: 99;
     overflow: hidden;
-    > div{
-        
-        border-bottom: var(--border-main);
-        &:last-child{
-            border-bottom: 0;
-        }
-        padding-block: Rem(10px);
-        &:first-child{
-            padding: Rem(15px) Rem(20px);
-        }
-    }
     > div em{
         font-weight: 600;
     }
@@ -119,6 +109,17 @@
         color: var(--text-subTitle);
         margin-top: Rem(5px);
     }
+    > div{
+        border-bottom: var(--border-main);
+        &:last-child{
+            border-bottom: 0;
+        }
+        padding-block: Rem(10px);
+        &:first-child{
+            padding: Rem(15px) Rem(20px);
+        }
+    }
+    
     > div a, > div button{
         display: block;
         text-align: left;

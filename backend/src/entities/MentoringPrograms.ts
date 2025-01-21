@@ -11,6 +11,8 @@ import { MentorProfile } from './MentorProfile';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Reservations } from './Reservations';
+import { AvailableSchedule } from './AvailableSchedule';
+import { ExceptionsSchedule } from './ExceptionsSchedule';
 
 // 프로그램 활성화
 export enum ProgramStatus {
@@ -85,4 +87,10 @@ export class MentoringPrograms {
   // 예약일정 관계설정
   @OneToMany(() => Reservations, (reservation) => reservation.programs)
   reservations: Reservations[];
+  // 예약 가능
+  @OneToMany(() => AvailableSchedule, (schedule) => schedule.programs)
+  available: AvailableSchedule[];
+  // 예약 불가능
+  @OneToMany(() => ExceptionsSchedule, (schedule) => schedule.programs)
+  exception: ExceptionsSchedule[];
 }

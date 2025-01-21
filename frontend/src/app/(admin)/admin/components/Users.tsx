@@ -19,7 +19,6 @@ export default function Users() {
       staleTime: 60 * 1000,
       gcTime: 300 * 1000,
     });
-    console.log(data)
     const column: IColumn<IAdminUsers>[] = [
       { id: 1, name: '번호', render: (item: IAdminUsers) => item.id },
       {
@@ -28,7 +27,7 @@ export default function Users() {
         render: (item: IAdminUsers) => (
           <div className={style.profile}>
             <Image
-              src={getImageUrl(data?.image)}
+              src={getImageUrl(item?.image as string)}
               alt={item.name as string}
               height={35}
               width={35}

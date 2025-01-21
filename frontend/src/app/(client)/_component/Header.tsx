@@ -34,7 +34,7 @@ export default function Header() {
     onPopup();
    
   }, [router, onPopup, logoutMutation, queryClient]);
-  console.log(data?.image);
+  console.log(search);
   return (
     <header className={style.header}>
       <div className={style.header_inner}>
@@ -66,8 +66,6 @@ export default function Header() {
                     </div>
                     <div>
                       <Link href="/user/mypage">내 정보</Link>
-
-                      <Link href="/user/messages">알림</Link>
                       <Link href="/user/bookmarks">북마크</Link>
                       <Link href="/user/relationships">팔로우</Link>
                       <Link href="/mentoring/applications">

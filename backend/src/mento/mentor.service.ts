@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Status } from 'src/common/enum/status.enum';
+import { Status } from '../common/enum/status.enum';
 import { MentorProfile } from 'src/entities/MentorProfile';
 import { Mentors } from 'src/entities/Mentors';
 import { DataSource, In, Repository } from 'typeorm';
@@ -27,7 +27,7 @@ export class MentorService {
     private readonly dataSource: DataSource,
   ) {}
   // 멘토신청
-  async mentorApplication(body: MentorRequestDto, userId: number) {
+  async mentorApplication(body: MentorRequestDto, id: number) {
     const queryRunner = this.dataSource.createQueryRunner();
     // db 연결
     await queryRunner.connect();
@@ -52,12 +52,11 @@ export class MentorService {
       // 멘토인지 아닌지 여부
       const Mentor = await queryRunner.manager.getRepository(Mentors).findOne({
         where: {
-          user: { id: userId },
+          userId: id,
           status: In([Status.PENDING, Status.APPROVED]),
         },
         order: { createdAt: 'DESC' },
       });
-
       if (Mentor) {
         if (Mentor.status === Status.PENDING) {
           throw new BadRequestException('이미 멘토 신청을 하셨습니다');
@@ -71,7 +70,7 @@ export class MentorService {
         .getRepository(Mentors)
         .findOne({
           where: {
-            user: { id: userId },
+            userId: id,
             status: In([Status.REJECTED]),
           },
           order: { createdAt: 'DESC' },
@@ -88,11 +87,13 @@ export class MentorService {
           );
         }
       }
-      await queryRunner.manager.getRepository(Mentors).save({
-        body,
-        users: { id: userId },
-        status: Status.PENDING,
-      });
+      if (!Mentor) {
+        await queryRunner.manager.getRepository(Mentors).save({
+          ...body,
+          userId: id,
+          status: Status.PENDING,
+        });
+      }
       await queryRunner.commitTransaction();
       return { message: '멘토신청이 완료되었습니다.' };
     } catch (error) {
@@ -118,16 +119,15 @@ export class MentorService {
       }
       // 프로필 조회
       let profile = await this.mentorProfileRepository.findOne({
-        where: { mentor: { id: mentor.id } },
-        relations: ['mentor'],
+        where: { user: { id } },
+        relations: ['user'],
       });
-      // 프로필이 없는 경우
       if (!profile) {
         profile = await this.mentorProfileRepository.save({
-          mentor,
-          introduce: '',
-          company: '',
+          company: null,
+          introduce: null,
           image: null,
+          userId: id,
         });
       }
       return {
@@ -149,19 +149,14 @@ export class MentorService {
   // 멘토 회사명 변경
   async updateCompany(body: UpdateCompanyDto, id: number) {
     try {
-      // 멘토 정보 조회
-      const mentor = await this.mentorRepository.findOne({
-        where: { user: { id } },
-        relations: ['user'],
-      });
-      if (!mentor) {
-        throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
-      }
       // 프로필 조회
       const profile = await this.mentorProfileRepository.findOne({
-        where: { mentor: { id: mentor.id } },
-        relations: ['mentor'],
+        where: { userId: id },
+        relations: ['user'],
       });
+      if (!profile) {
+        throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
+      }
       await this.mentorProfileRepository.update(
         { id: profile.id },
         {
@@ -169,8 +164,8 @@ export class MentorService {
         },
       );
       const updatedProfile = await this.mentorProfileRepository.findOne({
-        where: { mentor: { id: mentor.id } },
-        relations: ['mentor'],
+        where: { userId: id },
+        relations: ['user'],
       });
       return {
         message: '멘토님의 회사명이 변경되었습니다.',
@@ -188,19 +183,14 @@ export class MentorService {
   // 멘토 자기소개 변경
   async updateIntroduce(body: UpdateIntroduceDto, id: number) {
     try {
-      // 멘토 정보 조회
-      const mentor = await this.mentorRepository.findOne({
-        where: { user: { id } },
-        relations: ['user'],
-      });
-      if (!mentor) {
-        throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
-      }
       // 프로필 조회
       const profile = await this.mentorProfileRepository.findOne({
-        where: { mentor: { id: mentor.id } },
-        relations: ['mentor'],
+        where: { userId: id },
+        relations: ['user'],
       });
+      if (!profile) {
+        throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
+      }
       this.mentorProfileRepository.update(
         { id: profile.id },
         {
@@ -208,8 +198,8 @@ export class MentorService {
         },
       );
       const updatedProfile = await this.mentorProfileRepository.findOne({
-        where: { mentor: { id: mentor.id } },
-        relations: ['mentor'],
+        where: { userId: id },
+        relations: ['user'],
       });
       return {
         message: '멘토님의 자기소개가 변경되었습니다.',
@@ -227,12 +217,12 @@ export class MentorService {
   // 멘토 자기소개 이미지 처리
   async uploadImage(files: Array<Express.Multer.File>, id: number) {
     try {
-      // 멘토 정보 조회
-      const mentor = await this.mentorRepository.findOne({
-        where: { user: { id } },
+      // 프로필 조회
+      const profile = await this.mentorProfileRepository.findOne({
+        where: { userId: id },
         relations: ['user'],
       });
-      if (!mentor) {
+      if (!profile) {
         throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
       }
       const fileUrls = files.map((file) => `/uploads/${file.filename}`);
@@ -252,19 +242,14 @@ export class MentorService {
       if (!file) {
         throw new BadRequestException('업로드된 파일이 없습니다.');
       }
-      // 멘토 정보 조회
-      const mentor = await this.mentorRepository.findOne({
-        where: { user: { id } },
-        relations: ['user'],
-      });
-      if (!mentor) {
-        throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
-      }
       // 프로필 조회
       const profile = await this.mentorProfileRepository.findOne({
-        where: { mentor: { id: mentor.id } },
-        relations: ['mentor'],
+        where: { userId: id },
+        relations: ['user'],
       });
+      if (!profile) {
+        throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
+      }
       const imageUrl = `/uploads/${file.filename}`;
 
       await this.mentorProfileRepository.update(
@@ -274,8 +259,8 @@ export class MentorService {
         },
       );
       const updatedProfile = await this.mentorProfileRepository.findOne({
-        where: { mentor: { id: mentor.id } },
-        relations: ['mentor'],
+        where: { userId: id },
+        relations: ['user'],
       });
       return {
         message: '프로필이미지가 변경되었습니다.',

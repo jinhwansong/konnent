@@ -21,7 +21,7 @@ import { PaginationDto } from 'src/common/dto/page.dto';
 import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedToNull.Interceptor';
 import { AdminService } from './admin.service';
 import { UserDtoByPassword } from 'src/common/dto/user.dto';
-import { UserRole } from 'src/common/enum/status.enum';
+import { UserRole } from '../common/enum/status.enum';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('관리자')

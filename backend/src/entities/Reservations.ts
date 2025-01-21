@@ -12,7 +12,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Payments } from './Payments';
 import { MentoringPrograms } from './MentoringPrograms';
 import { Users } from './Users';
-import { weeklyScheduleDto } from 'src/common/dto/time.dto';
+import { weeklyScheduleDto } from '../common/dto/time.dto';
 
 // 멘토링 현황
 enum MemtoringStatus {

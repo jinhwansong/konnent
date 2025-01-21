@@ -1,0 +1,33 @@
+@import '@/styles/_mixins.module.scss';
+@import '@/styles/_functions.scss';
+.add_section{
+     @include flex;
+}
+.add_title {
+    @include title;
+}
+.add_article{
+    margin-top: size(30px);
+    display: flex;
+    gap: size(20px);
+    > div{
+        display: flex;
+        flex-direction: column;
+        gap: size(10px);
+        flex: 1;
+    }
+    > div label{
+        font-size: size(14px);
+        font-weight: 600;
+    }
+    > div label span{
+        color: var(--text-red);
+    }
+}
+.button_wrap{
+    margin-top: size(10px);
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: size(10px);
+}

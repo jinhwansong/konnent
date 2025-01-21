@@ -1,4 +1,8 @@
 @import '@/styles/_functions.scss';
+@mixin size {
+    height: size(40px);
+  font-size: size(12px);
+}
 .button{
   width: 100%;
   font-size: size(14px);
@@ -29,8 +33,11 @@
 }
 .widthSmall {
   width: size(60px);
-  height: size(35px);
-  font-size: size(12px);
+  @include size;
+}
+.widthManage {
+  width: size(90px);
+  @include size;
 }
 .bgnone{
     background: #6B7280;

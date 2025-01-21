@@ -49,16 +49,26 @@ export default function Nav() {
       { title: '결제/환불 내역', href: '/mentoring/payments' },
     ],
   };
+
   // 현재 댑스
   const renderSection = (section: INavSection) => (
     <div className={style.navItem}>
       <h4>{section.title}</h4>
       <ul>
-        {section?.items.map((item) => (
-          <li key={item.href} className={item.href === pathname ? style.active : ''}>
-            <Link href={item.href}>{item.title}</Link>
-          </li>
-        ))}
+        {section?.items.map((item) => {
+          const url = [item.href];
+          if (item.href === '/mentor/management') {
+            url.push('/mentor/addmanagement');
+          }
+          return (
+            <li
+              key={item.href}
+              className={url.includes(pathname) ? style.active : ''}
+            >
+              <Link href={item.href}>{item.title}</Link>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

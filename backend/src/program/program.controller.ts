@@ -9,9 +9,10 @@ import {
   Post,
   Query,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ProgramService } from './program.service';
-import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   MentoingProgramCreateDto,
   MentoingProgramDto,
@@ -20,7 +21,10 @@ import { LoggedInGuard } from 'src/auth/logged-in.guard';
 import { User } from 'src/common/decorators/user.decorator';
 import { PaginationDto } from 'src/common/dto/page.dto';
 import { ProgramListDto, SearchDto } from 'src/common/dto/search.dto';
+import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedToNull.Interceptor';
 
+@UseInterceptors(UndefinedToNullInterceptor)
+@ApiTags('멘토 프로그램')
 @Controller('program')
 export class ProgramController {
   constructor(private readonly ProgramService: ProgramService) {}

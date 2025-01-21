@@ -23,12 +23,25 @@ export interface IAdminMentors extends IAdmin {
   career: string;
   status: string;
 }
-export interface IColumn<T = IAdminUsers | IAdminMentors> {
+export interface IProgram {
+  title: string;
+  price: number;
+  duration: number;
+}
+export interface IgetProgram extends IProgram {
+  content:string;
+}
+export interface IManagement extends IProgram {
+  id: number;
+  status: string;
+  createdAt: string;
+}
+export interface IColumn<T = IAdminUsers | IAdminMentors | IManagement> {
   id: number;
   name: string;
   render?: (item: T) => React.ReactNode;
 }
-export interface ITables<T = IAdminUsers | IAdminMentors> {
+export interface ITables<T = IAdminUsers | IAdminMentors | IManagement> {
   items: T[];
   message: string;
   totalPage: number;

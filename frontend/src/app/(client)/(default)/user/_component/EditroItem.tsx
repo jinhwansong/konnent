@@ -2,7 +2,6 @@ import React from 'react'
 import Button from '@/app/_component/Button';
 import Editor from '@/app/_component/Editor';
 import HtmlContent from '@/app/_component/HtmlContent';
-
 import style from './infoItem.module.scss';
 
 
@@ -25,11 +24,9 @@ export default function EditroItem({
   introduce,
 }: IEditroItem) {
   return (
-    
     <>
       <div className={style.info_item}>
         <em className={style.item_title}>자기소개</em>
-
         <div className={style.editor_text}>
           {isEditing ? (
             <>
@@ -49,7 +46,9 @@ export default function EditroItem({
               </div>
             </>
           ) : (
-            <HtmlContent html={data}/>
+            <p className={style.item_text}>
+              <HtmlContent html={data} />
+            </p>
           )}
         </div>
       </div>

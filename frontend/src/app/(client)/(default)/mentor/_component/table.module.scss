@@ -1,0 +1,27 @@
+.table{
+    border-top: var(--border-main);
+    border-bottom: var(--border-main);
+    table-layout: fixed;
+    width: 100%;
+    td, th{
+        font-size: 0.875rem;
+        text-align: left;
+        border-top: var(--border-main);
+        padding: 1rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        &:nth-child(1){width:8%;text-align: center;}
+        &:nth-child(2){width:32%}
+        &:nth-child(3){width:15%}
+        &:nth-child(4){width:15%}
+        &:nth-child(5){width:15%}
+        &:nth-child(6){width:15%}
+    }
+    td{
+        color: var(--text-subTitle);
+    }
+}
+.click{
+    cursor: pointer;
+}

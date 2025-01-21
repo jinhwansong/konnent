@@ -3,10 +3,9 @@ import { LoggerMiddelware } from './middlewares/logger.middelware';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { UsersModule } from './users/users.module';
-import { MentorModule } from './mento/mentor.module';
-import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
+import { join } from 'path';
 import { Likes } from './entities/Likes';
 import { Comments } from './entities/Comments';
 import { MentoringPrograms } from './entities/MentoringPrograms';
@@ -15,9 +14,6 @@ import { Payments } from './entities/Payments';
 import { Posts } from './entities/Posts';
 import { Users } from './entities/Users';
 import { UsersService } from './users/users.service';
-import { AdminModule } from './admin/admin.module';
-import { DataSource } from 'typeorm';
-import { join } from 'path';
 import { MentorProfile } from './entities/MentorProfile';
 import { Reservations } from './entities/Reservations';
 import { ExceptionsSchedule } from './entities/ExceptionsSchedule';
@@ -25,6 +21,11 @@ import { AvailableSchedule } from './entities/AvailableSchedule';
 import { ProgramModule } from './program/program.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { ReservationModule } from './reservation/reservation.module';
+import { UsersModule } from './users/users.module';
+import { MentorModule } from './mento/mentor.module';
+import { AuthModule } from './auth/auth.module';
+import { AdminModule } from './admin/admin.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -32,7 +33,6 @@ import { ReservationModule } from './reservation/reservation.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -79,6 +79,7 @@ import { ReservationModule } from './reservation/reservation.module';
     UsersModule,
     MentorModule,
     AuthModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService, UsersService],

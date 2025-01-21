@@ -18,6 +18,22 @@
     font-weight: 700;
     line-height: 1;
 }
+
+.profile{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    > img{
+        overflow: hidden;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    > div p{
+        color: var(--text-title);
+        margin-bottom: 5px;
+        line-height: 1;
+    }
+}
 .table{
     border-top: var(--border-main);
     border-bottom: var(--border-main);
@@ -37,21 +53,6 @@
     }
     td{
         color: var(--text-subTitle);
-    }
-}
-.profile{
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    > img{
-        overflow: hidden;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-    > div p{
-        color: var(--text-title);
-        margin-bottom: 5px;
-        line-height: 1;
     }
 }
 .click{

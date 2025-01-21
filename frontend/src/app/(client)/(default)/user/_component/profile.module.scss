@@ -1,7 +1,7 @@
 @import '@/styles/_mixins.module.scss';
 @import '@/styles/_functions.scss';
 .mypage_section{
-     flex: 1;
+     @include flex;
 }
 .mypage_aticle{
     width: 100%;
@@ -13,14 +13,13 @@
     }
 }
 .mypage_title {
-    font-weight: 700;
-    margin-bottom: size(20px);
+    @include title;
 }
 .info_item{
     display: flex;
 }
 .item_title{
-    @include title;
+    @include item_title;
     line-height:size(40px);
 }
 .img_button{

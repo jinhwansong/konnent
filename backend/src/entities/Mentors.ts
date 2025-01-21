@@ -3,24 +3,21 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Users } from './Users';
-import { Status } from '../common/enum/status.enum';
-import { MentorProfile } from './MentorProfile';
 import {
   IsBoolean,
   IsEmail,
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUrl,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { ExceptionsSchedule } from './ExceptionsSchedule';
-import { AvailableSchedule } from './AvailableSchedule';
+import { Users } from './Users';
+import { Status } from '../common/enum/status.enum';
 
 @Entity({ schema: 'konnect', name: 'mentors' })
 export class Mentors {
@@ -75,11 +72,11 @@ export class Mentors {
   @Column('text', { name: 'introduce' })
   introduce: string;
   // 멘토포트폴리오
-  @IsEmail()
+  @IsUrl()
   @IsNotEmpty()
   @ApiProperty({
-    example: 'example@gmail.com',
-    description: '포트폴리오 페이지',
+    example: 'https://portfolio.example.com',
+    description: '포트폴리오 페이지 url',
     required: true,
   })
   @Column('varchar', { name: 'portfolio' })
@@ -102,21 +99,14 @@ export class Mentors {
   })
   @Column('text', { name: 'reason', nullable: true })
   reason: string | null;
+  @Column({ name: 'userId' })
+  userId: number;
   @CreateDateColumn()
   createdAt: Date;
   @UpdateDateColumn()
   updatedAt: Date;
-  // 멘토프로필
-  @OneToOne(() => MentorProfile, (profile) => profile.mentor)
-  profile: MentorProfile;
   // 유저와 관계 설정
   @OneToOne(() => Users, (user) => user.mentor)
   @JoinColumn({ name: 'userId' })
   user: Users;
-  // 불가능한 스케줄
-  @OneToMany(() => ExceptionsSchedule, (exception) => exception.mentor)
-  exception: ExceptionsSchedule[];
-  // 가능한 스케줄
-  @OneToMany(() => AvailableSchedule, (available) => available.mentor)
-  available: AvailableSchedule[];
 }

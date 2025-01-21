@@ -16,11 +16,11 @@
 .bgsearch{
     background:var(--bg-F1F4F6);
     border:var(--border-search);
+    width: 25rem;
+    height: 2.5rem;
     &::placeholder{
         color: var(--text-9094A8);
     }
-    width: 25rem;
-    height: 2.5rem;
 }
 
 .height40{

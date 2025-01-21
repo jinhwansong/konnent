@@ -5,6 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useToastStore } from '@/store/useToastStore';
 import { IcProfile } from '@/asset';
 import style from './profile.module.scss';
+import { getImageUrl } from '@/util/getImageUrl';
 
 
  interface IProfileSection {
@@ -71,8 +72,8 @@ export default function ProfileSection({
       <em className={style.item_title}>이미지</em>
       <button onClick={onProfile} className={style.img_button}>
         <Image
-          src={image ? `${process.env.NEXT_PUBLIC_API_BASE_URL}${image}` : IcProfile}
-          alt='프로필사진'
+          src={getImageUrl(image)}
+          alt="프로필사진"
           height={100}
           width={100}
         />

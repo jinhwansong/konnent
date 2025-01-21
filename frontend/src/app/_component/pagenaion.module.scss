@@ -1,18 +1,20 @@
+@import '@/styles/_functions.scss';
+
 .pagenation{
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 5px;
+    margin-top: size(20px);
     > button{
-       
         background: var(--bg-f7f7f7);
-        width: 2.1875rem;
-        height: 2.1875rem;
+        width: size(35px);
+        height: size(35px);
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 50%;
-         &:first-child,&:last-child{
+        &:first-child,&:last-child{
             background: var(--bg-none);
         }
         &:hover{

@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationDto } from 'src/common/dto/page.dto';
-import { Status, UserRole } from 'src/common/enum/status.enum';
+import { Status, UserRole } from '../common/enum/status.enum';
 import { Mentors } from 'src/entities/Mentors';
 import { Users } from 'src/entities/Users';
 import { DataSource, Repository } from 'typeorm';
@@ -27,7 +27,7 @@ export class AdminService {
     try {
       const Mentor = await queryRunner.manager.getRepository(Mentors).findOne({
         where: { id },
-        relations: ['users'],
+        relations: ['user'],
         select: ['id', 'status', 'user'],
       });
       if (!Mentor) {
@@ -117,10 +117,11 @@ export class AdminService {
   }
   // 멘토 신청 상세페이지
   async findOneApplicationDetail(id: number) {
+    console.log('아이디', id);
     try {
       const Mentor = await this.mentorRepository.findOne({
         where: { id },
-        relations: ['users'],
+        relations: ['user'],
       });
       if (!Mentor) {
         throw new BadRequestException(

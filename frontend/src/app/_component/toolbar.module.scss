@@ -3,7 +3,11 @@
 .editor_wrap {
  border: var(--border-main);
  border-radius: 10px;
- max-height: 500px;
+ 
+ > div:last-child{
+  max-height: 350px;
+  min-height: 350px;
+ }
 }
 
 // 툴바 영역

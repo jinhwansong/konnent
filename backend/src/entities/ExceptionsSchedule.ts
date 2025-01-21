@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Mentors } from './Mentors';
+import { MentoringPrograms } from './MentoringPrograms';
 
 // 멘토링 예외일정
 enum Exceptions {
@@ -38,7 +38,8 @@ export class ExceptionsSchedule {
 
   @UpdateDateColumn()
   updatedAt: Date;
-  // 멘토와의 관계
-  @ManyToOne(() => Mentors, (mentor) => mentor.exception)
-  mentor: Mentors;
+
+  // 프로그램과 관계설정
+  @ManyToOne(() => MentoringPrograms, (program) => program.exception)
+  programs: MentoringPrograms;
 }

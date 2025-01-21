@@ -12,12 +12,12 @@
     margin-top: size(10px);
 }
 .item_title{
-    @include title;
+    @include item_title;
     line-height: 1;
     padding-block: 10px;
 }
 .item_title_on{
-    @include title;
+    @include item_title;
     line-height:size(50px);
 }
 .item_right{

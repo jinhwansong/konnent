@@ -37,7 +37,7 @@ export default function Table<T extends {id:number}>({
             </tr>
           </thead>
           <tbody>
-            {data?.items.map((item) => (
+            {data?.items?.map((item) => (
               <tr
                 key={item.id}
                 onClick={() =>

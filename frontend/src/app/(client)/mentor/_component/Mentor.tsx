@@ -1,18 +1,20 @@
 'use client';
 import React, { FormEvent, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { usePopupStore } from '@/store/usePopupStore';
-import { useInput, useSelect, useVaild } from '@/hooks';
-import { onEmail } from '@/util/useSign';
 import Input from '@/app/_component/Input';
 import Selet from '@/app/_component/Selet';
 import Button from '@/app/_component/Button';
-import { joblist, careerlist } from '@/app/(client)/config/job';
 import { useUserData } from '@/app/_lib/useUser';
 import { useMentor } from '@/app/_lib/useMentor';
-import style from './mento.module.scss';
+import { onEmail } from '@/util/useSign';
+import useVaild from '@/hooks/useVaild';
+import useSelect from '@/hooks/useSelect';
+import useInput from '@/hooks/useInput';
+import { usePopupStore } from '@/store/usePopupStore';
 import { useToastStore } from '@/store/useToastStore';
+import { joblist, careerlist } from '@/app/(client)/config/job';
 import { IErr } from '@/type';
+import style from './mento.module.scss';
 
 export default function Mentor() {
   const router = useRouter();
@@ -120,7 +122,7 @@ export default function Mentor() {
   return (
     <>
       <h4 className={style.title}>
-        감사합니다, <span>{data.nickname}</span> 님<br />
+        감사합니다, <span>{data?.nickname}</span> 님<br />
         지식공유자가 되기 위해서
         <br />
         아래 정보가 필요해요.
@@ -165,7 +167,10 @@ export default function Mentor() {
             </div>
           );
         })}
-        <Button type="submit" disabled={!buttonDisabled || error !== ''}>
+        <Button
+          type="submit"
+          disabled={!buttonDisabled || error !== '' || !portfolio.startsWith('http')}
+        >
           멘토지원
         </Button>
       </form>

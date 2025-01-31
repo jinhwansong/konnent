@@ -2,8 +2,10 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -59,12 +61,40 @@ export class MentoringPrograms {
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty({
-    example: '1시간',
-    description: '1회당 멘토링 가능 시간',
+    example: '60',
+    description: '1회당 멘토링 시간 (분 단위)',
     required: true,
   })
   @Column('int', { name: 'duration' })
   duration: number;
+  // 평균평점
+  @IsNumber()
+  @ApiProperty({
+    example: 4.5,
+    description: '프로그램 평균 평점 (0-5점)',
+    minimum: 0,
+    maximum: 5,
+    default: 0,
+  })
+  @Column('decimal', {
+    name: 'averageRating',
+    precision: 2,
+    scale: 1,
+    default: 0,
+  })
+  averageRating: number;
+  // 총 평가 수
+  @IsNumber()
+  @ApiProperty({
+    example: 42,
+    description: '총 평가 수',
+    default: 0,
+  })
+  @Column('int', {
+    name: 'totalRatings',
+    default: 0,
+  })
+  totalRatings: number;
   // 프로그램 상태
   @ApiProperty({
     example: ProgramStatus.ACTIVE,
@@ -77,20 +107,20 @@ export class MentoringPrograms {
     default: ProgramStatus.ACTIVE,
   })
   status: ProgramStatus;
+  @Column({ name: 'profileId' })
+  profileId: number;
   @CreateDateColumn()
   createdAt: Date;
   @UpdateDateColumn()
   updatedAt: Date;
   // 멘토프로필과의 관계설정
   @ManyToOne(() => MentorProfile, (profile) => profile.programs)
+  @JoinColumn({ name: 'profileId' })
   profile: MentorProfile;
   // 예약일정 관계설정
   @OneToMany(() => Reservations, (reservation) => reservation.programs)
   reservations: Reservations[];
   // 예약 가능
-  @OneToMany(() => AvailableSchedule, (schedule) => schedule.programs)
-  available: AvailableSchedule[];
-  // 예약 불가능
-  @OneToMany(() => ExceptionsSchedule, (schedule) => schedule.programs)
-  exception: ExceptionsSchedule[];
+  @OneToOne(() => AvailableSchedule, (schedule) => schedule.programs)
+  available: AvailableSchedule;
 }

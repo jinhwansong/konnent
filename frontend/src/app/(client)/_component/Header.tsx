@@ -34,7 +34,6 @@ export default function Header() {
     onPopup();
    
   }, [router, onPopup, logoutMutation, queryClient]);
-  console.log(search);
   return (
     <header className={style.header}>
       <div className={style.header_inner}>

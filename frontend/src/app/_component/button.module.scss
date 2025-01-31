@@ -12,7 +12,7 @@
   background:var(--major-main);
   color:var(--text-white);
   &:hover {
-    background-color: #E83A0D;
+    background: var(--bg-E83A0D);
   }
   &:disabled{
     background: var(--bg-F1F4F6);
@@ -27,7 +27,7 @@
   border: var(--border-main);
   color: var(--text-subTitle);
   &:hover {
-    border: 1px solid #E83A0D;
+    border: var(--border-E83A0D);
     color:var(--text-white);
   }
 }
@@ -39,10 +39,17 @@
   width: size(90px);
   @include size;
 }
+.bgdelete {
+    background: #DC2626;  // 또는 #FF4500
+    color: var(--text-white);
+    &:hover {
+        background: #B91C1C;  // 더 어두운 톤
+    }
+}
 .bgnone{
-    background: #6B7280;
+    background: var(--bg-6B7280);
     color: var(--text-white);
     &:hover{
-        background: #4B5563;
+        background: var(--bg-4B5563);
     }
 }

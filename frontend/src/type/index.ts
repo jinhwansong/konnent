@@ -23,25 +23,36 @@ export interface IAdminMentors extends IAdmin {
   career: string;
   status: string;
 }
-export interface IProgram {
+interface IProgram {
   title: string;
   price: number;
   duration: number;
 }
-export interface IgetProgram extends IProgram {
+export interface ICreateProgram extends IProgram {
   content:string;
 }
-export interface IManagement extends IProgram {
+export interface IModifyProgram extends ICreateProgram {
+  id: number;
+}
+export interface IGetProgram extends IProgram {
   id: number;
   status: string;
+  averageRating: number;
+  totalRatings:number;
   createdAt: string;
 }
-export interface IColumn<T = IAdminUsers | IAdminMentors | IManagement> {
+
+export interface IModifyPrograms extends IGetProgram {
+  content: string;
+}
+
+
+export interface IColumn<T = IAdminUsers | IAdminMentors| IGetProgram> {
   id: number;
   name: string;
   render?: (item: T) => React.ReactNode;
 }
-export interface ITables<T = IAdminUsers | IAdminMentors | IManagement> {
+export interface ITables<T = IAdminUsers | IAdminMentors | IGetProgram> {
   items: T[];
   message: string;
   totalPage: number;
@@ -52,10 +63,9 @@ export interface IPage {
   onPrevPage: () => void;
   onNextPage: () => void;
   onPage: (page: number) => void;
-}
-export interface IPages extends IPage {
   totalPage: number;
 }
+
 export interface IMentorApprovalParams {
   approved: boolean;
   reason?: string;

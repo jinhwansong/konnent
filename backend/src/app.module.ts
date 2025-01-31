@@ -19,7 +19,6 @@ import { Reservations } from './entities/Reservations';
 import { ExceptionsSchedule } from './entities/ExceptionsSchedule';
 import { AvailableSchedule } from './entities/AvailableSchedule';
 import { ProgramModule } from './program/program.module';
-import { ScheduleModule } from './schedule/schedule.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { UsersModule } from './users/users.module';
 import { MentorModule } from './mento/mentor.module';
@@ -74,7 +73,6 @@ import { RedisModule } from './redis/redis.module';
     ]),
     AdminModule,
     ProgramModule,
-    ScheduleModule,
     ReservationModule,
     UsersModule,
     MentorModule,

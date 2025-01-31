@@ -74,7 +74,7 @@ export class ProgramController {
   @ApiOperation({ summary: '멘토 프로그램 수정' })
   @Patch(':id')
   update(
-    @Body() body: MentoingProgramDto,
+    @Body() body: MentoingProgramCreateDto,
     @User() user,
     @Param('id', ParseIntPipe) id: number,
   ) {
@@ -128,6 +128,30 @@ export class ProgramController {
   @Get('')
   get(@User() user, @Query() paginationDto: PaginationDto) {
     return this.ProgramService.get(user.id, paginationDto);
+  }
+  @ApiResponse({
+    status: 200,
+    description: '멘토님의 프로그램이 조회되었습니다.',
+    type: ProgramListDto,
+  })
+  @ApiResponse({
+    status: 500,
+    description: '멘토님의 프로그램 조회 중 오류가 발생했습니다.',
+    schema: {
+      properties: {
+        statusCode: { type: 'number', example: 500 },
+        message: {
+          type: 'string',
+          example: '멘토님의 프로그램 조회 중 오류가 발생했습니다.',
+        },
+      },
+    },
+  })
+  @UseGuards(new LoggedInGuard())
+  @ApiOperation({ summary: '멘토 프로그램 상세조회' })
+  @Get(':id')
+  detail(@User() user, @Param('id', ParseIntPipe) id: number) {
+    return this.ProgramService.detail(user.id, id);
   }
   @ApiResponse({
     status: 200,

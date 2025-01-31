@@ -1,31 +1,48 @@
 'use client'
 import React from 'react'
 import Image from 'next/image';
-import Link from 'next/link';
 import style from './item.module.scss';
+import { getImageUrl } from '@/util/getImageUrl';
+import Link from 'next/link';
+import { formatDate } from '@/util/formatDate';
+import { formatNumber } from '@/util/formatNumber';
 
-type IItem = {
-  id: number;
-  img: string;
+interface IItem {
+  create: string;
+  price: number;
+  status: string;
   title: string;
-  name: string;
-  job: string;
-  tag: string;
-};
+  duration: number;
+  image: string;
+  job:string;
+  id:number
+  link:string;
+}
 
-export default function Item({ id, img, title, name, job, tag }: IItem) {
+
+export default function Item({
+  link,
+  id,
+  create,
+  price,
+  status,
+  title,
+  duration,
+  image,
+}: IItem) {
   return (
-    <Link href={`/Mentorrs/${id}`}>
-      <div className={style.imgbox}>
-        <Image src={img} alt={name} width={190} height={260} />
-        <div className={style.Mentor_textbox}>
-          <h5>{job}</h5>
-          <p>{name} 멘토</p>
-        </div>
+    <Link href={`${link}/${id}`} className={style.mentoring_wrap}>
+      <div className={style.mentoring_imgbox}>
+        <Image src={getImageUrl(image)} alt="mentor" width={196} height={262} />
+        <span className={style.status}>{status === 'active' && '진행중'}</span>
       </div>
-      <div className={style.textbox}>
-        <span>{tag}</span>
-        <em>{title}</em>
+      <div className={style.mentoring_info}>
+        <h4>프로그램 제목</h4>
+        <div className={style.program_meta}>
+          <span>1회 당 시간 : {duration}분</span>
+          <span>가격 : {formatNumber(price)}원</span>
+          <span>생성일 : {formatDate(create)}</span>
+        </div>
       </div>
     </Link>
   );

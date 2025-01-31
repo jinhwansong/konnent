@@ -1,4 +1,5 @@
 :root{
+  --font-pretendard: 'Pretendard';
   /* major(theme) */
   --major-main: #F24822;
     /* text(common) */
@@ -17,10 +18,14 @@
   --bg-f7f7f7: #f7f7f7;
   --bg-none:transparent;
   --bg-FCDAD3:#FCDAD3;
+  --bg-E83A0D:#E83A0D;
+  --bg-6B7280:#6B7280;
+  --bg-4B5563:#4B5563;
     /* border(rgb(7, 6, 6) */
   --border-main: 1px solid #ddd  ;
   --border-search: 1px solid #F1F4F6  ;
   --border-major: 1px solid #F24822  ;
+  --border-E83A0D: 1px solid #E83A0D  ;
 }
 
 * {
@@ -34,7 +39,7 @@ html, body {
   transition: background 0.2s ease-in, color 0.2s ease-in;
   font-size: 16px;
   font-weight:400;
-  font-family: 'pretendard', 'sans-serif';
+  font-family: var(--font-pretendard), sans-serif;
 }
 
 button,a,input{

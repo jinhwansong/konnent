@@ -15,21 +15,3 @@
 .mypage_title {
     @include title;
 }
-.info_item{
-    display: flex;
-}
-.item_title{
-    @include item_title;
-    line-height:size(40px);
-}
-.img_button{
-    width: size(100px);
-    height: size(100px);
-    border-radius: 10px;
-    overflow: hidden;
-    > img{
-        object-fit: cover;
-        width: 100%;
-        height: 100%;
-    }
-}

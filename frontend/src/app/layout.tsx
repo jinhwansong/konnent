@@ -24,8 +24,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="kr" className={pretendard.variable}>
-      <body className={pretendard.className}>
+    <html lang="ko">
+      <body className={`${pretendard.variable} font-pretendard`}>
         {children}
       </body>
     </html>

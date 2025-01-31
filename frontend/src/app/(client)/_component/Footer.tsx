@@ -4,7 +4,7 @@ import style from './footer.module.scss';
 
 export default function Footer() {
     const services = [
-      { id: 1, title: '멘토 지원하기', link: '/Mentorr' },
+      { id: 1, title: '멘토 지원하기', link: '/mentor' },
       { id: 2, title: '분야별 멘토 찾기', link: '/Mentorrs' },
       { id: 3, title: '아티클', link: '/article' },
     ];
@@ -12,12 +12,12 @@ export default function Footer() {
       {
         id: 1,
         title: '개인 블로그',
-        link: 'https://song7022556.tistory.com/8',
+        link: 'https://song7022556.tistory.com',
       },
       {
         id: 2,
         title: '깃허브',
-        link: 'https://github.com/DisChordTeam/frontend',
+        link: 'https://github.com/jinhwansong?tab=repositories',
       },
     ];
     const terms = [

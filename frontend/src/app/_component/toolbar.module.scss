@@ -1,16 +1,16 @@
 @import '@/styles/_functions.scss';
-// 에디터 전체 래퍼
+
 .editor_wrap {
  border: var(--border-main);
  border-radius: 10px;
  
  > div:last-child{
-  max-height: 350px;
-  min-height: 350px;
+  max-height: 400px;
+  min-height: 400px;
  }
 }
 
-// 툴바 영역
+
 .toolbar {
  display: flex;
  align-items: center;
@@ -18,7 +18,7 @@
  padding: 0.5rem;
 }
 
-// 툴바 아이템 그룹
+
 .itemBox {
  display: flex;
  gap: 0.5rem;
@@ -53,13 +53,12 @@
  }
 }
 
-// 활성화 상태
+
 .active {
  background: #25262B !important;
  color: #fff !important;
 }
 
-// 구분선
 .line {
  width: 1px;
  height: 24px;
@@ -67,7 +66,6 @@
  margin: 0 0.25rem;
 }
 
-// 컬러피커 컨테이너
 .colorPickerContainer {
   position: relative;
   display: inline-block;
@@ -95,7 +93,6 @@
   }
 }
 
-// 컬러 팔레트 팝업
 .colorPalette {
   position: absolute;
   top: 100%;
@@ -139,40 +136,38 @@
  border: 1px solid #dee2e6;
 }
 
-// 에디터 본문 영역
+
 :global(.ProseMirror) {
- padding: 1rem;
- min-height: 200px;
- max-height: 400px;
- border-top: var(--border-main);
- outline: none;
+  padding: 1rem;
+  min-height: 200px;
+  max-height: 400px;
+  border-top: var(--border-main);
+  outline: none;
   overflow-y: auto;
-  // 웹킷 기반 브라우저(크롬, 사파리 등)의 스크롤바 커스텀
+  scrollbar-width: thin;  
+  scrollbar-color: #c1c2c5 #f1f1f1; 
+
   &::-webkit-scrollbar {
-    width: 20px;  // 스크롤바 너비
+    width: 20px;
   }
 
   &::-webkit-scrollbar-track {
-    background: #f1f1f1;  // 스크롤바 트랙 배경색
+    background: #f1f1f1;
     border-radius: 4px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #c1c2c5;  // 스크롤바 색상
+    background: #c1c2c5;
     border-radius: 4px;
 
     &:hover {
-      background: #a1a2a5;  // 호버 시 색상
+      background: #a1a2a5;
     }
   }
-
-  // Firefox의 스크롤바 커스텀
-  scrollbar-width: thin;
-  scrollbar-color: #c1c2c5 #f1f1f1; 
- // 기본 텍스트 스타일
- p {
-   margin: 0.5em 0;
- }
+  
+  p {
+    margin: 0.5em 0;
+  }
 
  strong {
    font-weight: bold;
@@ -186,7 +181,6 @@
    text-decoration: line-through;
  }
 
- // 코드 관련 스타일
  code {
    background: #25262B;
    padding: 0.2em 0.4em;
@@ -207,7 +201,6 @@
    }
  }
 
- // 인용구 스타일
  blockquote {
    margin: 1em 0;
    padding-left: 1em;
@@ -220,7 +213,6 @@
    }
  }
 
- // 리스트 스타일
  ul, ol {
    padding-left: 1.5em;
    margin: 0.5em 0;
@@ -231,14 +223,12 @@
    list-style: revert !important;
  }
 
- // 구분선 스타일
  hr {
    border: none;
    border-top: 2px solid #ced4da;
    margin: 1em 0;
  }
 
- // 이미지 스타일
  img {
    max-width: 100%;
    height: auto;
@@ -246,7 +236,6 @@
  }
 }
 
-// 반응형 스타일
 @media (max-width: 768px) {
  .toolbar {
    flex-wrap: wrap;

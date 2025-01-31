@@ -1,28 +1,25 @@
 'use client';
 import React from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { IColumn, IPage, ITables } from '@/type';
-import Pagenation from '@/app/_component/Pagenation';
+import { IColumn, ITables } from '@/type';
 import style from './table.module.scss';
 
 
-interface ITable<T extends { id: number }> extends IPage {
+interface ITable<T extends { id: number }> {
   column: IColumn<T>[];
   data?: ITables<T>;
+  currentPage:number;
 }
 
 export default function Table<T extends { id: number }>({
   column,
-  currentPage,
-  onPrevPage,
-  onNextPage,
-  onPage,
-  data,
+  data
 }: ITable<T>) {
+  
   const router = useRouter();
   const pathname = usePathname();
   return (
-    <>
+    <div className={style.table_wrapper}>
       <table className={style.table}>
         <thead>
           <tr>
@@ -36,11 +33,11 @@ export default function Table<T extends { id: number }>({
             <tr
               key={item.id}
               onClick={() =>
-                pathname.split('/')[2] === 'management' &&
-                router.push(`/mentor/management/${item.id}`)
+                pathname.split('/')[2] === 'program' &&
+                router.push(`/mentor/program/${item.id}`)
               }
               className={
-                pathname.split('/')[2] === 'management' ? style.click : ''
+                pathname.split('/')[2] === 'program' ? style.click : ''
               }
             >
               {column?.map((config) => (
@@ -50,13 +47,6 @@ export default function Table<T extends { id: number }>({
           ))}
         </tbody>
       </table>
-      <Pagenation
-        totalPage={data?.totalPage as number}
-        currentPage={currentPage}
-        onPrevPage={onPrevPage}
-        onNextPage={onNextPage}
-        onPage={onPage}
-      />
-    </>
+    </div>
   );
 }

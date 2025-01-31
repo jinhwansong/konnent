@@ -3,18 +3,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { MentoringPrograms } from './MentoringPrograms';
-
-// 멘토링 예외일정
-enum Exceptions {
-  HOLIDAY = 'holiday',
-  SPECIAL = 'special',
-  UNAVAILABLE = 'unavailable',
-}
+import { MentorProfile } from './MentorProfile';
+import { ExceptionDateDto } from 'src/common/dto/time.dto';
 
 @Entity({ schema: 'konnect', name: 'exceptionsschedule' })
 export class ExceptionsSchedule {
@@ -24,22 +19,27 @@ export class ExceptionsSchedule {
   id: number;
   // 예외 날짜
   @Column('date')
-  exceptionDate: Date;
-  // 예외 사유
-  @Column('enum', {
-    name: 'type',
-    enum: Exceptions,
-    default: Exceptions.UNAVAILABLE,
+  @ApiProperty({
+    example: [
+      { date: '2024-02-14', type: 'HOLIDAY' },
+      { date: '2024-02-15', type: 'SPECIAL' },
+      { date: '2024-02-16', type: 'UNAVAILABLE' },
+    ],
+    description: '멘토링 불가능한 날짜 리스트',
+    required: true,
+    type: () => ExceptionDateDto,
   })
-  type: Exceptions;
-
+  exceptionDate: ExceptionDateDto[];
+  @Column({ name: 'profileId' })
+  profileId: number;
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
 
-  // 프로그램과 관계설정
-  @ManyToOne(() => MentoringPrograms, (program) => program.exception)
-  programs: MentoringPrograms;
+  // 멘토 와의 관계설정
+  @ManyToOne(() => MentorProfile, (profile) => profile.exSchedule)
+  @JoinColumn({ name: 'profileId' })
+  profile: MentorProfile;
 }

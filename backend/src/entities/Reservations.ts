@@ -13,6 +13,7 @@ import { Payments } from './Payments';
 import { MentoringPrograms } from './MentoringPrograms';
 import { Users } from './Users';
 import { weeklyScheduleDto } from '../common/dto/time.dto';
+import { AvailableSchedule } from './AvailableSchedule';
 
 // 멘토링 현황
 enum MemtoringStatus {
@@ -62,4 +63,7 @@ export class Reservations {
   // 유저와의 관계
   @ManyToOne(() => Users, (user) => user.reservations)
   user: Users;
+  // 예약가능한시간 관계설정
+  @ManyToOne(() => AvailableSchedule, (schedule) => schedule.reservation)
+  schedule: AvailableSchedule;
 }

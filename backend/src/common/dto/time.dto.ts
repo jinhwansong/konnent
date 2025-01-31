@@ -1,5 +1,12 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsArray, IsString, Matches, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsDateString,
+  IsString,
+  Matches,
+  ValidateNested,
+} from 'class-validator';
 
 export class TimeDto {
   @IsString()
@@ -38,4 +45,27 @@ export class weeklyScheduleDto {
   @ValidateNested({ each: true })
   @Type(() => TimeDto)
   sunday: TimeDto[];
+}
+
+// 멘토링 예외일정
+enum Exceptions {
+  HOLIDAY = 'holiday',
+  SPECIAL = 'special',
+  UNAVAILABLE = 'unavailable',
+}
+
+export class ExceptionDateDto {
+  @IsDateString()
+  @ApiProperty({
+    example: '2024-02-14',
+    description: '불가능한 날짜',
+  })
+  date: string;
+  @IsDateString()
+  @ApiProperty({
+    example: Exceptions.HOLIDAY,
+    enum: Exceptions,
+    description: '예외사유',
+  })
+  type: Exceptions;
 }

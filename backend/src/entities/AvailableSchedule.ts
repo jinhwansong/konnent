@@ -2,12 +2,18 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToOne,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { MentoringPrograms } from './MentoringPrograms';
 import { weeklyScheduleDto } from '../common/dto/time.dto';
+import { Reservations } from './Reservations';
+import { IsNotEmpty, IsNumber, ValidateNested } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 @Entity({ schema: 'konnect', name: 'availableschedule' })
 export class AvailableSchedule {
@@ -15,14 +21,50 @@ export class AvailableSchedule {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
   // 멘토링 가능날짜
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => weeklyScheduleDto)
+  @ApiProperty({
+    example: {
+      monday: [
+        { startTime: '09:00', endTime: '12:00' },
+        { startTime: '14:00', endTime: '18:00' },
+      ],
+      tuesday: [],
+      wednesday: [{ startTime: '13:00', endTime: '17:00' }],
+      thursday: [],
+      friday: [{ startTime: '10:00', endTime: '15:00' }],
+      saturday: [],
+      sunday: [],
+    },
+    description: '요일별 멘토링 가능 시간',
+    required: true,
+    type: () => weeklyScheduleDto,
+  })
   @Column('json', { name: 'available_schedule' })
   availableSchedule: weeklyScheduleDto;
+  // 멘토링 사이 휴식시간
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: 10,
+    description: '멘토링 사이 휴식 시간 (분 단위)',
+    required: true,
+  })
+  @Column('int', { name: 'break_time', default: 10 })
+  breakTime: number;
+  @Column({ name: 'programsId' })
+  programsId: number;
   @CreateDateColumn()
   createdAt: Date;
   @UpdateDateColumn()
   updatedAt: Date;
 
   // 프로그램과 관계설정
-  @ManyToOne(() => MentoringPrograms, (program) => program.available)
+  @OneToOne(() => MentoringPrograms, (program) => program.available)
+  @JoinColumn({ name: 'programsId' })
   programs: MentoringPrograms;
+  // 예약 관계설정
+  @OneToMany(() => Reservations, (reservation) => reservation.schedule)
+  reservation: Reservations[];
 }

@@ -1,25 +1,24 @@
-@function Rem($size) {
-  @return $size / 16px * 1rem;
-}
+@import '@/styles/_functions.scss';
 .title{
-    font-size: Rem(25px);
+    font-size: size(25px);
     font-weight: 700;
     line-height: 1;
-    margin-block: Rem(70px) Rem(30px);
+    margin-block: size(70px) size(30px);
 }
 .tap_warp{
     display: flex;
-    gap: Rem(20px);
-    > button{
-        font-size: Rem(14px);
-        font-weight: 500;
-        border: var(--border-main);
-        padding:Rem(12px) Rem(15px);
-        border-radius: Rem(30px);
-    }
+    gap: size(20px);
+    
     .tap_active{
          border: var(--border-major);
          color:var(--major-main) ;
          background:var(--bg-FCDAD3)
+    }
+    > button{
+        font-size: size(14px);
+        font-weight: 500;
+        border: var(--border-main);
+        padding:size(12px) size(15px);
+        border-radius: size(30px);
     }
 }

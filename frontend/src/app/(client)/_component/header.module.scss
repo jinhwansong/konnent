@@ -1,34 +1,32 @@
-@function Rem($size) {
-  @return $size / 16px * 1rem;
-}
+@import '@/styles/_functions.scss';
 .header{
     width: 100%;
     border-bottom: var(--border-main);
 }
 .header_inner{
-    max-width: Rem(1100px);
+    max-width: size(1100px);
     margin: 0 auto;
-    padding-block: Rem(15px) Rem(10px);
+    padding-block: size(15px) size(10px);
 }
 .header_top{
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    margin-bottom: Rem(15px);
+    margin-bottom: size(15px);
     > a:first-child{
         flex: 1;
     }
 }
 .header_link{
     display: flex;
-    gap:  Rem(10px);
+    gap:  size(10px);
     > a{
-        font-size: Rem(14px);
+        font-size: size(14px);
         font-weight: 500;
         display: block;
         text-align: center;
-        padding: Rem(10px);
-        border-radius:  Rem(5px);
+        padding: size(10px);
+        border-radius:  size(5px);
         &:hover{
             background: var(--bg-F1F4F6);
         }
@@ -36,7 +34,7 @@
     > a:last-child{
         border:var(--border-major);
         color: var(--major-main);
-        padding: Rem(10px) Rem(15px);
+        padding: size(10px) size(15px);
         &:hover{
             background: var(--major-main);
             color:var(--text-white);
@@ -50,15 +48,15 @@
 }
 .header_nav{
     display: flex;
-    gap: Rem(50px);
+    gap: size(50px);
     > a{
-        font-size: 1rem;
+        font-size: 1size;
         font-weight: 700;
         display: flex;
         align-items: center;
-        gap: Rem(10px);
+        gap: size(10px);
         >svg{
-            font-size: Rem(18px);
+            font-size: size(18px);
         }
     }
 }
@@ -66,7 +64,7 @@
     position: relative;
     > label{
         position: absolute;
-        right:Rem(10px);
+        right:size(10px);
         top:0;
         bottom: 0;
         display: flex;
@@ -74,7 +72,7 @@
         justify-content: center;
         cursor: pointer;
         >svg{
-            font-size: Rem(18px);
+            font-size: size(18px);
         }
     }
 }
@@ -82,55 +80,60 @@
     position: relative;
 }
 .profileImg{
-    border-radius: Rem(35px);
+    border-radius: size(35px);
     overflow: hidden;
     font-size: 0;
     > div{
-        width:Rem(35px);
-        height: Rem(35px);
+        width:size(35px);
+        height: size(35px);
     }
 }
-.profile_tap{
-    position: absolute;
-    width: Rem(200px);
-    border-radius: Rem(5px);
-    background: var(--bg-main);
-    box-shadow: rgba(0, 0, 0, 0.6) 0px 0px 4.6px;
-    right: 0;
-    top: Rem(40px);
-    z-index: 99;
-    overflow: hidden;
-    > div em{
-        font-weight: 600;
+.profile_tap {
+  position: absolute;
+  width: size(200px);
+  border-radius: size(5px);
+  background: var(--bg-main);
+  box-shadow: rgba(0, 0, 0, 0.6) 0px 0px 4.6px;
+  right: 0;
+  top: size(40px);
+  z-index: 99;
+  overflow: hidden;
+
+  > div {
+    padding-block: size(10px);
+    border-bottom: var(--border-main);
+
+    &:last-child {
+      border-bottom: 0;
     }
-    > div p{
-        font-size: Rem(12px);
-        font-weight: 500;
-        color: var(--text-subTitle);
-        margin-top: Rem(5px);
+
+    &:first-child {
+      padding: size(15px) size(20px);
     }
-    > div{
-        border-bottom: var(--border-main);
-        &:last-child{
-            border-bottom: 0;
-        }
-        padding-block: Rem(10px);
-        &:first-child{
-            padding: Rem(15px) Rem(20px);
-        }
+
+    em {
+      font-weight: 600;
     }
-    
-    > div a, > div button{
-        display: block;
-        text-align: left;
-        font-size: Rem(14px);
-        font-weight: 500;
-        padding: Rem(10px) Rem(20px);
-        width: 100%;
-        &:hover{
-            background: var(--bg-FCDAD3);
-            color: var(--major-main);
-        }
+
+    p {
+      font-size: size(12px);
+      font-weight: 500;
+      color: var(--text-subTitle);
+      margin-top: size(5px);
     }
-    
+
+    a, button {
+      display: block;
+      text-align: left;
+      font-size: size(14px);
+      font-weight: 500;
+      padding: size(10px) size(20px);
+      width: 100%;
+      
+      &:hover {
+        background: var(--bg-FCDAD3);
+        color: var(--major-main);
+      }
+    }
+  }
 }

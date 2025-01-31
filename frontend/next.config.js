@@ -1,12 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    // swcMinify: true,
-    // compiler: {
-    //     reactRemoveProperties: true,
-    //     removeConsole: {
-    //         exclude: ['log','error'],
-    //     },
-    // },
     images: {
         remotePatterns: [{
             protocol: 'http',

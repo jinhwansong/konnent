@@ -35,7 +35,7 @@ export default function Nav() {
     items: [
       { title: '멘토 정보', href: '/user/mentor_profile',},
       { title: '멘토링 일정 관리', href: '/mentor/schedule' },
-      { title: '멘토링 생성/관리', href: '/mentor/management' },
+      { title: '멘토링 생성/관리', href: '/mentor/program' },
       { title: '받은 리뷰 관리', href: '/mentor/reviews' },
       { title: '작성한 게시글', href: '/mentor/posts' },
     ],
@@ -55,10 +55,11 @@ export default function Nav() {
     <div className={style.navItem}>
       <h4>{section.title}</h4>
       <ul>
-        {section?.items.map((item) => {
+        {section?.items.map((item, i) => {
           const url = [item.href];
-          if (item.href === '/mentor/management') {
-            url.push('/mentor/addmanagement');
+          if (item.href === '/mentor/program') {
+            url.push('/mentor/create_program');
+            url.push(`/mentor/program/${pathname.split('/')[3]}`);
           }
           return (
             <li

@@ -2,10 +2,10 @@
 import React, { useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { useQueryClient } from '@tanstack/react-query';
-import { useToastStore } from '@/store/useToastStore';
-import { IcProfile } from '@/asset';
-import style from './profile.module.scss';
 import { getImageUrl } from '@/util/getImageUrl';
+import { useToastStore } from '@/store/useToastStore';
+import style from './ProfileSection.module.scss';
+
 
 
  interface IProfileSection {

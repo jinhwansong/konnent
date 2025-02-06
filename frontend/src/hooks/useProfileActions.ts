@@ -9,17 +9,17 @@ type KeyType =
   | '회사명'
   | '닉네임'
   | '휴대폰 번호'
-  | '멘토 경력'
-  | '멘토링 희망분야'
-  | '자기소개';
+  | '멘토 연차'
+  | '자기소개'
+  | '전문분야'
 type AllKeyType = KeyType | '비밀번호';
 const keyMapping: Record<KeyType, string> = {
   '회사명': 'company',
   '닉네임': 'nickname',
   '휴대폰 번호': 'phone',
-  '멘토 경력': 'career',
-  '멘토링 희망분야': 'job',
+  '멘토 연차': 'career',
   '자기소개': 'introduce',
+  '전문분야': 'position',
 };
 export default function useProfileActions() {
   // 캐시 무효화
@@ -64,7 +64,6 @@ export default function useProfileActions() {
   // 변경
   const handleSave = useCallback(
     (name: AllKeyType, data: ISave, mutation: any) => {
-      console.log(data);
       mutation.mutate(data, {
         onSuccess: (res: any) => {
           showToast(res.message, 'success');

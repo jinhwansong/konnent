@@ -37,7 +37,7 @@ export class ProgramService {
       if (!profile) {
         throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
       }
-      const { breakTime, availableSchedule, ...program } = body;
+      const { available_schedule, ...program } = body;
       // 프로그램 생성
       const newProgram = await queryRunner.manager
         .getRepository(MentoringPrograms)
@@ -53,8 +53,7 @@ export class ProgramService {
       const newSchedule = await queryRunner.manager
         .getRepository(AvailableSchedule)
         .create({
-          availableSchedule,
-          breakTime: breakTime || 10,
+          available_schedule,
           programs: { id: saveProgram.id },
         });
       await queryRunner.manager
@@ -95,9 +94,10 @@ export class ProgramService {
       if (!program) {
         throw new BadRequestException('해당 프로그램을 찾을 수 없습니다.');
       }
-      if (id !== profile.userId) {
+      if (id !== program.profile.userId) {
         throw new BadRequestException('프로그램을 삭제할 권한이 없습니다.');
       }
+      await this.scheduleRepository.delete({ programId });
       await this.mentorProgramRepository.delete(programId);
       return { message: '멘토님의 프로그램이 삭제되었습니다.' };
     } catch (error) {
@@ -179,6 +179,10 @@ export class ProgramService {
     if (!program) {
       throw new BadRequestException('해당 프로그램을 찾을 수 없습니다.');
     }
+    // 시간표
+    const filterSchedule = Object.entries(program.available.available_schedule)
+      .filter(([_, times]) => times.length > 0)
+      .reduce((acc, [day, time]) => ({ ...acc, [day]: time }), {});
     return {
       id: program.id,
       title: program.title,
@@ -187,12 +191,10 @@ export class ProgramService {
       price: program.price,
       status: program.status,
       createdAt: program.createdAt,
+      mentoring_field: program.mentoring_field,
       averageRating: program.averageRating,
       totalRatings: program.totalRatings,
-      schedule: {
-        availableSchedule: program.available.availableSchedule,
-        breakTime: program.available.breakTime,
-      },
+      availableSchedule: filterSchedule,
     };
   }
   // 멘토링 프로그램 수정
@@ -201,21 +203,17 @@ export class ProgramService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      // 프로필 조회
-      const profile = await this.mentorProfileRepository.findOne({
-        where: { userId: id },
-        relations: ['user'],
-      });
-      if (!profile) {
-        throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
-      }
-      // 프로그램 및 스케줄 정보 조회
+      // 프로필 프로그램 스케줄 조회
       const program = await queryRunner.manager
         .getRepository(MentoringPrograms)
-        .findOne({
-          where: { id: programId },
-          relations: ['profile', 'available'],
-        });
+        .createQueryBuilder('program')
+        .leftJoinAndSelect('program.profile', 'profile')
+        .leftJoinAndSelect('program.available', 'available')
+        .where('program.id = :programId', { programId })
+        .getOne();
+      if (!program.profile) {
+        throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
+      }
       if (!program) {
         throw new BadRequestException('해당 프로그램을 찾을 수 없습니다.');
       }
@@ -223,18 +221,16 @@ export class ProgramService {
         throw new BadRequestException('프로그램을 수정할 권한이 없습니다.');
       }
       // 프로그램 정보 및 스케줄 정보 분리
-      const { breakTime, availableSchedule, ...programData } = body;
+      const { available_schedule, ...programData } = body;
       // 프로그램 정보 수정
       await queryRunner.manager
         .getRepository(MentoringPrograms)
-        .update(programId, programData);
+        .save({ id: programId, ...programData });
       // 스케줄 정보 수정
       await queryRunner.manager
         .getRepository(AvailableSchedule)
-        .update(
-          { programs: { id: programId } },
-          { breakTime, availableSchedule },
-        );
+        .save({ id: program.available.id, available_schedule });
+      await queryRunner.commitTransaction();
       return { message: '멘토님의 프로그램이 수정되었습니다.' };
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -274,7 +270,7 @@ export class ProgramService {
     if (sort) {
       switch (sort) {
         case 'latest':
-          program.orderBy('program.createAt', 'DESC');
+          program.orderBy('program.createdAt', 'DESC');
         case 'price':
           program.orderBy('program.price', 'ASC');
         default:

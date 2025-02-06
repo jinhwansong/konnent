@@ -42,13 +42,15 @@ async function bootstrap() {
       secret: process.env.COOKIE_SECRET,
       store: new RedisStore({
         client: redisClient,
+        resave: true,
         prefix: 'session:', // 세션 키에 사용할 접두사
-        ttl: 86400, // 세션 TTL (초 단위)
+        ttl: 60 * 60 * 1, // 1시간
+        rolling: true,
       }),
       cookie: {
         httpOnly: true,
         secure: false,
-        maxAge: 1000 * 60 * 60 * 24,
+        maxAge: 1000 * 60 * 30,
         domain: 'localhost',
         path: '/',
         sameSite: 'lax',

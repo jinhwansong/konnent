@@ -4,8 +4,14 @@ import { MentoringPrograms } from 'src/entities/MentoringPrograms';
 
 // 프로그램 생성
 export class MentoingProgramCreateDto extends IntersectionType(
-  PickType(MentoringPrograms, ['title', 'content', 'price', 'duration']),
-  PickType(AvailableSchedule, ['breakTime', 'availableSchedule']),
+  PickType(MentoringPrograms, [
+    'title',
+    'content',
+    'price',
+    'duration',
+    'mentoring_field',
+  ]),
+  PickType(AvailableSchedule, ['available_schedule']),
 ) {}
 // 프로그램 수정 조회
 export class MentoingProgramDto extends IntersectionType(
@@ -18,5 +24,5 @@ export class MentoingProgramDto extends IntersectionType(
     'averageRating',
     'totalRatings',
   ]),
-  PickType(AvailableSchedule, ['breakTime', 'availableSchedule']),
+  PickType(AvailableSchedule, ['available_schedule']),
 ) {}

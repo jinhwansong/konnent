@@ -1,18 +1,14 @@
 import React from "react";
 import style from '@/styles/_common.module.scss';
 
-export default function layout({
-  children,
-  modal,
-}: {
+interface ILayout {
   children: React.ReactNode;
-  modal: React.ReactNode;
-}) {
+}
 
+export default function layout({ children }: ILayout) {
   return (
     <main className={style.container}>
       {children}
-      {modal}
     </main>
   );
 }

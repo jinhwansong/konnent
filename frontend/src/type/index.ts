@@ -28,11 +28,32 @@ interface IProgram {
   price: number;
   duration: number;
 }
+export type DayType =
+  | 'monday'
+  | 'tuesday'
+  | 'wednesday'
+  | 'thursday'
+  | 'friday'
+  | 'saturday'
+  | 'sunday';
+
+export type ISchedule = {
+  [key in DayType]?: {
+    [key: string]: boolean;
+  };
+};
+export interface IAvailableSchedule {
+  [key: string]: { startTime: string; endTime: string }[];
+}
 export interface ICreateProgram extends IProgram {
-  content:string;
+  content: string;
+  availableSchedule: ISchedule;
+  mentoring_field:string
 }
 export interface IModifyProgram extends ICreateProgram {
   id: number;
+  availableSchedule: IAvailableSchedule;
+  mentoring_field: string;
 }
 export interface IGetProgram extends IProgram {
   id: number;
@@ -42,9 +63,6 @@ export interface IGetProgram extends IProgram {
   createdAt: string;
 }
 
-export interface IModifyPrograms extends IGetProgram {
-  content: string;
-}
 
 
 export interface IColumn<T = IAdminUsers | IAdminMentors| IGetProgram> {
@@ -63,8 +81,8 @@ export interface IPage {
   onPrevPage: () => void;
   onNextPage: () => void;
   onPage: (page: number) => void;
-  totalPage: number;
 }
+
 
 export interface IMentorApprovalParams {
   approved: boolean;
@@ -91,7 +109,6 @@ export interface InfoField  {
   placeholder?: string;
   error?: string;
 };
-// 마이페이지 
 interface IBaseField {
   label: string;
   data: string;
@@ -133,4 +150,32 @@ export interface ICareerItem extends IBaseField {
   popup: boolean;
   onPopup: () => void;
   seletText:string;
+}
+
+
+
+export interface IfetchProgram {
+  page: number;
+  limit: number;
+  sort: string;
+  mentoring_field: string;
+}
+
+export interface IItem {
+
+  id: number;
+  title: string;
+  mentoring_field: string;
+  averageRating: string;
+  company: string;
+  position: string;
+  image: string;
+  career: string;
+  name: string;
+  totalRatings: string;
+}
+export interface IMentoring {
+  items: IItem[];
+  message?: string
+  totalPage?: number
 }

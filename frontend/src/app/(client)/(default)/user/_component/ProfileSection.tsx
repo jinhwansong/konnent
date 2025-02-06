@@ -70,22 +70,39 @@ export default function ProfileSection({
   return (
     <div className={style.info_item}>
       <em className={style.item_title}>이미지</em>
-      <button onClick={onProfile} className={style.img_button}>
-        <Image
-          src={getImageUrl(image)}
-          alt="프로필사진"
-          height={100}
-          width={100}
-        />
-        <input
-          type="file"
-          id="profile"
-          name="profile"
-          hidden
-          ref={profileRef}
-          onChange={changeProfile}
-        />
-      </button>
+      <div className={style.item_img}>
+        <button
+          onClick={onProfile}
+          className={
+            title === '내 프로필' ? style.myimg_button : style.img_button
+          }
+        >
+          <Image
+            src={getImageUrl(image)}
+            alt="프로필사진"
+            height={100}
+            width={100}
+          />
+          <input
+            type="file"
+            id="profile"
+            name="profile"
+            hidden
+            ref={profileRef}
+            onChange={changeProfile}
+          />
+        </button>
+        {title === '멘토 프로필' && (
+          <div>
+            <em>썸네일 이미지 등록 가이드</em>
+            <ul>
+              <li>해상도: 196px × 260px</li>
+              <li>파일명: 30자 미만</li>
+              <li>용량: 2MB 미만</li>
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

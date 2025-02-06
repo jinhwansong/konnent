@@ -8,7 +8,6 @@ import style from './table.module.scss';
 interface ITable<T extends { id: number }> {
   column: IColumn<T>[];
   data?: ITables<T>;
-  currentPage:number;
 }
 
 export default function Table<T extends { id: number }>({

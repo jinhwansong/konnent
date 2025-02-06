@@ -12,12 +12,18 @@
 .program_title {
     @include title;
     display: flex;
-    gap: size(20px);
+    gap: size(10px);
     align-items: center;
+    margin-bottom: 0;
 }
 .detail_top{
   border-bottom: var(--border-main);
   padding-bottom: size(30px);
+}
+.detail_top_tip{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .status {
   @include status;

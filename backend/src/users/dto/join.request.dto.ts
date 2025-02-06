@@ -7,8 +7,7 @@ export class JoinRequestDto extends PickType(Users, [
   'name',
   'nickname',
   'phone',
-  'image',
-] as const) {
+]) {
   @IsString()
   @Matches(
     /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[a-zA-Z\d!@#$%^&*(),.?":{}|<>]{8,}$/,

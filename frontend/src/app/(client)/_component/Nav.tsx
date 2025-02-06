@@ -34,7 +34,7 @@ export default function Nav() {
     title: '멘토 관리',
     items: [
       { title: '멘토 정보', href: '/user/mentor_profile',},
-      { title: '멘토링 일정 관리', href: '/mentor/schedule' },
+      { title: '멘토링 관리', href: '/mentor/schedule' },
       { title: '멘토링 생성/관리', href: '/mentor/program' },
       { title: '받은 리뷰 관리', href: '/mentor/reviews' },
       { title: '작성한 게시글', href: '/mentor/posts' },
@@ -60,6 +60,7 @@ export default function Nav() {
           if (item.href === '/mentor/program') {
             url.push('/mentor/create_program');
             url.push(`/mentor/program/${pathname.split('/')[3]}`);
+            url.push(`/mentor/program/${pathname.split('/')[3]}/modify`);
           }
           return (
             <li

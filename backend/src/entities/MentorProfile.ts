@@ -29,6 +29,14 @@ export class MentorProfile {
   })
   @Column('varchar', { name: 'company', nullable: true })
   company: string;
+  // 전문분야
+  @IsString()
+  @ApiProperty({
+    example: '프론트엔드',
+    description: '전문분야',
+  })
+  @Column('varchar', { name: 'position', nullable: true })
+  position: string;
   // 멘토자기소개
   @IsString()
   @MaxLength(3000)

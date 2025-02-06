@@ -1,16 +1,22 @@
+import { IfetchProgram } from '@/type';
 import { notFound } from 'next/navigation';
-import { cookies } from 'next/headers';
-export async function fetchProgram(id: string) {
-  const cookieStore = cookies();
+
+
+
+export async function fetchProgram({
+  page,
+  limit,
+  sort,
+  mentoring_field,
+}: IfetchProgram) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/program/${id}`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/programs?page=${page}&limit=${limit}&sort=${sort}&mentoring_field=${mentoring_field}`,
       {
         cache: 'no-cache',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          Cookie: cookieStore.toString(),
         },
       }
     );

@@ -33,7 +33,6 @@ export default function Selet({
       <input type="hidden" name={name} value={seletText} />
       <button
         onClick={onPopup}
-        onMouseDown={(e) => e.stopPropagation()}
         type="button"
       >
         {seletText ? seletText : text}
@@ -42,7 +41,12 @@ export default function Selet({
       {open && (
         <div ref={popupRef} className={seletbox}>
           {list.map((jobs) => (
-            <button type="button" key={jobs} onClick={() => onSelet(jobs)}>
+            <button
+              type="button"
+              key={jobs}
+              onClick={() => onSelet(jobs)}
+              onMouseDown={(e) => e.stopPropagation()}
+            >
               {jobs}
             </button>
           ))}

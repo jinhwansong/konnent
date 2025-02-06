@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Inject,
   Patch,
   Post,
   Req,
@@ -32,12 +33,16 @@ import { NaverAuthGuard } from 'src/auth/naver-auth.guard';
 import { GoogleAuthGuard } from 'src/auth/google-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerImage } from 'src/common/utils/multer.options';
+import { RedisService } from 'src/redis/redis.service';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('유저정보')
 @Controller('users')
 export class UsersController {
-  constructor(private userService: UsersService) {}
+  constructor(
+    private userService: UsersService,
+    private redisService: RedisService,
+  ) {}
 
   @ApiResponse({
     status: 200,
@@ -69,15 +74,8 @@ export class UsersController {
   @UseGuards(new NotLoggedInGuard())
   @ApiOperation({ summary: '회원가입' })
   @Post()
-  async Join(@Body() body: JoinRequestDto) {
-    await this.userService.Join(
-      body.email,
-      body.password,
-      body.name,
-      body.nickname,
-      body.phone,
-    );
-    return { message: '회원가입이 완료되었습니다.' };
+  Join(@Body() body: JoinRequestDto) {
+    return this.userService.Join(body);
   }
   @ApiResponse({
     status: 200,
@@ -216,6 +214,7 @@ export class UsersController {
             .status(500)
             .json({ message: '세션키 삭제를 실패했습니다' });
         }
+        this.redisService.clearPattern(`session:${req.sessionID}`);
         res.clearCookie('connect.sid', {
           httpOnly: true,
           path: '/',

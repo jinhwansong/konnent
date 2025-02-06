@@ -50,12 +50,12 @@ export class Mentors {
   })
   @Column('varchar', { name: 'job' })
   job: string;
-  // 멘토 경력
+  // 멘토 연차
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
     example: '주니어(1~3년)',
-    description: '경력',
+    description: '연차',
     required: true,
   })
   @Column('varchar', { name: 'career' })

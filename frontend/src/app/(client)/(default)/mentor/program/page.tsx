@@ -54,7 +54,7 @@ export default function ProgramPage() {
             멘토링 등록
           </Button>
         </div>
-        <Table column={column} data={data} currentPage={currentPage} />
+        <Table column={column} data={data && data} />
         <Pagenation
           totalPage={data?.totalPage as number}
           currentPage={currentPage}

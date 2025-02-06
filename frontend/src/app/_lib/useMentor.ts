@@ -78,11 +78,11 @@ export const useUpdateCareer = () => {
     },
   });
 };
-export const useUpdateJob = () => {
+export const useUpdatePosition = () => {
   return useMutation({
-    mutationFn: async (job: string) => {
+    mutationFn: async (position: string) => {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/mentor/job`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/mentor/position`,
         {
           method: 'PATCH',
           credentials: 'include',
@@ -90,7 +90,7 @@ export const useUpdateJob = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            job,
+            position,
           }),
         }
       );
@@ -105,7 +105,6 @@ export const useUpdateJob = () => {
 export const useUpdateProfile = () => {
   return useMutation({
     mutationFn: async (image: FormData) => {
-      console.log(image)
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/mentor/profile`,
         {

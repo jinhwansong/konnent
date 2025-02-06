@@ -1,8 +1,8 @@
 import React from 'react'
 import Button from '@/app/_component/Button';
 import Editor from '@/app/_component/Editor';
-import HtmlContent from '@/app/_component/HtmlContent';
 import style from './infoItem.module.scss';
+import HtmlWrapper from '@/app/_component/HtmlWrapper';
 
 
 interface IEditroItem {
@@ -14,6 +14,7 @@ interface IEditroItem {
   onIntroduce: (newContent: string) => void;
   introduce: string;
 }
+
 export default function EditroItem({
   data,
   isEditing,
@@ -46,8 +47,8 @@ export default function EditroItem({
               </div>
             </>
           ) : (
-            <p className={style.item_text}>
-              <HtmlContent html={data} />
+            <p className={data ? '': style.no_texts}>
+              {data ? <HtmlWrapper html={data} />: '나만의 스킬, 깃허브 링크 등으로 소개글을 채워보세요.'}
             </p>
           )}
         </div>

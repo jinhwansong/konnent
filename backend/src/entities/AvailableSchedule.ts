@@ -11,7 +11,7 @@ import {
 import { MentoringPrograms } from './MentoringPrograms';
 import { weeklyScheduleDto } from '../common/dto/time.dto';
 import { Reservations } from './Reservations';
-import { IsNotEmpty, IsNumber, ValidateNested } from 'class-validator';
+import { IsNotEmpty, ValidateNested } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
@@ -42,19 +42,10 @@ export class AvailableSchedule {
     type: () => weeklyScheduleDto,
   })
   @Column('json', { name: 'available_schedule' })
-  availableSchedule: weeklyScheduleDto;
-  // 멘토링 사이 휴식시간
-  @IsNumber()
-  @IsNotEmpty()
-  @ApiProperty({
-    example: 10,
-    description: '멘토링 사이 휴식 시간 (분 단위)',
-    required: true,
-  })
-  @Column('int', { name: 'break_time', default: 10 })
-  breakTime: number;
-  @Column({ name: 'programsId' })
-  programsId: number;
+  available_schedule: weeklyScheduleDto;
+
+  @Column({ name: 'programId' })
+  programId: number;
   @CreateDateColumn()
   createdAt: Date;
   @UpdateDateColumn()
@@ -62,7 +53,7 @@ export class AvailableSchedule {
 
   // 프로그램과 관계설정
   @OneToOne(() => MentoringPrograms, (program) => program.available)
-  @JoinColumn({ name: 'programsId' })
+  @JoinColumn({ name: 'programId' })
   programs: MentoringPrograms;
   // 예약 관계설정
   @OneToMany(() => Reservations, (reservation) => reservation.schedule)

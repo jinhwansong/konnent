@@ -39,6 +39,10 @@
   width: size(90px);
   @include size;
 }
+.widthBig {
+  width: size(110px);
+  @include size;
+}
 .bgdelete {
     background: #DC2626;  // 또는 #FF4500
     color: var(--text-white);

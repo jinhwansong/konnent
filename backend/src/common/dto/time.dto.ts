@@ -49,9 +49,12 @@ export class weeklyScheduleDto {
 
 // 멘토링 예외일정
 enum Exceptions {
+  // 공휴일/휴일 관련
   HOLIDAY = 'holiday',
-  SPECIAL = 'special',
-  UNAVAILABLE = 'unavailable',
+  // 개인 사유
+  VACATION = 'VACATION', // 휴가
+  SICK_LEAVE = 'SICK_LEAVE', // 병가
+  PERSONAL = 'PERSONAL', // 개인 일정
 }
 
 export class ExceptionDateDto {

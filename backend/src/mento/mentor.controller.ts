@@ -27,7 +27,7 @@ import {
   UpdateCompanyDto,
   UpdateImageDto,
   UpdateIntroduceDto,
-  UpdateJobDto,
+  UpdatePositionDto,
 } from './dto/update.profile.dto';
 import { MentorRequestDto } from './dto/mentor.request.dto';
 import { multerImage } from 'src/common/utils/multer.options';
@@ -75,51 +75,27 @@ export class MentorController {
   }
   @ApiResponse({
     status: 200,
-    description: '멘토님의 경력이 변경되었습니다.',
+    description: '멘토님의 연차가 변경되었습니다.',
     type: UpdateCareerDto,
   })
   @ApiResponse({
     status: 500,
-    description: '멘토님의 경력 변경 중 오류가 발생했습니다.',
+    description: '멘토님의 연차 변경 중 오류가 발생했습니다.',
     schema: {
       properties: {
         statusCode: { type: 'number', example: 500 },
         message: {
           type: 'string',
-          example: '멘토님의 경력 변경 중 오류가 발생했습니다..',
+          example: '멘토님의 연차 변경 중 오류가 발생했습니다..',
         },
       },
     },
   })
   @UseGuards(new LoggedInGuard())
-  @ApiOperation({ summary: '멘토 경력 변경' })
+  @ApiOperation({ summary: '멘토 연차 변경' })
   @Patch('career')
   career(@Body() body: UpdateCareerDto, @User() user) {
     return this.MentorService.updateCareer(body, user.id);
-  }
-  @ApiResponse({
-    status: 200,
-    description: '멘토링 희망분야가 변경되었습니다.',
-    type: UpdateJobDto,
-  })
-  @ApiResponse({
-    status: 500,
-    description: '멘토링 희망분야 변경 중 오류가 발생했습니다.',
-    schema: {
-      properties: {
-        statusCode: { type: 'number', example: 500 },
-        message: {
-          type: 'string',
-          example: '멘토링 희망분야 변경 중 오류가 발생했습니다..',
-        },
-      },
-    },
-  })
-  @UseGuards(new LoggedInGuard())
-  @ApiOperation({ summary: '멘토링 희망분야 변경' })
-  @Patch('job')
-  job(@Body() body: UpdateJobDto, @User() user) {
-    return this.MentorService.updateJob(body, user.id);
   }
   @ApiResponse({
     status: 200,
@@ -205,7 +181,7 @@ export class MentorController {
     },
   })
   @UseGuards(new LoggedInGuard())
-  @ApiOperation({ summary: '멘토 자기소개이미지 변경' })
+  @ApiOperation({ summary: '이미지 변경' })
   @Post('images')
   @UseInterceptors(FilesInterceptor('images[]', 10, multerImage))
   uploadImage(
@@ -213,5 +189,29 @@ export class MentorController {
     @User() user,
   ) {
     return this.MentorService.uploadImage(files, user.id);
+  }
+  @ApiResponse({
+    status: 200,
+    description: '멘토님의 전문분야가 변경되었습니다.',
+    type: UpdatePositionDto,
+  })
+  @ApiResponse({
+    status: 500,
+    description: '멘토님의 전문분야를 변경 중 오류가 발생했습니다.',
+    schema: {
+      properties: {
+        statusCode: { type: 'number', example: 500 },
+        message: {
+          type: 'string',
+          example: '멘토님의 전문분야를 변경 중 오류가 발생했습니다.',
+        },
+      },
+    },
+  })
+  @UseGuards(new LoggedInGuard())
+  @ApiOperation({ summary: '멘토 전문분야 변경' })
+  @Patch('position')
+  position(@Body() body: UpdatePositionDto, @User() user) {
+    return this.MentorService.updatePosition(body, user.id);
   }
 }

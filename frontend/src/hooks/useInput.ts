@@ -1,8 +1,9 @@
 'use client';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 export default function useInput(initialValue: string) {
   const [name, setName] = useState(initialValue);
+  
   const onName = useCallback(
     (
       e:
@@ -13,5 +14,8 @@ export default function useInput(initialValue: string) {
     },
     []
   );
+  useEffect(() => {
+    setName(initialValue);
+  }, [initialValue]);
   return [name, onName, setName] as const;
 }

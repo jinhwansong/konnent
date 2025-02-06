@@ -70,7 +70,7 @@
     }
 }
 .article03,.article02{
-    width: min(1100px, calc(1100px - 30px));
+    width: min(1100px, 100% - 30px);
     margin: 0 auto;
 }
 .article03 > h4, .article02 > h4{

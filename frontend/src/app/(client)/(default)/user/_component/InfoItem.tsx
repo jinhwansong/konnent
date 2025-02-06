@@ -80,9 +80,10 @@ export default function InfoItem({
           </>
         ) : (
           <>
-            <p className={style.item_text}>
-              {label === '비밀번호' ? sns : data}
+            <p className={data ? style.item_text : style.no_text}>
+              {label === '비밀번호' ? sns : data ? data : placeholder}
             </p>
+
             {canEdit && (
               <Button
                 type="button"

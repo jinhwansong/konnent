@@ -10,7 +10,7 @@ export const column: IColumn<IGetProgram>[] = [
   {
     id: 3,
     name: '멘토링 시간',
-    render: (item: IGetProgram) => item?.duration + '시간',
+    render: (item: IGetProgram) => item?.duration + '분',
   },
   {
     id: 4,

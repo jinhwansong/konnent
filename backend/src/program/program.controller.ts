@@ -25,7 +25,7 @@ import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedToN
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('멘토 프로그램')
-@Controller('program')
+@Controller('programs/management')
 export class ProgramController {
   constructor(private readonly ProgramService: ProgramService) {}
   @ApiResponse({

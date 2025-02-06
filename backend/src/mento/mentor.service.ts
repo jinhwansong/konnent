@@ -12,7 +12,7 @@ import {
   UpdateCareerDto,
   UpdateCompanyDto,
   UpdateIntroduceDto,
-  UpdateJobDto,
+  UpdatePositionDto,
 } from './dto/update.profile.dto';
 import { MentorRequestDto } from './dto/mentor.request.dto';
 
@@ -131,11 +131,11 @@ export class MentorService {
         });
       }
       return {
-        job: mentor.job,
         career: mentor.career,
         introduce: profile.introduce,
         company: profile.company,
         image: profile.image,
+        position: profile.position,
       };
     } catch (error) {
       if (error instanceof BadRequestException) {
@@ -180,6 +180,7 @@ export class MentorService {
       );
     }
   }
+
   // 멘토 자기소개 변경
   async updateIntroduce(body: UpdateIntroduceDto, id: number) {
     try {
@@ -214,7 +215,7 @@ export class MentorService {
       );
     }
   }
-  // 멘토 자기소개 이미지 처리
+  // 멘토 이미지 처리
   async uploadImage(files: Array<Express.Multer.File>, id: number) {
     try {
       // 프로필 조회
@@ -236,6 +237,7 @@ export class MentorService {
       );
     }
   }
+
   // 프로필이미지 변경
   async updateProfile(file: Express.Multer.File, id: number) {
     try {
@@ -275,35 +277,7 @@ export class MentorService {
       );
     }
   }
-  // 멘토링 희망분야 변경
-  async updateJob(body: UpdateJobDto, id: number) {
-    try {
-      const mentor = await this.mentorRepository.findOne({
-        where: { user: { id } },
-        relations: ['user'],
-      });
-      if (!mentor) {
-        throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
-      }
-      await this.mentorRepository.update({ id: mentor.id }, { job: body.job });
-      const updatedMentor = await this.mentorRepository.findOne({
-        where: { user: { id } },
-        relations: ['user'],
-      });
-      return {
-        message: '멘토링 희망분야가 변경되었습니다.',
-        job: updatedMentor.job,
-      };
-    } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw error;
-      }
-      throw new InternalServerErrorException(
-        '멘토링 희망분야 변경 중 오류가 발생했습니다.',
-      );
-    }
-  }
-  // 멘토 경력 변경
+  // 멘토 연차 변경
   async updateCareer(body: UpdateCareerDto, id: number) {
     try {
       const mentor = await this.mentorRepository.findOne({
@@ -324,7 +298,7 @@ export class MentorService {
         relations: ['user'],
       });
       return {
-        message: '멘토 경력이 변경되었습니다.',
+        message: '멘토님의 연차가 변경되었습니다.',
         career: updatedMentor.career,
       };
     } catch (error) {
@@ -332,7 +306,41 @@ export class MentorService {
         throw error;
       }
       throw new InternalServerErrorException(
-        '멘토님의 경력 변경 중 오류가 발생했습니다.',
+        '멘토님의 연차 변경 중 오류가 발생했습니다.',
+      );
+    }
+  }
+  // 전문 분야
+  async updatePosition(body: UpdatePositionDto, id: number) {
+    try {
+      // 프로필 조회
+      const profile = await this.mentorProfileRepository.findOne({
+        where: { userId: id },
+        relations: ['user'],
+      });
+      if (!profile) {
+        throw new BadRequestException('멘토 정보를 찾을 수 없습니다.');
+      }
+      await this.mentorProfileRepository.update(
+        { id: profile.id },
+        {
+          position: body.position,
+        },
+      );
+      const updatedProfile = await this.mentorProfileRepository.findOne({
+        where: { userId: id },
+        relations: ['user'],
+      });
+      return {
+        message: '멘토님의 전문분야가 변경되었습니다.',
+        company: updatedProfile.position,
+      };
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(
+        '멘토님의 전문분야를 변경 중 오류가 발생했습니다.',
       );
     }
   }

@@ -3,7 +3,6 @@
 
 @mixin flex {
     display: flex;
-    width: 100%;
     flex: 1;
 }
 
@@ -13,7 +12,9 @@
 }
 .item_title{
     @include item_title;
-    padding-block: 10px;
+    display: flex;
+    align-items: center;
+    height: 40px;
 }
 .item_title_on{
     @include item_title;
@@ -33,6 +34,18 @@
     font-size: size(14px);
     font-weight: 600;
 }
+.no_text{
+    font-size: size(14px);
+    color: var(--text-subTitle);
+}
+.no_texts{
+    font-size: size(14px);
+    color: var(--text-subTitle);
+    display: flex
+;
+    align-items: center;
+    height: 40px;
+}
 .button_wrap{
     margin-top: size(10px);
     display: flex;
@@ -47,8 +60,8 @@
     font-weight: 500;
 }
 .editor_text{
-    margin-top:9px;
     flex: 1;
+    word-break: break-all;
 }
 .editor_button{
     display: flex;

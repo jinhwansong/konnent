@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { MentorProfile } from './MentorProfile';
-import { ExceptionDateDto } from 'src/common/dto/time.dto';
+import { ExceptionDateDto } from '../common/dto/time.dto';
 
 @Entity({ schema: 'konnect', name: 'exceptionsschedule' })
 export class ExceptionsSchedule {
@@ -30,6 +30,13 @@ export class ExceptionsSchedule {
     type: () => ExceptionDateDto,
   })
   exceptionDate: ExceptionDateDto[];
+  @ApiProperty({
+    example: '컨퍼런스 참석',
+    description: '거절 사유 (거절시에만 필요)',
+    required: false,
+  })
+  @Column('text', { name: 'reason', nullable: true })
+  reason: string | null;
   @Column({ name: 'profileId' })
   profileId: number;
   @CreateDateColumn()

@@ -14,7 +14,6 @@ import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Reservations } from './Reservations';
 import { AvailableSchedule } from './AvailableSchedule';
-import { ExceptionsSchedule } from './ExceptionsSchedule';
 
 // 프로그램 활성화
 export enum ProgramStatus {
@@ -67,6 +66,16 @@ export class MentoringPrograms {
   })
   @Column('int', { name: 'duration' })
   duration: number;
+  // 멘토링분야
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: '데이터사이언스',
+    description: '멘토링분야',
+    required: true,
+  })
+  @Column('varchar', { name: 'mentoring_field' })
+  mentoring_field: string;
   // 평균평점
   @IsNumber()
   @ApiProperty({

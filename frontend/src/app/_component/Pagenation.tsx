@@ -3,6 +3,9 @@ import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight } from '
 import style from './pagenaion.module.scss';
 import { IPage } from '@/type';
 
+interface IPagenation extends IPage {
+  totalPage: number;
+}
 
 export default function Pagenation({
   totalPage,
@@ -10,7 +13,7 @@ export default function Pagenation({
   onPage,
   onPrevPage,
   onNextPage,
-}: IPage) {
+}: IPagenation) {
   const group = Math.ceil(currentPage / 10);
   const start = (group - 1) * 10 + 1;
   const end = Math.min(group * 10, totalPage);

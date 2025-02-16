@@ -4,7 +4,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MongooseModule } from '@nestjs/mongoose';
 import { DataSource } from 'typeorm';
 import { join } from 'path';
 import { Likes } from './entities/Likes';
@@ -27,6 +26,8 @@ import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
 import { RedisModule } from './redis/redis.module';
 import { ProgramsModule } from './programs/programs.module';
+import { Contact } from './entities/Contact';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -72,6 +73,7 @@ import { ProgramsModule } from './programs/programs.module';
       Reservations,
       ExceptionsSchedule,
       AvailableSchedule,
+      Contact,
     ]),
     AdminModule,
     ProgramModule,
@@ -81,6 +83,7 @@ import { ProgramsModule } from './programs/programs.module';
     AuthModule,
     RedisModule,
     ProgramsModule,
+    PaymentsModule,
   ],
   controllers: [AppController],
   providers: [AppService, UsersService],

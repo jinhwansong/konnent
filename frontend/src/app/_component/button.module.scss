@@ -57,3 +57,19 @@
         background: var(--bg-4B5563);
     }
 }
+.bgborder2{
+  border: var(--border-major);
+  color: var(--major-main);
+  background: none;
+  &:hover {
+    background: none;
+  }
+}
+.width4 {
+  flex: 4;
+  height: size(45px);
+}
+.width6 {
+  flex: 6;
+  height: size(45px);
+}

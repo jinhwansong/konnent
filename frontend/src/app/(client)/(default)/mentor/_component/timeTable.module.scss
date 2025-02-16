@@ -4,6 +4,7 @@
 .table{
     width: 500px;
     display: grid;
+    padding: 20px;
     grid-template-columns: repeat(2, 1fr);
     > li {
         border-bottom: var(--border-main);
@@ -28,8 +29,9 @@
         gap: size(5px);
         flex-wrap: wrap;
         span {
-            font-size: 14px;
-           
+            font-size: 12px;
+           border:var(--border-main);
+           padding: 10px 15px;
         }
     }
     

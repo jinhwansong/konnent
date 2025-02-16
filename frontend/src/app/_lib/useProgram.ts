@@ -44,8 +44,8 @@ export const useCreateProgram = () => {
       content,
       price,
       duration,
-      availableSchedule,
-      mentoring_field
+      available_schedule,
+      mentoring_field,
     }: ICreateProgram) => {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/programs/management`,
@@ -60,7 +60,7 @@ export const useCreateProgram = () => {
             content,
             price,
             duration,
-            availableSchedule,
+            available_schedule,
             mentoring_field,
           }),
         }
@@ -80,7 +80,7 @@ export const useModifyProgram = () => {
       content,
       price,
       duration,
-      availableSchedule,
+      available_schedule,
       id,
       mentoring_field,
     }: IModifyProgram) => {
@@ -97,7 +97,7 @@ export const useModifyProgram = () => {
             content,
             price,
             duration,
-            availableSchedule,
+            available_schedule,
             mentoring_field,
           }),
         }
@@ -130,3 +130,45 @@ export const useDeleteProgram = () => {
   }});
 }
 
+interface IDays {
+  year:number;
+  month:number;
+  id:number
+}
+interface ITime extends IDays {
+  day: number;
+}
+export const getAvailableDays = async ({ year, month, id }: IDays) => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/programs/${id}/month?year=${year}&month=${month}`,
+    {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+  const data = await res.json();
+  if (!res.ok) {
+    throw data;
+  }
+  return data;
+};
+export const getAvailableTime = async ({ year, month, day, id }: ITime) => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/programs/${id}/times?year=${year}&month=${month}&day=${day}`,
+    {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+  const data = await res.json();
+  if (!res.ok) {
+    throw data;
+  }
+  return data;
+};

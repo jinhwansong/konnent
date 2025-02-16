@@ -3,7 +3,6 @@ export enum Status {
   APPROVED = 'approved',
   REJECTED = 'rejected',
 }
-
 // 회원등급
 export enum UserRole {
   USER = 'user',

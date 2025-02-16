@@ -14,13 +14,15 @@ export default function Item({ items }: IMentoring) {
     <div className={style.mentoring_wrap}>
       {items.length > 0 ? (
         items?.map((item) => (
-          <Link key={item.id} href={`/mentor/${item.id}`}>
+          <Link key={item.id} href={`/mentors/${item.id}`}>
             <div className={style.imgbox}>
               <Image
                 src={getImageUrl(item.image)}
                 alt={item.name}
                 width={196}
                 height={260}
+                loading="lazy"
+                sizes="(max-width: 196px) 100vw, 196px"
               />
               <div>
                 <span>{item.company}</span>

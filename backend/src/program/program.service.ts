@@ -194,7 +194,7 @@ export class ProgramService {
       mentoring_field: program.mentoring_field,
       averageRating: program.averageRating,
       totalRatings: program.totalRatings,
-      availableSchedule: filterSchedule,
+      available_schedule: filterSchedule,
     };
   }
   // 멘토링 프로그램 수정

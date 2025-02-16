@@ -143,7 +143,7 @@ export class Users {
   @OneToMany(() => Likes, (like) => like.users)
   likes: Likes[];
   // 결제 관계설정
-  @OneToMany(() => Payments, (payment) => payment.users)
+  @OneToMany(() => Payments, (payment) => payment.user)
   payments: Payments[];
   // 예약과의 관계
   @OneToMany(() => Reservations, (reservations) => reservations.user)

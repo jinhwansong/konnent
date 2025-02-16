@@ -12,11 +12,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Payments } from './Payments';
 import { MentoringPrograms } from './MentoringPrograms';
 import { Users } from './Users';
-import { weeklyScheduleDto } from '../common/dto/time.dto';
 import { AvailableSchedule } from './AvailableSchedule';
+import { Contact } from './Contact';
+import { IsDateString, IsNotEmpty } from 'class-validator';
 
 // 멘토링 현황
-enum MemtoringStatus {
+export enum MemtoringStatus {
   PENDING = 'pending',
   COMFIRMED = 'confirmed',
   CANCELLED = 'cancelled',
@@ -27,15 +28,26 @@ export class Reservations {
   // 키값
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
-  // 멘토링 가능날짜
-  @Column('json', { name: 'availableSchedule' })
-  availableSchedule: weeklyScheduleDto;
   // 예약된 시간
+  @IsDateString()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: '2022-01-01 09:00:00',
+    description: '멘토링 시작 시간',
+  })
   @Column('datetime')
   startTime: Date;
   // 예약 종료된 시간
+  @IsDateString()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: '2022-01-01 10:00:00',
+    description: '멘토링 종료 시간',
+  })
   @Column('datetime')
   endTime: Date;
+  @Column({ name: 'programsId' })
+  programsId: number;
   // 멘토링 현황
   @ApiProperty({
     example: MemtoringStatus.PENDING,
@@ -48,6 +60,8 @@ export class Reservations {
     default: MemtoringStatus.PENDING,
   })
   status: MemtoringStatus;
+  @Column({ name: 'userId' })
+  userId: number;
   @CreateDateColumn()
   createdAt: Date;
 
@@ -66,4 +80,9 @@ export class Reservations {
   // 예약가능한시간 관계설정
   @ManyToOne(() => AvailableSchedule, (schedule) => schedule.reservation)
   schedule: AvailableSchedule;
+  // 연락처
+  @OneToOne(() => Contact, (contact) => contact.reservation, {
+    cascade: true,
+  })
+  contact: Contact;
 }

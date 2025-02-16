@@ -12,10 +12,13 @@ interface IPopup {
 
 export const usePopupStore = create<IPopup>((set) => ({
   popup: false,
-  onPopup: () => set((state) => ({ popup: !state.popup })),
+  onPopup: () =>
+    set((state) => ({ popup: !state.popup, popup2: false, popup3: false })),
   popup2: false,
-  onPopup2: () => set((state) => ({ popup2: !state.popup2 })),
+  onPopup2: () =>
+    set((state) => ({ popup: false, popup2: !state.popup2, popup3: false })),
   popup3: false,
-  onPopup3: () => set((state) => ({ popup3: !state.popup3 })),
-  closePop: () => set({ popup: false, popup2: false,popup3: false }),
+  onPopup3: () =>
+    set((state) => ({ popup: false, popup2: false, popup3: !state.popup3 })),
+  closePop: () => set({ popup: false, popup2: false, popup3: false }),
 }));

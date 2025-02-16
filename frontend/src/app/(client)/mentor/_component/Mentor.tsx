@@ -35,7 +35,7 @@ export default function Mentor() {
     {
       id: 'email',
       label: '연락받을 이메일 주소',
-      type: 'input',
+      type: 'text',
       placeholder: '자주사용하는 이메일을 입력해주세요',
       value: email,
       change: changeEmail,
@@ -74,7 +74,7 @@ export default function Mentor() {
     {
       id: 'portfolio',
       label: '포트폴리오 링크',
-      type: 'input',
+      type: 'text',
       placeholder: '포트폴리오 링크를 입력해주세요',
       value: portfolio,
       change: changePortfolio,
@@ -120,7 +120,7 @@ export default function Mentor() {
     ]
   );
   return (
-    <>
+    <div className={style.mentor_wrap}>
       <h4 className={style.title}>
         감사합니다, <span>{data?.nickname}</span> 님<br />
         지식공유자가 되기 위해서
@@ -134,7 +134,7 @@ export default function Mentor() {
               <label htmlFor={value?.value} className={style.label}>
                 {value?.label} <span>*</span>
               </label>
-              {value?.type === 'input' && (
+              {value?.type === 'text' && (
                 <Input
                   type={value.type}
                   placeholder={value.placeholder}
@@ -149,7 +149,6 @@ export default function Mentor() {
                   open={value.popup as boolean}
                   onPopup={value.onPopup as () => void}
                   seletText={value.value}
-                  name={value.id}
                   text={value.placeholder}
                   onSelet={value.onSelet as (selet: string) => void}
                 />
@@ -174,6 +173,6 @@ export default function Mentor() {
           멘토지원
         </Button>
       </form>
-    </>
+    </div>
   );
 }

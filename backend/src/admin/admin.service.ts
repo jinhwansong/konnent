@@ -117,7 +117,6 @@ export class AdminService {
   }
   // 멘토 신청 상세페이지
   async findOneApplicationDetail(id: number) {
-    console.log('아이디', id);
     try {
       const Mentor = await this.mentorRepository.findOne({
         where: { id },

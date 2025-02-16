@@ -34,7 +34,7 @@ export class MentoringPrograms {
     description: '멘토링 제목',
     required: true,
   })
-  @Column('varchar', { name: 'title', length: 100 })
+  @Column('varchar', { length: 100 })
   title: string;
   // 멘토링 내용
   @IsString()
@@ -44,7 +44,7 @@ export class MentoringPrograms {
     description: '멘토링 내용',
     required: true,
   })
-  @Column('text', { name: 'content' })
+  @Column('text')
   content: string;
   // 멘토링 가격
   @IsNumber()
@@ -54,7 +54,7 @@ export class MentoringPrograms {
     description: '멘토링비용',
     required: true,
   })
-  @Column('int', { name: 'price' })
+  @Column('int')
   price: number;
   // 1회당 멘토링 가능 시간
   @IsNumber()
@@ -64,7 +64,7 @@ export class MentoringPrograms {
     description: '1회당 멘토링 시간 (분 단위)',
     required: true,
   })
-  @Column('int', { name: 'duration' })
+  @Column('int')
   duration: number;
   // 멘토링분야
   @IsString()
@@ -74,7 +74,7 @@ export class MentoringPrograms {
     description: '멘토링분야',
     required: true,
   })
-  @Column('varchar', { name: 'mentoring_field' })
+  @Column('varchar')
   mentoring_field: string;
   // 평균평점
   @IsNumber()
@@ -100,7 +100,6 @@ export class MentoringPrograms {
     default: 0,
   })
   @Column('int', {
-    name: 'totalRatings',
     default: 0,
   })
   totalRatings: number;
@@ -111,12 +110,11 @@ export class MentoringPrograms {
     enum: ProgramStatus,
   })
   @Column('enum', {
-    name: 'status',
     enum: ProgramStatus,
     default: ProgramStatus.ACTIVE,
   })
   status: ProgramStatus;
-  @Column({ name: 'profileId' })
+  @Column()
   profileId: number;
   @CreateDateColumn()
   createdAt: Date;

@@ -23,7 +23,7 @@ export default function MentorApproval() {
   // 팝업 오픈
   const { popup, onPopup, closePop } = usePopupStore();
   // toast팝업
-  const showToast = useToastStore((state) => state.showToast);
+  const { showToast } = useToastStore((state) => state);
   // 정보
   const { data } = useQuery({
     queryKey: ['approval', id],

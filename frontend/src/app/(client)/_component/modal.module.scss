@@ -11,10 +11,8 @@
 }
 .modalback{
     background: var(--bg-main);
-    padding: 1.25rem;
     border-radius: 1rem;
     position: relative;
-    // width: 32rem;
     > button{
         font-size: 1.5625rem;
         position: absolute;
@@ -27,6 +25,16 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.25rem;
+    > p{
+        font-size: 1rem;
+        font-weight: 700;
+    };
+}
+.rejict_title{
+    padding: 20px 20px 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     > p{
         font-size: 1rem;
         font-weight: 700;

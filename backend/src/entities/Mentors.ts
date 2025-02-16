@@ -34,7 +34,6 @@ export class Mentors {
     required: true,
   })
   @Column('varchar', {
-    name: 'email',
     length: 30,
     unique: true,
     nullable: true,
@@ -48,7 +47,7 @@ export class Mentors {
     description: '멘토링 희망분야',
     required: true,
   })
-  @Column('varchar', { name: 'job' })
+  @Column('varchar')
   job: string;
   // 멘토 연차
   @IsString()
@@ -58,7 +57,7 @@ export class Mentors {
     description: '연차',
     required: true,
   })
-  @Column('varchar', { name: 'career' })
+  @Column('varchar')
   career: string;
   // 멘토자기소개
   @IsString()
@@ -69,7 +68,7 @@ export class Mentors {
     description: '자기소개',
     required: true,
   })
-  @Column('text', { name: 'introduce' })
+  @Column('text')
   introduce: string;
   // 멘토포트폴리오
   @IsUrl()
@@ -79,7 +78,7 @@ export class Mentors {
     description: '포트폴리오 페이지 url',
     required: true,
   })
-  @Column('varchar', { name: 'portfolio' })
+  @Column('varchar')
   portfolio: string;
   // 통과여부
   @ApiProperty({
@@ -87,7 +86,7 @@ export class Mentors {
     description: '승인 여부',
   })
   @IsBoolean()
-  @Column('enum', { name: 'status', enum: Status, default: Status.PENDING })
+  @Column('enum', { enum: Status, default: Status.PENDING })
   status: Status;
   // 거절사유
   @IsString()
@@ -97,9 +96,9 @@ export class Mentors {
     description: '거절 사유 (거절시에만 필요)',
     required: false,
   })
-  @Column('text', { name: 'reason', nullable: true })
+  @Column('text', { nullable: true })
   reason: string | null;
-  @Column({ name: 'userId' })
+  @Column()
   userId: number;
   @CreateDateColumn()
   createdAt: Date;

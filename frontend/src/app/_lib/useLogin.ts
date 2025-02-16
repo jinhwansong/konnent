@@ -36,7 +36,6 @@ export const onSubmit = async (prevState: any, formData: FormData) => {
     }
     
     const data = await response.json();
-    console.log(data);
     if (!response.ok) return { message: '아이디 또는 비밀번호가 일치하지 않습니다' };
     return { ok: true, data };
   } catch (error) {

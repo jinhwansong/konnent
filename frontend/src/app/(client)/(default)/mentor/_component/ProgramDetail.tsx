@@ -1,25 +1,17 @@
 'use client';
 import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import Nav from '@/app/(client)/_component/Nav';
+import TimeTable from './TimeTable';
+import ButtonRouter from './ButtonRouter';
 import { formatDate } from '@/util/formatDate';
 import { formatNumber } from '@/util/formatNumber';
 import { stateus } from '@/util/status';
 import HtmlWrapper from '@/app/_component/HtmlWrapper';
-
+import { getDetailProgram } from '@/app/_lib/useProgram';
+import { ISchedule } from '@/type';
 import styles from '@/styles/_common.module.scss';
 import style from './program.module.scss';
-import { useQuery } from '@tanstack/react-query';
-import { getDetailProgram } from '@/app/_lib/useProgram';
-import TimeTable from './TimeTable';
-import ButtonRouter from './ButtonRouter';
-
-interface ISchedule {
-  startTime: string;
-  endTime: string;
-}
-export interface IAvailableSchedule {
-  [key: string]: ISchedule[];
-}
 
 export default function ProgramDetail({ id }: { id: string }) {
   const { data } = useQuery({
@@ -28,7 +20,7 @@ export default function ProgramDetail({ id }: { id: string }) {
     staleTime: 60 * 1000,
     gcTime: 300 * 1000,
   });
-  const schedule: IAvailableSchedule = data?.availableSchedule;
+  const schedule: ISchedule = data?.available_schedule;
   return (
     <div className={styles.mypage}>
       <Nav />

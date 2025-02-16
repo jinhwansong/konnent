@@ -21,6 +21,7 @@
   --bg-E83A0D:#E83A0D;
   --bg-6B7280:#6B7280;
   --bg-4B5563:#4B5563;
+  --bg-262626:#262626;
     /* border(rgb(7, 6, 6) */
   --border-main: 1px solid #ddd  ;
   --border-search: 1px solid #F1F4F6  ;
@@ -58,6 +59,10 @@ em,strong,p,h1,h2,h3,h4,h5,h6,a{
 }
 button{
   cursor: pointer;
+ font-family: var(--font-pretendard), sans-serif;
+}
+textarea{
+  font-family: var(--font-pretendard), sans-serif;
 }
 ol, ul,li {
 	list-style: none;

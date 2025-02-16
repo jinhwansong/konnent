@@ -12,7 +12,7 @@ export default function RejectModal({ children, closePop,title }: IModal) {
   return (
     <div className={style.modalBg} onClick={() => closePop()}>
       <div className={style.modalback} onClick={(e) => e.stopPropagation()}>
-        <div className={style.title}>
+        <div className={style.rejict_title}>
           <p>{title}</p>
           <button onClick={() => closePop()}>
             <BiX />

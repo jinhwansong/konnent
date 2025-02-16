@@ -28,31 +28,23 @@ interface IProgram {
   price: number;
   duration: number;
 }
-export type DayType =
-  | 'monday'
-  | 'tuesday'
-  | 'wednesday'
-  | 'thursday'
-  | 'friday'
-  | 'saturday'
-  | 'sunday';
-
-export type ISchedule = {
-  [key in DayType]?: {
-    [key: string]: boolean;
-  };
-};
-export interface IAvailableSchedule {
-  [key: string]: { startTime: string; endTime: string }[];
+export interface ITimeSlot {
+  startTime: string;
+  endTime: string;
 }
+
+export interface ISchedule {
+  [key: string]: ITimeSlot[];
+}
+
 export interface ICreateProgram extends IProgram {
   content: string;
-  availableSchedule: ISchedule;
-  mentoring_field:string
+  available_schedule: ISchedule;
+  mentoring_field: string;
 }
 export interface IModifyProgram extends ICreateProgram {
   id: number;
-  availableSchedule: IAvailableSchedule;
+  available_schedule: ISchedule;
   mentoring_field: string;
 }
 export interface IGetProgram extends IProgram {
@@ -162,7 +154,6 @@ export interface IfetchProgram {
 }
 
 export interface IItem {
-
   id: number;
   title: string;
   mentoring_field: string;
@@ -179,3 +170,6 @@ export interface IMentoring {
   message?: string
   totalPage?: number
 }
+
+
+

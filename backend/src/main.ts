@@ -28,10 +28,22 @@ async function bootstrap() {
     });
   }
   // 레디스 클라이언트 생성
-  const redisClient = createClient({
-    url: `redis://${process.env.REDIS_USER}:${process.env.REDIS_PASSWORD}@${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
-    legacyMode: true,
-  });
+  let redisClient;
+  if (!redisClient) {
+    redisClient = createClient({
+      url: `redis://${process.env.REDIS_USER}:${process.env.REDIS_PASSWORD}@${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+      legacyMode: true,
+    });
+    // 에러 핸들러
+    redisClient.on('error', (err) => {
+      console.error(`Error connecting to Redis: ${err}`);
+    });
+    // 종료처리
+    process.on('SIGINT', () => {
+      redisClient.quit();
+    });
+  }
+
   const RedisStore = connectRedis(session);
   app.use(
     session({
@@ -42,15 +54,16 @@ async function bootstrap() {
       secret: process.env.COOKIE_SECRET,
       store: new RedisStore({
         client: redisClient,
-        resave: true,
         prefix: 'session:', // 세션 키에 사용할 접두사
         ttl: 60 * 60 * 1, // 1시간
+        disableTouch: true,
         rolling: true,
+        enableOfflineQueue: false,
       }),
       cookie: {
         httpOnly: true,
         secure: false,
-        maxAge: 1000 * 60 * 30,
+        maxAge: 1000 * 60 * 60,
         domain: 'localhost',
         path: '/',
         sameSite: 'lax',

@@ -27,16 +27,24 @@ export const onName = (name: string) => {
   const nameRegex = /^[가-힣a-zA-Z]{2,7}$/;
 
   if (!nameRegex.test(name)) {
-    return "2글자 이상 7글자 이하로 작성해주세요";
+    return "2글자 이상 7글자 이하로 작성해주세요.";
   }
   return "";
+};
+export const onMessage = (message: string) => {
+  const messageRegex = /^[가-힣a-zA-Z]/;
+
+  if (!messageRegex.test(message)) {
+    return '메시지를 입력해야합니다.';
+  }
+  return '';
 };
 export const onPhone = (phone: string) => {
   const phoneNumber = phone.replace(/-/g, '');
   const phoneRegex = /^010([0-9]{4})([0-9]{4})$/;
 
   if (!phoneRegex.test(phoneNumber)) {
-    return '휴대폰 번호를 정확히 입력해주세요';
+    return '휴대폰 번호를 정확히 입력해주세요.';
   }
   return "";
 };

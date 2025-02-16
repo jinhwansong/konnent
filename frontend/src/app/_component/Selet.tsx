@@ -3,6 +3,7 @@ import React from 'react';
 import { BiCaretDown, BiCaretUp } from 'react-icons/bi';
 import usePopup from '@/hooks/usePopup';
 import style from './selet.module.scss';
+import Button from './Button';
 
 interface ISelet {
   list: string[];
@@ -12,7 +13,10 @@ interface ISelet {
   text: string;
   onSelet: (selet: string) => void;
   width?: string;
-  name: string;
+  changeData?: (
+    
+    value: string
+  ) => Promise<void>;
 }
 export default function Selet({
   onPopup,
@@ -22,20 +26,31 @@ export default function Selet({
   text,
   onSelet,
   width,
-  name,
+  changeData,
 }: ISelet) {
   const { popupRef } = usePopup();
   const seletbox = [style.seletbox, width && style[`width${width as string}`]]
     .filter(Boolean)
     .join(' ');
+  const selet_botton = [
+    style.selet_botton,
+    width && style[`width${width as string}`],
+  ]
+    .filter(Boolean)
+    .join(' ');
   return (
-    <div className={style.selet}>
-      <input type="hidden" name={name} value={seletText} />
+    <div className={selet_botton}>
       <button
         onClick={onPopup}
         type="button"
+        onMouseDown={(e) => e.stopPropagation()}
       >
-        {seletText ? seletText : text}
+        <p>
+          {text === '전체' ? '직무 카테고리' : ''}
+          <span className={text === '전체' ? style.red : ''}>
+            {seletText ? seletText : text}
+          </span>
+        </p>
         {open ? <BiCaretUp /> : <BiCaretDown />}
       </button>
       {open && (
@@ -50,6 +65,20 @@ export default function Selet({
               {jobs}
             </button>
           ))}
+          {text === '전체' && (
+            <div className={style.button_wrap}>
+              <Button onClick={onPopup} type="button" bg="none" width="Small">
+                취소
+              </Button>
+              <Button
+                onClick={() => changeData?.(seletText)}
+                type="button"
+                width="Small"
+              >
+                적용하기
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </div>

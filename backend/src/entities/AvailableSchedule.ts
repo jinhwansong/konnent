@@ -41,10 +41,10 @@ export class AvailableSchedule {
     required: true,
     type: () => weeklyScheduleDto,
   })
-  @Column('json', { name: 'available_schedule' })
+  @Column('json')
   available_schedule: weeklyScheduleDto;
 
-  @Column({ name: 'programId' })
+  @Column()
   programId: number;
   @CreateDateColumn()
   createdAt: Date;

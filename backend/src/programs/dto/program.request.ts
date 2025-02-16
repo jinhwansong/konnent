@@ -15,3 +15,17 @@ export class UserProgram extends IntersectionType(
     'id',
   ]),
 ) {}
+export class UserProgramDetails extends IntersectionType(
+  PickType(MentorProfile, ['company', 'position', 'image']),
+  PickType(Users, ['name']),
+  PickType(Mentors, ['career']),
+  PickType(MentoringPrograms, [
+    'title',
+    'averageRating',
+    'mentoring_field',
+    'id',
+    'content',
+    'price',
+    'duration',
+  ]),
+) {}

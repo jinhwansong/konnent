@@ -15,11 +15,9 @@ import { usePopupStore } from '@/store/usePopupStore';
 import Button from '@/app/_component/Button';
 import { joblist } from '@/app/(client)/config/job';
 import {
-  DayType,
   IErr,
   IModifyProgram,
-  ISchedule,
-  IAvailableSchedule,
+  ITimeSlot,
 } from '@/type';
 import style from './programForm.module.scss';
 import Selet from '@/app/_component/Selet';
@@ -31,6 +29,27 @@ interface IProgramForm {
   initialData?: IModifyProgram;
 }
 
+type DayType =
+  | 'monday'
+  | 'tuesday'
+  | 'wednesday'
+  | 'thursday'
+  | 'friday'
+  | 'saturday'
+  | 'sunday';
+
+// 서버 스케줄 형식
+type IServerSchedule = {
+  [key in DayType]?: ITimeSlot[];
+};
+// 프론트에서 사용할 시간선택
+interface ITimeSelection {
+  [time: string]: boolean;
+}
+// 프론트 스케줄 형식
+type ISchedule = {
+  [key in DayType]?: ITimeSelection;
+}
 export default function ProgramForm({ mode, initialData }: IProgramForm) {
   const params = useParams()
   // 캐싱
@@ -72,15 +91,16 @@ export default function ProgramForm({ mode, initialData }: IProgramForm) {
 
 
   // 서버 데이터에서 프론트 데이터로 형식 변환
-  const converSlot = (back: IAvailableSchedule): ISchedule => {
-    const conver = {} as ISchedule;
+  const converSlot = (back: IServerSchedule): ISchedule => {
+     if (!back) return {} as ISchedule;
+      const conver = {} as ISchedule;
     const days = (day: string): day is DayType => Days.includes(day as DayType);
     Object.entries(back).forEach(([day, times]) => {
       if (days(day)) {
-        const timeSlots: { [key: string]: boolean } = {};
-        times.forEach(({ startTime, endTime }) => {
-          const slot = slotTime(startTime, endTime, 30);
-          slot.forEach((time) => {
+        const timeSlots: ITimeSelection = {};
+        times?.forEach((timeSlot: ITimeSlot) => {
+          const slots = slotTime(timeSlot.startTime, timeSlot.endTime, 30).map((slot)=> slot.startTime);
+          slots.forEach((time: string) => {
             timeSlots[time] = true;
           });
         });
@@ -102,8 +122,8 @@ export default function ProgramForm({ mode, initialData }: IProgramForm) {
         sunday: [],
       };
       // entries 키 : 값으로 쌍의 배열로 변환
-      Object.entries(schedule).forEach(([day, time]) => {
-        if (!time) return;
+      Object?.entries(schedule).forEach(([day, time]) => {
+        if (!time || !day) return;
         const seletTime = Object.entries(time)
           .filter(([_, selet]) => selet)
           .map(([time]) => time)
@@ -129,8 +149,9 @@ export default function ProgramForm({ mode, initialData }: IProgramForm) {
   );
   // 스케줄 설정
   const [schedule, setSchedule] = useState<ISchedule>(
-    initialData ? converSlot(initialData.availableSchedule) : {}
+    initialData ? converSlot(initialData?.available_schedule) : {}
   );
+  console.log(schedule);
   // endtime 계산
   const addMinutes = (time: string, minutes: number) => {
     // 시 분 으로 분리
@@ -170,9 +191,8 @@ export default function ProgramForm({ mode, initialData }: IProgramForm) {
       if (Object.keys(schedule).length === 0) return showToast('스케줄을 선택해주세요', 'error');
       if (mentoring.length === 0)
         return showToast('카테고리를 선택해주세요', 'error');
-      const availableSchedule = converSchedule(schedule);
+      const available_schedule = converSchedule(schedule);
       const data = queryClient.getQueryData(['mentorDetail', params.id]);
-      console.log(data);
       queryClient.setQueryData(['mentorDetail', params.id], (old: any) => {
         return {
           ...old,
@@ -180,7 +200,7 @@ export default function ProgramForm({ mode, initialData }: IProgramForm) {
           content,
           price,
           duration,
-          availableSchedule,
+          available_schedule,
           mentoring_field: mentoring,
         };
       });
@@ -206,7 +226,7 @@ export default function ProgramForm({ mode, initialData }: IProgramForm) {
             price,
             duration,
             content,
-            availableSchedule,
+            available_schedule,
             mentoring_field: mentoring,
           },
           mutationOptions
@@ -220,7 +240,7 @@ export default function ProgramForm({ mode, initialData }: IProgramForm) {
             duration,
             content,
             id: initialData?.id as number,
-            availableSchedule,
+            available_schedule,
             mentoring_field: mentoring,
           },
           mutationOptions
@@ -299,7 +319,6 @@ export default function ProgramForm({ mode, initialData }: IProgramForm) {
             open={popup3}
             onPopup={onPopup3}
             seletText={mentoring}
-            name="mentoring_field"
             text="희망하시는 멘토링 분야를 선택해주세요"
             onSelet={onMentoring}
           />

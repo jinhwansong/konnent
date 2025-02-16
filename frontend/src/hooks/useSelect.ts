@@ -1,12 +1,21 @@
 'use client'
 import React, { useCallback, useEffect, useState } from 'react'
 
-export default function useSelect(initialValue:string, onPopup:() => void) {
+export default function useSelect(
+  initialValue: string,
+  onPopup: () => void,
+  closeOnSelect: boolean = true
+) {
   const [value, setValue] = useState(initialValue);
-  const onValue = useCallback((newValue: string) => {
+  const onValue = useCallback(
+    (newValue: string) => {
       setValue(newValue);
-      onPopup();
-    }, [onPopup]);
+      if (closeOnSelect) {
+        onPopup();
+      }
+    },
+    [onPopup, closeOnSelect]
+  );
   useEffect(() => {
     setValue(initialValue);
   }, [initialValue]);

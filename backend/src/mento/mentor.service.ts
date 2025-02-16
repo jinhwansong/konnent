@@ -106,9 +106,6 @@ export class MentorService {
   // 멘토 프로필 정보
   async getMentor(id: number) {
     try {
-      if (!id) {
-        return null;
-      }
       // 멘토 정보 조회
       const mentor = await this.mentorRepository.findOne({
         where: { user: { id } },

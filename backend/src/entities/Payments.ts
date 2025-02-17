@@ -24,8 +24,8 @@ export class Payments {
   // 키값
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
-  @Column({ type: 'uuid' })
-  orderId: number;
+  @Column({ length: 64 })
+  orderId: string;
   // 가격
   @Column('int')
   price: number;
@@ -41,15 +41,20 @@ export class Payments {
   // 결제 상태
   @Column({ type: 'enum', enum: PaymentStatus, default: PaymentStatus.PENDING })
   status: PaymentStatus;
+  @Column()
+  reservationId: number;
+  @Column()
+  userId: number;
   @CreateDateColumn()
   createdAt: Date;
   @UpdateDateColumn()
   updatedAt: Date;
   // 유저과의 관계
   @ManyToOne(() => Users, (user) => user.payments)
+  @JoinColumn({ name: 'userId' })
   user: Users;
   // 멘토 예약과의 관계
   @OneToOne(() => Reservations, (reservations) => reservations.payment)
-  @JoinColumn({ name: 'orderId' })
+  @JoinColumn({ name: 'reservationId' })
   reservation: Reservations;
 }

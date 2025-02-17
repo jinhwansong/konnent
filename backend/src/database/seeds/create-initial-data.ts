@@ -219,7 +219,9 @@ export default class UserSeeder implements Seeder {
         const hour = Math.floor(Math.random() * (22 - 10 + 1)) + 10;
         const min = Math.floor(Math.random() * 60);
         const startTime = `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
-        const endTime = (hour + 1) % 60;
+        const endHour = (hour + 1) % 24;
+        const endTime = `${endHour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
+
         schedules[day] = [{ startTime, endTime }];
       } else {
         schedules[day] = [];

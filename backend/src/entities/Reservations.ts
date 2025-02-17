@@ -46,7 +46,7 @@ export class Reservations {
   })
   @Column('datetime')
   endTime: Date;
-  @Column({ name: 'programsId' })
+  @Column()
   programsId: number;
   // 멘토링 현황
   @ApiProperty({
@@ -60,8 +60,10 @@ export class Reservations {
     default: MemtoringStatus.PENDING,
   })
   status: MemtoringStatus;
-  @Column({ name: 'userId' })
+  @Column()
   userId: number;
+  @Column()
+  scheduleId: number;
   @CreateDateColumn()
   createdAt: Date;
 
@@ -69,7 +71,6 @@ export class Reservations {
   updatedAt: Date;
   // 결제 관계설정
   @OneToOne(() => Payments, (payment) => payment.reservation)
-  @JoinColumn({ name: 'paymentId' })
   payment: Payments;
   // 프로그램과 관계설정
   @ManyToOne(() => MentoringPrograms, (program) => program.reservations)
@@ -79,6 +80,7 @@ export class Reservations {
   user: Users;
   // 예약가능한시간 관계설정
   @ManyToOne(() => AvailableSchedule, (schedule) => schedule.reservation)
+  @JoinColumn({ name: 'scheduleId' })
   schedule: AvailableSchedule;
   // 연락처
   @OneToOne(() => Contact, (contact) => contact.reservation, {

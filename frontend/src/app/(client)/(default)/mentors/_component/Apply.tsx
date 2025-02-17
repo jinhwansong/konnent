@@ -17,20 +17,12 @@ import { onEmail, onMessage, onPhone } from '@/util/useSign';
 import { ITimeSlot } from '@/type';
 import style from './apply.module.scss';
 import { useToastStore } from '@/store/useToastStore';
-import {loadTossPayments} from '@tosspayments/payment-sdk'
-
+import { loadTossPayments } from '@tosspayments/tosspayments-sdk';
 
 interface ITileDisabled {
   date: Date;
   view: 'month' | 'year' | 'century' | 'decade' | 'date';
 }
-interface IToss {
-  message: string;
-  amount: number;
-  orderId: string;
-  orderName: string
-}
-
 export default function Apply() {
   // 내정보
   const { data } = useUserData();
@@ -147,43 +139,52 @@ export default function Apply() {
   const disable = [message].every((k) => k.length > 0);
   // 결제
   const handlePayment = useCallback(async () => {
-    try {
-      const padMonth = String(month).padStart(2, '0');
-      const padDay = String(day).padStart(2, '0');
-      const startTime = `${year}-${padMonth}-${padDay}T${selectedSlot?.startTime}:00.000Z`;
-      const endTime = `${year}-${padMonth}-${padDay}T${selectedSlot?.endTime}:00.000Z`;
-      // 결제 초기화
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/reservation`,
-        {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email,
-            phone,
-            message,
-            startTime,
-            endTime,
-            programsId: param.id,
-          }),
-        }
-      );
-      if (!response.ok) {
-        showToast('결제 초기화에 실패했습니다', 'error');
-        return;
+    const padMonth = String(month).padStart(2, '0');
+    const padDay = String(day).padStart(2, '0');
+    const startTime = `${year}-${padMonth}-${padDay}T${selectedSlot?.startTime}:00.000Z`;
+    const endTime = `${year}-${padMonth}-${padDay}T${selectedSlot?.endTime}:00.000Z`;
+    // 결제 초기화
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/reservation`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          phone,
+          message,
+          startTime,
+          endTime,
+          programsId: param.id,
+        }),
       }
-      const res: IToss = await response.json();
-      const toss = await loadTossPayments('test_ck_vZnjEJeQVxKxJvKg2O6z3PmOoBN0');
-      await toss?.requestPayment('카드', {
+    );
+    if (!response.ok) {
+      showToast('결제 초기화에 실패했습니다', 'error');
+      return;
+    }
+    const res = await response.json();
+    try {
+      
+      const tossPayments = await loadTossPayments(
+        'test_ck_DpexMgkW36RJd49e0wK43GbR5ozO'
+      );
+      const payment = tossPayments.payment({ customerKey: `USER_${data.id}` });
+      await payment?.requestPayment({
+        method: 'CARD',
         orderName: res.orderName,
         customerName: data.name,
         customerEmail: data.email,
-        customerMobilePhone:data.phone,
-        amount: res.amount,
+        amount: {
+          value: res.amount,
+          currency: 'KRW',
+        },
         orderId: res.orderId,
+        successUrl: `${window.location.origin}/success`,
+        failUrl: `${window.location.origin}/fail`,
       });
     } catch (error: any) {
       if (error.code === 'PAY_PROCESS_CANCELED') {
@@ -194,6 +195,7 @@ export default function Apply() {
         showToast('지원하지 않는 카드사입니다', 'error');
         return;
       }
+      console.error(error)
       showToast('결제 처리 중 오류가 발생했습니다.', 'error');
     }
   }, [
@@ -304,13 +306,13 @@ export default function Apply() {
               type="button"
               onClick={() => setTap(2)}
               width="Big"
-              disabled={
-                phoneError !== '' ||
-                emailError !== '' ||
-                messageError !== '' ||
-                !disable ||
-                selectedSlot === null
-              }
+              // disabled={
+              //   phoneError !== '' ||
+              //   emailError !== '' ||
+              //   messageError !== '' ||
+              //   !disable ||
+              //   selectedSlot === null
+              // }
             >
               다음으로
             </Button>

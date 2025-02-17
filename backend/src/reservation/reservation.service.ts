@@ -76,6 +76,7 @@ export class ReservationService {
         programsId: body.programsId,
         status: MemtoringStatus.PENDING,
         userId: id,
+        scheduleId: program.available.id,
         contact: {
           email: body.email,
           phone: body.phone,
@@ -84,18 +85,21 @@ export class ReservationService {
       });
       await queryRunner.manager.save(reservation);
       // 결제 정보
+      const orderId = `MENTOR_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const payment = queryRunner.manager.create(Payments, {
-        orderId: reservation.id,
+        orderId,
         status: PaymentStatus.PENDING,
         price: program.price,
         title: program.title,
+        reservationId: reservation.id,
+        userId: id,
       });
       await queryRunner.manager.save(payment);
       await queryRunner.commitTransaction();
       return {
         message: '예약이 완료되었습니다.',
         amount: program.price,
-        orderId: `MENTOR_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        orderId,
         orderName: program.title,
       };
     } catch (error) {
@@ -148,18 +152,27 @@ export class ReservationService {
     await queryRunner.startTransaction();
     try {
       // 결제 정보 조회
-      const payment = await queryRunner.manager.findOne(Payments, {
-        where: { orderId: body.orderId },
-      });
+      const payment = await queryRunner.manager
+        .createQueryBuilder(Payments, 'payment')
+        .leftJoinAndSelect('payment.reservation', 'reservation')
+        .leftJoinAndSelect('reservation.programs', 'programs')
+        .leftJoinAndSelect('programs.profile', 'profile')
+        .leftJoinAndSelect('profile.user', 'user')
+        .where('payment.orderId = :orderId', { orderId: body.orderId })
+        .getOne();
       if (!payment) {
         throw new BadRequestException('결제 정보를 찾을 수 없습니다.');
       }
       // 금액 검증
-      if (payment.price !== body.orderId) {
+      if (payment.price !== body.price) {
         throw new BadRequestException('결제 금액이 일치 하지 않습니다.');
       }
       // 토스 결제 승인 요청
-      await this.tossPaymentService.comfirmPayment(body);
+      const paymentResult = await this.tossPaymentService.comfirmPayment(body);
+      console.log(paymentResult, '가격');
+      if (paymentResult.totalAmount !== body.price) {
+        throw new BadRequestException('결제 금액 검증 실패');
+      }
       // 정보 업데이트
       payment.paymentKey = body.paymentKey;
       payment.status = PaymentStatus.COMPLETED;
@@ -168,11 +181,14 @@ export class ReservationService {
       // 예약 상태 업데이트
       await queryRunner.manager.update(
         Reservations,
-        { id: body.orderId },
+        { id: payment.reservationId },
         { status: MemtoringStatus.COMFIRMED },
       );
       await queryRunner.commitTransaction();
-      return payment;
+      return {
+        message: '결제 완료 되었습니다.',
+        title: paymentResult.orderName,
+      };
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;

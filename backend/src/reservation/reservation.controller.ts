@@ -4,19 +4,23 @@ import {
   Body,
   UseInterceptors,
   UseGuards,
+  Query,
+  Get,
 } from '@nestjs/common';
 import { ReservationService } from './reservation.service';
 import {
   CreateReservationDto,
   PaymentVerificationDto,
+  ReservationListDto,
 } from './dto/create-reservation.dto';
 import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedToNull.Interceptor';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoggedInGuard } from 'src/auth/logged-in.guard';
 import { User } from 'src/common/decorators/user.decorator';
+import { PaginationDto } from 'src/common/dto/page.dto';
 
 @UseInterceptors(UndefinedToNullInterceptor)
-@ApiTags('프로그램 예약')
+@ApiTags('프로그램 예약/환불/조회')
 @Controller('reservation')
 export class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}
@@ -68,5 +72,29 @@ export class ReservationController {
   @Post('verify')
   verifyPayment(@Body() PaymentVerificationDto: PaymentVerificationDto) {
     return this.reservationService.verifyPayment(PaymentVerificationDto);
+  }
+  @UseGuards(new LoggedInGuard())
+  @ApiOperation({ summary: '멘토링 신청 목록' })
+  @ApiResponse({
+    status: 200,
+    description: '멘토링 신청 목록 조회 완료 되었습니다.',
+    type: ReservationListDto,
+  })
+  @ApiResponse({
+    status: 500,
+    description: '멘토링 신청 목록을 불러오던 중 오류가 발생했습니다.',
+    schema: {
+      properties: {
+        statusCode: { type: 'number', example: 500 },
+        message: {
+          type: 'string',
+          example: '결제 목록 조회 중 오류가 발생했습니다.',
+        },
+      },
+    },
+  })
+  @Get('')
+  getMentoringList(@User() user, @Query() query: PaginationDto) {
+    return this.reservationService.getMentoringList(user.id, query);
   }
 }

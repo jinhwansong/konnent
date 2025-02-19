@@ -55,14 +55,22 @@ export interface IGetProgram extends IProgram {
   createdAt: string;
 }
 
+export interface IGetPayment {
+  id: number;
+  status: string;
+  createdAt: string;
+  price:number;
+  title:string;
+  mentor:string;
+  paymentKey:string
+}
 
-
-export interface IColumn<T = IAdminUsers | IAdminMentors| IGetProgram> {
+export interface IColumn<T = IAdminUsers | IAdminMentors| IGetProgram|IGetPayment> {
   id: number;
   name: string;
   render?: (item: T) => React.ReactNode;
 }
-export interface ITables<T = IAdminUsers | IAdminMentors | IGetProgram> {
+export interface ITables<T = IAdminUsers | IAdminMentors | IGetProgram|IGetPayment> {
   items: T[];
   message: string;
   totalPage: number;

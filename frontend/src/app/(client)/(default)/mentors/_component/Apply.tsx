@@ -23,6 +23,15 @@ interface ITileDisabled {
   date: Date;
   view: 'month' | 'year' | 'century' | 'decade' | 'date';
 }
+interface IreservedTimes {
+  startTime: string;
+  endTime: string;
+}
+interface ITimeSlotWithCount extends ITimeSlot {
+  currentCount: number;
+  maxCount: number;
+}
+
 export default function Apply() {
   // 내정보
   const { data } = useUserData();
@@ -71,13 +80,14 @@ export default function Apply() {
     queryKey: ['availableTimes', param.id, year, month, day],
     queryFn: () =>
       getAvailableTime({ id: parseInt(param.id as string), year, month, day }),
+    enabled: !!selectedDate,
   });
   // 날짜 가져오기
   const date = new Date();
   const currentYear = date.getFullYear();
   const currentMonth = date.getMonth() + 1;
   const { data: availableDates } = useQuery({
-    queryKey: ['availableTimes', param.id, currentYear, currentMonth],
+    queryKey: ['availableDate', param.id, currentYear, currentMonth],
     queryFn: () =>
       getAvailableDays({
         id: parseInt(param.id as string),
@@ -94,16 +104,46 @@ export default function Apply() {
     ).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     return today > date || !availableDates?.includes(dateStr);
   };
-  const splitTimeSlot = (time: ITimeSlot[], duration: number): ITimeSlot[] => {
-    const allSlot: ITimeSlot[] = [];
-    time?.forEach((slots) => {
-      const timeSlot = slotTime(slots.startTime, slots.endTime, duration);
-      allSlot.push(...timeSlot);
-    });
+  const splitTimeSlot = (
+    time: ITimeSlot[],
+    duration: number,
+    reservedTimes: IreservedTimes[],
+  ): ITimeSlotWithCount[] => {
+    const allSlot: ITimeSlotWithCount[] = [];
+    const dateString = `${year}-${String(month).padStart(2, '0')}-${String(
+      day
+    ).padStart(2, '0')}`;
+    for (const slots of time) {
+      const timeSlots = slotTime(slots.startTime, slots.endTime, duration);
+      const slotCount = timeSlots.map((timeSlot) => {
+        const slotStart = new Date(
+          `${dateString}T${timeSlot.startTime}:00Z`
+        ).toISOString();
+        const slotEnd = new Date(
+          `${dateString}T${timeSlot.endTime}:00Z`
+        ).toISOString();
+        const reserved = reservedTimes.filter((reservedTime) => {
+          const reservedStart = new Date(reservedTime.startTime).toISOString();
+          const reservedEnd = new Date(reservedTime.endTime).toISOString();
+          return slotStart < reservedEnd && reservedStart < slotEnd;
+        }).length;
+        return {
+          ...timeSlot,
+          maxCount: 1,
+          currentCount: reserved,
+        };
+      });
+
+      allSlot.push(...slotCount);
+    }
     return allSlot;
   };
   const timeSlot = availableTimes
-    ? splitTimeSlot(availableTimes.availableSlots, availableTimes.duration)
+    ? splitTimeSlot(
+        availableTimes.availableSlots,
+        availableTimes.duration,
+        availableTimes.reservedTimes,
+      )
     : [];
   const values = [
     {
@@ -170,7 +210,7 @@ export default function Apply() {
     try {
       
       const tossPayments = await loadTossPayments(
-        'test_ck_DpexMgkW36RJd49e0wK43GbR5ozO'
+        process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY as string
       );
       const payment = tossPayments.payment({ customerKey: `USER_${data.id}` });
       await payment?.requestPayment({
@@ -187,7 +227,10 @@ export default function Apply() {
         failUrl: `${window.location.origin}/fail`,
       });
     } catch (error: any) {
-      if (error.code === 'PAY_PROCESS_CANCELED') {
+      if (
+        error.code === 'PAY_PROCESS_CANCELED' ||
+        error.code === 'USER_CANCEL'
+      ) {
         showToast('사용자가 결제를 취소했습니다', 'error');
         return;
       }
@@ -195,7 +238,7 @@ export default function Apply() {
         showToast('지원하지 않는 카드사입니다', 'error');
         return;
       }
-      console.error(error)
+      console.log(error.code, 'error')
       showToast('결제 처리 중 오류가 발생했습니다.', 'error');
     }
   }, [
@@ -263,8 +306,17 @@ export default function Apply() {
                             key={slot.startTime}
                             type="button"
                             onClick={() => onSlotbox(slot)}
+                            className={
+                              slot.currentCount === slot.maxCount
+                                ? style.reserved
+                                : ''
+                            }
+                            disabled={slot.currentCount === slot.maxCount}
                           >
-                            {slot.startTime}~{slot.endTime} 0/1
+                            {slot.startTime}~{slot.endTime}
+                            <span>
+                              {slot.currentCount}/{slot.maxCount}
+                            </span>
                           </button>
                         ))}
                       </div>

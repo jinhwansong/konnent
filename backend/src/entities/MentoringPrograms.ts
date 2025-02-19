@@ -126,7 +126,7 @@ export class MentoringPrograms {
   profile: MentorProfile;
   // 예약일정 관계설정
   @OneToMany(() => Reservations, (reservation) => reservation.programs)
-  reservations: Reservations[];
+  reservation: Reservations[];
   // 예약 가능
   @OneToOne(() => AvailableSchedule, (schedule) => schedule.programs)
   available: AvailableSchedule;

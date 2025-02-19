@@ -4,10 +4,10 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProgramRequestDto } from 'src/common/dto/search.dto';
 import { MentoringPrograms } from 'src/entities/MentoringPrograms';
 import { MemtoringStatus, Reservations } from 'src/entities/Reservations';
 import { Between, Not, Repository } from 'typeorm';
+import { ProgramRequestDto } from './dto/program.request';
 
 @Injectable()
 export class ProgramsService {

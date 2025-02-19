@@ -16,11 +16,12 @@ import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   MentoingProgramCreateDto,
   MentoingProgramDto,
+  ProgramListDto,
 } from 'src/program/dto/program.request.dto';
 import { LoggedInGuard } from 'src/auth/logged-in.guard';
 import { User } from 'src/common/decorators/user.decorator';
 import { PaginationDto } from 'src/common/dto/page.dto';
-import { ProgramListDto, SearchDto } from 'src/common/dto/search.dto';
+import { SearchDto } from 'src/common/dto/search.dto';
 import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedToNull.Interceptor';
 
 @UseInterceptors(UndefinedToNullInterceptor)
@@ -121,8 +122,6 @@ export class ProgramController {
       },
     },
   })
-  @ApiQuery({ name: 'page', required: false })
-  @ApiQuery({ name: 'limit', required: false })
   @UseGuards(new LoggedInGuard())
   @ApiOperation({ summary: '멘토 프로그램 조회' })
   @Get('')
@@ -171,10 +170,6 @@ export class ProgramController {
       },
     },
   })
-  @ApiQuery({ name: 'page', required: false })
-  @ApiQuery({ name: 'limit', required: false })
-  @ApiQuery({ name: 'keyword', required: false })
-  @ApiQuery({ name: 'sortBy', required: false })
   @UseGuards(new LoggedInGuard())
   @ApiOperation({ summary: '멘토 프로그램 검색' })
   @Get('search')

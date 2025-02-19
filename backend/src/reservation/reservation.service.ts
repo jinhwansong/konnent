@@ -16,6 +16,7 @@ import { MentoringPrograms } from 'src/entities/MentoringPrograms';
 import { weeklyScheduleDto } from 'src/common/dto/time.dto';
 import { Payments, PaymentStatus } from 'src/entities/Payments';
 import { PaymentsService } from 'src/payments/payments.service';
+import { PaginationDto } from 'src/common/dto/page.dto';
 
 @Injectable()
 export class ReservationService {
@@ -29,6 +30,7 @@ export class ReservationService {
     private readonly tossPaymentService: PaymentsService,
     private readonly dataSource: DataSource,
   ) {}
+  // 프로그램 예약
   async create(body: CreateReservationDto, id: number) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -169,14 +171,18 @@ export class ReservationService {
       }
       // 토스 결제 승인 요청
       const paymentResult = await this.tossPaymentService.comfirmPayment(body);
-      console.log(paymentResult, '가격');
       if (paymentResult.totalAmount !== body.price) {
         throw new BadRequestException('결제 금액 검증 실패');
+      }
+      // 결제 상태 검증
+      if (paymentResult.status !== 'DONE') {
+        throw new BadRequestException('결제가 정상적으로 완료되지 않았습니다');
       }
       // 정보 업데이트
       payment.paymentKey = body.paymentKey;
       payment.status = PaymentStatus.COMPLETED;
       payment.paidAt = new Date();
+      payment.receiptUrl = paymentResult.receiptUrl;
       await queryRunner.manager.save(payment);
       // 예약 상태 업데이트
       await queryRunner.manager.update(
@@ -187,13 +193,62 @@ export class ReservationService {
       await queryRunner.commitTransaction();
       return {
         message: '결제 완료 되었습니다.',
-        title: paymentResult.orderName,
+        status: 'done',
       };
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;
     } finally {
       await queryRunner.release();
+    }
+  }
+  // 멘토링 신청 내역 리스트
+  async getMentoringList(id: number, { limit = 10, page = 1 }: PaginationDto) {
+    try {
+      const reservationList = await this.reservationRepository
+        .createQueryBuilder('reservation')
+        .where('reservation.userId = :userId', { userId: id })
+        .andWhere('reservation.status != :status', {
+          status: MemtoringStatus.PENDING,
+        })
+        .leftJoinAndSelect('reservation.programs', 'programs')
+        .leftJoinAndSelect('programs.profile', 'profile')
+        .leftJoinAndSelect('profile.user', 'user')
+        .orderBy('reservation.createdAt', 'DESC')
+        .select([
+          'reservation.createdAt',
+          'reservation.id',
+          'reservation.startTime',
+          'reservation.endTime',
+          'reservation.status',
+          'programs.title',
+          'programs.duration',
+          'programs.id',
+          'profile.id',
+          'user.name',
+        ])
+        .skip((page - 1) * limit)
+        .take(limit);
+      const [results, total] = await reservationList.getManyAndCount();
+      const items = results.map((result) => ({
+        id: result.id,
+        title: result.programs.title,
+        duration: result.programs.duration,
+        status: result.status,
+        mentor: result.programs.profile.user.name,
+        createdAt: result.createdAt,
+        startTime: result.startTime,
+        endTime: result.endTime,
+      }));
+      return {
+        items,
+        totalPage: Math.ceil(total / limit),
+        message: '멘토링 신청 목록 조회 완료 되었습니다.',
+      };
+    } catch (error) {
+      throw new BadRequestException(
+        '멘토링 신청 목록을 불러오던 중 오류가 발생했습니다.',
+      );
     }
   }
 }

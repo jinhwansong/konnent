@@ -1,4 +1,6 @@
-import { IntersectionType, PickType } from '@nestjs/swagger';
+import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { PaginationDto } from 'src/common/dto/page.dto';
 import { MentoringPrograms } from 'src/entities/MentoringPrograms';
 import { MentorProfile } from 'src/entities/MentorProfile';
 import { Mentors } from 'src/entities/Mentors';
@@ -29,3 +31,30 @@ export class UserProgramDetails extends IntersectionType(
     'duration',
   ]),
 ) {}
+export class UserListDto extends PaginationDto {
+  @ApiProperty({ type: [UserProgram] })
+  items: UserProgram[];
+}
+export enum SortType {
+  RECENT = 'latest',
+  POPULAR = 'popular',
+}
+export class ProgramRequestDto extends PaginationDto {
+  @IsOptional()
+  @IsEnum(SortType)
+  @ApiProperty({
+    description: '정렬기준 (최신순/인기순)',
+    required: false,
+    enum: SortType,
+    default: SortType.RECENT,
+  })
+  sort?: string = SortType.RECENT;
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    description: '멘토링 분야',
+    required: false,
+    example: 'IT개발/데이터',
+  })
+  mentoring_field?: string;
+}

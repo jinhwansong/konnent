@@ -1,4 +1,4 @@
-import { IColumn, IGetProgram } from "@/type";
+import { IColumn, IGetPayment, IGetProgram } from "@/type";
 import { formatDate } from "@/util/formatDate";
 import { formatNumber } from "@/util/formatNumber";
 import { stateus } from "@/util/status";
@@ -35,5 +35,20 @@ export const column: IColumn<IGetProgram>[] = [
     id: 7,
     name: '등록일',
     render: (item: IGetProgram) => formatDate(item?.createdAt),
+  },
+];
+export const paymentColumn: IColumn<IGetPayment>[] = [
+  { id: 1, name: '번호', render: (item: IGetPayment) => item?.id },
+  { id: 2, name: '제목', render: (item: IGetPayment) => item?.title },
+  {
+    id: 3,
+    name: '가격',
+    render: (item: IGetPayment) => formatNumber(item?.price),
+  },
+  { id: 4, name: '멘토명', render: (item: IGetPayment) => item?.mentor },
+  {
+    id: 5,
+    name: '결제일',
+    render: (item: IGetPayment) => formatDate(item?.createdAt),
   },
 ];

@@ -1,4 +1,5 @@
-import { IntersectionType, PickType } from '@nestjs/swagger';
+import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
+import { PaginationDto } from 'src/common/dto/page.dto';
 import { AvailableSchedule } from 'src/entities/AvailableSchedule';
 import { MentoringPrograms } from 'src/entities/MentoringPrograms';
 
@@ -26,3 +27,8 @@ export class MentoingProgramDto extends IntersectionType(
   ]),
   PickType(AvailableSchedule, ['available_schedule']),
 ) {}
+
+export class ProgramListDto extends PaginationDto {
+  @ApiProperty({ type: [MentoingProgramDto] })
+  items: MentoingProgramDto[];
+}

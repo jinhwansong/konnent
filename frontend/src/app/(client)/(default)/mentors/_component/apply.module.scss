@@ -149,8 +149,17 @@
         border: var(--border-main);
         font-size:14px;
         padding: 10px;
+        > span{
+                margin-left: 5px;
+            }
+        &.reserved{
+            color: #ced4da;
+            cursor: auto;
+            
+        }
     }
 }
+
 .button_wrap{
     display: flex;
     justify-content: end;

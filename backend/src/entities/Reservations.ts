@@ -73,7 +73,7 @@ export class Reservations {
   @OneToOne(() => Payments, (payment) => payment.reservation)
   payment: Payments;
   // 프로그램과 관계설정
-  @ManyToOne(() => MentoringPrograms, (program) => program.reservations)
+  @ManyToOne(() => MentoringPrograms, (program) => program.reservation)
   programs: MentoringPrograms;
   // 유저와의 관계
   @ManyToOne(() => Users, (user) => user.reservations)

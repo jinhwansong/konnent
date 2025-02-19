@@ -10,8 +10,11 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedToNull.Interceptor';
 import { ProgramsService } from './programs.service';
-import { ProgramRequestDto, UserListDto } from 'src/common/dto/search.dto';
-import { UserProgramDetails } from './dto/program.request';
+import {
+  ProgramRequestDto,
+  UserListDto,
+  UserProgramDetails,
+} from './dto/program.request';
 import { LoggedInGuard } from 'src/auth/logged-in.guard';
 
 @UseInterceptors(UndefinedToNullInterceptor)

@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { PaymentVerificationDto } from 'src/reservation/dto/create-reservation.dto';
-import { catchError, firstValueFrom, retry } from 'rxjs';
+import { catchError, EMPTY, firstValueFrom, of, retry } from 'rxjs';
 import { PaginationDto } from 'src/common/dto/page.dto';
 import { Payments, PaymentStatus } from 'src/entities/Payments';
 import { DataSource, Repository } from 'typeorm';
@@ -40,16 +40,25 @@ export class PaymentsService {
             },
           )
           .pipe(
-            retry(1),
+            retry({
+              count: 1,
+              delay: (error) => {
+                // ALREADY_PROCESSED_PAYMENT 에러인 경우 재시도하지 않음
+                if (error.response?.data.code === 'ALREADY_PROCESSED_PAYMENT') {
+                  return EMPTY;
+                }
+                return of(1000); // 다른 에러의 경우 1초 후 재시도
+              },
+            }),
             catchError(async (error) => {
               // 이미 처리된 경우에는?
               if (error.response?.data.code === 'ALREADY_PROCESSED_PAYMENT') {
+                console.log('에러씨불', error.response.data);
                 return Promise.resolve({
                   data: {
                     status: 'DONE',
-                    totalAmount: body.price,
-                    orderId: body.orderId,
-                    paymentKey: body.paymentKey,
+                    totalAmount: error.response.data.totalAmount,
+                    receiptUrl: error.response.data.receipt.url,
                   },
                 });
               }
@@ -57,7 +66,11 @@ export class PaymentsService {
             }),
           ),
       );
-      return response?.data;
+      return {
+        status: 'DONE',
+        totalAmount: response.data.totalAmount,
+        receiptUrl: response.data.receipt.url,
+      };
     } catch (error) {
       if (error.response?.data?.code === 'PROVIDER_ERROR') {
         return {
@@ -79,22 +92,17 @@ export class PaymentsService {
           status: PaymentStatus.PENDING,
         })
         .leftJoinAndSelect('payment.reservation', 'reservation')
-        .leftJoinAndSelect('reservation.programs', 'programs')
-        .leftJoinAndSelect('programs.profile', 'profile')
-        .leftJoinAndSelect('profile.user', 'user')
         .orderBy('payment.createdAt', 'DESC')
         .select([
           'payment.price',
           'payment.title',
           'payment.paymentKey',
           'payment.paidAt',
+          'payment.orderId',
+          'payment.receiptUrl',
           'payment.id',
           'payment.status',
           'payment.createdAt',
-          'reservation.id',
-          'programs.id',
-          'profile.id',
-          'user.name',
         ])
         .skip((page - 1) * limit)
         .take(limit);
@@ -104,9 +112,10 @@ export class PaymentsService {
         title: result.title,
         price: result.price,
         status: result.status,
+        orderId: result.orderId,
         paymentKey: result.paymentKey,
         paidAt: result.paidAt,
-        mentor: result.reservation.programs.profile.user.name,
+        receiptUrl: result.receiptUrl,
       }));
       return {
         items,
@@ -120,7 +129,7 @@ export class PaymentsService {
   // 구매 취소
   async getCancel(id: number, paymentKey: string) {
     try {
-      await this.dataSource.transaction(async (manager) => {
+      const result = await this.dataSource.transaction(async (manager) => {
         const payment = await this.paymentRepository.findOne({
           where: { paymentKey, userId: id },
           relations: ['reservation'],
@@ -129,6 +138,11 @@ export class PaymentsService {
           throw new BadRequestException(
             '결제 정보를 찾을 수 없거나 권한이 없습니다.',
           );
+        }
+        console.log('payment', payment);
+        if (payment.reservation.status === MemtoringStatus.COMPLETED) {
+          console.log('reservation', payment.reservation.status);
+          throw new BadRequestException('이미 진행된 멘토링 입니다.');
         }
         const response = await firstValueFrom(
           this.httpService.post(
@@ -146,6 +160,7 @@ export class PaymentsService {
             },
           ),
         );
+        console.log('response', response);
         if (response.data?.status === 'CANCELED') {
           payment.status = PaymentStatus.REFUNDED;
           await manager.save(payment);
@@ -159,6 +174,7 @@ export class PaymentsService {
           };
         }
       });
+      return result;
     } catch (error) {
       throw new BadRequestException('환불 처리 중 오류가 발생했습니다.');
     }

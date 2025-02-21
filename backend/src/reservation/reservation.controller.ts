@@ -20,7 +20,7 @@ import { User } from 'src/common/decorators/user.decorator';
 import { PaginationDto } from 'src/common/dto/page.dto';
 
 @UseInterceptors(UndefinedToNullInterceptor)
-@ApiTags('프로그램 예약/환불/조회')
+@ApiTags('프로그램 예약/조회')
 @Controller('reservation')
 export class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}

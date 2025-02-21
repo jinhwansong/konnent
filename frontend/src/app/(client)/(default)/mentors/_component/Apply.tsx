@@ -6,7 +6,7 @@ import Calendar from 'react-calendar';
 import { Value } from 'react-calendar/dist/esm/shared/types.js';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { useUserData } from '@/app/_lib/useUser';
-import { getAvailableDays, getAvailableTime } from '@/app/_lib/useProgram';
+import { getAvailableDays, getAvailableTime } from '@/app/_lib/useEtc';
 import Input from '@/app/_component/Input';
 import Button from '@/app/_component/Button';
 import useVaild from '@/hooks/useVaild';
@@ -203,7 +203,7 @@ export default function Apply() {
       }
     );
     if (!response.ok) {
-      showToast('결제 초기화에 실패했습니다', 'error');
+      showToast('모든 내용을 넣어주세요', 'error');
       return;
     }
     const res = await response.json();

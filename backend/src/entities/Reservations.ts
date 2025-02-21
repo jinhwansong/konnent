@@ -22,6 +22,7 @@ export enum MemtoringStatus {
   COMFIRMED = 'confirmed',
   CANCELLED = 'cancelled',
   COMPLETED = 'completed',
+  PROGRESS = 'progress',
 }
 @Entity({ schema: 'konnect', name: 'reservations' })
 export class Reservations {

@@ -12,7 +12,7 @@ export class CreateReservationDto extends IntersectionType(
 ) {}
 
 export class PaymentVerificationDto extends IntersectionType(
-  PickType(Payments, ['paymentKey', 'orderId', 'price']),
+  PickType(Payments, ['paymentKey', 'orderId', 'price', 'receiptUrl']),
 ) {}
 
 // 프로그램 예약내역

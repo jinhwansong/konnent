@@ -13,7 +13,8 @@ import useInput from '@/hooks/useInput';
 import { usePopupStore } from '@/store/usePopupStore';
 import { IcLogo } from '@/asset';
 import { useUserData } from '@/app/_lib/useUser';
-import { useLogout } from '@/app/_lib/useLogout';
+import { useLogout } from '@/app/_lib/useEtc';
+
 import style from './header.module.scss';
 
 
@@ -21,7 +22,7 @@ export default function Header() {
   const queryClient = useQueryClient();
   const [search, changeSearch] = useInput('');
   const router = useRouter();
-  const { onPopup, popup } = usePopupStore();
+  const { onPopup, popup, closePop } = usePopupStore();
   const { popupRef } = usePopup();
   // 내정보
   const { data } = useUserData();
@@ -64,15 +65,23 @@ export default function Header() {
                       <p>{data.email || data.snsId}</p>
                     </div>
                     <div>
-                      <Link href="/user/mypage">내 정보</Link>
-                      <Link href="/user/bookmarks">북마크</Link>
-                      <Link href="/user/relationships">팔로우</Link>
-                      <Link href="/mentoring/applications">
+                      <Link href="/user/mypage" onClick={closePop}>
+                        내 정보
+                      </Link>
+                      <Link href="/user/bookmarks" onClick={closePop}>
+                        북마크
+                      </Link>
+                      <Link href="/user/relationships" onClick={closePop}>
+                        팔로우
+                      </Link>
+                      <Link href="/user/mentorings" onClick={closePop}>
                         멘토링 신청 내역
                       </Link>
-                      <Link href="/mentoring/payments">결제/환불 내역</Link>
+                      <Link href="/user/payments">결제/환불 내역</Link>
                       {data.role === 'admin' && (
-                        <Link href="/admin">관리자페이지</Link>
+                        <Link href="/admin" onClick={closePop}>
+                          관리자페이지
+                        </Link>
                       )}
                     </div>
                     <div>

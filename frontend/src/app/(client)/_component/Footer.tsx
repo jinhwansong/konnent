@@ -5,7 +5,7 @@ import style from './footer.module.scss';
 export default function Footer() {
     const services = [
       { id: 1, title: '멘토 지원하기', link: '/mentor' },
-      { id: 2, title: '분야별 멘토 찾기', link: '/Mentorrs' },
+      { id: 2, title: '분야별 멘토 찾기', link: '/mentors' },
       { id: 3, title: '아티클', link: '/article' },
     ];
     const socials = [

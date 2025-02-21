@@ -28,7 +28,6 @@ export default function CareerItem({
               open={popup as boolean}
               onPopup={onPopup as () => void}
               seletText={seletText}
-              name={label}
               text={data as string}
               onSelet={onSelet as (selet: string) => void}
             />

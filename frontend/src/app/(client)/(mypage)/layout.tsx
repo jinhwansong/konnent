@@ -4,15 +4,13 @@ import Nav from "../_component/Nav";
 
 export default function layout({
   children,
-  modal,
 }: {
   children: React.ReactNode;
-  modal: React.ReactNode;
 }){
   return (
-    <main className={style.container}>
+    <main className={style.mypage}>
+      <Nav />
       {children}
-      {modal}
     </main>
   );
 }

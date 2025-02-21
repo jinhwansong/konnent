@@ -1,6 +1,8 @@
 import {
+  Body,
   Controller,
   Get,
+  Post,
   Query,
   UseGuards,
   UseInterceptors,
@@ -11,7 +13,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedToNull.Interceptor';
 import { User } from 'src/common/decorators/user.decorator';
 import { PaginationDto } from 'src/common/dto/page.dto';
-import { PaymentsListDto } from './dto/payments.request';
+import { PaymentsListDto, RefundPaymentsDto } from './dto/payments.request';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('결제목록')
@@ -61,8 +63,8 @@ export class PaymentsController {
       },
     },
   })
-  @Get('cancel')
-  getCancel(@User() user, @Query('paymentKey') paymentKey: string) {
-    return this.PaymentService.getCancel(user.id, paymentKey);
+  @Post('cancel')
+  getCancel(@User() user, @Body() body: RefundPaymentsDto) {
+    return this.PaymentService.getCancel(user.id, body.paymentKey);
   }
 }

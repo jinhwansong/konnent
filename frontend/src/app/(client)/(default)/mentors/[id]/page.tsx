@@ -1,13 +1,13 @@
 import React from 'react'
 import { Metadata } from 'next';
 import Image from 'next/image';
-import { fetchProgramDetail } from '@/app/_lib/useServer';
 import HtmlWrapper from '@/app/_component/HtmlWrapper';
 import Button from '../_component/Buttons';
 import { formatNumber } from '@/util/formatNumber';
 import { formatTime } from '@/util/formatTime';
 import { getImageUrl } from '@/util/getImageUrl';
 import style from './style.module.scss';
+import { fetchProgramDetail } from '@/app/_lib/useEtc';
 // 메타데이터
 export async function generateMetadata({
   params,

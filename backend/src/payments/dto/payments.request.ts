@@ -20,3 +20,5 @@ export class PaymentsListDto extends PaginationDto {
   @ApiProperty({ type: [PaymentDto] })
   items: PaymentDto[];
 }
+
+export class RefundPaymentsDto extends PickType(Payments, ['paymentKey']) {}

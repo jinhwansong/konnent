@@ -1,9 +1,9 @@
 'use client'
 import React, { useCallback, useState } from 'react'
 import style from './taps.module.scss';
-import { fetchProgram } from '@/app/_lib/useServer';
 import Item from './Item';
 import { IMentoring } from '@/type';
+import { fetchProgram } from '@/app/_lib/useEtc';
 
 export interface IItem {
   initialData: IMentoring;

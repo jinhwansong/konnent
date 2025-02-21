@@ -1,9 +1,9 @@
 import React from 'react'
 import { Metadata } from 'next';
-import { fetchProgram } from '@/app/_lib/useServer';
 import { IfetchProgram } from '@/type';
 import style from '@/styles/_common.module.scss';
 import Mentors from './_component/Mentors';
+import { fetchProgram } from '@/app/_lib/useEtc';
 
 // 메타데이터
 export async function generateMetadata(): Promise<Metadata> {

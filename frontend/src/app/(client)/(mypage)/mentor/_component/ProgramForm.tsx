@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import Input from '@/app/_component/Input';
 import Editor from '@/app/_component/Editor';
-import { useCreateProgram, useModifyProgram } from '@/app/_lib/useProgram';
+import { useCreateProgram, useModifyProgram } from '@/app/_lib/useEtc';
 import { Days, scheduleDays } from '@/app/(client)/config/schedule';
 import { slotTime } from '@/util/slotTime';
 import useSelect from '@/hooks/useSelect';
@@ -151,7 +151,6 @@ export default function ProgramForm({ mode, initialData }: IProgramForm) {
   const [schedule, setSchedule] = useState<ISchedule>(
     initialData ? converSlot(initialData?.available_schedule) : {}
   );
-  console.log(schedule);
   // endtime 계산
   const addMinutes = (time: string, minutes: number) => {
     // 시 분 으로 분리

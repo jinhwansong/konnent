@@ -33,7 +33,7 @@ export default function Nav() {
   const mentorSection: INavSection = {
     title: '멘토 관리',
     items: [
-      { title: '멘토 정보', href: '/user/mentor_profile',},
+      { title: '멘토 정보', href: '/mentor/mentor_profile' },
       { title: '멘토링 관리', href: '/mentor/schedule' },
       { title: '멘토링 생성/관리', href: '/mentor/program' },
       { title: '받은 리뷰 관리', href: '/mentor/reviews' },
@@ -45,8 +45,8 @@ export default function Nav() {
   const userSection: INavSection = {
     title: '멘토링 신청관리',
     items: [
-      { title: '멘토링 신청 내역', href: '/mentoring/applications' },
-      { title: '결제/환불 내역', href: '/mentoring/payments' },
+      { title: '멘토링 신청 내역', href: '/user/mentorings' },
+      { title: '결제/환불 내역', href: '/user/payments' },
     ],
   };
 

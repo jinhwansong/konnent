@@ -219,7 +219,6 @@ export class ReservationService {
           'reservation.createdAt',
           'reservation.id',
           'reservation.startTime',
-          'reservation.endTime',
           'reservation.status',
           'programs.title',
           'programs.duration',
@@ -236,9 +235,7 @@ export class ReservationService {
         duration: result.programs.duration,
         status: result.status,
         mentor: result.programs.profile.user.name,
-        createdAt: result.createdAt,
         startTime: result.startTime,
-        endTime: result.endTime,
       }));
       return {
         items,

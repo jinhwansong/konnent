@@ -2,9 +2,9 @@ import React from 'react'
 import Slide from '../_component/Slide';
 import style from '@/styles/_common.module.scss';
 import { Metadata } from 'next';
-import { fetchProgram } from '@/app/_lib/useServer';
 import { IfetchProgram } from '@/type';
 import TapSection from '../_component/TapSection';
+import { fetchProgram } from '@/app/_lib/useEtc';
 
 // 메타데이터
 export async function generateMetadata({

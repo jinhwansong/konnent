@@ -1,12 +1,16 @@
 @import '@/styles/_functions.scss';
-.container {
+@mixin main {
     width: min(1100px, 100% - 30px);
     margin: 0 auto;
     padding-block: size(40px) size(80px);
 }
+.container {
+    @include main;
+}
 .mypage{
     display: flex;
     gap: 3.125rem;
+    @include main;
 }
 .nonepadding{
     width: 100%;

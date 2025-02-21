@@ -4,12 +4,12 @@ import Item from '@/app/(client)/_component/Item';
 import { joblist } from '@/app/(client)/config/job';
 import Pagenation from '@/app/_component/Pagenation';
 import Selet from '@/app/_component/Selet';
-import { fetchProgram } from '@/app/_lib/useServer';
 import usePage from '@/hooks/usePage';
 import useSelect from '@/hooks/useSelect';
 import { usePopupStore } from '@/store/usePopupStore';
 import { IMentoring } from '@/type';
 import style from './mentors.module.scss'
+import { fetchProgram } from '@/app/_lib/useEtc';
 
 export default function Mentors({ items, totalPage }: IMentoring) {
   const { currentPage, onPrevPage, onNextPage, onPage } = usePage();

@@ -1,8 +1,9 @@
-
 'use client';
 import { useMutation } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 
+
+// 내 정보
 export const useUserData = () => {
   return useQuery({
     queryKey: ['mydata'],
@@ -93,7 +94,6 @@ interface IPassword {
   currentPassword: string;
   newPassword: string;
 }
-
 export const useUpdatePassword = () => {
   return useMutation({
     mutationFn: async ({ currentPassword, newPassword }: IPassword) => {
@@ -118,4 +118,67 @@ export const useUpdatePassword = () => {
       return data;
     },
   });
+};
+
+// 결제/환불내역
+export const getPayment = async (page: number) => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/payments?page=${page}&limit=10`,
+    {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+  const data = await res.json();
+  if (!res.ok) {
+    throw data;
+  }
+  return data;
+};
+
+export const useRefund = () => {
+  return useMutation({
+    mutationFn: async (paymentKey: string) => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/payments/cancel`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            paymentKey,
+          }),
+        }
+      );
+      const data = await res.json();
+      if (!res.ok) {
+        throw data;
+      }
+      return data;
+    },
+  });
+};
+
+// 멘토링 신청내역
+export const getReservation = async (page: number) => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/reservation?page=${page}&limit=10`,
+    {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+  const data = await res.json();
+  if (!res.ok) {
+    throw data;
+  }
+  return data;
 };

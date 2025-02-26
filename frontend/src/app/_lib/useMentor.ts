@@ -172,10 +172,10 @@ export const useUpdateIntroduce = () => {
   });
 };
 
-// 멘토 프로그램 관리
+// 멘토 프로그램 조회
 export const getProgram = async (page: number) => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/programs/management?page=${page}&limit=10`,
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/mentoring?page=${page}&limit=10`,
     {
       method: 'GET',
       credentials: 'include',
@@ -192,7 +192,7 @@ export const getProgram = async (page: number) => {
 };
 export const getDetailProgram = async (id: string) => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/programs/management/${id}`,
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/mentoring/${id}`,
     {
       method: 'GET',
       credentials: 'include',
@@ -218,7 +218,7 @@ export const useCreateProgram = () => {
       mentoring_field,
     }: ICreateProgram) => {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/programs/management`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/mentoring`,
         {
           method: 'POST',
           credentials: 'include',
@@ -255,7 +255,7 @@ export const useModifyProgram = () => {
       mentoring_field,
     }: IModifyProgram) => {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/programs/management/${id}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/mentoring/${id}`,
         {
           method: 'PATCH',
           credentials: 'include',
@@ -284,7 +284,7 @@ export const useDeleteProgram = () => {
   return useMutation({
     mutationFn: async (id: number) => {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/programs/management/${id}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/mentoring/${id}`,
         {
           method: 'DELETE',
           credentials: 'include',
@@ -302,3 +302,38 @@ export const useDeleteProgram = () => {
   });
 };
 
+// 멘토링관리
+export const getSchedule = async (page: number) => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/mentoring/schedule?page=${page}&limit=10`,
+    {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+  const data = await res.json();
+  if (!res.ok) {
+    throw data;
+  }
+  return data;
+};
+export const getDetailSchedule = async (id: string) => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/mentoring/schedule/${id}`,
+    {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+  const data = await res.json();
+  if (!res.ok) {
+    throw data;
+  }
+  return data;
+};

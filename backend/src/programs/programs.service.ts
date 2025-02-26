@@ -30,13 +30,13 @@ export class ProgramsService {
         .leftJoinAndSelect('program.profile', 'profile')
         .leftJoinAndSelect('profile.user', 'user')
         .leftJoinAndSelect('user.mentor', 'mentor')
+        .leftJoinAndSelect('program.reviews', 'review')
         .select([
           'program.id',
           'program.title',
           'program.mentoring_field',
-          'program.averageRating',
-          'program.totalRatings',
           'program.createdAt',
+          'review.rating',
           'user.name',
           'profile.company',
           'profile.position',
@@ -72,18 +72,28 @@ export class ProgramsService {
           message: '검색 결과가 없습니다',
         };
       }
-      const items = results.map((item) => ({
-        id: item.id,
-        title: item.title,
-        mentoring_field: item.mentoring_field,
-        averageRating: item.averageRating,
-        company: item.profile.company,
-        position: item.profile.position,
-        image: item.profile.image,
-        career: item.profile.user.mentor.career,
-        name: item.profile.user.name,
-        totalRatings: item.totalRatings,
-      }));
+      const items = results.map((item) => {
+        let averageRating = 0;
+        if (item.reviews && item.reviews.length > 0) {
+          const sum = item.reviews.reduce(
+            (acc, rev) => acc + Number(rev.rating),
+            0,
+          );
+          averageRating = sum / item.reviews.length;
+        }
+        return {
+          id: item.id,
+          title: item.title,
+          mentoring_field: item.mentoring_field,
+          averageRating,
+          company: item.profile.company,
+          position: item.profile.position,
+          image: item.profile.image,
+          career: item.profile.user.mentor.career,
+          name: item.profile.user.name,
+          totalReviews: item.reviews ? item.reviews.length : 0,
+        };
+      });
       return {
         items,
         totalPage: Math.ceil(total / limit),

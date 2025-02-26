@@ -3,9 +3,9 @@ import React, { useCallback } from 'react'
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import Button from '@/app/_component/Button';
-import { useDeleteProgram } from '@/app/_lib/useEtc';
 import { useToastStore } from '@/store/useToastStore';
 import { IErr } from '@/type';
+import { useDeleteProgram } from '@/app/_lib/useMentor';
 
 interface IButtonRouter {
   children: string;

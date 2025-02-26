@@ -17,7 +17,6 @@ export class AuthService {
   ) {}
   async validateUser(email: string, password: string) {
     // 서비스에서 이메일을 비교하던지 아니면 레포지토리에서 이메일을 비교하던지 둘중 하나.
-    // const user = await this.usersService.findByEmail(email);
     const user = await this.usersRepository.findOne({
       where: { email },
       select: [

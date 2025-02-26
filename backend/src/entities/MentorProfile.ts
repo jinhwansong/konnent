@@ -13,7 +13,6 @@ import { Posts } from './Posts';
 import { IsBase64, IsString, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Users } from './Users';
-import { ExceptionsSchedule } from './ExceptionsSchedule';
 
 @Entity({ schema: 'konnect', name: 'mentorprofile' })
 export class MentorProfile {
@@ -72,7 +71,4 @@ export class MentorProfile {
   @OneToOne(() => Users, (user) => user.profile)
   @JoinColumn({ name: 'userId' })
   user: Users;
-  // 불가능한 날짜 통합
-  @OneToMany(() => ExceptionsSchedule, (exSchedule) => exSchedule.profile)
-  exSchedule: ExceptionsSchedule[];
 }

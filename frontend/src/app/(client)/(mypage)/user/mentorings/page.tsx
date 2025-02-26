@@ -16,8 +16,8 @@ import RejectModal from '@/app/(client)/_component/RejectModal';
 import style from './mentoring.module.scss';
 import useInput from '@/hooks/useInput';
 import Button from '@/app/_component/Button';
+import { StatusType } from '@/type';
 
-type StatusType = 'confirmed' | 'progress' | 'completed' | 'cancelled';
 interface IMentoring {
   duration: number;
   id: number;
@@ -95,7 +95,6 @@ export default function MentoringPage() {
     if (ratings >= currentStar - 0.5) return '50%';
     return '0%'
   }
-  console.log(rating);
   return (
     <section className={style.mentoring_section}>
       <h4 className={style.mentoring_title}>멘토링 신청내역</h4>

@@ -9,6 +9,9 @@ import { Contact } from 'src/entities/Contact';
 import { Payments } from 'src/entities/Payments';
 import { PaymentsService } from 'src/payments/payments.service';
 import { HttpModule } from '@nestjs/axios';
+import { MentorProfile } from 'src/entities/MentorProfile';
+import { Users } from 'src/entities/Users';
+import { Notification } from 'src/entities/Notification';
 
 @Module({
   imports: [
@@ -18,6 +21,9 @@ import { HttpModule } from '@nestjs/axios';
       AvailableSchedule,
       Contact,
       Payments,
+      MentorProfile,
+      Notification,
+      Users,
     ]),
     HttpModule,
   ],

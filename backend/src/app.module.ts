@@ -1,5 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { LoggerMiddelware } from './middlewares/logger.middelware';
+import { LoggerMiddleware } from './middlewares/logger.middelware';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
@@ -16,9 +16,7 @@ import { Users } from './entities/Users';
 import { UsersService } from './users/users.service';
 import { MentorProfile } from './entities/MentorProfile';
 import { Reservations } from './entities/Reservations';
-import { ExceptionsSchedule } from './entities/ExceptionsSchedule';
 import { AvailableSchedule } from './entities/AvailableSchedule';
-import { ProgramModule } from './program/program.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { UsersModule } from './users/users.module';
 import { MentorModule } from './mento/mentor.module';
@@ -28,6 +26,13 @@ import { RedisModule } from './redis/redis.module';
 import { ProgramsModule } from './programs/programs.module';
 import { Contact } from './entities/Contact';
 import { PaymentsModule } from './payments/payments.module';
+import { MentoringController } from './mentoring/mentoring.controller';
+import { MentoringModule } from './mentoring/mentoring.module';
+import { Review } from './entities/Review';
+import { Notification } from './entities/Notification';
+import { NotificationModule } from './notification/notification.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -71,12 +76,12 @@ import { PaymentsModule } from './payments/payments.module';
       Users,
       MentorProfile,
       Reservations,
-      ExceptionsSchedule,
       AvailableSchedule,
       Contact,
+      Review,
+      Notification,
     ]),
     AdminModule,
-    ProgramModule,
     ReservationModule,
     UsersModule,
     MentorModule,
@@ -84,9 +89,13 @@ import { PaymentsModule } from './payments/payments.module';
     RedisModule,
     ProgramsModule,
     PaymentsModule,
+    MentoringModule,
+    NotificationModule,
+    EventEmitterModule.forRoot(),
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
-  providers: [AppService, UsersService],
+  providers: [AppService],
 })
 export class AppModule implements NestModule {
   constructor(private dataSource: DataSource) {}
@@ -120,6 +129,6 @@ export class AppModule implements NestModule {
     }
   }
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddelware).forRoutes('*');
+    consumer.apply(LoggerMiddleware).forRoutes('*');
   }
 }

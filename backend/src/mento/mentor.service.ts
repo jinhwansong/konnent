@@ -98,7 +98,12 @@ export class MentorService {
       return { message: '멘토신청이 완료되었습니다.' };
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      throw error;
+      if (error instanceof BadRequestException) {
+        throw error; // 원래 에러를 그대로 던짐
+      }
+      throw new InternalServerErrorException(
+        '멘토신청 중 오류가 발생했습니다.',
+      );
     } finally {
       await queryRunner.release();
     }

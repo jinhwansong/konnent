@@ -10,9 +10,10 @@ import { Users } from './src/entities/Users';
 import { join } from 'path';
 import { MentorProfile } from './src/entities/MentorProfile';
 import { Reservations } from './src/entities/Reservations';
-import { ExceptionsSchedule } from './src/entities/ExceptionsSchedule';
 import { AvailableSchedule } from './src/entities/AvailableSchedule';
-import { Contact } from 'src/entities/Contact';
+import { Contact } from './src/entities/Contact';
+import { Review } from './src/entities/Review';
+import { Notification } from './src/entities/Notification';
 
 dotenv.config();
 
@@ -33,9 +34,10 @@ const dataSource = new DataSource({
     Users,
     MentorProfile,
     Reservations,
-    ExceptionsSchedule,
     AvailableSchedule,
     Contact,
+    Review,
+    Notification,
   ],
   migrations: [join(__dirname, 'src/migrations/**/*{.ts,.js}')],
   migrationsRun: true,

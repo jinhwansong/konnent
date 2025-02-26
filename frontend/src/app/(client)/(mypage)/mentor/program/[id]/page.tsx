@@ -1,7 +1,6 @@
 'use client';
 import React from 'react';
 import { useParams } from 'next/navigation';
-
 import { useQuery } from '@tanstack/react-query';
 import TimeTable from '../../_component/TimeTable';
 import ButtonRouter from '../../_component/ButtonRouter';
@@ -51,7 +50,7 @@ export default function ProgramDetail() {
           <li>
             <span>평점 : </span>
             <span>
-              {data?.averageRating} ({formatNumber(data?.totalRatings)})
+              {data?.averageRating} ({formatNumber(data?.totalReviews)})
             </span>
           </li>
           <li>

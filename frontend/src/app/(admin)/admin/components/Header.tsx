@@ -6,10 +6,10 @@ import { useQueryClient } from '@tanstack/react-query';
 import { BiSearch, BiLogOut, BiSun, BiMoon, BiBell } from 'react-icons/bi';
 import Input from '@/app/_component/Input';
 import { useUserData } from '@/app/_lib/useUser';
-import { useLogout } from '@/app/_lib/useLogout';
 import { getImageUrl } from '@/util/getImageUrl';
 import useInput from '@/hooks/useInput';
 import style from './header.module.scss';
+import { useLogout } from '@/app/_lib/useEtc';
 
 export default function Header() {
   const queryClient = useQueryClient();

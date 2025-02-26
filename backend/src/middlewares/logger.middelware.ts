@@ -4,7 +4,7 @@ import { NextFunction, Request, Response } from 'express';
 @Injectable()
 // morgen
 // implements - use를 강제로 만들어야 된다.
-export class LoggerMiddelware implements NestMiddleware {
+export class LoggerMiddleware implements NestMiddleware {
   private logger = new Logger('http');
 
   use(req: Request, res: Response, next: NextFunction): void {

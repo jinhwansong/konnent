@@ -4,26 +4,23 @@ import { PaginationDto } from 'src/common/dto/page.dto';
 import { MentoringPrograms } from 'src/entities/MentoringPrograms';
 import { MentorProfile } from 'src/entities/MentorProfile';
 import { Mentors } from 'src/entities/Mentors';
+import { Review } from 'src/entities/Review';
 import { Users } from 'src/entities/Users';
 
 export class UserProgram extends IntersectionType(
   PickType(MentorProfile, ['company', 'position', 'image']),
   PickType(Users, ['name']),
   PickType(Mentors, ['career']),
-  PickType(MentoringPrograms, [
-    'title',
-    'averageRating',
-    'mentoring_field',
-    'id',
-  ]),
+  PickType(Review, ['rating']),
+  PickType(MentoringPrograms, ['title', 'mentoring_field', 'id']),
 ) {}
 export class UserProgramDetails extends IntersectionType(
   PickType(MentorProfile, ['company', 'position', 'image']),
   PickType(Users, ['name']),
   PickType(Mentors, ['career']),
+  PickType(Review, ['rating']),
   PickType(MentoringPrograms, [
     'title',
-    'averageRating',
     'mentoring_field',
     'id',
     'content',

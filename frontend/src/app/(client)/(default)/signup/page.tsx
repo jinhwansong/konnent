@@ -12,11 +12,11 @@ import {
   onPhone,
 } from '@/util/useSign';
 import { onSubmit } from '@/app/_lib/useSignup';
-import { useCheckEmail, useCheckNickname } from '@/app/_lib/useCheck';
 import Button from '@/app/_component/Button';
 import Input from '@/app/_component/Input';
 import Social from '@/app/(client)/_component/Social';
 import style from './signup.module.scss';
+import { useCheckEmail, useCheckNickname } from '@/app/_lib/useEtc';
 
 export default function SignUp() {
   const router = useRouter();

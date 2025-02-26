@@ -19,10 +19,9 @@ export default function Item({ items }: IMentoring) {
               <Image
                 src={getImageUrl(item.image)}
                 alt={item.name}
-                width={196}
-                height={260}
+                width={165}
+                height={210}
                 loading="lazy"
-                sizes="(max-width: 196px) 100vw, 196px"
               />
               <div>
                 <span>{item.company}</span>
@@ -41,7 +40,7 @@ export default function Item({ items }: IMentoring) {
                 </p>
                 <span>
                   <FaStar />
-                  {item.averageRating}({item.totalRatings})
+                  {item.averageRating}({item.totalReviews})
                 </span>
               </div>
             </div>

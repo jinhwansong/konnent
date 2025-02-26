@@ -46,8 +46,8 @@ export class ReservationController {
     },
   })
   @Post()
-  create(@Body() createReservationDto: CreateReservationDto, @User() user) {
-    return this.reservationService.create(createReservationDto, user.id);
+  create(@Body() body: CreateReservationDto, @User() user) {
+    return this.reservationService.create(body, user.id);
   }
   @UseGuards(new LoggedInGuard())
   @ApiOperation({ summary: '프로그램 예약 결제검증' })

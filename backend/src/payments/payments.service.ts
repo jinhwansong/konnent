@@ -53,7 +53,6 @@ export class PaymentsService {
             catchError(async (error) => {
               // 이미 처리된 경우에는?
               if (error.response?.data.code === 'ALREADY_PROCESSED_PAYMENT') {
-                console.log('에러씨불', error.response.data);
                 return Promise.resolve({
                   data: {
                     status: 'DONE',
@@ -139,9 +138,7 @@ export class PaymentsService {
             '결제 정보를 찾을 수 없거나 권한이 없습니다.',
           );
         }
-        console.log('payment', payment);
         if (payment.reservation.status === MemtoringStatus.COMPLETED) {
-          console.log('reservation', payment.reservation.status);
           throw new BadRequestException('이미 진행된 멘토링 입니다.');
         }
         const response = await firstValueFrom(
@@ -160,7 +157,6 @@ export class PaymentsService {
             },
           ),
         );
-        console.log('response', response);
         if (response.data?.status === 'CANCELED') {
           payment.status = PaymentStatus.REFUNDED;
           await manager.save(payment);

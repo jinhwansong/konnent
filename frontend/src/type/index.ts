@@ -51,26 +51,28 @@ export interface IGetProgram extends IProgram {
   id: number;
   status: string;
   averageRating: number;
-  totalRatings:number;
+  totalReviews: number;
   createdAt: string;
 }
+export type StatusType = 'confirmed' | 'progress' | 'completed' | 'cancelled';
 
-export interface IGetPayment {
+export interface IGetSchedule {
+  email: string;
   id: number;
-  status: string;
-  createdAt: string;
-  price:number;
-  title:string;
-  mentor:string;
-  paymentKey:string
+  name: string;
+  phone: string;
+  startTime: string;
+  endTime: string;
+  status: StatusType;
+  title: string;
 }
 
-export interface IColumn<T = IAdminUsers | IAdminMentors| IGetProgram|IGetPayment> {
+export interface IColumn<T = IAdminUsers | IAdminMentors| IGetProgram|IGetSchedule> {
   id: number;
   name: string;
   render?: (item: T) => React.ReactNode;
 }
-export interface ITables<T = IAdminUsers | IAdminMentors | IGetProgram|IGetPayment> {
+export interface ITables<T = IAdminUsers | IAdminMentors | IGetProgram|IGetSchedule> {
   items: T[];
   message: string;
   totalPage: number;
@@ -171,7 +173,7 @@ export interface IItem {
   image: string;
   career: string;
   name: string;
-  totalRatings: string;
+  totalReviews: string;
 }
 export interface IMentoring {
   items: IItem[];

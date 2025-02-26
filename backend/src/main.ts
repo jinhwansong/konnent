@@ -80,7 +80,14 @@ async function bootstrap() {
     prefix: '/uploads',
   });
   // 예외처리
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true, // 필수
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
   app.useGlobalFilters(new HttpExceptionFilter());
   // 스웨거 설정
   const config = new DocumentBuilder()

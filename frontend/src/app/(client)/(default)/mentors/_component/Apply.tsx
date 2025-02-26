@@ -183,32 +183,27 @@ export default function Apply() {
     const padDay = String(day).padStart(2, '0');
     const startTime = `${year}-${padMonth}-${padDay}T${selectedSlot?.startTime}:00.000Z`;
     const endTime = `${year}-${padMonth}-${padDay}T${selectedSlot?.endTime}:00.000Z`;
-    // 결제 초기화
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/reservation`,
-      {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          phone,
-          message,
-          startTime,
-          endTime,
-          programsId: param.id,
-        }),
-      }
-    );
-    if (!response.ok) {
-      showToast('모든 내용을 넣어주세요', 'error');
-      return;
-    }
-    const res = await response.json();
     try {
-      
+       // 결제 초기화
+       const response = await fetch(
+         `${process.env.NEXT_PUBLIC_API_BASE_URL}/reservation`,
+         {
+           method: 'POST',
+           credentials: 'include',
+           headers: {
+             'Content-Type': 'application/json',
+           },
+           body: JSON.stringify({
+             email,
+             phone,
+             message,
+             startTime,
+             endTime,
+             programsId: param.id,
+           }),
+         }
+       );
+       const res = await response.json();
       const tossPayments = await loadTossPayments(
         process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY as string
       );
@@ -238,7 +233,6 @@ export default function Apply() {
         showToast('지원하지 않는 카드사입니다', 'error');
         return;
       }
-      console.log(error.code, 'error')
       showToast('결제 처리 중 오류가 발생했습니다.', 'error');
     }
   }, [
@@ -358,13 +352,13 @@ export default function Apply() {
               type="button"
               onClick={() => setTap(2)}
               width="Big"
-              // disabled={
-              //   phoneError !== '' ||
-              //   emailError !== '' ||
-              //   messageError !== '' ||
-              //   !disable ||
-              //   selectedSlot === null
-              // }
+              disabled={
+                phoneError !== '' ||
+                emailError !== '' ||
+                messageError !== '' ||
+                !disable ||
+                selectedSlot === null
+              }
             >
               다음으로
             </Button>
@@ -379,15 +373,15 @@ export default function Apply() {
           <ul className={style.info}>
             <li>
               <em>멘토링명</em>
-              <p>{availableTimes.title}</p>
+              <p>{availableTimes?.title}</p>
             </li>
             <li>
               <em>멘토</em>
-              <p>{availableTimes.name}</p>
+              <p>{availableTimes?.name}</p>
             </li>
             <li>
               <em>멘티</em>
-              <p>{data.name}</p>
+              <p>{data?.name}</p>
             </li>
             <li>
               <em>일정</em>

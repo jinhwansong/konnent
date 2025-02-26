@@ -47,7 +47,6 @@ export default function SuccessPage() {
           }
         );
         const data = await response.json();
-        console.log(data);
         if (data.shouldRetry && retryCount < 2) {
           setTimeout(() => {
             setRetryCount((prev) => prev + 1);

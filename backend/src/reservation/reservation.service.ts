@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   DataSource,
@@ -6,6 +10,7 @@ import {
   Not,
   LessThanOrEqual,
   MoreThanOrEqual,
+  MoreThan,
 } from 'typeorm';
 import {
   CreateReservationDto,
@@ -17,6 +22,10 @@ import { weeklyScheduleDto } from 'src/common/dto/time.dto';
 import { Payments, PaymentStatus } from 'src/entities/Payments';
 import { PaymentsService } from 'src/payments/payments.service';
 import { PaginationDto } from 'src/common/dto/page.dto';
+import { NotificationType } from 'src/entities/Notification';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { NotiEvent } from 'src/common/event/noti.event';
+import { Contact } from 'src/entities/Contact';
 
 @Injectable()
 export class ReservationService {
@@ -27,7 +36,10 @@ export class ReservationService {
     private readonly programsRepository: Repository<MentoringPrograms>,
     @InjectRepository(Payments)
     private readonly paymentsRepository: Repository<Payments>,
+    @InjectRepository(Contact)
+    private readonly contactRepository: Repository<Contact>,
     private readonly tossPaymentService: PaymentsService,
+    private eventEmitter: EventEmitter2,
     private readonly dataSource: DataSource,
   ) {}
   // 프로그램 예약
@@ -36,10 +48,46 @@ export class ReservationService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
+      // 만료된 예약 시간 삭제
+      const expired = await this.reservationRepository
+        .createQueryBuilder('reservation')
+        .select('reservation.id')
+        .where('reservation.status = :status', {
+          status: MemtoringStatus.PENDING,
+        })
+        .andWhere('reservation.expire < :now', {
+          now: new Date(),
+        })
+        .getMany();
+      // 해당되는 id 가져오기
+      const expriedId = expired.map((r) => r.id);
+      if (expriedId.length > 0) {
+        // contact 삭제
+        await this.contactRepository
+          .createQueryBuilder()
+          .delete()
+          .where('reservationId IN (:...expriedId)', { expriedId })
+          .execute();
+        // contact 삭제
+        await this.paymentsRepository
+          .createQueryBuilder()
+          .delete()
+          .where('reservationId IN (:...expriedId)', { expriedId })
+          .execute();
+        // reservation 삭제
+        await this.reservationRepository
+          .createQueryBuilder()
+          .delete()
+          .where('id IN (:...expriedId)', { expriedId })
+          .execute();
+      }
       // 프로그램 유무 스케줄 정보 조회
       const program = await queryRunner.manager
         .createQueryBuilder(MentoringPrograms, 'program')
         .leftJoinAndSelect('program.available', 'schedule')
+        .leftJoinAndSelect('program.profile', 'profile')
+        .leftJoinAndSelect('program.reservation', 'reservation')
+        .leftJoinAndSelect('profile.user', 'user')
         .where('program.id = :programId', { programId: body.programsId })
         .getOne();
       if (!program) {
@@ -48,12 +96,14 @@ export class ReservationService {
       if (!program.available) {
         throw new BadRequestException('스케줄 정보를 찾을 수 없습니다.');
       }
+
       // 멘토 가능시간?
       const availableTime = this.checkTime(
         program.available.available_schedule,
         body.startTime,
         body.endTime,
       );
+
       if (!availableTime) {
         throw new BadRequestException('선택한 시간에는 예약이 불가능합니다.');
       }
@@ -65,12 +115,14 @@ export class ReservationService {
             endTime: MoreThanOrEqual(body.startTime),
             startTime: LessThanOrEqual(body.endTime),
             status: Not(MemtoringStatus.CANCELLED),
+            expire: MoreThan(new Date()),
           },
         ],
       });
       if (exReservation) {
         throw new BadRequestException('이미 예약된 시간입니다.');
       }
+
       // 예약 및 연락처 저장
       const reservation = queryRunner.manager.create(Reservations, {
         startTime: body.startTime,
@@ -84,6 +136,8 @@ export class ReservationService {
           phone: body.phone,
           message: body.message,
         },
+        // 3분 만료시간
+        expire: new Date(Date.now() + 1 * 60 * 1000),
       });
       await queryRunner.manager.save(reservation);
       // 결제 정보
@@ -96,6 +150,17 @@ export class ReservationService {
         reservationId: reservation.id,
         userId: id,
       });
+      // 알림생성
+      this.eventEmitter.emit(
+        'reservation.created',
+        new NotiEvent(
+          program.profile.user.id,
+          `새로운 멘토링 신청이 있습니다: ${program.title}`,
+          NotificationType.RESERVATION_REQUESTED,
+          reservation.id,
+          program.id,
+        ),
+      );
       await queryRunner.manager.save(payment);
       await queryRunner.commitTransaction();
       return {
@@ -197,7 +262,12 @@ export class ReservationService {
       };
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      throw error;
+      if (error instanceof BadRequestException) {
+        throw error; // 원래 에러를 그대로 던짐
+      }
+      throw new InternalServerErrorException(
+        '결제 진행 중 오류가 발생했습니다.',
+      );
     } finally {
       await queryRunner.release();
     }

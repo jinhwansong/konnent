@@ -4,7 +4,6 @@ import { useParams, useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import Input from '@/app/_component/Input';
 import Editor from '@/app/_component/Editor';
-import { useCreateProgram, useModifyProgram } from '@/app/_lib/useEtc';
 import { Days, scheduleDays } from '@/app/(client)/config/schedule';
 import { slotTime } from '@/util/slotTime';
 import useSelect from '@/hooks/useSelect';
@@ -21,6 +20,7 @@ import {
 } from '@/type';
 import style from './programForm.module.scss';
 import Selet from '@/app/_component/Selet';
+import { useCreateProgram, useModifyProgram } from '@/app/_lib/useMentor';
 
 
 

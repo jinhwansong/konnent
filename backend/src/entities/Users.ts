@@ -23,6 +23,8 @@ import {
 import { SocialLoginProvider, UserRole } from '../common/enum/status.enum';
 import { Reservations } from './Reservations';
 import { MentorProfile } from './MentorProfile';
+import { Notification } from './Notification';
+import { Review } from './Review';
 
 @Entity({ schema: 'konnect', name: 'users' })
 export class Users {
@@ -117,6 +119,14 @@ export class Users {
   })
   @Column('varchar', { name: 'snsid', nullable: true, unique: true })
   snsId: string | null;
+  @ApiProperty({
+    example: 'eIpUVfeJRJiup-flJ5...',
+    description: 'Firebase Cloud Messaging 토큰',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @Column({ nullable: true })
+  fcmToken: string;
   // 유저등급
   @ApiProperty({
     example: 'user',
@@ -148,4 +158,10 @@ export class Users {
   // 예약과의 관계
   @OneToMany(() => Reservations, (reservations) => reservations.user)
   reservations: Reservations[];
+  // 승인과의 관계
+  @OneToMany(() => Notification, (reservations) => reservations.user)
+  notification: Notification[];
+  // 리뷰과의 관계
+  @OneToMany(() => Review, (review) => review.user)
+  reviews: Review[];
 }

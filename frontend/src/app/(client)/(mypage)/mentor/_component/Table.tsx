@@ -8,18 +8,19 @@ import style from './table.module.scss';
 interface ITable<T extends { id: number }> {
   column: IColumn<T>[];
   data?: ITables<T>;
+  tap?:string;
 }
 
 export default function Table<T extends { id: number }>({
   column,
-  data
+  data,
+  tap
 }: ITable<T>) {
-  
   const router = useRouter();
   const pathname = usePathname();
   return (
     <div className={style.table_wrapper}>
-      <table className={style.table}>
+      <table className={`${style.table} ${tap === '7' && style.schedule_table}`}>
         <thead>
           <tr>
             {column?.map((config) => (
@@ -40,7 +41,11 @@ export default function Table<T extends { id: number }>({
               }
             >
               {column?.map((config) => (
-                <td key={config.id}>{config.render?.(item)}</td>
+                <td
+                  key={config.id}
+                >
+                  {config.render?.(item)}
+                </td>
               ))}
             </tr>
           ))}

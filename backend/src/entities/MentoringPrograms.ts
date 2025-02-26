@@ -14,6 +14,8 @@ import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Reservations } from './Reservations';
 import { AvailableSchedule } from './AvailableSchedule';
+import { Notification } from './Notification';
+import { Review } from './Review';
 
 // 프로그램 활성화
 export enum ProgramStatus {
@@ -76,33 +78,6 @@ export class MentoringPrograms {
   })
   @Column('varchar')
   mentoring_field: string;
-  // 평균평점
-  @IsNumber()
-  @ApiProperty({
-    example: 4.5,
-    description: '프로그램 평균 평점 (0-5점)',
-    minimum: 0,
-    maximum: 5,
-    default: 0,
-  })
-  @Column('decimal', {
-    name: 'averageRating',
-    precision: 2,
-    scale: 1,
-    default: 0,
-  })
-  averageRating: number;
-  // 총 평가 수
-  @IsNumber()
-  @ApiProperty({
-    example: 42,
-    description: '총 평가 수',
-    default: 0,
-  })
-  @Column('int', {
-    default: 0,
-  })
-  totalRatings: number;
   // 프로그램 상태
   @ApiProperty({
     example: ProgramStatus.ACTIVE,
@@ -130,4 +105,10 @@ export class MentoringPrograms {
   // 예약 가능
   @OneToOne(() => AvailableSchedule, (schedule) => schedule.programs)
   available: AvailableSchedule;
+  // 승인과의 관계
+  @OneToMany(() => Notification, (notification) => notification.programs)
+  notification: Notification[];
+  // 리뷰과의 관계
+  @OneToMany(() => Review, (review) => review.program)
+  reviews: Review[];
 }

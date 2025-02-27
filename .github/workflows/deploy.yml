@@ -1,6 +1,6 @@
 name: Deploy to EC2
 
-# main 브랜치에 push할 때 실행
+# main 브랜치에 push할 때 실행한당
 on:
   push:
     branches: [ main ]

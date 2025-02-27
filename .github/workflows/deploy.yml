@@ -46,7 +46,6 @@ jobs:
           cd backend
           mkdir -p ../deployment
           cp -r dist package.json package-lock.json ../deployment/
-          cp -r .env ../deployment/  # .env 파일도 포함
           cd ../deployment && zip -r ../deployment.zip .
 
       # EC2로 파일 전송

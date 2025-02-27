@@ -86,9 +86,13 @@ jobs:
             
             # 프로덕션 의존성만 설치
             npm ci --production
+<<<<<<< HEAD
             
             # 애플리케이션 재시작
             pm2 delete konnect-backend || true
+=======
+            pm2 delete konnect-backend || true  # 기존 프로세스 삭제
+>>>>>>> cb2c19b5a10a489387c920c839fbb41fc8928528
             pm2 start npm --name "konnect-backend" -- run start:prod
             
             # 로그 확인을 위한 출력

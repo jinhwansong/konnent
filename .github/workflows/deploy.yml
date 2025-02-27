@@ -68,5 +68,9 @@ jobs:
             source ~/.nvm/nvm.sh
             nvm use 22  # 특정 Node.js 버전 사용
             npm ci --production
+<<<<<<< HEAD
             pm2 delete konnect-backend || true  # 기존 프로세스 삭제
+=======
+            pm2 delete konnect-backend || true
+>>>>>>> 835e0f253c0a380ca1cfb23c4d20975669402bc0
             pm2 start npm --name "konnect-backend" -- run start:prod

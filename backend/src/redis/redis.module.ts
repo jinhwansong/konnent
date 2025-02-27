@@ -6,9 +6,9 @@ import { RedisService } from './redis.service';
 @Module({
   imports: [
     CacheModule.register({
-      stores: redisStore,
+      store: redisStore,
       host: 'localhost',
-      post: process.env.REDIS_PORT,
+      port: process.env.REDIS_PORT,
     }),
   ],
   providers: [RedisService],

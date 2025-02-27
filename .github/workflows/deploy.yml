@@ -36,10 +36,10 @@ jobs:
       # 배포 패키지 생성
       - name: Create deployment package
         run: |
-          mkdir -p deployment
           cd backend
-          cp -r dist package.json package-lock.json .env.example deployment/
-          cd deployment && zip -r ../deployment.zip .
+          mkdir -p ../deployment
+          cp -r dist package.json package-lock.json ../deployment/
+          cd ../deployment && zip -r ../deployment.zip .
 
       # EC2로 파일 전송
       - name: Upload to EC2

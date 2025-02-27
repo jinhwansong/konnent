@@ -63,6 +63,7 @@
     "passport-kakao": "^1.0.1",
     "passport-local": "^1.0.0",
     "passport-naver-v2": "^2.0.8",
+    "pm2": "^5.4.3",
     "redis": "^3.1.2",
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^5.0.1",

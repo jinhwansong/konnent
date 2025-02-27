@@ -312,7 +312,7 @@ export class UsersController {
   })
   @UseGuards(new LoggedInGuard())
   @ApiOperation({ summary: '프로필이미지 변경' })
-  @UseInterceptors(FileInterceptor('image', multerImage))
+  @UseInterceptors(FileInterceptor('image', multerImage()))
   @Patch('profile')
   profile(@UploadedFile() file: Express.Multer.File, @User() user) {
     return this.userService.updateProfile(file, user.id);

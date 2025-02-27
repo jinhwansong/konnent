@@ -40,7 +40,7 @@ const dataSource = new DataSource({
     Notification,
   ],
   migrations: [join(__dirname, 'src/migrations/**/*{.ts,.js}')],
-  migrationsRun: true,
+  migrationsRun: process.env.NODE_ENV !== 'production' ? true : false,
   migrationsTableName: 'migrations',
   charset: 'utf8mb4_general_ci',
   synchronize: false,

@@ -53,7 +53,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       poolSize: 20,
       // 마이그레이션
       migrations: [join(__dirname, './migrations/**/*{.ts,.js}')],
-      migrationsRun: true,
+      migrationsRun: process.env.NODE_ENV !== 'production' ? true : false,
       migrationsTableName: 'migrations',
       // 이모티콘을 사용하기 위해 쓰는거
       charset: 'utf8mb4_general_ci',

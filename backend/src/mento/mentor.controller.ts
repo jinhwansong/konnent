@@ -108,7 +108,7 @@ export class MentorController {
   })
   @UseGuards(new LoggedInGuard())
   @ApiOperation({ summary: '프로필이미지 변경' })
-  @UseInterceptors(FileInterceptor('image', multerImage))
+  @UseInterceptors(FileInterceptor('image', multerImage()))
   @Patch('profile')
   profile(@UploadedFile() file: Express.Multer.File, @User() user) {
     return this.MentorService.updateProfile(file, user.id);
@@ -183,7 +183,7 @@ export class MentorController {
   @UseGuards(new LoggedInGuard())
   @ApiOperation({ summary: '이미지 변경' })
   @Post('images')
-  @UseInterceptors(FilesInterceptor('images[]', 10, multerImage))
+  @UseInterceptors(FilesInterceptor('images[]', 10, multerImage()))
   uploadImage(
     @UploadedFiles() files: Array<Express.Multer.File>,
     @User() user,

@@ -27,8 +27,10 @@ jobs:
           npm ci
 
       # 프로젝트 빌드
-      - name: Build project
-        run: npm run build
+      - name: Build
+        run: |
+          cd backend
+          npm run build
 
       # 배포 패키지 생성
       - name: Create deployment package

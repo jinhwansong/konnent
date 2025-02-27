@@ -1,6 +1,6 @@
 name: Deploy to EC2
 
-# main 브랜치에 push할 때 실행한당
+# main 브랜치에 push할 때 실행
 on:
   push:
     branches: [ main ]
@@ -13,11 +13,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # 디버그 정보 출력
+      - name: Debug Connection Info
+        run: |
+          echo "Host: ${{ secrets.EC2_HOST }}"
+          echo "Username: ${{ secrets.EC2_USERNAME }}"
+          echo "SSH Key length: ${#EC2_SSH_KEY}"
+
       # Node.js 설정
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '22'
+          node-version: '20'
           cache: 'npm'
           cache-dependency-path: 'backend/package-lock.json'
 
@@ -39,6 +46,7 @@ jobs:
           cd backend
           mkdir -p ../deployment
           cp -r dist package.json package-lock.json ../deployment/
+          cp -r .env ../deployment/  # .env 파일도 포함
           cd ../deployment && zip -r ../deployment.zip .
 
       # EC2로 파일 전송
@@ -50,6 +58,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "deployment.zip"
           target: "~/deployment"
+          timeout: 300s
+          debug: true
 
       # EC2에서 배포 실행
       - name: Deploy on EC2
@@ -58,13 +68,29 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          timeout: 300s
           script: |
             mkdir -p ~/deployment/temp
             cd ~/deployment
             unzip -o deployment.zip -d temp
+            
+            # 기존 백엔드 디렉토리 백업
+            if [ -d ~/konnent/backend ]; then
+              mv ~/konnent/backend ~/konnent/backend_backup_$(date +"%Y%m%d_%H%M%S")
+            fi
+            
+            # 새 백엔드 배포
+            mkdir -p ~/konnent/backend
             cp -a temp/. ~/konnent/backend/
+            
             cd ~/konnent/backend
+            
+            # NVM 초기화 및 Node.js 버전 설정
             export NVM_DIR=~/.nvm
             source ~/.nvm/nvm.sh
+            nvm use 20
+            
+            # 의존성 설치 및 프로세스 재시작
             npm ci --production
-            pm2 restart konnect-backend
+            pm2 delete konnect-backend || true
+            pm2 start npm --name "konnect-backend" -- run start:prod

@@ -36,6 +36,13 @@ export async function fetchProgram({
   }
 }
 export async function fetchProgramDetail(id:number) {
+   if (process.env.NODE_ENV === 'production') {
+     return {
+       items: [],
+       totalPage: 0,
+       message: '데이터를 불러올 수 없습니다.',
+     };
+   }
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/programs/${id}`,
@@ -172,4 +179,23 @@ export const useLogout = () => {
       return data;
     },
   });
+};
+
+// 메시지 조회
+export const getMessage = async ({ chatRoomId }: { chatRoomId: string }) => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/chat/${chatRoomId}/message?limit=50`,
+    {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+  const data = await res.json();
+  if (!res.ok) {
+    throw data;
+  }
+  return data;
 };

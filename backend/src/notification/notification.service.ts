@@ -1,16 +1,12 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Notification, NotificationType } from 'src/entities/Notification';
-import { Repository } from 'typeorm';
-import * as admin from 'firebase-admin';
-import { createNoti } from './dto/noti.respones.dto';
-import { Users } from 'src/entities/Users';
-import { Reservations } from 'src/entities/Reservations';
+import { Notification, Reservations } from 'src/entities';
+import { Between, EntityManager, Repository } from 'typeorm';
+import { NotificationDto } from './dto/notification.request.dto';
 import { Cron } from '@nestjs/schedule';
+import { MemtoringStatus } from 'src/entities/Reservations';
+import { NotificationType } from 'src/entities/Notification';
+import { NotificationGateway } from './notification.gateway';
 
 @Injectable()
 export class NotificationService {
@@ -19,148 +15,158 @@ export class NotificationService {
     private readonly notiRepository: Repository<Notification>,
     @InjectRepository(Reservations)
     private readonly reservationRepository: Repository<Reservations>,
-    @InjectRepository(Users)
-    private readonly userRepository: Repository<Users>,
-  ) {
-    if (!admin.apps.length) {
-      admin.initializeApp({
-        credential: admin.credential.cert({
-          projectId: process.env.FIREBASE_PROJECT_ID,
-          privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-          clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        }),
-      });
+    private notificationGateway: NotificationGateway,
+  ) {}
+  // 알람 생성
+  async create(
+    notification: NotificationDto,
+    entityManager?: EntityManager,
+  ): Promise<Notification> {
+    const manager = entityManager || this.notiRepository.manager;
+    const noti = manager.create(Notification, {
+      ...notification,
+      isRead: false,
+    });
+    return manager.save(noti);
+  }
+  // 사용자 알림 조회
+  async findUserNoti(userId: number) {
+    const noti = await this.notiRepository.find({
+      where: { recipientId: userId }, // 수신자 ID로 필터링
+      order: { createdAt: 'DESC' },
+      relations: ['sender', 'reservation', 'programs'], // 'user'는 발신자
+    });
+    const item = noti.map((notis) => ({
+      id: notis.id,
+      isRead: notis.isRead,
+      message: notis.message,
+      reservationId: notis.reservationId,
+      createdAt: notis.createdAt,
+      image: notis.sender.image,
+    }));
+    return {
+      message: '알림 조회가 완료됬습니다.',
+      item,
+    };
+  }
+  // 알람 읽음 표시
+  async markAsRead(userId: number, notiId: number) {
+    const notification = await this.notiRepository.findOne({
+      where: { id: notiId, recipientId: userId },
+    });
+
+    if (!notification) {
+      throw new Error('알림을 찾을 수 없습니다.');
     }
-  }
-  // 알림 생성 및 fcm 생성
-  async createNoti(body: createNoti) {
-    try {
-      // db에 데이터 저장
-      const noti = await this.notiRepository.save({
-        userId: body.userId,
-        message: body.message,
-        type: body.type,
-        reservationId: body.reservationId,
-        programId: body.programId,
-      });
-      // FCM 토큰 조회 및 알림 전송
-      const user = await this.userRepository.findOne({
-        where: { id: body.userId },
-        select: ['fcmToken'],
-      });
-      if (user?.fcmToken) {
-        await this.sendFcm(
-          user.fcmToken,
-          this.getNotiTitle(body.type),
-          body.message,
-          {
-            type: body.type,
-            reserveationId: body.reservationId,
-            programId: body.programId,
-          },
-        );
-      }
-      return noti;
-    } catch (error) {
-      console.error('FCM 알림 전송 실패:', error);
-    }
-  }
-  // fcm 알림전송
-  private async sendFcm(token: string, title: string, body: string, data: any) {
-    try {
-      const message = {
-        notification: { title, body },
-        data: data || {},
-        token,
-      };
-      return await admin.messaging().send(message);
-    } catch (error) {
-      console.error('메시지 전송중 문제 생김', error);
-    }
-  }
-  private getNotiTitle(type: NotificationType): string {
-    switch (type) {
-      case NotificationType.RESERVATION_REQUESTED:
-        return '새로운 멘토링이 예약되었습니다.';
-      case NotificationType.RESERVATION_CONFIRMED:
-        return '멘토링 예약이 승인되었습니다.';
-      case NotificationType.RESERVATION_REJECTED:
-        return '멘토링 예약이 거절되었습니다.';
-      case NotificationType.RESERVATION_CANCELLED:
-        return '멘토링 예약이 취소되었습니다.';
-      case NotificationType.MENTORING_UPCOMING:
-        return '곧 멘토링이 시작됩니다.';
-      case NotificationType.MENTORING_STARTED:
-        return '멘토링이 시작됬습니다.';
-      case NotificationType.MENTORING_COMPLETED:
-        return '멘토링이 완료되었습니다.';
-      case NotificationType.REVIEW_RECEIVED:
-        return '새 리뷰가 작성되었습니다.';
-      case NotificationType.NEW_FOLLOWER:
-        return '새로운 팔로우가 추가 됬습니다.';
-      case NotificationType.POST_LIKED:
-        return '게시물에 좋아요가 추가 됬습니다.';
-    }
-  }
-  // 토큰등록 업데이트
-  async updateFcmToken(id: number, token: string) {
-    await this.userRepository.update(id, { fcmToken: token });
-    return { message: '토큰이 업데이트 되었습니다.' };
-  }
-  // 토큰 삭제
-  async deleteFcmToken(id: number) {
-    await this.userRepository.update(id, { fcmToken: null });
-    return { message: '토큰이 삭제되었습니다.' };
-  }
-  // 사용자 알림 목록 조회
-  async getNotifications(id: number) {
-    try {
-      const noti = this.notiRepository.findOne({
-        where: { id },
-        select: ['id', 'message', 'isRead', 'createdAt'],
-        order: { createdAt: 'DESC' },
-      });
-      return {
-        message: '알림 목록이 성공적으로 조회되었습니다.',
-        noti: noti,
-      };
-    } catch (error) {
-      throw new BadRequestException(
-        '알림 목록을 불러오던 중 오류가 발생했습니다.',
-      );
-    }
-  }
-  // 알림 읽음 처리
-  async markAsRead(userId: number, id: number) {
-    const read = await this.notiRepository.update(
-      { id, userId },
+    await this.notiRepository.update(
+      { recipientId: userId, id: notiId },
       { isRead: true },
     );
-    if (read.affected === 0) {
-      throw new NotFoundException('알림을 찾을 수 없습니다.');
-    }
-    return { message: '알림이 읽음 처리 되었습니다.' };
+    return { message: '해당 알림을 읽었습니다.' };
   }
-  // 알림 삭제 처리
-  async deleteNoti(userId: number, id: number) {
-    const read = await this.notiRepository.delete({ id, userId });
-    if (read.affected === 0) {
-      throw new NotFoundException('알림을 찾을 수 없습니다.');
-    }
-    return { message: '알림이 삭제되었습니다.' };
+  // 모든알람 읽음 표시
+  async markAllAsRead(userId: number) {
+    await this.notiRepository.update(
+      { recipientId: userId, isRead: false },
+      { isRead: true },
+    );
+    return { message: '모든 알림을 읽었습니다.' };
   }
-  // 곧 시작되는 멘토링 알림
-  // @Cron('0 * * * * ')
-  // async sandupComing() {
-  //   try {
-  //     const now = new Date();
-  //     const onHour = new Date(now.getTime() + 10 * 60 * 1000);
-  //     // 10분 안에 시작되는 멘토링 조회
-  //     const upcommingReservations = await this.reservationRepository.findOne({
-  //       where
-  //     });
-  //   } catch (error) {
-  //     throw new BadRequestException('자동 알림 생성 중 오류가 발생했습니다.');
-  //   }
-  // }
+  // 알림 삭제
+  async remove(userId: number, notiId: number) {
+    const notification = await this.notiRepository.findOne({
+      where: { id: notiId, recipientId: userId },
+    });
+
+    if (!notification) {
+      throw new Error('알림을 찾을 수 없습니다.');
+    }
+    await this.notiRepository.delete({ recipientId: userId, id: notiId });
+    return { message: '해당 알림을 삭제했습니다.' };
+  }
+  // 모든알람 삭제 표시
+  async removeAll(userId: number) {
+    await this.notiRepository.delete({ recipientId: userId });
+    return { message: '모든 알림을 삭제했습니다.' };
+  }
+  // 10분전 알림
+  @Cron('* * * * *')
+  async sendMentoringReminders() {
+    try {
+      const now = new Date();
+      // 10분전
+      const tenMinutes = new Date(now.getTime() + 10 * 60 * 1000);
+      // 9분전에는 발송 금지
+      const nineMinutes = new Date(now.getTime() + 9 * 60 * 1000);
+      // 10분후에 시작하는 멘토링 예약 조회
+      const upcommingMentoring = await this.reservationRepository.find({
+        where: {
+          status: MemtoringStatus.PROGRESS,
+          // 시작하기 10분전과 9분전 사이의 것만
+          // 이미 보냇으면 필터링을 해야한다.
+          startTime: Between(nineMinutes, tenMinutes),
+          reminderSent: false,
+        },
+        relations: [
+          'user',
+          'programs',
+          'programs.profile',
+          'programs.profile.user',
+        ],
+      });
+      // 각 예약에 알림 생성 / 전송
+      for (const mentoring of upcommingMentoring) {
+        // 멘티에게 알림
+        await this.createMentoringReminder(
+          mentoring.programs.profile.user.id, // 멘토 발신자
+          mentoring.user.id, // 멘티 수신자
+          mentoring.id, // 예약된 번호
+          mentoring.programs.id, // 프로그램 아이디
+          mentoring.programs.title, // 프로그램 이름
+          '10분 후',
+        );
+        // 멘토에게 알림
+        await this.createMentoringReminder(
+          mentoring.user.id, // 멘티 발신자
+          mentoring.programs.profile.user.id, // 멘토 수신자
+          mentoring.id, // 예약된 번호
+          mentoring.programs.id, // 프로그램 아이디
+          mentoring.programs.title, // 프로그램 이름
+          '10분 후',
+        );
+        // 알림이 발송되었음을 표시하기 위해 예약 상태 업데이트
+        await this.reservationRepository.update(
+          { id: mentoring.id },
+          { reminderSent: true }, // Reservations 엔티티에 이 필드를 추가해야 함
+        );
+      }
+    } catch (e) {
+      console.error('10분전 알림 에러낫다..', e);
+    }
+  }
+  // 마감 임박 메시지 전송
+  private async createMentoringReminder(
+    senderId: number, // 발신자
+    recipientId: number, // 수신자
+    reservationId: number, // 예약된 번호
+    programId: number, // 프로그램 아이디
+    programTitle: string, // 프로그램 이름
+    time: string, // 멘토링 시작까지 시간
+  ) {
+    // 알림 메시지
+    const message = `${programTitle} 멘토링이 ${time} 시작됩니다.`;
+    // 알림 생성
+    const noti = await this.notiRepository.save({
+      userId: senderId, // 발신자
+      recipientId, // 수신자
+      message,
+      type: NotificationType.MENTORING_UPCOMING,
+      reservationId,
+      programId,
+      isRead: false,
+    });
+    // 알림 전송
+    this.notificationGateway.sendNotificationToUser(recipientId, noti);
+    return noti;
+  }
 }

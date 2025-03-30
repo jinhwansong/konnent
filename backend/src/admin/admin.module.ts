@@ -2,11 +2,14 @@ import { Module } from '@nestjs/common';
 import { AdminController } from './admin.controller';
 import { AdminService } from './admin.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Mentors } from 'src/entities/Mentors';
-import { Users } from 'src/entities/Users';
+import * as Entities from 'src/entities';
+import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Mentors, Users])],
+  imports: [
+    TypeOrmModule.forFeature(Object.values(Entities)),
+    NotificationModule,
+  ],
   controllers: [AdminController],
   providers: [AdminService],
 })

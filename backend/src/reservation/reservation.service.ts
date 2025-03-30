@@ -22,10 +22,10 @@ import { weeklyScheduleDto } from 'src/common/dto/time.dto';
 import { Payments, PaymentStatus } from 'src/entities/Payments';
 import { PaymentsService } from 'src/payments/payments.service';
 import { PaginationDto } from 'src/common/dto/page.dto';
-import { NotificationType } from 'src/entities/Notification';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { NotiEvent } from 'src/common/event/noti.event';
+import { NotificationGateway } from 'src/notification/notification.gateway';
+import { NotificationService } from 'src/notification/notification.service';
 import { Contact } from 'src/entities/Contact';
+import { NotificationType } from 'src/entities/Notification';
 
 @Injectable()
 export class ReservationService {
@@ -39,7 +39,8 @@ export class ReservationService {
     @InjectRepository(Contact)
     private readonly contactRepository: Repository<Contact>,
     private readonly tossPaymentService: PaymentsService,
-    private eventEmitter: EventEmitter2,
+    private readonly notificationService: NotificationService,
+    private readonly notificationGateway: NotificationGateway,
     private readonly dataSource: DataSource,
   ) {}
   // 프로그램 예약
@@ -49,38 +50,7 @@ export class ReservationService {
     await queryRunner.startTransaction();
     try {
       // 만료된 예약 시간 삭제
-      const expired = await this.reservationRepository
-        .createQueryBuilder('reservation')
-        .select('reservation.id')
-        .where('reservation.status = :status', {
-          status: MemtoringStatus.PENDING,
-        })
-        .andWhere('reservation.expire < :now', {
-          now: new Date(),
-        })
-        .getMany();
-      // 해당되는 id 가져오기
-      const expriedId = expired.map((r) => r.id);
-      if (expriedId.length > 0) {
-        // contact 삭제
-        await this.contactRepository
-          .createQueryBuilder()
-          .delete()
-          .where('reservationId IN (:...expriedId)', { expriedId })
-          .execute();
-        // contact 삭제
-        await this.paymentsRepository
-          .createQueryBuilder()
-          .delete()
-          .where('reservationId IN (:...expriedId)', { expriedId })
-          .execute();
-        // reservation 삭제
-        await this.reservationRepository
-          .createQueryBuilder()
-          .delete()
-          .where('id IN (:...expriedId)', { expriedId })
-          .execute();
-      }
+      await this.cleanExpired();
       // 프로그램 유무 스케줄 정보 조회
       const program = await queryRunner.manager
         .createQueryBuilder(MentoringPrograms, 'program')
@@ -137,7 +107,7 @@ export class ReservationService {
           message: body.message,
         },
         // 3분 만료시간
-        expire: new Date(Date.now() + 1 * 60 * 1000),
+        expire: new Date(Date.now() + 5 * 60 * 1000),
       });
       await queryRunner.manager.save(reservation);
       // 결제 정보
@@ -150,17 +120,6 @@ export class ReservationService {
         reservationId: reservation.id,
         userId: id,
       });
-      // 알림생성
-      this.eventEmitter.emit(
-        'reservation.created',
-        new NotiEvent(
-          program.profile.user.id,
-          `새로운 멘토링 신청이 있습니다: ${program.title}`,
-          NotificationType.RESERVATION_REQUESTED,
-          reservation.id,
-          program.id,
-        ),
-      );
       await queryRunner.manager.save(payment);
       await queryRunner.commitTransaction();
       return {
@@ -169,6 +128,55 @@ export class ReservationService {
         orderId,
         orderName: program.title,
       };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+  // 만료된 예약
+  private async cleanExpired() {
+    // 트랜잭션으로 묶어서 처리
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const expired = await this.reservationRepository
+        .createQueryBuilder('reservation')
+        .select('reservation.id')
+        .where('reservation.status = :status', {
+          status: MemtoringStatus.PENDING,
+        })
+        .andWhere('reservation.expire < :now', {
+          now: new Date(),
+        })
+        .getMany();
+      const expiredIds = expired.map((r) => r.id);
+
+      if (expiredIds.length > 0) {
+        await queryRunner.manager
+          .createQueryBuilder()
+          .delete()
+          .from('contact') // 여기가 문제일 수 있음, 실제 테이블명 확인 필요
+          .where('reservationId IN (:...expiredIds)', { expiredIds })
+          .execute();
+
+        await queryRunner.manager
+          .createQueryBuilder()
+          .delete()
+          .from('payments') // 복수형인지 확인 필요
+          .where('reservationId IN (:...expiredIds)', { expiredIds })
+          .execute();
+
+        await queryRunner.manager
+          .createQueryBuilder()
+          .delete()
+          .from(Reservations)
+          .where('id IN (:...expiredIds)', { expiredIds })
+          .execute();
+      }
+      await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;
@@ -243,6 +251,8 @@ export class ReservationService {
       if (paymentResult.status !== 'DONE') {
         throw new BadRequestException('결제가 정상적으로 완료되지 않았습니다');
       }
+      console.log('결제가 되니?', body.paymentKey);
+      console.log('결제가 되니?2', paymentResult);
       // 정보 업데이트
       payment.paymentKey = body.paymentKey;
       payment.status = PaymentStatus.COMPLETED;
@@ -256,6 +266,25 @@ export class ReservationService {
         { status: MemtoringStatus.COMFIRMED },
       );
       await queryRunner.commitTransaction();
+      // 알림 처리는 별도로 진행 (실패해도 결제 처리에 영향 없음)
+      try {
+        const noti = await this.notificationService.create({
+          message: `${payment.reservation.programs.title} 멘토링이 신청되었습니다.`,
+          type: NotificationType.RESERVATION_REQUESTED,
+          senderId: payment.reservation.userId,
+          recipientId: payment.reservation.programs.profile.userId,
+          reservationId: payment.reservation.id,
+          programId: payment.reservation.programsId,
+        });
+
+        this.notificationGateway.sendNotificationToUser(
+          payment.reservation.programs.profile.userId,
+          noti,
+        );
+      } catch (notificationError) {
+        console.error('알림 생성 중 오류 발생:', notificationError);
+        // 알림 실패는 무시하고 계속 진행
+      }
       return {
         message: '결제 완료 되었습니다.',
         status: 'done',

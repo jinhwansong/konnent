@@ -19,7 +19,17 @@ export class RedisService {
   }
   // 세션키 데이터 캐싱
   async get(key: string) {
-    const data = await this.client.get(key);
+    const fullKey = key.startsWith('session:') ? key : `session:${key}`;
+    const decode = decodeURIComponent(fullKey);
+    let processdKey = decode;
+    if (decode.includes('.')) {
+      processdKey = decode.split('.')[0];
+    }
+    if (processdKey.includes('s:')) {
+      processdKey = processdKey.replace('s:', '');
+    }
+    const data = await this.client.get(processdKey);
+    if (!data) return null;
     return JSON.parse(data);
   }
   // 채팅 메시지 만료시간 설정 및 데이터 저장
@@ -32,6 +42,11 @@ export class RedisService {
     await this.client.lpush(key, JSON.stringify(message));
     // 최근 100개 채팅 만 유지
     await this.client.ltrim(key, 0, 99);
+  }
+  async getChatMessage(roomId: string, count: number = 50) {
+    const key = `chat:${roomId}`;
+    const message = await this.client.lrange(key, 0, count - 1);
+    return message.map((m) => JSON.parse(m));
   }
   // 메모리 사용량 체크
   async memoryUsage() {

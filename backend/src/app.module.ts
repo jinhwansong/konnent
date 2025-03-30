@@ -4,18 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
 import { join } from 'path';
-import { Likes } from './entities/Likes';
-import { Comments } from './entities/Comments';
-import { MentoringPrograms } from './entities/MentoringPrograms';
-import { Mentors } from './entities/Mentors';
-import { Payments } from './entities/Payments';
-import { Posts } from './entities/Posts';
-import { Users } from './entities/Users';
-import { MentorProfile } from './entities/MentorProfile';
-import { Reservations } from './entities/Reservations';
-import { AvailableSchedule } from './entities/AvailableSchedule';
 import { ReservationModule } from './reservation/reservation.module';
 import { UsersModule } from './users/users.module';
 import { MentorModule } from './mento/mentor.module';
@@ -23,14 +12,15 @@ import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
 import { RedisModule } from './redis/redis.module';
 import { ProgramsModule } from './programs/programs.module';
-import { Contact } from './entities/Contact';
 import { PaymentsModule } from './payments/payments.module';
 import { MentoringModule } from './mentoring/mentoring.module';
-import { Review } from './entities/Review';
-import { Notification } from './entities/Notification';
+import * as Entities from './entities';
+import { DataSource } from 'typeorm';
+import { NotificationController } from './notification/notification.controller';
 import { NotificationModule } from './notification/notification.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { EventEmitterModule } from '@nestjs/event-emitter';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -45,41 +35,30 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      // 직접 만들고 db에 만들때 처음에 만들때만 true로
-      synchronize: false,
-      // 연결유지
-      keepConnectionAlive: true,
-      logging: process.env.NODE_ENV !== 'production',
-      poolSize: 20,
+      logging: process.env.NODE_ENV === 'production' ? false : true,
       // 마이그레이션
       migrations: [join(__dirname, './migrations/**/*{.ts,.js}')],
-      migrationsRun: process.env.NODE_ENV !== 'production' ? true : false,
+      migrationsRun: process.env.NODE_ENV === 'production' ? false : true,
       migrationsTableName: 'migrations',
       // 이모티콘을 사용하기 위해 쓰는거
       charset: 'utf8mb4_general_ci',
+      // 연결유지
+      keepConnectionAlive: true,
       autoLoadEntities: true,
+      retryAttempts: 3,
+      retryDelay: 3000,
+      // 직접 만들고 db에 만들때 처음에 만들때만 true로
+      synchronize: false,
       extra: {
         connectionLimit: 10, // 동시 연결 수 제한
-        connectTimeout: 60000, // 연결 시도 제한 시간 (ms)
         enableKeepAlive: true, // TCP Keep-Alive 활성화
         keepAliveInitialDelay: 30000, // Keep-Alive 초기 지연 시간 (ms)
+        keepConnectionAlive: true,
       },
     }),
-    TypeOrmModule.forFeature([
-      Comments,
-      Likes,
-      MentoringPrograms,
-      Mentors,
-      Payments,
-      Posts,
-      Users,
-      MentorProfile,
-      Reservations,
-      AvailableSchedule,
-      Contact,
-      Review,
-      Notification,
-    ]),
+    // 몽고디비
+    MongooseModule.forRoot(process.env.MONGO_URL),
+    TypeOrmModule.forFeature(Object.values(Entities)),
     AdminModule,
     ReservationModule,
     UsersModule,
@@ -90,14 +69,44 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     PaymentsModule,
     MentoringModule,
     NotificationModule,
-    EventEmitterModule.forRoot(),
     ScheduleModule.forRoot(),
+    ChatModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, NotificationController],
   providers: [AppService],
 })
 export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): void {
+  constructor(private dataSource: DataSource) {}
+  async onModuleInit() {
+    try {
+      if (!this.dataSource.isInitialized) {
+        await this.dataSource.initialize();
+      }
+
+      // 연결 상태 모니터링
+      setInterval(async () => {
+        try {
+          if (!this.dataSource.isInitialized) {
+            await this.dataSource.initialize();
+            console.log('Database reconnected successfully');
+          }
+
+          // 연결 테스트를 위한 간단한 쿼리 실행
+          await this.dataSource.query('SELECT 1');
+        } catch (error) {
+          console.error('Database connection error:', error);
+          // 연결이 끊어진 경우 재연결 시도
+          if (this.dataSource.isInitialized) {
+            await this.dataSource.destroy();
+          }
+          await this.dataSource.initialize();
+        }
+      }, 5000); // 5초마다 체크
+    } catch (error) {
+      console.error('Failed to initialize database connection:', error);
+    }
+  }
+  configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');
   }
 }

@@ -191,14 +191,21 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
   // 채팅방 나가기
   @SubscribeMessage('leaveRoom')
-  handleLeaveRoom(client: Socket) {
+  async handleLeaveRoom(client: Socket) {
     const roomId = this.chatSocketMap.get(client.id);
     const userId = client.data.userId;
     if (roomId && userId) {
+      await this.chatMemberRepository.update(
+        { chatRoomId: roomId, userId },
+        { isActive: false },
+      );
       client.leave(roomId);
       this.chatSocketMap.delete(client.id);
       // 퇴장 알림
       client.to(roomId).emit('userleft', { userId });
+      // 업데이트된 참여자 목록 전송
+      // const activeMembers = await this.getActiveMembers(roomId);
+      // this.server.to(roomId).emit('updatedParticipants', activeMembers);
     }
   }
 }

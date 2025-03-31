@@ -16,7 +16,6 @@ import { UserRole } from 'src/common/enum/status.enum';
 import { InjectModel } from '@nestjs/mongoose';
 import { Message, MessageDocument } from 'src/schema/message.schema';
 import { Model } from 'mongoose';
-import { ChatGateway } from './chat.gateway';
 
 @Injectable()
 export class ChatService {
@@ -31,7 +30,6 @@ export class ChatService {
     private reservationsRepository: Repository<Reservations>,
     @InjectModel(Message.name)
     private messageModel: Model<MessageDocument>,
-    private chatGateway: ChatGateway,
     private readonly redisService: RedisService,
     private readonly dataSource: DataSource,
   ) {}

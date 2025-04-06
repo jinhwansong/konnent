@@ -27,6 +27,7 @@ async function checkAdmin(req: NextRequest) {
       },
     });
     const data = await res.json();
+    console.log('세션', res)
     return data.role === 'admin';
   } catch (error) {
     return false;

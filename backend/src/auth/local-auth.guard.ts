@@ -5,14 +5,19 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class LocalAuthGuard extends AuthGuard('local') {
+  constructor(private readonly authService: AuthService) {
+    super();
+  }
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
-      const can = await super.canActivate(context);
-      if (can) {
+      const result = (await super.canActivate(context)) as boolean;
+      if (result) {
         const request = context.switchToHttp().getRequest();
+        console.log();
         await super.logIn(request);
       }
       return true;

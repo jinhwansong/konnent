@@ -65,14 +65,46 @@
 </div>
 <ul>
   <li><strong>메인 페이지</strong></li>
-  <img src="이미지주소" alt="메인 페이지" width="700">
+  <img src="./frontend/src/asset/main.png" alt="메인 페이지" width="700">
   <br/>
-  <li><strong>멘토링 화상채팅</strong></li>
-  <img src="이미지주소" alt="화상채팅" width="700">
-  <br/>
-  <li><strong>실시간 채팅</strong></li>
-  <img src="이미지주소" alt="채팅" width="700">
+  <li><strong>멘토링 채팅</strong></li>
+  <img src="./frontend/src/asset/chat.png" alt="화상채팅" width="700">
   <br/>
   <li><strong>결제 시스템</strong></li>
-  <img src="이미지주소" alt="결제" width="700">
+  <img src="./frontend/src/asset/sell.png" alt="결제" width="700">
+</ul>
+<div align="center">
+  <h2>🔧 Troubleshooting</h2>
+</div>
+<ul>
+  <li>
+    <strong>세션 관리 문제</strong>
+    <p>문제: AWS 배포 환경에서 사용자 인증 세션이 유지되지 않는 문제 발생</p>
+    <p>원인: 세션 쿠키의 이름이 명시적으로 지정되지 않아 환경에 따라 다르게 생성됨</p>
+    <p>해결: Passport와 express-session에서 세션 쿠키 이름을 명시적으로 설정하고 도메인 설정 최적화</p>
+    <p>결과: 안정적인 세션 관리와 인증 시스템 구현</p>
+  </li>
+  <li>
+    <strong>웹 성능 최적화</strong> 
+    <p>문제: 이미지 용량으로 인한 낮은 Lighthouse 성능 점수(57점)</p>
+    <p>해결 방법:</p>
+    <ul>
+      <li>프론트엔드: 이미지 해상도 및 크기 최적화, lazy loading 적용</li>
+      <li>백엔드: 이미지 형식을 WebP로 변환하는 미들웨어 구현</li>
+    </ul>
+    <p>결과: Lighthouse 성능 점수 70점으로 향상 및 페이지 로딩 속도 개선</p>
+  </li>
+</ul>
+<div align="center">
+  <h2>🚀 Future Improvements</h2>
+</div>
+<ul>
+  <li>
+    <strong>실시간 화상 통화 구현</strong>
+    <p>현재 개발 중인 화상 통화 기능을 WebRTC를 활용하여 구현할 예정입니다. 멘토와 멘티 간의 더 효과적인 커뮤니케이션을 위한 핵심 기능으로 추가될 것입니다.</p>
+  </li>
+  <li>
+    <strong>알림 시스템 개선</strong>
+    <p>현재 Socket.io 기반으로 구현된 실시간 알림 시스템을 Firebase Cloud Messaging(FCM)으로 마이그레이션할 계획입니다. 이를 통해 서버 부하를 줄이고, 앱이 백그라운드 상태일 때도 알림을 받을 수 있도록 개선할 예정입니다.</p>
+  </li>
 </ul>

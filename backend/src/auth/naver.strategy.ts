@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Strategy } from 'passport-naver-v2';
 import { PassportStrategy } from '@nestjs/passport';
 import { AuthService } from './auth.service';
-import { SocialLoginProvider } from 'src/common/enum/status.enum';
+import { SocialLoginProvider } from '../common/enum/status.enum';
 
 @Injectable()
 export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
@@ -10,7 +10,10 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
     super({
       clientID: process.env.NAVER_CLIENT_ID,
       clientSecret: process.env.NAVER_CLIENT_SECRET,
-      callbackURL: '/users/auth/naver/callback',
+      callbackURL:
+        process.env.NODE_ENV === 'production'
+          ? `${process.env.CALLBACK_URL}/users/auth/naver/callback`
+          : '/users/auth/naver/callback',
     });
   }
 

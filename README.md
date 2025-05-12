@@ -34,11 +34,13 @@ GitHub Repository: MentorMatch Repository
 ⚡ 고성능 데이터 관리: MySQL, MongoDB, Redis로 다양한 데이터 저장소 분리
 
 💪 Challenges & Solutions
-문제	해결 방법	결과
-⚡ 실시간 커뮤니케이션 끊김	WebRTC와 WebSocket 최적화	안정적인 화상 채팅 제공
-🔒 안전한 결제 시스템	PG사 API 연동	안전하고 신뢰성 있는 결제 시스템 구축
-📊 데이터 효율성 부족	MySQL, MongoDB, Redis로 분리 저장	성능 최적화 및 데이터 관리 개선
-🚀 성능 최적화	이미지 WebP 변환, lazy loading	페이지 로딩 속도 30% 향상
+| 문제                  | 해결 방법                        | 결과                    |
+| ------------------- | ---------------------------- | --------------------- |
+| ⚡ **실시간 커뮤니케이션 끊김** | WebRTC와 WebSocket 최적화        | 안정적인 화상 채팅 제공         |
+| 🔒 **안전한 결제 시스템**   | PG사 API 연동                   | 안전하고 신뢰성 있는 결제 시스템 구축 |
+| 📊 **데이터 효율성 부족**   | MySQL, MongoDB, Redis로 분리 저장 | 성능 최적화 및 데이터 관리 개선    |
+| 🚀 **성능 최적화**       | 이미지 WebP 변환, lazy loading    | 페이지 로딩 속도 30% 향상      |
+
 
 📚 Tech Stack
 💡 Front-end
@@ -48,8 +50,10 @@ GitHub Repository: MentorMatch Repository
 💡 DevOps & Tools
 <div align="center"> <img src="https://img.shields.io/badge/Amazon AWS-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white"> <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"> </div>
 📷 Screenshots
-메인 페이지	멘토링 채팅	결제 시스템
-<img src="./frontend/src/asset/main.png" width="250">	<img src="./frontend/src/asset/chat.png" width="250">	<img src="./frontend/src/asset/sell.png" width="250">
+| 메인 페이지                                                | 멘토링 채팅                                                | 결제 시스템                                                |
+| ----------------------------------------------------- | ----------------------------------------------------- | ----------------------------------------------------- |
+| <img src="./frontend/src/asset/main.png" width="250"> | <img src="./frontend/src/asset/chat.png" width="250"> | <img src="./frontend/src/asset/sell.png" width="250"> |
+
 
 🚀 Future Improvements
 ✅ 실시간 화상 통화 개선: WebRTC 성능 최적화
@@ -61,8 +65,6 @@ GitHub Repository: MentorMatch Repository
 ✅ 다국어 지원: 영어/한국어 등 다국어 설정 지원
 
 📌 Getting Started
-bash
-복사
 # 1. 클론
 git clone https://github.com/jinhwansong/konnent.git
 
@@ -74,9 +76,8 @@ npm install
 
 # 4. 개발 서버 실행
 npm run dev
+
 📌 Directory Structure
-bash
-복사
 ├── frontend
 │   └── src
 │       ├── components    # UI 컴포넌트
@@ -84,6 +85,11 @@ bash
 │       ├── pages         # 페이지 파일 (Next.js 라우팅)
 │       └── styles        # SCSS 스타일 파일
 └── backend
+    └── src
+        ├── controllers   # API 엔드포인트
+        ├── services      # 비즈니스 로직
+        └── entities      # TypeORM 엔티티
+
     └── src
         ├── controllers   # API 엔드포인트
         ├── services      # 비즈니스 로직

@@ -17,7 +17,7 @@
     border-radius: 3px;
     padding: 3px 8px;
     background: var(--bg-FCDAD3);
-    color: var(--major-main);
+    color: var(--primary-color);
 }
 .title{
     display: block;
@@ -30,7 +30,7 @@
 .aside{
     width: 350px;
     border-radius: 10px;
-    border: var(--border-main);
+    border: var(--line-primary-color);
     top: 160px;
     position: sticky;
     padding: 1.5rem 1rem;
@@ -43,12 +43,12 @@
     margin: 0 auto;
 }
 .textbox{
-    border-top: var(--border-main);
+    border-top: var(--line-primary-color);
     padding-top: 1.3rem;
     margin-top: 1.3rem;
     em {
         display: block;
-        font-size: size(14px);
+        font-size: 0.875rem;
         font-weight: 400;
         margin-block: 0.5rem;
         > span{
@@ -58,9 +58,9 @@
     }
     p{
         margin-top: 0.5rem;
-        font-size: size(14px);
+        font-size: 0.875rem;
         > strong{
-            color: var(--major-main);
+            color: var(--primary-color);
             font-weight: 600;
             font-size: 1.2rem;
         }

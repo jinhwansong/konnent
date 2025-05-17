@@ -1,12 +1,12 @@
 @import '@/styles/_mixins.module.scss';
 
 .editor_wrap {
- border: var(--border-main);
+ border: var(--line-primary-color);
  border-radius: 10px;
   position: relative;
   
   &.dropzone_active {
-    border-color: var(--major-main);
+    border-color: var(--primary-color);
   }
   
   .dropzone_overlay {
@@ -20,12 +20,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 3px dashed var(--major-main);
+    border: 3px dashed var(--primary-color);
     border-radius: 4px;
     
     p {
       font-size: 1.2rem;
-      color: var(--major-main);
+      color: var(--primary-color);
       font-weight: bold;
     }
   }
@@ -47,7 +47,7 @@
  align-items: center;
  gap: 0.5rem;
  padding: 0.5rem;
- border-bottom: var(--border-main);
+ border-bottom: var(--line-primary-color);
 }
 
 

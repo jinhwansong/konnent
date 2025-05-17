@@ -51,12 +51,10 @@ export default function Login() {
       );
       const data = await response.json();
       if (data.code === 401) {
-        setError('아이디 또는 비밀번호가 일치하지 않습니다');
+        return setError('아이디 또는 비밀번호가 일치하지 않습니다');
       }
-      if (data) {
-        queryclient.setQueryData(['mydata'], data);
-        router.replace('/');
-      }
+      queryclient.setQueryData(['mydata'], data);
+      router.replace('/');
     },
     [email, password, queryclient, router]
   );

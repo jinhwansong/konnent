@@ -7,11 +7,11 @@
     padding: 20px;
     grid-template-columns: repeat(2, 1fr);
     > li {
-        border-bottom: var(--border-main);
+        border-bottom: var(--line-primary-color);
         display: flex;
         gap: 10px;
-        padding-bottom: size(15px);
-        margin-bottom: size(15px);
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
         flex-direction: column;
         &:first-child{
             padding-top: 0;
@@ -30,7 +30,7 @@
         flex-wrap: wrap;
         span {
             font-size: 12px;
-           border:var(--border-main);
+           border:var(--line-primary-color);
            padding: 10px 15px;
         }
     }
@@ -40,6 +40,6 @@
     text-align: center;
     font-size: 14px;
     line-height: 26px;
-    color: var(--text-subTitle);
+    color: var(--text-subtle);
     flex: 1;
 }

@@ -19,8 +19,8 @@
     position: relative;
     padding: 0 8px;
     margin-bottom: size(16px);
-    font-size: size(12px);
-    background: var(--bg-main);
+    font-size: 0.75rem;
+    background: var(--background-color);
   }
 }
 
@@ -37,7 +37,7 @@
     width: 100%;
     height: size(50px);
     border-radius: size(5px);
-    font-size: size(14px);
+    font-size: 0.875rem;
     font-weight: 700;
   }
 }

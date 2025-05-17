@@ -1,76 +1,64 @@
 @import '@/styles/_mixins.module.scss';
 @import '@/styles/_functions.scss';
 
-.mentoring_wrap{
+.mentorwrap{
     display: grid;
-    gap: size(22px);
-    grid-template-columns: repeat(3, 1fr);
-    margin-top: 30px;
+    gap: 16px;
+    grid-template-columns: repeat(4, 1fr);
     > a{
-        display: flex;
-        gap: 15px;
-    }
-}
-
-.imgbox{
-    position: relative;
-    width: size(165px);
-    height: size(210px);
-    @include img;
-    > div{
-        position: absolute;
-        left: 0;
-        right: 0;
-        width: 100%;
-        bottom: 15px;
-        text-align: center;
-        color: var(--text-white);
-        font-size: size(14px);
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
-}
-.textbox{
-    flex: 1;
-    padding-block: 10px;
-    
-}
-.textbox_top {
-    > p, > span{
-        color: var(--text-subTitle);
-        font-size: size(12px);
-    }
-    .text{
-        margin-block-end: 8px;
-        line-height: 1;
-        color: var(--text-subTitle);
-        font-size: size(14px);
-        font-weight: 500;
-        > span {
-            color: var(--text-9094A8);
-            
-        }
-    }
-    > em{
-        word-break: keep-all;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;  /* 보여줄 줄 수 */
-        -webkit-box-orient: vertical;
+        padding: 20px 20px 28px;
+        border: var(--line-color);
+        border-radius: 1rem;
         overflow: hidden;
-        font-size: size(14px);
-        margin-block: 10px 5px;
-        font-weight: 600;
-        line-height:1.4;
-        text-overflow: ellipsis;
+        display: block;
     }
-    > span{
-        margin-top:10px;
-        display: flex;
-        gap: 5px;
-        align-items: center;
-        >  svg{
-            color: #FFCA0E;
-        }
+}
+.title{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-clamp: 2;
+    line-height: 1.2;
+    color: var(--text-main);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+.itemtop{
+    display: flex;
+    gap: 6px;
+    justify-content: space-between;
+    width: 100%;
+    > div{
+        min-height: 86px;
     }
+}
+.field{
+    display: inline-flex;
+    background: var(--bg-F1F4F6);
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.name{
+    display: block;
+    font-weight: 600;
+    color: var(--text-main);
+    line-height: 1;
+    font-size:  0.875rem;
+    margin-block: 0 0.625rem;
+}
+.career{
+    line-height: 1;
+    font-size: 0.875rem;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    margin-top: 0.625rem;
+}
+.profile{
+    border-radius: 50%;
+    border: var(--line-color);
+    padding: 2px;
 }

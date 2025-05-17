@@ -1,8 +1,8 @@
 .header{
     height: 5rem;
-    border-bottom: var(--border-main);
+    border-bottom: var(--line-primary-color);
     width: 100%;
-    background: var(--bg-main);
+    background: var(--background-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -32,16 +32,16 @@
     align-items: center;
 }
 .header_right_icons{
-    border-left: var(--border-main);
+    border-left: var(--line-primary-color);
     padding-left: 1.25rem;
      display: flex;
       gap: 1.25rem;
       font-size: 0;
       > button > svg{
         font-size: 1.25rem;
-        color: var(--text-subTitle);
+        color: var(--text-subtle);
         &:hover{
-            color: var(--major-main);
+            color: var(--primary-color);
         }
       }
 }
@@ -56,7 +56,7 @@
     }
     > span{
         font-size: 0.875rem;
-        color: var(--text-subTitle);
+        color: var(--text-subtle);
         font-weight: 600;
     }
 

@@ -24,6 +24,7 @@ export default function Header() {
     queryClient.setQueryData(['mydata'], null);
     router.replace('/');
   }, [router, logoutMutation, queryClient]);
+  if (data && data.role !== 'admin') return router.replace('/');
   return (
     <header className={style.header}>
       <form className={style.header_search}>

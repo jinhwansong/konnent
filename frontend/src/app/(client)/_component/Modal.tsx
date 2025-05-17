@@ -9,19 +9,19 @@ interface IModal {
 }
 export default function Modal({ children }: IModal) {
   const router = useRouter();
-  useEffect(() => {
-    const handleRefresh = (e: KeyboardEvent) => {
-      if (e.key === 'F5') {
-        e.preventDefault();
-        router.back();
-      }
-    };
+  // useEffect(() => {
+  //   const handleRefresh = (e: KeyboardEvent) => {
+  //     if (e.key === 'F5') {
+  //       e.preventDefault();
+  //       router.back();
+  //     }
+  //   };
 
-    window.addEventListener('keydown', handleRefresh);
-    return () => {
-      window.removeEventListener('keydown', handleRefresh);
-    };
-  }, [router]);
+  //   window.addEventListener('keydown', handleRefresh);
+  //   return () => {
+  //     window.removeEventListener('keydown', handleRefresh);
+  //   };
+  // }, [router]);
   return (
     <div className={style.modalBg} onClick={() => router.back()}>
       <div className={style.modalback} onClick={(e) => e.stopPropagation()}>

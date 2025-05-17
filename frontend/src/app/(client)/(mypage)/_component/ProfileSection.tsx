@@ -70,6 +70,7 @@ export default function ProfileSection({
     },
     [showToast, mutation, queryClient, title]
   );
+
   return (
     <div className={style.info_item}>
       <em className={style.item_title}>이미지</em>

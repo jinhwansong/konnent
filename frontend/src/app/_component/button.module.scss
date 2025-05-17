@@ -1,15 +1,15 @@
 @import '@/styles/_functions.scss';
 @mixin size {
     height: size(40px);
-  font-size: size(12px);
+  font-size: 0.75rem;
 }
 .button{
   width: 100%;
-  font-size: size(14px);
+  font-size: 0.875rem;
   height: size(50px);
   font-weight: 500;
   border-radius:5px;
-  background:var(--major-main);
+  background:var(--primary-color);
   color:var(--text-white);
   &:hover {
     background: var(--bg-E83A0D);
@@ -23,20 +23,20 @@
   width: size(80px);
 }
 .bgborder{
-  background: var(--bg-main);
-  border: var(--border-main);
-  color: var(--text-subTitle);
+  background: var(--background-color);
+  border: var(--line-primary-color);
+  color: var(--text-subtle);
   &:hover {
     border: var(--border-E83A0D);
     color:var(--text-white);
   }
 }
 .bgline{
-  background: var(--bg-main);
-  border: var(--border-main);
-  color: var(--text-subTitle);
+  background: var(--background-color);
+  border: var(--line-primary-color);
+  color: var(--text-subtle);
   &:hover{
-    background: var(--bg-main);
+    background: var(--background-color);
   }
 }
 .widthSmall {
@@ -66,8 +66,8 @@
     }
 }
 .bgborder2{
-  border: var(--border-major);
-  color: var(--major-main);
+  border: var(--line-primary-color);
+  color: var(--primary-color);
   background: none;
   &:hover {
     background: none;

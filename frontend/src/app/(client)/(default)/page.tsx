@@ -3,9 +3,8 @@ import Slide from '../_component/Slide';
 import style from '@/styles/_common.module.scss';
 import { Metadata } from 'next';
 import { IfetchProgram } from '@/type';
-import TapSection from '../_component/TapSection';
 import { fetchProgram } from '@/app/_lib/useEtc';
-
+import Item from '../_component/Item';
 // 메타데이터
 export async function generateMetadata({
   searchParams,
@@ -58,7 +57,7 @@ export default async function page({
       <Slide />
       <article className={style.main_article}>
         <h4 className={style.title}>관심있는 멘토에게 질문하기</h4>
-        <TapSection initialData={data} />
+        <Item items={data.items} />
       </article>
     </>
   );

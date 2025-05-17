@@ -1,67 +1,49 @@
-import { Injectable } from '@nestjs/common';
-import Redis from 'ioredis';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Inject, Injectable } from '@nestjs/common';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class RedisService {
-  private client: Redis;
+  // 레디스를 전역으로 관리 및 각각의 서비스에서 관리 하기 위해 사용된다.
+  constructor(@Inject(CACHE_MANAGER) private readonly cache: Cache) {}
 
-  constructor() {
-    this.client = new Redis({
-      host: process.env.REDIS_HOST,
-      port: Number(process.env.REDIS_PORT),
-      username: process.env.REDIS_USER,
-      password: process.env.REDIS_PASSWORD,
-    });
+  // RefreshToken 1일 저장
+  async saveRefreshToken(userId: string, refreshToken: string) {
+    await this.cache.set(`refresh:${userId}`, refreshToken, 60 * 60 * 24);
   }
-  // 세션키 데이터 저장
-  async set(key: string, value: string): Promise<void> {
-    await this.client.set(key, JSON.stringify(value));
+
+  // RefreshToken 조회
+  async getRefreshToken(userId: string) {
+    return await this.cache.get<string>(`refresh:${userId}`);
   }
-  // 세션키 데이터 캐싱
-  async get(key: string) {
-    const fullKey = key.startsWith('session:') ? key : `session:${key}`;
-    const decode = decodeURIComponent(fullKey);
-    let processdKey = decode;
-    if (decode.includes('.')) {
-      processdKey = decode.split('.')[0];
+
+  // RefreshToken 삭제
+  async deleteRefreshToken(userId: string) {
+    return await this.cache.del(`refresh:${userId}`);
+  }
+
+  // 채팅 저장 1시간
+  async saveChatMessage(roomId: string, message: string) {
+    const redisKey = `chat:${roomId}`;
+    const messages = (await this.cache.get<string[]>(redisKey)) || [];
+    messages.push(message);
+    if(messages.length > 100) {
+        messages.shift();
     }
-    if (processdKey.includes('s:')) {
-      processdKey = processdKey.replace('s:', '');
+    await this.cache.set(`chat:${roomId}`, message, 60 * 60);
+  }
+  // 채팅 조회 최근 100개
+  async getChatMessage(roomId: string) {
+    const redisKey = `chat:${roomId}`;
+    const messages = (await this.cache.get<string[]>(redisKey)) || [];
+    // 100개 만 가져오기
+    if (!messages) {
+      return [];
     }
-    const data = await this.client.get(processdKey);
-    if (!data) return null;
-    return JSON.parse(data);
+    return messages.slice(-100);
   }
-  // 채팅 메시지 만료시간 설정 및 데이터 저장
-  async setEx(key: string, value: any, seconds: number) {
-    return await this.client.setex(key, seconds, JSON.stringify(value));
-  }
-  // 채팅 메시지 저장 및 갯수 제한
-  async saveChatMassage(roomId: string, message: any) {
-    const key = `chat:${roomId}`;
-    await this.client.lpush(key, JSON.stringify(message));
-    // 최근 100개 채팅 만 유지
-    await this.client.ltrim(key, 0, 99);
-  }
-  async getChatMessage(roomId: string, count: number = 50) {
-    const key = `chat:${roomId}`;
-    const message = await this.client.lrange(key, 0, count - 1);
-    return message.map((m) => JSON.parse(m));
-  }
-  // 메모리 사용량 체크
-  async memoryUsage() {
-    const info = await this.client.info('memory');
-    return info;
-  }
-  // 특정 데이터 채팅방 1 또는 모든 채팅 특정 유저 데이터 삭제
-  async clearPattern(pattern: string) {
-    // 패턴과 일치하는 모든키 찾음
-    const keys = await this.client.keys(pattern);
-    // 찾은 키 있어?
-    if (keys.length > 0) {
-      // 다 삭제해
-      return await this.client.del(...keys);
-    }
-    return 0;
+  // 채팅 삭제
+  async deleteChatMessage(roomId: string) {
+    return await this.cache.del(`chat:${roomId}`);
   }
 }

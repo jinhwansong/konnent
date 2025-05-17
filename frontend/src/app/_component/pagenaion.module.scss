@@ -5,7 +5,7 @@
     align-items: center;
     justify-content: center;
     gap: 5px;
-    margin-top: size(20px);
+    margin-top: 1.25rem;
     > button{
         background: var(--bg-f7f7f7);
         width: size(35px);
@@ -15,14 +15,14 @@
         justify-content: center;
         border-radius: 50%;
         &.active{
-            background: var(--major-main);
+            background: var(--primary-color);
             color: var(--text-white);
         }
         &:first-child,&:last-child{
             background: var(--bg-none);
         }
         &:hover{
-            background: var(--major-main);
+            background: var(--primary-color);
             color: var(--text-white);
         }
     }

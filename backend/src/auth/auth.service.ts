@@ -1,95 +1,105 @@
-import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
-import bcrypt from 'bcrypt';
-import { Users } from '../entities/Users';
-import { DataSource, Repository } from 'typeorm';
-import { SnsJoinRequestDto } from 'src/users/dto/join.request.dto';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+import { UsersService } from '@/users/users.service';
+import { JoinDto, LoginDto } from './dto/auth.dto';
+import { RedisService } from '@/redis/redis.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectDataSource() private dataSource: DataSource,
-    @InjectRepository(Users) private usersRepository: Repository<Users>,
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+    private readonly redisService: RedisService,
   ) {}
-  async validateUser(email: string, password: string) {
-    // 서비스에서 이메일을 비교하던지 아니면 레포지토리에서 이메일을 비교하던지 둘중 하나.
-    const user = await this.usersRepository.findOne({
-      where: { email },
-      select: [
-        'id',
-        'email',
-        'name',
-        'nickname',
-        'image',
-        'role',
-        'password',
-        'phone',
-      ], // select로 columns만 가져오기.
+  async join(body: JoinDto) {
+    const { email, name, nickname, phone, password } = body;
+    // 이메일 중복체크
+    const exUser = await this.usersService.findByEmail(email);
+    if (exUser) {
+      throw new UnauthorizedException('이미 사용중인 이메일 입니다.');
+    }
+    // 비밀번호 해싱
+    const hashedPassword = await bcrypt.hash(password, 10);
+    return this.usersService.createUser({
+      email,
+      name,
+      phone,
+      password: hashedPassword,
+      nickname,
     });
-    // 사용자가 없는 경우
+  }
+  async login(body: LoginDto, res) {
+    const { email, password } = body;
+    const user = await this.usersService.findByEmail(email);
     if (!user) {
-      throw new UnauthorizedException('존재하지 않는 이메일입니다.');
+      throw new UnauthorizedException('이메일 또는 비밀번호가 잘못되었습니다.');
     }
-    const result = await bcrypt.compare(password, user.password);
-    // 비밀번호가 틀린 경우
-    if (!result) {
-      throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      throw new UnauthorizedException('이메일 또는 비밀번호가 잘못되었습니다.');
     }
-    if (result) {
-      // 패스워드를 빼고 나머지에 대한 데이터 가져오기.
-      const { password, ...userWithoutpassword } = user;
+    // Access Token
+    const accessToken = this.jwtService.sign(
+      { id: user.id, email: user.email },
+      { secret: process.env.COOKIE_SECRET, expiresIn: '15m' },
+    );
+    // refreshToken
+    const refreshToken = this.jwtService.sign(
+      { id: user.id, email: user.email },
+      { secret: process.env.REFRESH_SECRET, expiresIn: '1d' },
+    );
+    // 레디스에 저장
+    await this.redisService.saveRefreshToken(user.id, refreshToken);
 
-      return userWithoutpassword;
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true, // 클라이언트에서 접근 불가 (보안)
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60 * 1000, // 1일
+    });
+    return {
+      message: '로그인 되었습니다.',
+      accessToken,
+      email,
+      name: user.name,
+      nickname: user.nickname,
+      image: user.image,
+      phone: user.phone,
+      role: user.role,
+    };
+  }
+  async refresh(refreshToken:string) {
+    if (!refreshToken) {
+      throw new UnauthorizedException('Refresh Token이 없습니다.');
+    }
+    try {
+      const payload = this.jwtService.verify(refreshToken, {
+        secret: process.env.REFRESH_SECRET,
+      });
+      const savedToken = await this.redisService.getRefreshToken(payload.id);
+      if (savedToken !== refreshToken) {
+        throw new UnauthorizedException('Refresh Token이 유효하지 않습니다.');
+      }
+      // 새로운 토큰 생성
+      const accessToken = this.jwtService.sign(
+        { id: payload.id, email: payload.email },
+        { secret: process.env.COOKIE_SECRET, expiresIn: '15m' },
+      );
+      return { message: '새로운 access Token이 발급되었습니다.', accessToken };
+    } catch (error) {
+      throw new UnauthorizedException('Refresh Token이 유효하지 않습니다.');
     }
   }
-  async snsUser(snsuser: SnsJoinRequestDto) {
-    const queryRunner = this.dataSource.createQueryRunner();
-    // db에 연결
-    await queryRunner.connect();
-    // 트랜잭션을 시작
-    await queryRunner.startTransaction();
-    try {
-      const user = await queryRunner.manager.getRepository(Users).findOne({
-        where: { snsId: snsuser.snsId },
-        select: [
-          'id',
-          'name',
-          'nickname',
-          'image',
-          'role',
-          'password',
-          'phone',
-          'snsId',
-        ],
-      });
-      // sns회원이 없을경우 db에 저장
-      if (!user) {
-        const newUser = queryRunner.manager.getRepository(Users).create({
-          snsId: snsuser.snsId,
-          name: snsuser.name,
-          nickname: snsuser.nickname,
-          phone: snsuser.phone,
-          image: snsuser.image,
-          socialLoginProvider: snsuser.socialLoginProvider,
-        });
-        const savedUser = await queryRunner.manager.save(Users, newUser);
-
-        // 트랜잭션 커밋
-        await queryRunner.commitTransaction();
-        return savedUser;
-      } else {
-        await queryRunner.commitTransaction();
-        return user;
-      }
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      throw new BadRequestException('회원정보를 찾을수 없습니다');
-    } finally {
-      await queryRunner.release();
+  async logout(req, res) {
+    const user = req.user;
+    if (!user || !user.id) {
+      return res
+        .status(400)
+        .json({ message: '사용자 정보가 존재하지 않습니다.' });
     }
+    await this.redisService.deleteRefreshToken(user.id);
+    res.clearCookie('refreshToken');
+    return res.status(200).json({ message: '로그아웃 되었습니다.' });
   }
 }

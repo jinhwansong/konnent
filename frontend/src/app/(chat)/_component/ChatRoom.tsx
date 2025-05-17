@@ -213,7 +213,7 @@ export default function ChatRoom({ data }: { data: IData }) {
               {getMessages?.map((message: IMessage) => {
                 const isCurrentUser = message.senderName === mydata.name;
                 return (
-                  <div key={message._id}>
+                  <div key={message?._id}>
                     <p
                       className={`${style.message} ${
                         isCurrentUser ? style.self : style.other
@@ -240,7 +240,7 @@ export default function ChatRoom({ data }: { data: IData }) {
                         typingUserName = data.mentors.name;
                       } else {
                         const mentee = data.mentees.find(
-                          (m) => m.id === userId
+                          (m) => m?.id === userId
                         );
                         if (mentee) {
                           typingUserName = mentee.name;

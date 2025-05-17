@@ -8,7 +8,7 @@
     cursor: pointer;
     span{
         font-size: 0.75rem;
-        color: var(--text-subTitle);
+        color: var(--text-subtle);
     }
 }
 .weight700{
@@ -21,12 +21,12 @@
     cursor: pointer;
     width: 1.25rem;
     height: 1.25rem;
-    background: var(--bg-main);
-    border: var(--border-main);
+    background: var(--background-color);
+    border: var(--line-primary-color);
     border-radius: 3px;
     &:checked{
-        background: var(--major-main) url("../../asset/check.png") no-repeat center center;
-        border: var(--major-main);
+        background: var(--primary-color) url("../../asset/check.png") no-repeat center center;
+        border: var(--primary-color);
         position: relative;
         
     }

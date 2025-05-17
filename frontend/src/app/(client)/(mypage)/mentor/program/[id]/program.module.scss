@@ -2,7 +2,7 @@
 @import '@/styles/_functions.scss';
 @mixin status {
   padding: size(4px) size(8px);
-  font-size: size(12px);
+  font-size: 0.75rem;
   font-weight: 500;
   border-radius: size(4px);
 }
@@ -17,7 +17,7 @@
     margin-bottom: 0;
 }
 .detail_top{
-  border-bottom: var(--border-main);
+  border-bottom: var(--line-primary-color);
   padding-bottom: size(30px);
 }
 .detail_top_tip{
@@ -28,12 +28,12 @@
 .status {
   @include status;
   background: var(--bg-FCDAD3);
-  color: var(--major-main);
+  color: var(--primary-color);
 }
 .none{
   @include status;
   background: var(--bg-FCDAD3);
-  color: var(--major-main);
+  color: var(--primary-color);
 }
 .detail_title{
   font-size: size(24px);
@@ -43,7 +43,7 @@
 .detail_info_meta{
   display: flex;
   gap: size(24px);
-  font-size: size(14px);
+  font-size: 0.875rem;
 
   > div {
     display: flex;
@@ -51,7 +51,7 @@
     gap: size(8px);
 
     span:first-child {
-      color: var(--text-subTitle);
+      color: var(--text-subtle);
     }
 
     span:last-child {
@@ -60,7 +60,7 @@
   }
 }
 .detail_bottom{
-  border-bottom: var(--border-main);
+  border-bottom: var(--line-primary-color);
   padding-bottom: size(30px);
   margin-top: size(30px);
 }
@@ -68,5 +68,5 @@
   display: flex;
   gap: size(10px);
   justify-content: flex-end;;
-    margin-top: size(20px);
+    margin-top: 1.25rem;
 }

@@ -33,7 +33,7 @@
     margin-top: 40px;
 }
 .payment{
-    background: var(--major-main);
+    background: var(--primary-color);
     @include button;
     color: var(--text-white);
     &:hover {
@@ -42,9 +42,9 @@
 }
 .home{
     @include button;
-    background: var(--bg-main);
-    border: var(--border-main);
-    color: var(--text-subTitle);
+    background: var(--background-color);
+    border: var(--line-primary-color);
+    color: var(--text-subtle);
      &:hover{
          background: var(--bg-6B7280);
         color: var(--text-white);

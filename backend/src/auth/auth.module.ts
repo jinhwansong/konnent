@@ -1,28 +1,22 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { LocalStrategy } from './local.strategy';
-import { LocalSerializer } from './local.serializer';
+import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Users } from '../entities';
-import { KakaoStrategy } from './kakao.strategy';
-import { GoogleStrategy } from './google.strategy';
-import { NaverStrategy } from './naver.strategy';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
+import { JwtStrategy } from './jwtStrategy';
+import { UsersModule } from '@/users/users.module';
 
 @Module({
   imports: [
-    // jwt token을 할때는 session이 false다.
-    PassportModule.register({ session: true }),
-    TypeOrmModule.forFeature([Users]),
+    UsersModule,
+    PassportModule.register({ session: false, defaultStrategy: 'jwt' }),
+    JwtModule.register({
+      secret: process.env.COOKIE_SECRET,
+      signOptions: { expiresIn: '15m' }, // 만료시간 15분
+    }),
   ],
-  providers: [
-    AuthService,
-    LocalStrategy,
-    LocalSerializer,
-    KakaoStrategy,
-    GoogleStrategy,
-    NaverStrategy,
-  ],
-  exports: [AuthService],
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy],
+  exports: [AuthService, JwtModule],
 })
 export class AuthModule {}

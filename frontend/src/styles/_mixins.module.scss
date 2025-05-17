@@ -1,6 +1,6 @@
 @mixin item_title{
     font-weight: 500;
-    font-size: size(14px);
+    font-size: 0.875rem;
     width: size(100px);
     display: block;
 }
@@ -9,8 +9,8 @@
 }
 @mixin title{
     font-weight: 700;
-    margin-bottom: size(20px);
-    font-size: size(20px);
+    margin-bottom: 1.25rem;
+    font-size: 1.25rem;
 }
 @mixin img{
      border-radius: 10px;

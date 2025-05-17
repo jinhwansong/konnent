@@ -18,7 +18,6 @@ export default class UserSeeder implements Seeder {
         nickname: '관리자',
         phone: '01012345678',
         role: UserRole.ADMIN,
-        socialLoginProvider: SocialLoginProvider.LOCAL,
       },
     ]);
   }

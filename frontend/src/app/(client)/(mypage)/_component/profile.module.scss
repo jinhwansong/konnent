@@ -6,10 +6,10 @@
 .mypage_aticle{
     width: 100%;
     border-radius: 10px;
-    border: var(--border-main);
-    padding: size(20px) size(30px);
+    border: var(--line-primary-color);
+    padding: 1.25rem size(30px);
     &:first-child{
-        margin-bottom: size(15px);
+        margin-bottom: 1rem;
     }
 }
 .mypage_title {

@@ -42,7 +42,6 @@ const nextConfig = {
     reactStrictMode: true, // 개발시 문제 발견을 위한 Strict Mode
     compress: true, // 응답 압축
     poweredByHeader: false, // 'X-Powered-By' 헤더 제거
-    
     webpack: (config, {dev, isServer}) => {
         if (dev) {
             config.cache = {
@@ -76,7 +75,6 @@ const nextConfig = {
         
         return config;
     },
-    
     // 실험적 기능
     experimental: {
         turbo: {
@@ -92,10 +90,18 @@ const nextConfig = {
         nextScriptWorkers: true, // 스크립트 웹 워커 활성화
     },
     
-    // 정적 자산 최적화
-    
     // 빌드 출력 최적화
     output: 'standalone', // 독립 실행형 출력 모드
+
+    // 프록시
+    async rewrites() {
+    return [
+      {
+        source: '/proxy/:path*',
+        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/:path*`,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig

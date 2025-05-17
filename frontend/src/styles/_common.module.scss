@@ -1,6 +1,6 @@
 @import '@/styles/_functions.scss';
 @mixin main {
-    width: min(1100px, 100% - 30px);
+    width: min(1200px, 100% - 30px);
     margin: 0 auto;
     padding-block: size(40px) size(80px);
 }

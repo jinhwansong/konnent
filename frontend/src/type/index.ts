@@ -161,23 +161,7 @@ export interface IfetchProgram {
   mentoring_field: string;
 }
 
-export interface IItem {
-  id: number;
-  title: string;
-  mentoring_field: string;
-  averageRating: string;
-  company: string;
-  position: string;
-  image: string;
-  career: string;
-  name: string;
-  totalReviews: string;
-}
-export interface IMentoring {
-  items: IItem[];
-  message?: string
-  totalPage?: number
-}
+
 
 
 
@@ -195,4 +179,19 @@ export interface INoti {
 export interface INotification {
   items: INoti[];
   message: string;
+}
+// ---------- 멘토 타입 ---------- //
+export interface IItem {
+  id: number;
+  title: string;
+  company: string;
+  position: string;
+  image: string;
+  career: string;
+  name: string;
+}
+export interface IMentoring {
+  items: IItem[];
+  message?: string;
+  totalPage?: number;
 }

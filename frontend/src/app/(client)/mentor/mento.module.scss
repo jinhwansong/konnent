@@ -22,7 +22,7 @@
     > p{
         font-size: 1.125rem;
         line-height: 1.4;
-        color: var(--text-subTitle);
+        color: var(--text-subtle);
         text-align: center;
     }
     > button{
@@ -50,7 +50,7 @@
     > li{
         text-align: center;
         padding: 1.5625rem;
-        border:var(--border-main);
+        border:var(--line-primary-color);
         border-radius: 10px;
         > img{
             display: block;
@@ -64,7 +64,7 @@
         > p{
             font-size: 0.875rem;
             font-weight: 500;
-            color: var(--text-subTitle);
+            color: var(--text-subtle);
             line-height: 1.4;
         }
     }
@@ -84,7 +84,7 @@
         font-weight: 500;
         line-height: 1;
         margin-bottom: 0.625rem;
-        color: var(--text-subTitle);
+        color: var(--text-subtle);
         display: block;
     }
 }

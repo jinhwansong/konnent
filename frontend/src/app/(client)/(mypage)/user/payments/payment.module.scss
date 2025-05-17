@@ -22,7 +22,7 @@
 }
 .payment_bottom{
     border-radius: 5px;
-    border:var(--border-main);
+    border:var(--line-primary-color);
     padding: 20px;
     display: flex;
     gap: 30px;
@@ -38,7 +38,7 @@
         > span {
             font-weight: 400;
             color:var(--text-white);
-            background: var(--major-main);
+            background: var(--primary-color);
             border-radius: 3px;
             font-size:12px;
             padding: 5px 8px;
@@ -60,7 +60,7 @@
         -webkit-line-clamp: 2;
         line-clamp: 2;
         line-height: 1.5;
-        color: var(--text-subTitle);
+        color: var(--text-subtle);
     }
 }
 .payment_mid{
@@ -80,7 +80,7 @@
         border-radius: 5px;
         font-weight: 600;
         font-size: 12px;
-        border: var(--border-main);
+        border: var(--line-primary-color);
         text-align: center;
         &:disabled{
             color: var(--text-white);

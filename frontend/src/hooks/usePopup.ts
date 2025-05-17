@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react'
 import { usePopupStore } from '@/store/usePopupStore';
 
 export default function usePopup() {
-  const popupRef = useRef<HTMLDivElement>(null);
+  const popupRef = useRef<HTMLDivElement | null>(null);
   const { closePop } = usePopupStore();
   useEffect(() => {
     const closePopup = (e: MouseEvent) => {

@@ -1,26 +1,15 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { LoggerMiddleware } from './middlewares/logger.middelware';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
+import { join } from 'path';
+import { DataSource } from 'typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { join } from 'path';
-import { ReservationModule } from './reservation/reservation.module';
+import { LoggerMiddleware } from './middlewares/logger.middelware';
 import { UsersModule } from './users/users.module';
-import { MentorModule } from './mento/mentor.module';
 import { AuthModule } from './auth/auth.module';
-import { AdminModule } from './admin/admin.module';
 import { RedisModule } from './redis/redis.module';
-import { ProgramsModule } from './programs/programs.module';
-import { PaymentsModule } from './payments/payments.module';
-import { MentoringModule } from './mentoring/mentoring.module';
-import * as Entities from './entities';
-import { DataSource } from 'typeorm';
-import { NotificationController } from './notification/notification.controller';
-import { NotificationModule } from './notification/notification.module';
-import { ScheduleModule } from '@nestjs/schedule';
-import { MongooseModule } from '@nestjs/mongoose';
-import { ChatModule } from './chat/chat.module';
+
 
 @Module({
   imports: [
@@ -43,7 +32,6 @@ import { ChatModule } from './chat/chat.module';
       // 이모티콘을 사용하기 위해 쓰는거
       charset: 'utf8mb4_general_ci',
       // 연결유지
-      keepConnectionAlive: true,
       autoLoadEntities: true,
       retryAttempts: 3,
       retryDelay: 3000,
@@ -51,60 +39,17 @@ import { ChatModule } from './chat/chat.module';
       synchronize: false,
       extra: {
         connectionLimit: 10, // 동시 연결 수 제한
-        enableKeepAlive: true, // TCP Keep-Alive 활성화
-        keepAliveInitialDelay: 30000, // Keep-Alive 초기 지연 시간 (ms)
       },
     }),
-    // 몽고디비
-    MongooseModule.forRoot(process.env.MONGO_URL),
-    TypeOrmModule.forFeature(Object.values(Entities)),
-    AdminModule,
-    ReservationModule,
     UsersModule,
-    MentorModule,
     AuthModule,
     RedisModule,
-    ProgramsModule,
-    PaymentsModule,
-    MentoringModule,
-    NotificationModule,
-    ChatModule,
-    ScheduleModule.forRoot(),
   ],
-  controllers: [AppController, NotificationController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule implements NestModule {
   constructor(private dataSource: DataSource) {}
-  async onModuleInit() {
-    try {
-      if (!this.dataSource.isInitialized) {
-        await this.dataSource.initialize();
-      }
-
-      // 연결 상태 모니터링
-      setInterval(async () => {
-        try {
-          if (!this.dataSource.isInitialized) {
-            await this.dataSource.initialize();
-            console.log('Database reconnected successfully');
-          }
-
-          // 연결 테스트를 위한 간단한 쿼리 실행
-          await this.dataSource.query('SELECT 1');
-        } catch (error) {
-          console.error('Database connection error:', error);
-          // 연결이 끊어진 경우 재연결 시도
-          if (this.dataSource.isInitialized) {
-            await this.dataSource.destroy();
-          }
-          await this.dataSource.initialize();
-        }
-      }, 5000); // 5초마다 체크
-    } catch (error) {
-      console.error('Failed to initialize database connection:', error);
-    }
-  }
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');
   }

@@ -1,7 +1,7 @@
 @import '@/styles/_functions.scss';
 @mixin button {
-    font-size: size(12px);
-    padding: size(10px) size(15px);
+    font-size: 0.75rem;
+    padding: size(10px) 1rem;
 }
 
 .selet_botton{
@@ -16,20 +16,20 @@
         width: 100%;
         height: size(50px);
         border-radius: 5px;
-        border: var(--border-main);
-        font-size: size(14px);
-        padding-inline: size(15px);
+        border: var(--line-primary-color);
+        font-size: 0.875rem;
+        padding-inline: 1rem;
         letter-spacing: -0.3px;
         display: flex;
         align-items: center;
         justify-content: space-between;
     }
     > button p{
-        color: var(--text-subTitle);
-        font-size: size(14px);
+        color: var(--text-subtle);
+        font-size: 0.875rem;
     }
     .red{
-        color: var(--major-main);
+        color: var(--primary-color);
         font-weight: 600;
         display: inline-flex;
         margin-left: 10px;
@@ -41,7 +41,7 @@
     left: 0;
     width: 100%;
     border-radius: 5px;
-    background: var(--bg-main);
+    background: var(--background-color);
     box-shadow: rgba(0, 0, 0, 0.6) 0px 0px 4.6px;
     padding-block: 1rem;
     z-index: 1;
@@ -63,18 +63,18 @@
     }
     > button{
         text-align: left;
-        font-size: size(14px);
+        font-size: 0.875rem;
         font-weight: 500;
-        padding: size(15px) size(20px);
+        padding: 1rem 1.25rem;
         &:hover{
             background: var(--bg-FCDAD3);
-            color: var(--major-main);
+            color: var(--primary-color);
         }
     }
 }
 .button_wrap{
     grid-column: 1 / -1;
-    border-top: var(--border-main);
+    border-top: var(--line-primary-color);
     display: flex;
     justify-content: flex-end;
     margin-top: 10px;

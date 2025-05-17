@@ -17,7 +17,7 @@
     z-index: 4;
     > svg{
         font-size: size(40px);
-        color: var(--bg-main);
+        color: var(--background-color);
     }
 }
 .left_button{
@@ -69,9 +69,9 @@
     > span{
         display: block;
         line-height: 1;
-        font-size: size(14px);
+        font-size: 0.875rem;
         font-weight: 500;
         margin-bottom: size(10px);
-        color: var(--major-main);
+        color: var(--primary-color);
     }
 }

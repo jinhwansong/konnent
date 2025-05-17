@@ -5,7 +5,7 @@
     color: var(--text-title);
     margin-bottom: 1.25rem;
     > span{
-        color: var(--major-main);
+        color: var(--primary-color);
     }
 }
 .allCheck{
@@ -21,7 +21,7 @@
 }
 .message{
     font-size: 0.75rem;
-    color: var(--text-subTitle);
+    color: var(--text-subtle);
     margin-block: 0 1.25rem;
 }
 .section{

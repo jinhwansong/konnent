@@ -4,17 +4,17 @@ min-height: size(550px);
 }
 .table{
     margin-bottom: size(30px);
-    border-top: var(--border-main);
-    border-bottom: var(--border-main);
+    border-top: var(--line-primary-color);
+    border-bottom: var(--line-primary-color);
     table-layout: fixed;
     width: 100%;
      th{
         background: var(--bg-f7f7f7);
      }
     td, th{
-        font-size: size(14px);
+        font-size: 0.875rem;
         
-        border-top: var(--border-main);
+        border-top: var(--line-primary-color);
         padding: size(16px);
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -29,7 +29,7 @@ min-height: size(550px);
         &:nth-child(7){width:15%}
     }
     td{
-        color: var(--text-subTitle);
+        color: var(--text-subtle);
     }
 
 }

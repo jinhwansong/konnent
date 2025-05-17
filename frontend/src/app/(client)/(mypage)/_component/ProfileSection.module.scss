@@ -22,7 +22,7 @@
 }
 .item_img{
     display: flex;
-    gap: size(20px);
+    gap: 1.25rem;
     > div > em{
         font-weight: 600;
         font-size: size(16px);
@@ -30,9 +30,9 @@
         display: block;
     }
     > div > ul li{
-        font-size: size(14px);
+        font-size: 0.875rem;
         margin-top: size(10px);
-        color: var(--text-subTitle);
+        color: var(--text-subtle);
         padding-left: 10px;
         position: relative;
         &::before{
@@ -42,7 +42,7 @@
             bottom: 0;
             margin:auto 0;
             content: '';
-            background: var(--major-main);
+            background: var(--primary-color);
             width: 3px;
             height: 3px;
             border-radius: 5px;

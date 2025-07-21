@@ -1,0 +1,157 @@
+@import 'tailwindcss';
+@import './fonts.css';
+
+:root {
+  --primary: #6366f1;
+  --primary-sub01: #818aff;
+  --primary-sub02: #f4f5fa;
+  --primary-sub03: #2c3e50;
+  --primary-sub04: #6c9bcf;
+  --background: #ffffff;
+  --border-color: #eeeeee;
+
+  --text: #333333;
+  --text-sub: #555555;
+  --text-bold: #222222;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: #818aff;
+    --primary-sub01: #a5b4fc;
+    --primary-sub02: #1e1f29;
+    --primary-sub03: #e5e7eb;
+    --primary-sub04: #7fb2f0;
+    --background: #0a0a0a;
+    --border-color: #2e2e2e;
+
+    --text: #e5e7eb;
+    --text-sub: #9ca3af;
+    --text-bold: #ffffff;
+  }
+}
+
+/* 커스텀 글로벌 스타일 추가 가능 */
+@layer base {
+  html {
+    --font-pretendard:
+      'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
+      system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo',
+      'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji',
+      'Segoe UI Symbol', sans-serif;
+  }
+
+  body {
+    font-family: var(--font-pretendard);
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 16px;
+    background: var(--background);
+    color: var(--text-sub);
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  button {
+    all: unset;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease;
+  }
+
+  p {
+    margin: 0;
+    word-break: keep-all;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  em {
+    font-style: normal;
+    word-break: keep-all;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    word-break: keep-all;
+  }
+
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+    border-style: none;
+  }
+
+  ul,
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  input,
+  textarea,
+  select {
+    margin: 0;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    border: none;
+    background: transparent;
+    outline: none;
+  }
+
+  textarea {
+    resize: none;
+  }
+
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px var(--background) inset !important;
+    -webkit-text-fill-color: var(--text-sub) !important;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 0.1875rem;
+}
+
+::-webkit-scrollbar-track {
+  background: none;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 0.5rem;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}

@@ -1,5 +1,6 @@
 import Footer from '@/components/common/Footer';
 import Header from '@/components/common/Header';
+import Toast from '@/components/common/Toast';
 
 export default function ClientLayout({
   children,
@@ -11,6 +12,7 @@ export default function ClientLayout({
       <Header />
       {children}
       <Footer />
+      <Toast />
     </div>
   );
 }

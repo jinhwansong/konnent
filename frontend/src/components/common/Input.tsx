@@ -13,11 +13,12 @@ interface InputProps {
   /** onChange 이벤트 등록 */
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
-  defaultValue?: string | number;
   /** register에서 받은 ref */
   innerRef?: React.RefObject<HTMLInputElement | null>;
   /** input의 너비 */
   size?: 'xs' | 'sm' | 'md' | 'lg';
+  /**  */
+  className?: string;
 }
 
 export default function Input({
@@ -25,24 +26,24 @@ export default function Input({
   type,
   rules,
   size = 'lg',
+  className,
   ...props
 }: InputProps) {
-  const methods = useFormContext();
-  const { register, setValue } = methods;
+  const { register } = useFormContext();
   const { ref, ...rest } = register(name, {
-    onChange: (e) => {
-      setValue(name, e.target.value);
-      props.onChange?.(e);
-    },
     ...rules,
     shouldUnregister: true,
   });
   const errorMessage = useErrorMessage(name);
   const inputClass = clsx(
-    'text-sm h-12 rounded-lg px-4 border border-[var(--border-color)]',
+    'text-sm h-[50px] rounded-lg px-4',
+    'border transition-all duration-150',
     'focus:outline-none focus:border-[var(--primary)]',
-    'transition-all duration-150',
     size === 'lg' && 'w-full',
+    errorMessage
+      ? 'border-red-500 focus:border-red-500'
+      : 'border-[var(--border-color)]',
+    className,
   );
   return (
     <>
@@ -51,12 +52,8 @@ export default function Input({
         id={name}
         type={type}
         placeholder={props.placeholder}
-        defaultValue={props.defaultValue}
-        ref={(el) => {
-          ref(el);
-          if (props.innerRef) props.innerRef.current = el;
-        }}
         {...rest}
+        ref={ref}
       />
 
       {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
@@ -65,10 +62,8 @@ export default function Input({
 }
 
 function useErrorMessage(name: string) {
-  const { formState } = useFormContext();
-  try {
-    return formState.errors?.[name]?.message as string | undefined;
-  } catch {
-    return undefined;
-  }
+  const {
+    formState: { errors },
+  } = useFormContext();
+  return (errors[name]?.message ?? '') as string;
 }

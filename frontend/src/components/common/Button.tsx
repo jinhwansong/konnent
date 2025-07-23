@@ -18,7 +18,7 @@ export default function Button({
   const buttonClass = clsx(
     'h-[50px] px-4 rounded-md text-sm font-medium transition-colors duration-200 text-center',
     size === 'large' && 'w-full',
-    size === 'small' && 'h-9 w-20',
+    size === 'small' && 'h-9 w-22',
     variant === 'solid' && [
       'bg-[var(--primary-sub01)]  text-white',
       'hover:bg-[var(--primary)]',

@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import './fonts.css';
+@import './viewer.css';
 
 :root {
   --primary: #6366f1;
@@ -13,6 +14,11 @@
   --text: #333333;
   --text-sub: #555555;
   --text-bold: #222222;
+
+  --code-bg: #f5f5f5;
+  --code-text: #25262b;
+  --code-block-bg: #f0f0f0;
+  --code-block-text: #1a1a1a;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,6 +34,11 @@
     --text: #e5e7eb;
     --text-sub: #9ca3af;
     --text-bold: #ffffff;
+
+    --code-bg: #25262b;
+    --code-text: #f1f1f1;
+    --code-block-bg: #282c34;
+    --code-block-text: #abb2bf;
   }
 }
 
@@ -145,13 +156,134 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #4b5563;
+  background: var(--primary);
   border-radius: 0.5rem;
 }
+
+.scroll-custom {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: var(--primary-sub01) transparent;
+}
+
+.scroll-custom::-webkit-scrollbar {
+  width: 3px;
+}
+
+.scroll-custom::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll-custom::-webkit-scrollbar-thumb {
+  background-color: var(--primary-sub01);
+  border-radius: 0.5rem;
+}
+
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+input[type='number'] {
+  appearance: textfield; /* 기본 스타일 제거 (크롬 기준) */
+  -moz-appearance: textfield; /* Firefox */
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.editor_wrap .ProseMirror {
+  max-height: 600px;
+  padding: 1.25rem 1.5rem;
+  background-color: var(--background);
+  color: var(--text);
+  line-height: 1.75;
+  font-size: 1rem;
+  outline: none;
+  word-break: break-word;
+
+  p {
+    margin: 1rem 0;
+  }
+
+  strong {
+    font-weight: 600;
+    color: var(--text-bold);
+  }
+
+  em {
+    font-style: italic;
+    color: var(--text-sub);
+  }
+
+  s {
+    text-decoration: line-through;
+    color: var(--text-sub);
+  }
+
+  code {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.25em 0.5em;
+    border-radius: 6px;
+    font-family: 'Menlo', 'Monaco', monospace;
+    font-size: 0.875em;
+  }
+
+  pre {
+    background: var(--code-block-bg);
+    color: var(--code-block-text);
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+
+    code {
+      display: block;
+      padding: 1rem 1.25rem;
+      font-size: 0.875em;
+      background: transparent;
+    }
+  }
+
+  blockquote {
+    margin: 1.5rem 0;
+    padding-left: 1rem;
+    border-left: 4px solid var(--primary-sub01);
+    color: var(--text-sub);
+    font-style: italic;
+    background: var(--primary-sub02);
+    border-radius: 0 6px 6px 0;
+  }
+
+  ul,
+  ol {
+    list-style: revert;
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+  }
+
+  li {
+    margin: 0.5rem 0;
+    line-height: 1.6;
+  }
+
+  hr {
+    border: none;
+    border-top: 2px dashed var(--border-color);
+    margin: 2rem 0;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    display: block;
+    margin: 1.25rem 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  }
 }

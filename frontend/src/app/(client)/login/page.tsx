@@ -14,7 +14,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 
 export default function LoginPage() {
   const { showToast } = useToastStore();
-  const { setAccessToken } = useAuthStore();
+  const { setAccessToken, setAuthLoading } = useAuthStore();
   const router = useRouter();
   const methods = useForm<LoginRequest>({
     mode: 'all',
@@ -28,6 +28,7 @@ export default function LoginPage() {
     try {
       const res = await loginUser({ email, password });
       setAccessToken(res.accessToken);
+      setAuthLoading(false);
       showToast('로그인을 완료했습니다.', 'success');
       router.push('/');
     } catch {
@@ -50,7 +51,7 @@ export default function LoginPage() {
     { name: 'naver', value: '네이버', img: <IcNaver /> },
     { name: 'google', value: '구글', img: <IcGoogle /> },
   ];
-  const input = [
+  const INPUT_FIELDS = [
     {
       name: 'email',
       type: 'text',
@@ -81,7 +82,7 @@ export default function LoginPage() {
   ];
 
   return (
-    <section className="mx-auto mt-10 mb-16 w-[23.75rem]">
+    <section className="mx-auto mt-10 mb-16 w-[380px]">
       <h4 className="mb-5 text-center text-xl font-bold text-[var(--text-bold)]">
         커넥트 시작하기
       </h4>
@@ -91,14 +92,9 @@ export default function LoginPage() {
           noValidate
           className="flex w-full flex-col gap-5"
         >
-          {input.map((item) => (
+          {INPUT_FIELDS.map((item) => (
             <div key={item.name} className="flex flex-col gap-2">
-              <Input
-                name={item.name}
-                type={item.type}
-                placeholder={item.placeholder}
-                rules={item.rules}
-              />
+              <Input {...item} />
             </div>
           ))}
 

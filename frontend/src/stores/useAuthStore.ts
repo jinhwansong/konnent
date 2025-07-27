@@ -4,14 +4,18 @@ interface AuthStore {
   accessToken: string | null;
   isAuthLoading: boolean;
   setAccessToken: (token: string) => void;
-  setAuthLoading: (flag: boolean) => void;
+  setAuthLoading: (loading: boolean) => void;
   resetToken: () => void;
 }
 
 export const useAuthStore = create<AuthStore>((set) => ({
-  accessToken: '',
+  accessToken: null,
   isAuthLoading: true,
   setAccessToken: (token) => set({ accessToken: token }),
-  setAuthLoading: (flag) => set({ isAuthLoading: flag }),
-  resetToken: () => set({ accessToken: null }),
+  setAuthLoading: (loading) => set({ isAuthLoading: loading }),
+  resetToken: () =>
+    set({
+      accessToken: null,
+      isAuthLoading: false,
+    }),
 }));

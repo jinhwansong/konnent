@@ -1,13 +1,13 @@
 import { fetcher } from '@/utils/fetcher';
 import {
-  DuplicateResponse,
+  MessageResponse,
   JoinRequest,
   SendEmailVerificationRequest,
   VerifyEmailCodeRequest,
 } from '@/types/user';
 
-export const duplicateEmail = (email: string): Promise<DuplicateResponse> => {
-  return fetcher<DuplicateResponse>('auth/duplicateEmail', {
+export const duplicateEmail = (email: string): Promise<MessageResponse> => {
+  return fetcher<MessageResponse>('auth/duplicateEmail', {
     method: 'POST',
     body: JSON.stringify({ email }),
   });
@@ -15,8 +15,8 @@ export const duplicateEmail = (email: string): Promise<DuplicateResponse> => {
 
 export const duplicateNickname = (
   nickname: string,
-): Promise<DuplicateResponse> => {
-  return fetcher<DuplicateResponse>('auth/duplicateNickname', {
+): Promise<MessageResponse> => {
+  return fetcher<MessageResponse>('auth/duplicateNickname', {
     method: 'POST',
     body: JSON.stringify({ nickname }),
   });
@@ -24,8 +24,8 @@ export const duplicateNickname = (
 
 export const sendEmailVerification = ({
   email,
-}: SendEmailVerificationRequest): Promise<DuplicateResponse> => {
-  return fetcher<DuplicateResponse>('auth/email/verify/send', {
+}: SendEmailVerificationRequest): Promise<MessageResponse> => {
+  return fetcher<MessageResponse>('auth/email/verify/send', {
     method: 'POST',
     body: JSON.stringify({ email }),
   });
@@ -34,8 +34,8 @@ export const sendEmailVerification = ({
 export const verifyEmailCode = ({
   email,
   code,
-}: VerifyEmailCodeRequest): Promise<DuplicateResponse> => {
-  return fetcher<DuplicateResponse>('auth/email/verify/confirm', {
+}: VerifyEmailCodeRequest): Promise<MessageResponse> => {
+  return fetcher<MessageResponse>('auth/email/verify/confirm', {
     method: 'POST',
     body: JSON.stringify({ email, code }),
   });
@@ -47,8 +47,8 @@ export const registerUser = ({
   password,
   name,
   phone,
-}: JoinRequest): Promise<DuplicateResponse> => {
-  return fetcher<DuplicateResponse>('auth/join', {
+}: JoinRequest): Promise<MessageResponse> => {
+  return fetcher<MessageResponse>('auth/join', {
     method: 'POST',
     body: JSON.stringify({ email, nickname, password, name, phone }),
   });

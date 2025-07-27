@@ -27,7 +27,7 @@ export interface JoinRequest {
   phone: string;
 }
 
-export interface DuplicateResponse {
+export interface MessageResponse {
   message: string;
 }
 

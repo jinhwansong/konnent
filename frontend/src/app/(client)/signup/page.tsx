@@ -60,7 +60,7 @@ export default function SignPage() {
       showToast('회원가입에 실패했습니다.', 'error');
     }
   };
-  const sign = [
+  const SIGN_FIELDS = [
     {
       name: 'password',
       type: 'password',
@@ -219,7 +219,7 @@ export default function SignPage() {
     nickname;
 
   return (
-    <section className="mx-auto mt-10 mb-16 w-[23.75rem]">
+    <section className="mx-auto mt-10 mb-16 w-[380px]">
       <h4 className="mb-5 text-center text-xl font-bold text-[var(--text-bold)]">
         <span className="text-[var(--primary)]">멘토링 여정</span>, 지금
         시작해보세요
@@ -255,7 +255,9 @@ export default function SignPage() {
           </div>
           {isDuplicateChecked && (
             <div className="relative flex flex-col gap-2">
-              <label className="text-sm">인증 코드</label>
+              <label className="text-sm text-[var(--text-bold)]">
+                인증 코드
+              </label>
               <Input
                 name="code"
                 type="text"
@@ -288,18 +290,13 @@ export default function SignPage() {
             </div>
           )}
 
-          {sign.map((item) => {
+          {SIGN_FIELDS.map((item) => {
             const isNickname = item.label === '닉네임';
             const isDisabled = isNickname && (!nickname || !!errors.nickname);
             return (
               <div key={item.name} className="relative flex flex-col gap-2">
                 <label className="text-sm">{item.label}</label>
-                <Input
-                  name={item.name}
-                  type={item.type}
-                  placeholder={item.placeholder}
-                  rules={item.rules}
-                />
+                <Input {...item} />
 
                 {isNickname && (
                   <button

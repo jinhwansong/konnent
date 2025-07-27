@@ -5,13 +5,12 @@ import { userInfo } from '@/libs/userInfo';
 import { useAuthStore } from '@/stores/useAuthStore';
 
 export const useUserQuery = () => {
-  const accessToken = useAuthStore((state) => state.accessToken);
+  const { accessToken, isAuthLoading } = useAuthStore();
   return useQuery<UserProp>({
-    queryKey: ['user', accessToken],
+    queryKey: ['user'],
     queryFn: userInfo,
-    staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 10,
+    enabled: !!accessToken && !isAuthLoading,
     retry: false,
-    // enabled: !!accessToken,
+    staleTime: 1000 * 60 * 5,
   });
 };

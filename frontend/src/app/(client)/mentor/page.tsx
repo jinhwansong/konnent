@@ -1,16 +1,23 @@
 'use client';
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { faq, reason } from '@/contact/mentor';
+import { useRouter } from 'next/navigation';
+import { FAQ_OPTIONS, REASON_OPTIONS } from '@/contact/mentor';
 import { BiCaretDown } from 'react-icons/bi';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 export default function MentorPage() {
+  const { accessToken } = useAuthStore();
   const router = useRouter();
-
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const onToggle = (id: number) => {
     setOpenIndex((prev) => (prev === id ? null : id));
+  };
+  const onRouter = () => {
+    if (!accessToken) {
+      return router.push('/login');
+    }
+    router.push('/mentor/apply');
   };
   return (
     <section>
@@ -24,7 +31,10 @@ export default function MentorPage() {
             시니어부터 주니어까지, 모든 경험은 값진 지식이 됩니다,
             <br /> 나만의 노하우를 공유하며 함께 성장하는 멘토링을 시작해보세요
           </p>
-          <button className="shadow-[0_6px_16px_rgba(99, 102, 241, 0.4)] mx-auto mt-5 block h-[65px] w-[200px] rounded-full bg-[linear-gradient(90deg,_#6366f1,_#8b5cf6_51%,_#4f46e5)] bg-[length:200%_auto] text-center leading-[65px] font-semibold text-white transition-all duration-500">
+          <button
+            onClick={onRouter}
+            className="shadow-[0_6px_16px_rgba(99, 102, 241, 0.4)] mx-auto mt-5 block h-[65px] w-[200px] rounded-full bg-[linear-gradient(90deg,_#6366f1,_#8b5cf6_51%,_#4f46e5)] bg-[length:200%_auto] text-center leading-[65px] font-semibold text-white transition-all duration-500"
+          >
             멘토 지원하기
           </button>
         </div>
@@ -43,7 +53,7 @@ export default function MentorPage() {
           이런 점이 좋아요!
         </h4>
         <ul className="grid grid-cols-2 gap-4">
-          {reason.map((reasons, i) => (
+          {REASON_OPTIONS.map((reasons, i) => (
             <li
               key={i}
               className="rounded-[10px] border border-[var(--border-color)] p-6 text-center"
@@ -63,11 +73,11 @@ export default function MentorPage() {
           ))}
         </ul>
       </article>
-      <article className="mx-auto md:w-[768px] lg:w-[1200px]">
+      <article className="mx-auto mb-16 md:w-[768px] lg:w-[1200px]">
         <h4 className="mt-12 mb-6 text-center text-2xl font-bold">
           자주 묻는 질문
         </h4>
-        {faq.map((faqs) => (
+        {FAQ_OPTIONS.map((faqs) => (
           <button
             key={faqs.id}
             onClick={() => onToggle(faqs.id)}

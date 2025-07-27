@@ -1,4 +1,4 @@
-export const faq = [
+export const FAQ_OPTIONS = [
   {
     id: 1,
     question: '멘토링이 뭔가요?',
@@ -66,7 +66,7 @@ export const faq = [
     ),
   },
 ];
-export const reason = [
+export const REASON_OPTIONS = [
   {
     title: '강의보다 쉬운 지식공유 수단',
     img: '/icon/IcShare.avif',

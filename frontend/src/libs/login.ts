@@ -10,3 +10,9 @@ export const loginUser = ({
     body: JSON.stringify({ email, password }),
   });
 };
+
+export const logoutUser = () => {
+  return fetcher('auth/logout', {
+    method: 'POST',
+  });
+};

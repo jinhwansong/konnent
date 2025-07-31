@@ -37,13 +37,13 @@ export default function LoginPage() {
   };
   const onSocial = (sns: string) => {
     if (sns === 'kakao') {
-      router.push(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/auth/kakao`);
+      router.push(`${process.env.NEXT_PUBLIC_AUTH_URL}/auth/kakao`);
     }
     if (sns === 'naver') {
-      router.push(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/auth/naver`);
+      router.push(`${process.env.NEXT_PUBLIC_AUTH_URL}/auth/naver`);
     }
     if (sns === 'google') {
-      router.push(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/auth/google`);
+      router.push(`${process.env.NEXT_PUBLIC_AUTH_URL}/auth/google`);
     }
   };
   const sns = [

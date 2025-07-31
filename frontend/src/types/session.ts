@@ -1,4 +1,4 @@
-export interface SessionDate {
+export interface SessionItem {
   id: string;
   title: string;
   price: number;
@@ -7,14 +7,13 @@ export interface SessionDate {
   public: boolean;
   createdAt: string;
 }
-export interface SessionDetailResponse extends SessionDate {
+export interface SessionResponse {
+  data: SessionItem[];
+  totalPages: number;
+}
+export interface SessionDetailResponse extends SessionItem {
   category: string;
   description: string;
-}
-export interface SessionResponse {
-  data: SessionDate[];
-  total: number;
-  totalPages: number;
 }
 
 export interface SessionRequest {
@@ -24,6 +23,7 @@ export interface SessionRequest {
   duration: number;
   category: string;
 }
+
 export interface PatchSession {
   id: string;
   data: SessionRequest;

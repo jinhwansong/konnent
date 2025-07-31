@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useUserQuery } from '@/hooks/query/useUserQuery';
-import { FiSearch } from 'react-icons/fi';
+import { FiMenu, FiSearch, FiX } from 'react-icons/fi';
 import Logo from '@/assets/logo.svg';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { logoutUser } from '@/libs/login';
@@ -18,6 +18,7 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const { data: user } = useUserQuery();
   const { accessToken, resetToken } = useAuthStore();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const mainNav = [
     { href: '/mentors', name: '멘토 찾기' },
@@ -44,6 +45,7 @@ export default function Header() {
       await logoutUser();
       resetToken();
       showToast('로그아웃을 완료했습니다.', 'success');
+      setOpen(false);
       router.push('/');
     } catch {
       showToast('로그아웃에 실패했습니다.', 'error');
@@ -55,142 +57,233 @@ export default function Header() {
   useClickOutside(openRef, () => setOpen(false));
   return (
     <header className="border-b border-[var(--border-color)]">
-      <div className="mx-auto flex items-center justify-between md:w-[768px] lg:w-[1200px]">
-        <nav className="flex lg:gap-16 lg:py-5">
+      <div className="mx-auto flex w-full items-center justify-between px-5 py-3 md:px-8 lg:w-[1200px] lg:px-0">
+        <div className="flex items-center gap-6 lg:gap-16">
           <Link href="/" className="block">
             <Logo />
           </Link>
-          <ul className="flex gap-8">
-            {mainNav.map((item) => (
-              <li key={item.name}>
-                <Link
-                  href={item.href}
-                  className="text-sm font-medium text-[var(--text-sub)] hover:text-[var(--primary)]"
-                >
-                  {item.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <ul className="flex items-center">
-          <li className="mx-2">
-            <button
-              type="button"
-              className="flex h-6 w-6 items-center justify-center text-lg"
-            >
-              <FiSearch />
-            </button>
-          </li>
-          <Divider />
-          <li className="mx-2">
-            <Link
-              href="/mentor"
-              className="block h-9 w-20 rounded text-center text-sm leading-9 hover:bg-[var(--primary-sub02)]"
-            >
-              멘토 모집
-            </Link>
-          </li>
-          <Divider />
-          {accessToken && user ? (
-            <li className="relative ml-2" ref={openRef}>
+
+          <nav className="hidden lg:block">
+            <ul className="flex gap-8">
+              {mainNav.map((item) => (
+                <li key={item.name}>
+                  <Link
+                    href={item.href}
+                    className="text-sm font-medium text-[var(--text-sub)] hover:text-[var(--primary)]"
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+
+        <div className="flex items-center lg:gap-2">
+          <button
+            className="text-2xl lg:hidden"
+            onClick={() => setIsMenuOpen((prev) => !prev)}
+          >
+            {isMenuOpen ? <FiX /> : <FiMenu />}
+          </button>
+
+          <ul className="hidden items-center lg:flex">
+            <li className="mx-2">
               <button
-                onClick={() => setOpen((prev) => !prev)}
-                className="flex items-center justify-center overflow-hidden rounded-full text-2xl"
+                type="button"
+                className="flex h-6 w-6 items-center justify-center text-lg"
               >
+                <FiSearch />
+              </button>
+            </li>
+            <Divider />
+            <li className="mx-2">
+              <Link
+                href="/mentor"
+                className="block h-9 w-20 rounded text-center text-sm leading-9 hover:bg-[var(--primary-sub02)]"
+              >
+                멘토 모집
+              </Link>
+            </li>
+            <Divider />
+            {accessToken && user ? (
+              <li className="relative ml-2" ref={openRef}>
+                <button
+                  onClick={() => setOpen((prev) => !prev)}
+                  className="flex items-center justify-center overflow-hidden rounded-full text-2xl"
+                >
+                  <Image
+                    src={user.image ?? '/icon/IcPeople.avif'}
+                    alt={user.name}
+                    width={30}
+                    height={30}
+                  />
+                </button>
+                {open && (
+                  <div className="absolute top-[44px] right-0 z-200 box-border flex w-[280px] flex-col overflow-hidden rounded-xl bg-[var(--background)] shadow-2xl transition-transform">
+                    <div className="border-b border-[var(--border-color)] px-6 py-4">
+                      <div className="flex items-center gap-3.5">
+                        <Image
+                          src={user.image ?? '/icon/IcPeople.avif'}
+                          alt={user.name}
+                          width={40}
+                          height={40}
+                          className="overflow-hidden rounded-full"
+                        />
+                        <div>
+                          <p className="font-semibold text-[var(--text-bold)]">
+                            {user.nickname}
+                          </p>
+                          <p className="truncate text-sm">{user.email}</p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="larges"
+                        className="mt-3 h-10"
+                        onClick={() => {
+                          setOpen(false);
+                          router.push('/mypage');
+                        }}
+                      >
+                        프로필수정
+                      </Button>
+                    </div>
+                    <ul className="flex flex-col text-sm">
+                      {(user.role === 'mentee' ? menteeItem : mentorItem).map(
+                        (item) => (
+                          <li key={item.name}>
+                            <Link
+                              onClick={() => setOpen(false)}
+                              href={item.href}
+                              className="block px-6 py-4 text-[var(--text)] hover:bg-[var(--primary-sub02)] hover:text-[var(--primary)]"
+                            >
+                              {item.name}
+                            </Link>
+                          </li>
+                        ),
+                      )}
+                      <li className="border-t border-[var(--border-color)]">
+                        <button
+                          onClick={handleLogout}
+                          className="block w-full px-6 py-4 text-[var(--text)] hover:bg-[var(--primary-sub02)] hover:text-[var(--primary)]"
+                        >
+                          로그아웃
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </li>
+            ) : (
+              <>
+                <li className="mr-1 ml-2">
+                  <Link
+                    href="/login"
+                    className="block h-9 w-20 rounded text-center text-sm leading-9 hover:bg-[var(--primary-sub02)]"
+                  >
+                    로그인
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/signup"
+                    className="block h-9 w-20 rounded bg-[var(--primary-sub01)] text-center text-sm leading-9 text-white hover:bg-[var(--primary)]"
+                  >
+                    회원가입
+                  </Link>
+                </li>
+              </>
+            )}
+          </ul>
+        </div>
+      </div>
+
+      {isMenuOpen && (
+        <div className="fixed inset-0 z-[999] bg-white px-5 pt-6 pb-6 shadow-xl lg:hidden">
+          <div className="mb-6 flex items-center justify-between">
+            {accessToken && user ? (
+              <div className="flex items-center gap-3">
                 <Image
                   src={user.image ?? '/icon/IcPeople.avif'}
-                  alt={user.name}
-                  width={30}
-                  height={30}
+                  alt="프로필"
+                  width={36}
+                  height={36}
+                  className="rounded-full"
                 />
-              </button>
-              {open && (
-                <div className="absolute top-[44px] right-0 z-200 box-border flex w-[280px] flex-col overflow-hidden rounded-xl bg-[var(--background)] shadow-2xl transition-transform">
-                  <div className="border-b border-[var(--border-color)] px-6 py-4">
-                    <div className="flex items-center gap-3.5">
-                      <Image
-                        src={user.image ?? '/icon/IcPeople.avif'}
-                        alt={user.name}
-                        width={40}
-                        height={40}
-                        className="overflow-hidden rounded-full"
-                      />
-                      <div>
-                        <p className="font-semibold text-[var(--text-bold)]">
-                          {user.nickname}
-                        </p>
-                        <p className="truncate text-sm">{user.email}</p>
-                      </div>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="larges"
-                      className="mt-3 h-10"
-                      onClick={() => router.push('/mypage')}
-                    >
-                      프로필수정
-                    </Button>
-                  </div>
-                  <ul className="flex flex-col text-sm">
-                    {user.role === 'mentee' &&
-                      menteeItem.map((item) => (
-                        <li key={item.name}>
-                          <Link
-                            href={item.href}
-                            className="block px-6 py-4 text-[var(--text)] hover:bg-[var(--primary-sub02)] hover:text-[var(--primary)]"
-                          >
-                            {item.name}
-                          </Link>
-                        </li>
-                      ))}
-                    {user.role === 'mentor' &&
-                      mentorItem.map((item) => (
-                        <li key={item.name}>
-                          <Link
-                            href={item.href}
-                            className="block px-6 py-4 text-[var(--text)] hover:bg-[var(--primary-sub02)] hover:text-[var(--primary)]"
-                          >
-                            {item.name}
-                          </Link>
-                        </li>
-                      ))}
+                <span className="text-sm font-semibold">{user.nickname}</span>
+              </div>
+            ) : (
+              <Link href="/" className="block">
+                <Logo />
+              </Link>
+            )}
+            <button onClick={() => setIsMenuOpen(false)}>
+              <FiX size={24} />
+            </button>
+          </div>
 
-                    <li className="border-t border-[var(--border-color)]">
-                      <button
-                        onClick={handleLogout}
-                        className="block w-full px-6 py-4 text-[var(--text)] hover:bg-[var(--primary-sub02)] hover:text-[var(--primary)]"
-                      >
-                        로그아웃
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </li>
+          <nav>
+            <ul className="flex flex-col gap-4">
+              {mainNav.map((item) => (
+                <li key={item.name}>
+                  <Link
+                    href={item.href}
+                    className="block text-sm font-medium text-[var(--text)] hover:text-[var(--primary)]"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* 인증 or 메뉴 리스트 */}
+          {!accessToken ? (
+            <div className="mt-8 flex gap-3">
+              <Link
+                href="/login"
+                className="h-10 flex-1 rounded border border-[var(--border-color)] bg-transparent text-center text-sm leading-10 text-[var(--text)] hover:bg-[var(--primary-sub01)] hover:text-white"
+              >
+                로그인
+              </Link>
+              <Link
+                href="/signup"
+                className="h-10 flex-1 rounded bg-[var(--primary-sub01)] text-center text-sm leading-10 text-white hover:bg-[var(--primary)]"
+              >
+                회원가입
+              </Link>
+            </div>
           ) : (
-            <>
-              <li className="mr-1 ml-2">
-                <Link
-                  href="/login"
-                  className="block h-9 w-20 rounded text-center text-sm leading-9 hover:bg-[var(--primary-sub02)]"
-                >
-                  로그인
-                </Link>
-              </li>
-
-              <li>
-                <Link
-                  href="/signup"
-                  className="block h-9 w-20 rounded bg-[var(--primary-sub01)] text-center text-sm leading-9 text-white hover:bg-[var(--primary)]"
-                >
-                  회원가입
-                </Link>
-              </li>
-            </>
+            <div className="mt-8">
+              <ul className="flex flex-col gap-2 text-sm">
+                {(user?.role === 'mentee' ? menteeItem : mentorItem).map(
+                  (item) => (
+                    <li key={item.name}>
+                      <Link
+                        href={item.href}
+                        onClick={() => setIsMenuOpen(false)}
+                        className="block py-2 text-[var(--text)] hover:text-[var(--primary)]"
+                      >
+                        {item.name}
+                      </Link>
+                    </li>
+                  ),
+                )}
+                <li className="mt-4 border-t border-[var(--border-color)] pt-4">
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full py-2 text-left text-[var(--text)] hover:text-[var(--primary)]"
+                  >
+                    로그아웃
+                  </button>
+                </li>
+              </ul>
+            </div>
           )}
-        </ul>
-      </div>
+        </div>
+      )}
     </header>
   );
 }

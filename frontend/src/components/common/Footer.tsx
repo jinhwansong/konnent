@@ -33,9 +33,9 @@ export default function Footer() {
   ];
   return (
     <footer className="border-t border-[var(--border-color)]">
-      <div className="mx-auto flex max-w-[1200px] justify-between gap-[100px] py-10">
-        <div className="flex-[1.3] border-r border-[var(--border-color)] pr-6">
-          <p className="text-sm [&>span]:mt-[5px] [&>span]:inline-block [&>span]:align-middle">
+      <div className="mx-auto flex max-w-[1200px] flex-col gap-5 px-5 py-10 md:px-8 lg:flex-row lg:justify-between lg:gap-[100px] lg:px-0">
+        <div className="lg:flex-[1.3] lg:border-r lg:border-[var(--border-color)] lg:pr-6">
+          <p className="text-sm leading-relaxed [&>span]:mt-[5px] [&>span]:inline-block [&>span]:align-middle">
             <span>커넥트</span>
             <LineDivider />
             <span>대표 플러팅</span>
@@ -51,12 +51,12 @@ export default function Footer() {
             <br />
             <span>호스팅서비스 제공자 : Vercel</span>
           </p>
-          <em className="mt-4 block text-sm text-[var(--text-subtle)]">
+          <em className="mt-2 block text-sm text-[var(--text-subtle)] lg:mt-4">
             © 2024 커넥팅, Inc. All rights reserved.
           </em>
         </div>
-        <ul className="flex flex-[1] justify-between">
-          <li className="flex flex-col gap-4">
+        <ul className="flex flex-col gap-2 md:flex-row md:justify-between lg:flex-[1] lg:gap-8">
+          <li className="flex gap-4 lg:flex-col">
             <em className="text-sm font-bold">이용약관</em>
             {terms.map((service) => (
               <Link
@@ -68,7 +68,7 @@ export default function Footer() {
               </Link>
             ))}
           </li>
-          <li className="flex flex-col gap-4">
+          <li className="flex gap-4 lg:flex-col">
             <em className="text-sm font-bold">서비스</em>
             {services.map((service) => (
               <Link
@@ -80,13 +80,14 @@ export default function Footer() {
               </Link>
             ))}
           </li>
-          <li className="flex flex-col gap-4">
+          <li className="flex gap-4 lg:flex-col">
             <em className="text-sm font-bold">소셜</em>
             {socials.map((service) => (
               <Link
                 key={service.id}
                 href={service.link}
                 target="_blank"
+                rel="noopener noreferrer"
                 className="block text-sm font-medium"
               >
                 {service.title}

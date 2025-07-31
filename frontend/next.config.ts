@@ -17,6 +17,7 @@ const nextConfig: NextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     dangerouslyAllowSVG: true,
+    domains: ['localhost'],
   },
   webpack(config) {
     // 일반 웹팩 모드에서도 동작하도록
@@ -26,6 +27,7 @@ const nextConfig: NextConfig = {
     });
     return config;
   },
+  reactStrictMode: false,
 };
 
 export default nextConfig;

@@ -7,7 +7,7 @@ import Editor from '@/components/common/Editor';
 import { uploadSessionImage } from '@/libs/upload';
 import { useToastStore } from '@/stores/useToast';
 import { SessionRequest } from '@/types/session';
-import { EXPERTISE_OPTIONS } from '@/contact/apply';
+import { EXPERTISE_OPTIONS } from '@/contact/mentoring';
 
 interface SessionFormProps {
   onSubmit: (data: SessionRequest) => void;

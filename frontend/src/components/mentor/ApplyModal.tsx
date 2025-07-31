@@ -2,11 +2,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useUserQuery } from '@/hooks/query/useUserQuery';
-import {
-  CAREER_OPTIONS,
-  EXPERTISE_OPTIONS,
-  POSITION_OPTIONS,
-} from '@/contact/apply';
+import { CAREER_OPTIONS, POSITION_OPTIONS } from '@/contact/apply';
 import { FormProvider, useForm } from 'react-hook-form';
 import { ApplyRequest } from '@/types/apply';
 import Input from '../common/Input';
@@ -17,6 +13,7 @@ import Button from '../common/Button';
 import { useMentorApply } from '@/hooks/query/useMentorApply';
 import { useToastStore } from '@/stores/useToast';
 import Modal from '../common/Modal';
+import { EXPERTISE_OPTIONS } from '@/contact/mentoring';
 
 export default function ApplyModal() {
   const router = useRouter();
@@ -136,7 +133,11 @@ export default function ApplyModal() {
                     label={item.label}
                     name={item.name}
                   >
-                    <Select {...item} options={item.options!} />
+                    <Select
+                      {...item}
+                      options={item.options!}
+                      classNames="h-[50px]"
+                    />
                   </FormFieldWrapper>
                 );
               case 'textarea':

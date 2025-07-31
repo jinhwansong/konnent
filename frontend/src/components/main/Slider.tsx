@@ -13,25 +13,25 @@ export default function Slider() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const slideItem = [
     {
-      img: '/banner01.avif',
+      img: '/main/banner01.avif',
       title: '좋은 멘토가 되어주세요',
       description: '지식과 경험을 나누고 성장하는 여정, 지금 지원하세요',
       href: '/mentors',
     },
     {
-      img: '/banner02.avif',
+      img: '/main/banner02.avif',
       title: '멘토링 일정, 미리 확인하고 예약하세요',
       description: '원하는 멘토의 일정을 보고 편하게 신청할 수 있어요',
       href: '/schedule',
     },
     {
-      img: '/banner03.avif',
+      img: '/main/banner03.avif',
       title: '멘토들의 노하우를 먼저 읽어보세요',
       description: '실무자들이 전하는 진짜 이야기, 아티클에서 확인하세요',
       href: '/articles',
     },
     {
-      img: '/banner04.avif',
+      img: '/main/banner04.avif',
       title: '당신에게 맞는 멘토를 찾아보세요',
       description: '관심 분야, 성향, 경험 기반으로 멘토를 추천해드립니다',
       href: '/mentor',
@@ -51,56 +51,70 @@ export default function Slider() {
   ];
   return (
     <article
-      className={`relative mt-10 mb-16 -ml-5 object-cover transition-opacity duration-300 ${
+      className={`relative mt-6 mb-16 px-5 transition-opacity duration-300 sm:mt-8 sm:px-8 xl:mt-10 xl:-ml-5 xl:px-0 ${
         imageLoaded ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      <div className="flex justify-center">
-        <div className="absolute top-1/2 z-10 flex justify-between md:w-[768px] lg:w-[1200px]">
-          {arrowItem.map((item) => (
-            <button
-              key={item.id}
-              onClick={item.arrow}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/80 shadow"
-            >
-              {item.img}
-            </button>
-          ))}
-        </div>
+      <div className="pointer-events-none absolute top-1/2 right-5 left-5 z-10 flex -translate-y-1/2 justify-between px-5 sm:px-8 lg:mx-auto lg:max-w-[1200px] xl:px-0">
+        {arrowItem.map((item) => (
+          <button
+            key={item.id}
+            onClick={item.arrow}
+            className="pointer-events-auto flex h-8 w-8 items-center justify-center rounded-full bg-white/80 shadow transition-transform hover:scale-110 sm:h-9 sm:w-9 md:h-10 md:w-10"
+          >
+            {item.img}
+          </button>
+        ))}
       </div>
+
       <Swiper
         modules={[Autoplay]}
-        spaceBetween={20}
-        slidesPerView={3.2}
         loop
         autoplay={{
           delay: 8000,
           disableOnInteraction: false,
         }}
+        breakpoints={{
+          0: {
+            slidesPerView: 1,
+            spaceBetween: 0,
+          },
+          768: {
+            slidesPerView: 1,
+            spaceBetween: 0,
+          },
+          1024: {
+            slidesPerView: 2,
+            spaceBetween: 20,
+          },
+          1300: {
+            slidesPerView: 3.2,
+            spaceBetween: 24,
+          },
+        }}
         onSwiper={(swiper) => {
           swiperRef.current = swiper;
         }}
-        className="[&_.swiper-slide]:w-[calc((100%-40px)/3.2)] [&_.swiper-slide]:flex-shrink-0"
       >
         {slideItem.map((item, index) => (
           <SwiperSlide key={item.title}>
             <Link
               href={item.href}
-              className="relative block aspect-[580/320] overflow-hidden rounded-lg"
+              className="relative block aspect-[16/9] overflow-hidden rounded-lg md:aspect-[16/9] lg:aspect-[16/9]"
             >
               <Image
                 src={item.img}
                 alt={item.description}
                 fill
-                sizes="(max-width: 768px) 90vw, 360px"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 360px"
                 onLoad={() => setImageLoaded(true)}
                 priority={index < 3}
               />
-              <div className="absolute bottom-5 left-5">
-                <em className="font-semibold tracking-[-0.5%] text-white lg:text-2xl lg:leading-[32px]">
+              <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 md:bottom-5 md:left-5">
+                <em className="text-base font-semibold tracking-[-0.5%] text-white md:text-lg lg:text-2xl">
                   {item.title}
                 </em>
-                <p className="tracking-[-0.25%] text-white lg:mt-1.5 lg:text-base lg:leading-[24px]">
+                <p className="mt-1.5 text-sm tracking-[-0.25%] text-white md:text-base">
                   {item.description}
                 </p>
               </div>

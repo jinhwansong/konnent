@@ -1,13 +1,32 @@
-import MentorItem from '@/components/common/MentorItem';
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from '@tanstack/react-query';
+import { getSessions } from '@/libs/main';
+import MentorContent from '@/components/main/MentorContent';
 import Slider from '@/components/main/Slider';
+import { getArticle } from '@/libs/article';
+import ArticleList from '@/components/main/ArticleList';
+export default async function Home() {
+  const queryClient = new QueryClient();
 
-export default function Home() {
+  await queryClient.prefetchQuery({
+    queryKey: ['sessions', 1, 'all', 4, 'latest'],
+    queryFn: () => getSessions(1, 'all', 4, 'latest'),
+  });
+
+  await queryClient.prefetchQuery({
+    queryKey: ['article', 1, 'all', 4, 'likes'],
+    queryFn: () => getArticle(1, 'all', 4, 'likes'),
+  });
   return (
-    <section>
-      <Slider />
-      <article className="mx-auto md:w-[768px] lg:w-[1200px]">
-        <MentorItem />
-      </article>
-    </section>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <section>
+        <Slider />
+        <MentorContent initialCategory="all" />
+        <ArticleList type="likes" />
+      </section>
+    </HydrationBoundary>
   );
 }

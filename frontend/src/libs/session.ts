@@ -11,13 +11,6 @@ export const getSession = async (page: number): Promise<SessionResponse> => {
   });
 };
 
-export const postSession = async (data: SessionRequest) => {
-  return fetcher<SessionRequest>(`mentoring`, {
-    method: 'POST',
-    body: JSON.stringify(data),
-  });
-};
-
 export const getSessionDetail = async (
   id: string,
 ): Promise<SessionDetailResponse> => {
@@ -42,6 +35,13 @@ export const deleteSession = async (id: string) => {
 export const patchSession = async (id: string, data: SessionRequest) => {
   return fetcher<SessionRequest>(`mentoring/${id}`, {
     method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+};
+
+export const postSession = async (data: SessionRequest) => {
+  return fetcher<SessionRequest>(`mentoring`, {
+    method: 'POST',
     body: JSON.stringify(data),
   });
 };

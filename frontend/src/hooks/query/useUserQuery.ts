@@ -7,7 +7,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 export const useUserQuery = () => {
   const { accessToken, isAuthLoading } = useAuthStore();
   return useQuery<UserProp>({
-    queryKey: ['user'],
+    queryKey: ['user', accessToken],
     queryFn: userInfo,
     enabled: !!accessToken && !isAuthLoading,
     retry: false,

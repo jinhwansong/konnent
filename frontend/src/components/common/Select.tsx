@@ -1,7 +1,16 @@
 'use client';
-import React, { useState } from 'react';
-import { Controller, RegisterOptions, useFormContext } from 'react-hook-form';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  Controller,
+  FieldError,
+  RegisterOptions,
+  useFormContext,
+} from 'react-hook-form';
 import { Option } from '@/types/apply';
+import { FiChevronDown } from 'react-icons/fi';
+import useClickOutside from '@/hooks/useClickOutside';
+import { useToastStore } from '@/stores/useToast';
+import clsx from 'clsx';
 
 interface SelectProp {
   name: string;
@@ -9,6 +18,7 @@ interface SelectProp {
   placeholder?: string;
   rules?: RegisterOptions;
   className?: string;
+  classNames?: string;
 }
 
 export default function Select({
@@ -16,25 +26,41 @@ export default function Select({
   options,
   placeholder,
   rules,
+  classNames,
+  className,
 }: SelectProp) {
   const [isOpen, setIsOpen] = useState(false);
   const { control } = useFormContext();
+  const selectRef = useRef<HTMLDivElement>(null);
+  useClickOutside(selectRef, () => setIsOpen(false));
+
   return (
     <Controller
       name={name}
       control={control}
       rules={rules}
       render={({ field, fieldState }) => (
-        <div className="w-full">
+        <div
+          className={`relative bg-[var(--background)] ${className}`}
+          ref={selectRef}
+        >
           <button
-            className="h-[50px] w-full rounded-lg border border-[var(--border-color)] px-4 text-sm"
+            className={clsx(
+              classNames,
+              'flex w-full items-center justify-between rounded-lg border border-[var(--border-color)] px-4 text-sm',
+            )}
             type="button"
             onClick={() => setIsOpen((prev) => !prev)}
           >
             {options.find((o) => o.value === field.value)?.label || placeholder}
+            <FiChevronDown
+              className={`ml-2 h-5 w-5 transition-transform duration-200 ${
+                isOpen ? 'rotate-180' : ''
+              }`}
+            />
           </button>
           {isOpen && (
-            <ul className="mt-2 rounded-lg border border-[var(--border-color)] px-3 py-3">
+            <ul className="scroll-custom absolute z-20 mt-2 h-[150px] w-full overflow-auto rounded-lg border border-[var(--border-color)] bg-[var(--background)] px-3 py-3">
               {options.map((item) => (
                 <li
                   key={item.label}
@@ -50,12 +76,22 @@ export default function Select({
             </ul>
           )}
           {fieldState.error && (
-            <p className="mt-1 text-sm text-red-500">
-              {fieldState.error.message}
-            </p>
+            <FieldErrorHandler fieldState={fieldState.error} />
           )}
         </div>
       )}
     />
   );
+}
+
+function FieldErrorHandler({ fieldState }: { fieldState: FieldError }) {
+  const { showToast } = useToastStore();
+
+  useEffect(() => {
+    if (fieldState) {
+      showToast(fieldState.message as string, 'error');
+    }
+  }, [fieldState, showToast]);
+
+  return null;
 }

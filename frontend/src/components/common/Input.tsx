@@ -17,14 +17,16 @@ interface InputProps {
   innerRef?: React.RefObject<HTMLInputElement | null>;
   /** input의 너비 */
   size?: 'xs' | 'sm' | 'md' | 'lg';
-  /**  */
+
   className?: string;
+  step?: string;
 }
 
 export default function Input({
   name,
   type,
   rules,
+  step,
   size = 'lg',
   className,
   ...props
@@ -36,14 +38,15 @@ export default function Input({
   });
   const errorMessage = useErrorMessage(name);
   const inputClass = clsx(
-    'text-sm h-[50px] rounded-lg px-4',
+    className,
+    'text-sm h-[45px] rounded-lg px-4',
     'border transition-all duration-150',
     'focus:outline-none focus:border-[var(--primary)]',
     size === 'lg' && 'w-full',
+    size === 'sm' && 'w-[150px]',
     errorMessage
       ? 'border-red-500 focus:border-red-500'
       : 'border-[var(--border-color)]',
-    className,
   );
   return (
     <>
@@ -54,6 +57,7 @@ export default function Input({
         placeholder={props.placeholder}
         {...rest}
         ref={ref}
+        step={step}
       />
 
       {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}

@@ -35,20 +35,20 @@ export default function FlexibleTable<T>({
           </tr>
         </thead>
         <tbody>
-          {data.length === 0 ? (
+          {data?.length === 0 ? (
             <tr>
-              <td colSpan={columns.length} className="py-10 text-center">
+              <td colSpan={columns?.length} className="py-10 text-center">
                 데이터가 없습니다.
               </td>
             </tr>
           ) : (
-            data.map((row, i) => (
+            data?.map((row, i) => (
               <tr
                 key={i}
                 className="cursor-pointer border-t border-[var(--border-color)] transition-colors duration-150 hover:bg-[var(--primary-sub02)]"
                 onClick={() => onRowClick?.(row)}
               >
-                {columns.map((col, j) => {
+                {columns?.map((col, j) => {
                   const content =
                     typeof col.accessor === 'function'
                       ? col.accessor(row)

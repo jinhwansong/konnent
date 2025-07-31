@@ -7,18 +7,19 @@ export const fetcher = async <T>(
   const { accessToken, setAccessToken, resetToken } = useAuthStore.getState();
 
   const isFormData = init.body instanceof FormData;
+  const headers = {
+    ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
+    ...(init.headers || {}),
+    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+  };
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_AUTH_URL}/${url}`, {
     ...init,
     credentials: 'include',
-    headers: {
-      ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
-      ...(init.headers || {}),
-      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-    },
+    headers,
   });
 
-  if (res.status === 401 && !accessToken && !url.includes('/auth/refresh')) {
+  if (res.status === 401 && !!accessToken && !url.includes('/auth/refresh')) {
     try {
       const refresh = await fetch(
         `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/refresh`,
@@ -41,5 +42,11 @@ export const fetcher = async <T>(
       throw new Error('토큰 재발급 실패');
     }
   }
-  return res.json();
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || '요청 실패');
+  }
+
+  return data;
 };

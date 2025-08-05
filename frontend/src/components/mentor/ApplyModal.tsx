@@ -1,24 +1,24 @@
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { useUserQuery } from '@/hooks/query/useUserQuery';
 import { CAREER_OPTIONS, POSITION_OPTIONS } from '@/contact/apply';
 import { FormProvider, useForm } from 'react-hook-form';
 import { ApplyRequest } from '@/types/apply';
 import Input from '../common/Input';
 import CheckboxGroup from '../common/CheckboxGroup';
 import Textarea from '../common/Textarea';
-import Select from '../common/Select';
 import Button from '../common/Button';
 import { useMentorApply } from '@/hooks/query/useMentorApply';
 import { useToastStore } from '@/stores/useToast';
 import Modal from '../common/Modal';
 import { EXPERTISE_OPTIONS } from '@/contact/mentoring';
+import { useSession } from 'next-auth/react';
+import Select from '../common/Select';
 
 export default function ApplyModal() {
   const router = useRouter();
   const { showToast } = useToastStore();
-  const { data: user } = useUserQuery();
+  const { data: session } = useSession();
   const { mutate: applyMentor } = useMentorApply();
   const methods = useForm<ApplyRequest>({
     mode: 'all',
@@ -102,7 +102,9 @@ export default function ApplyModal() {
     <Modal link="/mentor">
       <h4 className="mb-5 text-xl leading-[1.4] font-semibold tracking-[-0.3px] text-[var(--text-bold)]">
         감사합니다,
-        <span className="text-[var(--primary-sub01)]">{user?.nickname}</span>
+        <span className="text-[var(--primary-sub01)]">
+          {session?.user?.nickname}
+        </span>
         님<br />
         지식공유자가 되기 위해서
         <br />
@@ -133,11 +135,7 @@ export default function ApplyModal() {
                     label={item.label}
                     name={item.name}
                   >
-                    <Select
-                      {...item}
-                      options={item.options!}
-                      classNames="h-[50px]"
-                    />
+                    <Select {...item} options={item.options!} />
                   </FormFieldWrapper>
                 );
               case 'textarea':

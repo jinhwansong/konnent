@@ -6,7 +6,6 @@ import {
   patchSchedule,
   postSchedule,
 } from '@/libs/schedule';
-import { useAuthStore } from '@/stores/useAuthStore';
 import {
   ScheduleRequest,
   ScheduleReservationsDetailResponse,
@@ -14,26 +13,27 @@ import {
   ScheduleResponse,
 } from '@/types/schedule';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
 
 export const useGetScheduleReservations = (page: number) => {
-  const { accessToken, isAuthLoading } = useAuthStore();
+  const { data: session } = useSession();
   return useQuery<ScheduleReservationsResponse>({
     queryKey: ['schedule-reservations', page],
     queryFn: () => getScheduleReservations(page),
     retry: false,
     staleTime: 1000 * 60 * 5,
-    enabled: !!accessToken && !isAuthLoading,
+    enabled: !!session?.user,
   });
 };
 
 export const useGetScheduleReservationsDetail = (id: string) => {
-  const { accessToken, isAuthLoading } = useAuthStore();
+  const { data: session } = useSession();
   return useQuery<ScheduleReservationsDetailResponse>({
     queryKey: ['schedule-reservations-detail', id],
     queryFn: () => getScheduleReservationsDetail(id),
     retry: false,
     staleTime: 1000 * 60 * 5,
-    enabled: !!accessToken && !isAuthLoading,
+    enabled: !!session?.user,
   });
 };
 
@@ -68,12 +68,12 @@ export const usePatchSchedule = () => {
 };
 
 export const useGetSchedule = () => {
-  const { accessToken, isAuthLoading } = useAuthStore();
+  const { data: session } = useSession();
   return useQuery<ScheduleResponse>({
     queryKey: ['schedule'],
     queryFn: () => getSchedule(),
     retry: false,
     staleTime: 1000 * 60 * 5,
-    enabled: !!accessToken && !isAuthLoading,
+    enabled: !!session?.user,
   });
 };

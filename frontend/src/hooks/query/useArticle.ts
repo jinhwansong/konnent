@@ -15,7 +15,7 @@ import {
   ArticleResponse,
   PatchArticle,
 } from '@/types/article';
-import { useAuthStore } from '@/stores/useAuthStore';
+import { useSession } from 'next-auth/react';
 
 export const useGetArticle = (
   page: number,
@@ -127,11 +127,11 @@ export const useLikeArticle = () => {
 };
 
 export const useLikedArticles = (ids: string[]) => {
-  const { accessToken } = useAuthStore();
+  const { data: session } = useSession();
   return useQuery<string[]>({
-    queryKey: ['article-liked', ids, accessToken],
+    queryKey: ['article-liked', ids],
     queryFn: () => fetchLikedArticles(ids),
-    enabled: !!accessToken && ids.length > 0,
+    enabled: !!session?.user && ids.length > 0,
   });
 };
 

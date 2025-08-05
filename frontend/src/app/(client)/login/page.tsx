@@ -2,6 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import { FormProvider, useForm } from 'react-hook-form';
 import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
@@ -9,12 +10,9 @@ import { LoginRequest } from '@/types/user';
 import { IcGoogle, IcKakao, IcNaver } from '@/assets';
 import clsx from 'clsx';
 import { useToastStore } from '@/stores/useToast';
-import { loginUser } from '@/libs/login';
-import { useAuthStore } from '@/stores/useAuthStore';
 
 export default function LoginPage() {
   const { showToast } = useToastStore();
-  const { setAccessToken, setAuthLoading } = useAuthStore();
   const router = useRouter();
   const methods = useForm<LoginRequest>({
     mode: 'all',
@@ -26,25 +24,24 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginRequest) => {
     const { email, password } = data;
     try {
-      const res = await loginUser({ email, password });
-      setAccessToken(res.accessToken);
-      setAuthLoading(false);
-      showToast('로그인을 완료했습니다.', 'success');
-      router.push('/');
+      const res = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (res?.code) {
+        showToast('이메일 또는 비밀번호가 잘못되었습니다.', 'error');
+      } else {
+        showToast('로그인에 성공했습니다.', 'success');
+        router.push('/');
+      }
     } catch {
       showToast('로그인에 실패했습니다.', 'error');
     }
   };
-  const onSocial = (sns: string) => {
-    if (sns === 'kakao') {
-      router.push(`${process.env.NEXT_PUBLIC_AUTH_URL}/auth/kakao`);
-    }
-    if (sns === 'naver') {
-      router.push(`${process.env.NEXT_PUBLIC_AUTH_URL}/auth/naver`);
-    }
-    if (sns === 'google') {
-      router.push(`${process.env.NEXT_PUBLIC_AUTH_URL}/auth/google`);
-    }
+  const onSocial = (provider: string) => {
+    signIn(provider, { callbackUrl: '/' });
   };
   const sns = [
     { name: 'kakao', value: '카카오', img: <IcKakao /> },

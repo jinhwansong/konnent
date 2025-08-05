@@ -6,7 +6,6 @@ import {
   postSession,
   toggleSessionPublic,
 } from '@/libs/session';
-import { useAuthStore } from '@/stores/useAuthStore';
 import {
   PatchSession,
   SessionDetailResponse,
@@ -14,27 +13,28 @@ import {
   SessionResponse,
 } from '@/types/session';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
 
 export const useGetSession = (page: number) => {
-  const { accessToken, isAuthLoading } = useAuthStore();
+  const { data: session } = useSession();
 
   return useQuery<SessionResponse>({
     queryKey: ['session', page],
     queryFn: () => getSession(page),
     retry: false,
     staleTime: 1000 * 60 * 5,
-    enabled: !!accessToken && !isAuthLoading,
+    enabled: !!session?.user,
   });
 };
 
 export const useGetSessionDetail = (id: string) => {
-  const { accessToken, isAuthLoading } = useAuthStore();
+  const { data: session } = useSession();
 
   return useQuery<SessionDetailResponse>({
     queryKey: ['session-detail', id],
     queryFn: () => getSessionDetail(id),
     retry: false,
-    enabled: !!accessToken && !isAuthLoading,
+    enabled: !!session?.user,
   });
 };
 

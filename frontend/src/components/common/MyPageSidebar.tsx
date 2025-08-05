@@ -3,10 +3,10 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { useUserQuery } from '@/hooks/query/useUserQuery';
+import { useSession } from 'next-auth/react';
 
 export default function MyPageSidebar() {
-  const { data: user } = useUserQuery();
+  const { data: session } = useSession();
   const mentorItem = [
     {
       title: '내 정보',
@@ -42,7 +42,7 @@ export default function MyPageSidebar() {
     },
   ];
   const pathname = usePathname();
-  const tabs = user?.role === 'mentor' ? mentorItem : menteeItem;
+  const tabs = session?.user?.role === 'mentor' ? mentorItem : menteeItem;
   return (
     <aside className="w-[200px]">
       {tabs.map((section) => (

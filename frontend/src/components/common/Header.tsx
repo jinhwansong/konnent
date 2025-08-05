@@ -2,11 +2,10 @@
 import React, { useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useUserQuery } from '@/hooks/query/useUserQuery';
+import { useSession } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 import { FiMenu, FiSearch, FiX } from 'react-icons/fi';
 import Logo from '@/assets/logo.svg';
-import { useAuthStore } from '@/stores/useAuthStore';
-import { logoutUser } from '@/libs/login';
 import { useToastStore } from '@/stores/useToast';
 import Image from 'next/image';
 import Button from './Button';
@@ -16,10 +15,8 @@ export default function Header() {
   const { showToast } = useToastStore();
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const { data: user } = useUserQuery();
-  const { accessToken, resetToken } = useAuthStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const { data: session } = useSession();
   const mainNav = [
     { href: '/mentors', name: '멘토 찾기' },
     { href: '/schedule', name: '멘토링 일정' },
@@ -38,15 +35,15 @@ export default function Header() {
     { name: '후기 관리', href: '/my/reviews' },
     { name: '수입 내역', href: '/my/earnings' },
   ];
-
   // 로그아웃
   const handleLogout = async () => {
     try {
-      await logoutUser();
-      resetToken();
+      signOut({
+        redirect: false,
+        callbackUrl: '/',
+      });
       showToast('로그아웃을 완료했습니다.', 'success');
       setOpen(false);
-      router.push('/');
     } catch {
       showToast('로그아웃에 실패했습니다.', 'error');
     }
@@ -106,15 +103,15 @@ export default function Header() {
               </Link>
             </li>
             <Divider />
-            {accessToken && user ? (
+            {session ? (
               <li className="relative ml-2" ref={openRef}>
                 <button
                   onClick={() => setOpen((prev) => !prev)}
                   className="flex items-center justify-center overflow-hidden rounded-full text-2xl"
                 >
                   <Image
-                    src={user.image ?? '/icon/IcPeople.avif'}
-                    alt={user.name}
+                    src={session.user.image ?? '/icon/IcPeople.avif'}
+                    alt={session.user.name}
                     width={30}
                     height={30}
                   />
@@ -124,17 +121,19 @@ export default function Header() {
                     <div className="border-b border-[var(--border-color)] px-6 py-4">
                       <div className="flex items-center gap-3.5">
                         <Image
-                          src={user.image ?? '/icon/IcPeople.avif'}
-                          alt={user.name}
+                          src={session.user.image ?? '/icon/IcPeople.avif'}
+                          alt={session.user.name}
                           width={40}
                           height={40}
                           className="overflow-hidden rounded-full"
                         />
                         <div>
                           <p className="font-semibold text-[var(--text-bold)]">
-                            {user.nickname}
+                            {session.user.nickname}
                           </p>
-                          <p className="truncate text-sm">{user.email}</p>
+                          <p className="truncate text-sm">
+                            {session.user.email}
+                          </p>
                         </div>
                       </div>
                       <Button
@@ -150,19 +149,20 @@ export default function Header() {
                       </Button>
                     </div>
                     <ul className="flex flex-col text-sm">
-                      {(user.role === 'mentee' ? menteeItem : mentorItem).map(
-                        (item) => (
-                          <li key={item.name}>
-                            <Link
-                              onClick={() => setOpen(false)}
-                              href={item.href}
-                              className="block px-6 py-4 text-[var(--text)] hover:bg-[var(--primary-sub02)] hover:text-[var(--primary)]"
-                            >
-                              {item.name}
-                            </Link>
-                          </li>
-                        ),
-                      )}
+                      {(session.user.role === 'mentee'
+                        ? menteeItem
+                        : mentorItem
+                      ).map((item) => (
+                        <li key={item.name}>
+                          <Link
+                            onClick={() => setOpen(false)}
+                            href={item.href}
+                            className="block px-6 py-4 text-[var(--text)] hover:bg-[var(--primary-sub02)] hover:text-[var(--primary)]"
+                          >
+                            {item.name}
+                          </Link>
+                        </li>
+                      ))}
                       <li className="border-t border-[var(--border-color)]">
                         <button
                           onClick={handleLogout}
@@ -202,16 +202,18 @@ export default function Header() {
       {isMenuOpen && (
         <div className="fixed inset-0 z-[999] bg-white px-5 pt-6 pb-6 shadow-xl lg:hidden">
           <div className="mb-6 flex items-center justify-between">
-            {accessToken && user ? (
+            {session ? (
               <div className="flex items-center gap-3">
                 <Image
-                  src={user.image ?? '/icon/IcPeople.avif'}
+                  src={session.user.image ?? '/icon/IcPeople.avif'}
                   alt="프로필"
                   width={36}
                   height={36}
                   className="rounded-full"
                 />
-                <span className="text-sm font-semibold">{user.nickname}</span>
+                <span className="text-sm font-semibold">
+                  {session.user.nickname}
+                </span>
               </div>
             ) : (
               <Link href="/" className="block">
@@ -240,7 +242,7 @@ export default function Header() {
           </nav>
 
           {/* 인증 or 메뉴 리스트 */}
-          {!accessToken ? (
+          {!session ? (
             <div className="mt-8 flex gap-3">
               <Link
                 href="/login"
@@ -258,19 +260,20 @@ export default function Header() {
           ) : (
             <div className="mt-8">
               <ul className="flex flex-col gap-2 text-sm">
-                {(user?.role === 'mentee' ? menteeItem : mentorItem).map(
-                  (item) => (
-                    <li key={item.name}>
-                      <Link
-                        href={item.href}
-                        onClick={() => setIsMenuOpen(false)}
-                        className="block py-2 text-[var(--text)] hover:text-[var(--primary)]"
-                      >
-                        {item.name}
-                      </Link>
-                    </li>
-                  ),
-                )}
+                {(session.user?.role === 'mentee'
+                  ? menteeItem
+                  : mentorItem
+                ).map((item) => (
+                  <li key={item.name}>
+                    <Link
+                      href={item.href}
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block py-2 text-[var(--text)] hover:text-[var(--primary)]"
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
                 <li className="mt-4 border-t border-[var(--border-color)] pt-4">
                   <button
                     onClick={handleLogout}

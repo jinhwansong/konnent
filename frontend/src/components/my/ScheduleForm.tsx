@@ -4,8 +4,8 @@ import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import { ScheduleRequest } from '@/types/schedule';
 import { DayOfWeek, TIME_OPTIONS, WEEK_OPTIONS } from '@/contact/schedule';
 import Button from '../common/Button';
-import Select from '../common/Select';
 import Modal from '../common/Modal';
+import Select from '../common/Select';
 
 interface ScheduleFormProps {
   onSubmit: (data: ScheduleRequest) => void;
@@ -47,7 +47,6 @@ export default function ScheduleForm({
     }
   }, [defaultValues, reset]);
 
-  console.log(defaultValues);
   return (
     <Modal link="/my/schedule/regular">
       <h4 className="mb-5 text-xl leading-[1.4] font-semibold tracking-[-0.3px] text-[var(--text-bold)]">
@@ -80,7 +79,6 @@ export default function ScheduleForm({
                 placeholder="요일"
                 options={WEEK_OPTIONS}
                 className="w-[100px]"
-                classNames="h-[45px]"
               />
 
               <Select
@@ -88,7 +86,6 @@ export default function ScheduleForm({
                 options={TIME_OPTIONS}
                 placeholder="시작 시간"
                 className="w-[120px]"
-                classNames="h-[45px]"
                 rules={{ required: '시작 시간을 선택해주세요.' }}
               />
 
@@ -97,7 +94,6 @@ export default function ScheduleForm({
                 options={TIME_OPTIONS}
                 placeholder="종료 시간"
                 className="w-[120px]"
-                classNames="h-[45px]"
                 rules={{
                   required: '종료 시간을 선택해주세요.',
                   validate: (value) => {

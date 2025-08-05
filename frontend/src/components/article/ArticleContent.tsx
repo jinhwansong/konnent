@@ -9,9 +9,9 @@ import {
   articleSortOptions,
   ArticleSortType,
 } from '@/contact/article';
-import SelectBox from '../common/SelectBox';
-import { useAuthStore } from '@/stores/useAuthStore';
 import { useGetArticle, useLikedArticles } from '@/hooks/query/useArticle';
+import { useSession } from 'next-auth/react';
+import Select from '../common/Select';
 
 export default function ArticleContent({
   initialCategory,
@@ -26,12 +26,12 @@ export default function ArticleContent({
   const { data, isLoading } = useGetArticle(page, selected, 10, sort);
   const articleIds = data?.data?.map((item) => item.id) ?? [];
   const { data: likedIds } = useLikedArticles(articleIds);
-  const { accessToken } = useAuthStore();
+  const { data: session } = useSession();
   const router = useRouter();
 
   if (isLoading) return null;
   const onRouter = () => {
-    if (!accessToken) {
+    if (!session?.user) {
       return router.push('/login');
     }
     router.push('/articles/create');
@@ -40,14 +40,14 @@ export default function ArticleContent({
     <section className="mx-auto mt-10 mb-16 w-[768px]">
       <div className="mb-10 flex w-full items-center justify-between">
         <div className="mb-7 flex items-center gap-5">
-          <SelectBox<ArticleCategoryTabType>
+          <Select
             value={selected}
             onChange={setSelected}
             options={ARTICLE_OPTION_ALL}
             placeholder="카테고리 선택"
             className="w-[192px]"
           />
-          <SelectBox
+          <Select
             value={sort}
             onChange={setSort}
             options={articleSortOptions}

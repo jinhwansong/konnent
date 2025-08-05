@@ -1,6 +1,7 @@
 import Providers from './providers';
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
+import { SessionProvider } from 'next-auth/react';
 
 export const metadata: Metadata = {
   title: 'Konnect - 취준생을 위한 멘토링 플랫폼',
@@ -36,7 +37,9 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <Providers>{children}</Providers>
+        <SessionProvider>
+          <Providers>{children}</Providers>
+        </SessionProvider>
       </body>
     </html>
   );

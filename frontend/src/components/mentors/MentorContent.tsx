@@ -8,7 +8,7 @@ import {
   MentoringSortType,
 } from '@/contact/mentoring';
 import { useGetSession } from '@/hooks/query/useCommonSession';
-import SelectBox from '../common/SelectBox';
+import Select from '../common/Select';
 
 export default function MentorContent({
   initialCategory,
@@ -26,14 +26,14 @@ export default function MentorContent({
         멘토 찾기
       </h4>
       <div className="mb-5 flex w-full items-center justify-between">
-        <SelectBox<CategoryTabType>
+        <Select
           value={selected}
           onChange={setSelected}
           options={MENTORING_OPTION_ALL}
           placeholder="카테고리 선택"
           className="w-[192px]"
         />
-        <SelectBox
+        <Select
           value={sort}
           onChange={setSort}
           options={mentoringSortOptions}

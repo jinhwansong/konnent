@@ -2,12 +2,12 @@ import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import Button from '../common/Button';
 import Editor from '../common/Editor';
-import Select from '../common/Select';
 import { useToastStore } from '@/stores/useToast';
 import { ArticleRequest } from '@/types/article';
 import Input from '../common/Input';
 import { uploadArticleImage } from '@/libs/article';
 import { ARTICLE_OPTIONS } from '@/contact/article';
+import Select from '../common/Select';
 
 interface ArticleFormProps {
   onSubmit: (data: ArticleRequest) => void;

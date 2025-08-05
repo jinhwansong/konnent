@@ -1,18 +1,28 @@
 'use client';
 import React from 'react';
-import { useGetSessionDetail } from '@/hooks/query/useCommonSession';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { FiBriefcase } from 'react-icons/fi';
+import { FaHeart } from 'react-icons/fa';
+import Button from '../common/Button';
+import { useGetSessionDetail } from '@/hooks/query/useCommonSession';
+import { getLabel } from '@/utils/getLabel';
 import { formatPrice } from '@/utils/formatPrice';
 import { formatDuration } from '@/utils/formatDuration';
 import { CAREER_OPTIONS, POSITION_OPTIONS } from '@/contact/apply';
-import { getLabel } from '@/utils/getLabel';
 import { careerIconMap, positionIconMap } from '@/contact/mentoring';
-import { FiBriefcase } from 'react-icons/fi';
-import Button from '../common/Button';
-import { FaHeart } from 'react-icons/fa';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 export default function MentorDetail({ articleId }: { articleId: string }) {
   const { data: session, isLoading } = useGetSessionDetail(articleId);
+  const router = useRouter();
+  const { accessToken } = useAuthStore();
+  const onRouter = () => {
+    if (!accessToken) {
+      return router.push('/login');
+    }
+    router.push(`/mentors/${articleId}/reserve`);
+  };
   if (isLoading) return null;
   return (
     <section className="mx-auto mt-12 mb-20 px-4 md:w-[768px] lg:w-[1200px]">
@@ -83,7 +93,7 @@ export default function MentorDetail({ articleId }: { articleId: string }) {
           </ul>
 
           <div className="mt-6 flex flex-col gap-2">
-            <Button size="large" variant="solid">
+            <Button size="large" variant="solid" onClick={onRouter}>
               멘토링 신청하기
             </Button>
             <Button size="large" variant="wish-none">

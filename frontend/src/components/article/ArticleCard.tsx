@@ -8,8 +8,8 @@ import { ArticleCardItem } from '@/types/article';
 import { getLabel } from '@/utils/getLabel';
 import { ARTICLE_OPTIONS } from '@/contact/article';
 import { useLikeArticle } from '@/hooks/query/useArticle';
-import { useAuthStore } from '@/stores/useAuthStore';
 import { useToastStore } from '@/stores/useToast';
+import { useSession } from 'next-auth/react';
 
 interface ArticleCardProps extends ArticleCardItem {
   type?: 'main' | 'other';
@@ -21,13 +21,13 @@ export default function ArticleCard({
   type,
   ...props
 }: ArticleCardProps) {
-  const { accessToken } = useAuthStore();
   const { showToast } = useToastStore();
   const router = useRouter();
+  const { data: session } = useSession();
   const { mutate: likeMutate } = useLikeArticle();
   const handleLike = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
     e.preventDefault();
-    if (!accessToken) {
+    if (!session) {
       showToast('로그인 한 사람만 이용 할 수 있습니다.', 'error');
       return router.push('/login');
     }

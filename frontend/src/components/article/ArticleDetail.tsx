@@ -10,24 +10,23 @@ import {
   useLikeArticle,
   useLikedArticles,
 } from '@/hooks/query/useArticle';
-import { useAuthStore } from '@/stores/useAuthStore';
 import { useToastStore } from '@/stores/useToast';
 import Button from '../common/Button';
-import { useUserQuery } from '@/hooks/query/useUserQuery';
+import { useSession } from 'next-auth/react';
 
 export default function ArticleDetail({ articleId }: { articleId: string }) {
   const { data: article, isLoading } = useGetArticleDetail(articleId);
-  const { accessToken } = useAuthStore();
+  const { data: sessions } = useSession();
+
   const { showToast } = useToastStore();
   const router = useRouter();
-  const { data: user } = useUserQuery();
   const { mutate: deleteArticle } = useDeleteArticle();
   const { mutate: likeMutate } = useLikeArticle();
   const { data: likedIds } = useLikedArticles([articleId]);
 
   const handleLike = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
     e.preventDefault();
-    if (!accessToken) {
+    if (!sessions?.user) {
       showToast('로그인 한 사람만 이용 할 수 있습니다.', 'error');
       return router.push('/login');
     }
@@ -102,7 +101,7 @@ export default function ArticleDetail({ articleId }: { articleId: string }) {
             />
             {article?.likeCount}
           </button>
-          {article?.author.nickname === user?.nickname && (
+          {article?.author.nickname === sessions?.user?.nickname && (
             <div className="flex h-9 items-center gap-2 text-sm whitespace-nowrap text-[var(--text-sub)]">
               <Button
                 variant="outline"

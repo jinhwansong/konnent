@@ -17,7 +17,7 @@ export default async function page({ params }: { params: { id: string } }) {
   });
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <MentorDetail articleId={id} />
+      <MentorDetail sessionId={id} />
     </HydrationBoundary>
   );
 }

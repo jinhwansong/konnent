@@ -23,7 +23,7 @@ export interface ArticleResponse {
 export interface ArticleRequest {
   title: string;
   content: string;
-  thumbnail: FileList | null;
+  thumbnail: string | null;
   category: string;
 }
 

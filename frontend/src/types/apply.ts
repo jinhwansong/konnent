@@ -18,4 +18,6 @@ export interface CheckboxGroupProps {
   name: string;
   options: Option[];
   rules?: RegisterOptions;
+  className: string;
+  type: 'checkbox' | 'radio';
 }

@@ -45,3 +45,12 @@ export const postSession = async (data: SessionRequest) => {
     body: JSON.stringify(data),
   });
 };
+
+export const uploadSessionImage = (
+  formData: FormData,
+): Promise<{ urls: string[] }> => {
+  return fetcher<{ urls: string[] }>('mentoring/upload-image', {
+    method: 'POST',
+    body: formData,
+  });
+};

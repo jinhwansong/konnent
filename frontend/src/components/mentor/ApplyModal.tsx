@@ -155,7 +155,12 @@ export default function ApplyModal() {
                     label={item.label}
                     name={item.name}
                   >
-                    <CheckboxGroup {...item} options={item.options!} />
+                    <CheckboxGroup
+                      {...item}
+                      options={item.options!}
+                      type="checkbox"
+                      className="flex flex-wrap gap-2"
+                    />
                   </FormFieldWrapper>
                 );
               default:

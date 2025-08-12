@@ -1,0 +1,26 @@
+import { getReservationDays, getReservationTime } from '@/libs/reservation';
+import {
+  ReservationDaysResponse,
+  ReservationTimeResponse,
+} from '@/types/reservation';
+import { useQuery } from '@tanstack/react-query';
+
+export const useGetReservationsDays = (id: string) => {
+  return useQuery<ReservationDaysResponse>({
+    queryKey: ['reservation-day', id],
+    queryFn: () => getReservationDays(id),
+    retry: false,
+    staleTime: 1000 * 60 * 5,
+    enabled: !!id,
+  });
+};
+
+export const useGetReservationsTime = (id: string, date: string) => {
+  return useQuery<ReservationTimeResponse>({
+    queryKey: ['reservation-time', id, date],
+    queryFn: () => getReservationTime(id, date),
+    retry: false,
+    staleTime: 1000 * 60 * 5,
+    enabled: !!id && !!date,
+  });
+};

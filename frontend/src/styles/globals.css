@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import './fonts.css';
 @import './viewer.css';
+@import './calendar-custom.css';
 
 :root {
   --primary: #6366f1;

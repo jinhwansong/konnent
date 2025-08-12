@@ -6,6 +6,8 @@ export default function CheckboxGroup({
   name,
   options,
   rules,
+  type,
+  className,
 }: CheckboxGroupProps) {
   const { control } = useFormContext();
   return (
@@ -14,27 +16,36 @@ export default function CheckboxGroup({
       control={control}
       rules={rules}
       render={({ field, fieldState }) => (
-        <div className="flex flex-wrap gap-2">
+        <div className={className}>
           {options.map((item) => {
-            const isChecked = field.value.includes(item.value);
+            const isChecked =
+              type === 'radio'
+                ? field.value === item.value
+                : Array.isArray(field.value) &&
+                  field.value.includes(item.value);
             return (
               <label
                 key={item.value}
                 htmlFor={item.value}
-                className={`h-10 cursor-pointer rounded-lg border px-3 text-sm leading-10 ${isChecked ? 'border-[var(--primary)] text-[var(--primary)]' : 'border-[var(--border-color)]'} hover:text-[var(--primary)]`}
+                className={`h-10 cursor-pointer rounded-lg border px-3 text-sm leading-10 ${isChecked ? 'border-[var(--primary)] bg-[var(--primary)] text-white' : 'border-[var(--primary-sub02)] bg-[var(--primary-sub02)]'} hover:border-[var(--primary)] hover:bg-[var(--primary-sub02)] hover:text-[var(--primary)]`}
               >
                 <input
                   id={item.value}
-                  type="checkbox"
+                  type={type}
                   hidden
                   value={item.value}
                   checked={isChecked}
                   onChange={(e) => {
                     const checked = e.target.checked;
-                    const newValue = checked
-                      ? [...field.value, item.value]
-                      : field.value.filter((v: string) => v !== item.value);
-                    field.onChange(newValue);
+
+                    if (type === 'radio') {
+                      field.onChange(item.value);
+                    } else {
+                      const newValue = checked
+                        ? [...(field.value ?? []), item.value]
+                        : field.value.filter((v: string) => v !== item.value);
+                      field.onChange(newValue);
+                    }
                   }}
                 />
                 {item.label}

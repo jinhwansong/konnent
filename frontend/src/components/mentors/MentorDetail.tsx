@@ -11,17 +11,17 @@ import { formatPrice } from '@/utils/formatPrice';
 import { formatDuration } from '@/utils/formatDuration';
 import { CAREER_OPTIONS, POSITION_OPTIONS } from '@/contact/apply';
 import { careerIconMap, positionIconMap } from '@/contact/mentoring';
-import { useAuthStore } from '@/stores/useAuthStore';
+import { useSession } from 'next-auth/react';
 
-export default function MentorDetail({ articleId }: { articleId: string }) {
-  const { data: session, isLoading } = useGetSessionDetail(articleId);
+export default function MentorDetail({ sessionId }: { sessionId: string }) {
+  const { data: session, isLoading } = useGetSessionDetail(sessionId);
   const router = useRouter();
-  const { accessToken } = useAuthStore();
+  const { data: sessions } = useSession();
   const onRouter = () => {
-    if (!accessToken) {
+    if (!sessions?.user) {
       return router.push('/login');
     }
-    router.push(`/mentors/${articleId}/reserve`);
+    router.push(`/mentors/${sessionId}/reserve`);
   };
   if (isLoading) return null;
   return (

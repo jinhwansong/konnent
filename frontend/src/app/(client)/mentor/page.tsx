@@ -4,17 +4,18 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { FAQ_OPTIONS, REASON_OPTIONS } from '@/contact/mentor';
 import { BiCaretDown } from 'react-icons/bi';
-import { useAuthStore } from '@/stores/useAuthStore';
+import { useSession } from 'next-auth/react';
 
 export default function MentorPage() {
-  const { accessToken } = useAuthStore();
   const router = useRouter();
+  const { data: sessions } = useSession();
+
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const onToggle = (id: number) => {
     setOpenIndex((prev) => (prev === id ? null : id));
   };
   const onRouter = () => {
-    if (!accessToken) {
+    if (!sessions) {
       return router.push('/login');
     }
     router.push('/mentor/apply');

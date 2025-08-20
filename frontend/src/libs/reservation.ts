@@ -2,19 +2,20 @@ import {
   PaymentRequest,
   PaymentResponse,
   ReservationDaysResponse,
+  ReservationDone,
   ReservationRequests,
   ReservationResponse,
   ReservationTimeResponse,
 } from '@/types/reservation';
 import { fetcher } from '@/utils/fetcher';
 
-export const getReservationDays = async (id: string) => {
+export const getReservationDays = (id: string) => {
   return fetcher<ReservationDaysResponse>(`reservation/available-days/${id}`, {
     method: 'GET',
   });
 };
 
-export const getReservationTime = async (id: string, date: string) => {
+export const getReservationTime = (id: string, date: string) => {
   return fetcher<ReservationTimeResponse>(
     `reservation/available-times/${id}?date=${date}`,
     {
@@ -36,5 +37,13 @@ export const postPayment = (data: PaymentRequest): Promise<PaymentResponse> => {
   return fetcher<PaymentResponse>('payment/confirm', {
     method: 'POST',
     body: JSON.stringify(data),
+  });
+};
+
+export const getReservationDone = async (
+  orderId: string,
+): Promise<ReservationDone> => {
+  return fetcher<ReservationDone>(`reservation/done/${orderId}`, {
+    method: 'GET',
   });
 };

@@ -38,3 +38,12 @@ export interface PaymentResponse {
   message: string;
   receiptUrl: string;
 }
+
+export interface ReservationDone {
+  reservationId: string;
+  mentorName: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  meetingUrl: string;
+}

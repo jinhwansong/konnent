@@ -8,7 +8,7 @@ import ArticleDetail from '@/components/article/ArticleDetail';
 import { getArticleDetail } from '@/libs/article';
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const { id } = params;
+  const { id } = await params;
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({

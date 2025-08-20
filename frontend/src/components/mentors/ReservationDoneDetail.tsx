@@ -1,0 +1,77 @@
+'use client';
+import React from 'react';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { FiCheck } from 'react-icons/fi';
+import { useGetReservationDone } from '@/hooks/query/useReservation';
+
+export default function ReservationDoneDetail({
+  orderId,
+}: {
+  orderId: string;
+}) {
+  const { data, isLoading } = useGetReservationDone(orderId);
+  if (isLoading) return null;
+  return (
+    <div className="mx-auto max-w-md bg-[var(--background)] px-6 py-16">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35 }}
+        className="flex flex-col items-center text-center"
+      >
+        <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--primary-sub01)] text-white">
+          <FiCheck className="h-8 w-8" />
+        </div>
+        <h1 className="text-2xl font-semibold text-[var(--text-bold)]">
+          결제가 완료되었어요
+        </h1>
+        <p className="mt-2 text-sm">
+          예약 번호{' '}
+          <span className="font-medium text-[var(--text-bold)]">
+            {data?.reservationId}
+          </span>
+        </p>
+      </motion.div>
+      <div className="mt-10 space-y-6">
+        <div>
+          <p className="text-sm">멘토</p>
+          <p className="mt-1 font-medium">{data?.mentorName}</p>
+        </div>
+        <div>
+          <p className="text-sm">일정</p>
+          <p className="mt-1 font-medium">
+            {data?.date} ({data?.startTime} ~ {data?.endTime})
+          </p>
+        </div>
+        <div>
+          <p className="text-sm">미팅 링크</p>
+          <Link
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-1 block font-medium text-[var(--primary)]"
+          >
+            접속하기
+          </Link>
+        </div>
+      </div>
+
+      {/* CTA 버튼 */}
+      <div className="mt-14 flex flex-col gap-3">
+        <Link
+          href="/mypage/reservations"
+          className="w-full rounded-xl border border-[var(--border-color)] bg-transparent px-4 py-3 text-center text-sm font-medium transition-colors hover:bg-[var(--primary-sub01)] hover:text-white"
+        >
+          내 예약 확인
+        </Link>
+        <Link
+          href="/"
+          className="w-full rounded-xl bg-[var(--primary-sub01)] px-4 py-3 text-center text-sm font-medium text-white transition-colors hover:bg-[var(--primary)]"
+        >
+          홈으로
+        </Link>
+      </div>
+    </div>
+  );
+}

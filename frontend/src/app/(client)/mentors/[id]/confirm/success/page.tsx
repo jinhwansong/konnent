@@ -28,7 +28,7 @@ export default function SuccessPage({ sessionId }: { sessionId: string }) {
       postPayment(data);
       showToast('결제가 완료되었어요. 예약이 확정되었습니다.', 'success');
       resetReservation();
-      router.replace(`/mentors/done`);
+      router.replace(`/mentors/done/${orderId}`);
     } catch {
       showToast('예약 확정에 실패했습니다.', 'error');
       router.replace(`/mentors/${sessionId}/confirm`);

@@ -7,26 +7,7 @@ import { useSession } from 'next-auth/react';
 
 export default function MyPageSidebar() {
   const { data: session } = useSession();
-  const mentorItem = [
-    {
-      title: '내 정보',
-      items: [
-        { name: '프로필 설정', href: '/my/profile' },
-        { name: '커리어 설정', href: '/my/career' },
-      ],
-    },
-    {
-      title: '멘토링 관리',
-      items: [
-        { name: '세션 관리', href: '/my/sessions' },
-        { name: '스케줄 관리', href: '/my/schedule' },
-        { name: '후기 관리', href: '/my/reviews' },
-        { name: '수입 내역', href: '/my/earnings' },
-      ],
-    },
-  ];
-
-  const menteeItem = [
+  const commonItem = [
     {
       title: '내 정보',
       items: [{ name: '프로필 설정', href: '/my/profile' }],
@@ -34,13 +15,26 @@ export default function MyPageSidebar() {
     {
       title: '이용 내역',
       items: [
-        { name: '멘토링 일정', href: '/my/schedule' },
+        { name: '멘토링 일정', href: '/my/reservations' },
         { name: '내가 쓴 후기', href: '/my/reviews' },
         { name: '결제 내역', href: '/my/payments' },
-        { name: '환불 내역', href: '/my/refunds' },
       ],
     },
   ];
+
+  const mentorExtra = [
+    {
+      title: '멘토링 관리',
+      items: [
+        { name: '세션 만들기', href: '/my/sessions' },
+        { name: '예약 확인', href: '/my/schedule' },
+        { name: '후기 모아보기', href: '/my/reviews/manage' },
+        { name: '내 수익', href: '/my/earnings' },
+      ],
+    },
+  ];
+  const menteeItem = [...commonItem];
+  const mentorItem = [...commonItem, ...mentorExtra];
   const pathname = usePathname();
   const tabs = session?.user?.role === 'mentor' ? mentorItem : menteeItem;
   return (

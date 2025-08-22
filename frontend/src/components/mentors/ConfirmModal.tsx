@@ -15,7 +15,7 @@ export default function ConfirmModal({ sessionId }: { sessionId: string }) {
   const router = useRouter();
   const { showToast } = useToastStore();
   const { data: session } = useSession();
-  const { reservation } = useReservation();
+  const { reservation, resetReservation } = useReservation();
   const info = [
     { name: '멘토 이름', value: reservation.mentorName },
     { name: '멘토링 제목', value: reservation.sessionTitle },
@@ -58,11 +58,12 @@ export default function ConfirmModal({ sessionId }: { sessionId: string }) {
         failUrl: `${window.location.origin}/mentors/${sessionId}/confirm/fail`,
       });
     } catch {
+      resetReservation();
       showToast('결제 준비 중 오류가 발생했습니다.', 'error');
     }
   };
   return (
-    <Modal link={`/mentors/${sessionId}`}>
+    <Modal onClose={() => router.back()}>
       <h4 className="mb-5 text-xl leading-[1.4] font-semibold tracking-[-0.3px] text-[var(--text-bold)]">
         예약 확인
       </h4>

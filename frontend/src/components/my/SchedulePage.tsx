@@ -23,15 +23,9 @@ export default function SchedulePage() {
         <div className="flex items-center gap-2.5">
           <Link
             href="/my/schedule/regular"
-            className="block rounded-md border border-[var(--border-color)] bg-transparent px-4 py-3 text-center text-sm font-medium transition-colors duration-200 hover:bg-[var(--primary-sub01)] hover:text-white"
-          >
-            정기스케줄 확인
-          </Link>
-          <Link
-            href="/my/schedule/create"
             className="block rounded-md bg-[var(--primary-sub01)] px-4 py-3 text-center text-sm font-medium text-white transition-colors duration-200 hover:bg-[var(--primary)]"
           >
-            + 정기스케줄
+            정기스케줄 추가/확인
           </Link>
         </div>
       </div>

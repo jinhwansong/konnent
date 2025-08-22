@@ -4,6 +4,7 @@ import {
   getScheduleReservations,
   getScheduleReservationsDetail,
   patchSchedule,
+  patchScheduleStatus,
   postSchedule,
 } from '@/libs/schedule';
 import {
@@ -34,6 +35,20 @@ export const useGetScheduleReservationsDetail = (id: string) => {
     retry: false,
     staleTime: 1000 * 60 * 5,
     enabled: !!session?.user,
+  });
+};
+
+export const useScheduleStatus = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, rejectReason }: { id: string; rejectReason: string }) =>
+      patchScheduleStatus({ id, rejectReason }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['schedule-reservations-detail'],
+      });
+      queryClient.invalidateQueries({ queryKey: ['schedule-reservations'] });
+    },
   });
 };
 

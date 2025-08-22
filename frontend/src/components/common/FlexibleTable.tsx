@@ -1,5 +1,6 @@
 // components/common/FlexibleTable.tsx
 'use client';
+import clsx from 'clsx';
 import React from 'react';
 
 type Column<T> = {
@@ -45,7 +46,10 @@ export default function FlexibleTable<T>({
             data?.map((row, i) => (
               <tr
                 key={i}
-                className="cursor-pointer border-t border-[var(--border-color)] transition-colors duration-150 hover:bg-[var(--primary-sub02)]"
+                className={clsx(
+                  'border-t border-[var(--border-color)] transition-colors duration-150 hover:bg-[var(--primary-sub02)]',
+                  onRowClick ? 'cursor-pointer' : '',
+                )}
                 onClick={() => onRowClick?.(row)}
               >
                 {columns?.map((col, j) => {

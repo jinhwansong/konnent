@@ -24,16 +24,16 @@ export default function Header() {
   ];
 
   const menteeItem = [
-    { name: '멘토링 일정', href: '/schedule' },
-    { name: '후기 관리', href: '/reviews' },
-    { name: '결제/환불', href: '/payments' },
+    { name: '멘토링 일정', href: '/my/reservations' },
+    { name: '내가 쓴 후기', href: '/my/reviews' },
+    { name: '결제 내역', href: '/my/payments' },
   ];
 
   const mentorItem = [
-    { name: '스케줄 관리', href: '/my/schedule' },
-    { name: '세션 관리', href: '/my/sessions' },
-    { name: '후기 관리', href: '/my/reviews' },
-    { name: '수입 내역', href: '/my/earnings' },
+    { name: '세션 만들기', href: '/my/sessions' },
+    { name: '예약 확인', href: '/my/schedule' },
+    { name: '후기 모아보기', href: '/my/reviews/manage' },
+    { name: '내 수익', href: '/my/earnings' },
   ];
   // 로그아웃
   const handleLogout = async () => {
@@ -145,7 +145,7 @@ export default function Header() {
                           router.push('/mypage');
                         }}
                       >
-                        프로필수정
+                        프로필 설정
                       </Button>
                     </div>
                     <ul className="flex flex-col text-sm">

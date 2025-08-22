@@ -35,7 +35,7 @@ export default function ScheduleRegular() {
           className="ml-4 text-sm font-light text-[var(--primary)]"
           href="/my/schedule/edit"
         >
-          스케줄 수정
+          스케줄 추가
         </Link>
       </h4>
       <div>

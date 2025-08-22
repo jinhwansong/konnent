@@ -107,7 +107,7 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
   };
   if (sessionLoading) return null;
   return (
-    <Modal link={`/mentors/${sessionId}`}>
+    <Modal onClose={() => router.back()}>
       <h4 className="mb-5 text-xl leading-[1.4] font-semibold tracking-[-0.3px] text-[var(--text-bold)]">
         멘토링 예약
       </h4>

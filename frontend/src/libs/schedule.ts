@@ -3,7 +3,9 @@ import {
   ScheduleReservationsDetailResponse,
   ScheduleReservationsResponse,
   ScheduleResponse,
+  ScheduleStatusRequest,
 } from '@/types/schedule';
+import { MessageResponse } from '@/types/user';
 import { fetcher } from '@/utils/fetcher';
 
 export const getScheduleReservations = async (
@@ -27,21 +29,34 @@ export const getScheduleReservationsDetail = async (
   );
 };
 
-export const deleteSchedule = async (id: string) => {
-  return fetcher(`schedule/${id}`, {
+export const patchScheduleStatus = async (
+  data: ScheduleStatusRequest,
+): Promise<MessageResponse> => {
+  return fetcher<MessageResponse>(`schedule/reservations/${data.id}/status`, {
+    method: 'PATCH',
+    body: JSON.stringify({ rejectReason: data.rejectReason }),
+  });
+};
+
+export const deleteSchedule = async (id: string): Promise<MessageResponse> => {
+  return fetcher<MessageResponse>(`schedule/${id}`, {
     method: 'DELETE',
   });
 };
 
-export const patchSchedule = async (data: ScheduleRequest) => {
-  return fetcher<ScheduleRequest>(`schedule`, {
+export const patchSchedule = async (
+  data: ScheduleRequest,
+): Promise<MessageResponse> => {
+  return fetcher<MessageResponse>(`schedule`, {
     method: 'PATCH',
     body: JSON.stringify(data),
   });
 };
 
-export const postSchedule = async (data: ScheduleRequest) => {
-  return fetcher<ScheduleRequest>(`schedule`, {
+export const postSchedule = async (
+  data: ScheduleRequest,
+): Promise<MessageResponse> => {
+  return fetcher<MessageResponse>(`schedule`, {
     method: 'POST',
     body: JSON.stringify(data),
   });

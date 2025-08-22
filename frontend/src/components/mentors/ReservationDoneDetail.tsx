@@ -13,7 +13,7 @@ export default function ReservationDoneDetail({
   const { data, isLoading } = useGetReservationDone(orderId);
   if (isLoading) return null;
   return (
-    <div className="mx-auto max-w-md bg-[var(--background)] px-6 py-16">
+    <div className="mx-auto max-w-lg bg-[var(--background)] px-6 py-16">
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -26,14 +26,21 @@ export default function ReservationDoneDetail({
         <h1 className="text-2xl font-semibold text-[var(--text-bold)]">
           결제가 완료되었어요
         </h1>
-        <p className="mt-2 text-sm">
-          예약 번호{' '}
+
+        <p className="mt-2 text-sm text-[var(--text-sub)]">
+          화상 멘토링 링크는{' '}
+          <span className="font-medium">세션 시작 10분 전</span>에<br />
           <span className="font-medium text-[var(--text-bold)]">
-            {data?.reservationId}
+            마이페이지 &gt; 예약 내역
           </span>
+          에서 확인하실 수 있어요.
         </p>
       </motion.div>
       <div className="mt-10 space-y-6">
+        <div>
+          <p className="text-sm">예약번호</p>
+          <p className="mt-1 font-medium">{data?.reservationId}</p>
+        </div>
         <div>
           <p className="text-sm">멘토</p>
           <p className="mt-1 font-medium">{data?.mentorName}</p>
@@ -44,20 +51,8 @@ export default function ReservationDoneDetail({
             {data?.date} ({data?.startTime} ~ {data?.endTime})
           </p>
         </div>
-        <div>
-          <p className="text-sm">미팅 링크</p>
-          <Link
-            href="/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-1 block font-medium text-[var(--primary)]"
-          >
-            접속하기
-          </Link>
-        </div>
       </div>
 
-      {/* CTA 버튼 */}
       <div className="mt-14 flex flex-col gap-3">
         <Link
           href="/mypage/reservations"

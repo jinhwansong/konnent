@@ -37,3 +37,11 @@ export interface ScheduleResponse {
   data: ScheduleItem[];
   message: string;
 }
+
+export interface Reason {
+  rejectReason: string;
+}
+
+export interface ScheduleStatusRequest extends Reason {
+  id: string;
+}

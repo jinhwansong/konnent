@@ -1,7 +1,7 @@
 import { ScheduleReservationsItem } from '@/types/schedule';
 import { format } from 'date-fns';
 
-enum MentoringStatus {
+export enum MentoringStatus {
   PENDING = 'pending',
   CONFIRMED = 'confirmed',
   CANCELLED = 'cancelled',
@@ -9,15 +9,15 @@ enum MentoringStatus {
   PROGRESS = 'progress',
 }
 
-const statusMap: Record<MentoringStatus, string> = {
+export const statusMap: Record<MentoringStatus, string> = {
   [MentoringStatus.PENDING]: '대기 중',
-  [MentoringStatus.CONFIRMED]: '수락됨',
-  [MentoringStatus.CANCELLED]: '취소됨',
-  [MentoringStatus.COMPLETED]: '완료됨',
+  [MentoringStatus.CONFIRMED]: '수락',
+  [MentoringStatus.CANCELLED]: '취소',
+  [MentoringStatus.COMPLETED]: '완료',
   [MentoringStatus.PROGRESS]: '진행 중',
 };
 
-const colorMap: Record<MentoringStatus, string> = {
+export const colorMap: Record<MentoringStatus, string> = {
   [MentoringStatus.PENDING]: 'bg-yellow-100 text-yellow-700',
   [MentoringStatus.CONFIRMED]: 'bg-green-100 text-green-700',
   [MentoringStatus.CANCELLED]: 'bg-gray-200 text-gray-500',
@@ -41,7 +41,7 @@ export const scheduleColumns = [
     accessor: (row: ScheduleReservationsItem) => (
       <span className="line-clamp-1 text-[var(--text-bold)]">{row.title}</span>
     ),
-    className: 'w-[470px]',
+    className: 'w-[250px]',
   },
   {
     header: '멘토링 날짜',
@@ -70,24 +70,23 @@ export const scheduleColumns = [
   },
   {
     header: '멘티 이름',
-    accessor: (row: ScheduleReservationsItem) => row.menteeName,
+    accessor: (row: ScheduleReservationsItem) => (
+      <span className="line-clamp-1">{row.menteeName}</span>
+    ),
     className: 'w-[120px]',
   },
   {
-    header: '이메일',
-    accessor: (row: ScheduleReservationsItem) => row.menteeEmail,
-    className: 'w-[200px]',
-  },
-  {
     header: '연락처',
-    accessor: (row: ScheduleReservationsItem) => row.menteePhone,
-    className: 'w-[140px]',
+    accessor: (row: ScheduleReservationsItem) => (
+      <span className="line-clamp-1">{row.menteePhone}</span>
+    ),
+    className: 'w-[130px]',
   },
   {
     header: '신청일',
     accessor: (row: ScheduleReservationsItem) =>
       format(new Date(row.createdAt), 'yy.MM.dd'),
-    className: 'w-[100px]',
+    className: 'w-[90px]',
   },
 ];
 

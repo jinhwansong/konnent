@@ -55,7 +55,7 @@ export default function ReservationDoneDetail({
 
       <div className="mt-14 flex flex-col gap-3">
         <Link
-          href="/mypage/reservations"
+          href="/my/reservations"
           className="w-full rounded-xl border border-[var(--border-color)] bg-transparent px-4 py-3 text-center text-sm font-medium transition-colors hover:bg-[var(--primary-sub01)] hover:text-white"
         >
           내 예약 확인

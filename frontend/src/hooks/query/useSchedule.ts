@@ -48,6 +48,12 @@ export const useScheduleStatus = () => {
         queryKey: ['schedule-reservations-detail'],
       });
       queryClient.invalidateQueries({ queryKey: ['schedule-reservations'] });
+      queryClient.invalidateQueries({ queryKey: ['reservation-my'] });
+      queryClient.invalidateQueries({ queryKey: ['reservation-done'] });
+      queryClient.invalidateQueries({
+        queryKey: ['payment-mentee'],
+      });
+      queryClient.invalidateQueries({ queryKey: ['payment-mentor'] });
     },
   });
 };

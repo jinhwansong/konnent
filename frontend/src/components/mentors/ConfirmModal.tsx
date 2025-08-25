@@ -6,10 +6,10 @@ import Button from '../common/Button';
 import Modal from '../common/Modal';
 import { useReservation } from '@/stores/useReservation';
 import { formatDuration } from '@/utils/formatDuration';
-import { postReservation } from '@/libs/reservation';
 import { loadTossPayments } from '@tosspayments/tosspayments-sdk';
 import { formatPrice } from '@/utils/formatPrice';
 import { useToastStore } from '@/stores/useToast';
+import { usePostReservation } from '@/hooks/query/useReservation';
 
 export default function ConfirmModal({ sessionId }: { sessionId: string }) {
   const router = useRouter();
@@ -28,6 +28,8 @@ export default function ConfirmModal({ sessionId }: { sessionId: string }) {
     { name: '멘토링 소요', value: formatDuration(reservation.duration) },
     { name: '멘토에게 전달할 말', value: reservation.question },
   ];
+  const { mutateAsync: postReservation } = usePostReservation();
+
   const handleReservation = async () => {
     try {
       const data = {

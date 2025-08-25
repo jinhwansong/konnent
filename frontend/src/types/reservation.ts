@@ -47,3 +47,19 @@ export interface ReservationDone {
   endTime: string;
   meetingUrl: string;
 }
+
+export interface ReservationMenteeItem {
+  date: string;
+  startTime: string;
+  endTime: string;
+  status: string;
+  sessionTitle: string;
+  mentorName: string;
+  roomId: string;
+  canEnter: string;
+}
+export interface ReservationMenteeResponse {
+  data: ReservationMenteeItem[];
+  totalPage: number;
+  message: string;
+}

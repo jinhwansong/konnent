@@ -53,12 +53,10 @@ export default function ArticleCard({
         </div>
       )}
 
-      {/* 콘텐츠 영역 */}
       <div className="flex w-full flex-col gap-3">
         <div className="flex flex-col-reverse gap-4 sm:flex-row sm:justify-between sm:gap-6">
-          {/* 텍스트 */}
           <div className="flex-1">
-            <h3 className="line-clamp-1 text-base font-semibold text-[var(--text-bold)] sm:text-xl">
+            <h3 className="line-clamp-1 font-semibold text-[var(--text-bold)] sm:text-xl">
               {props.title}
             </h3>
             <p className="mt-2.5 line-clamp-2 text-sm sm:text-base">
@@ -66,7 +64,6 @@ export default function ArticleCard({
             </p>
           </div>
 
-          {/* 썸네일 */}
           <div className="aspect-[16/9] w-full shrink-0 overflow-hidden rounded-lg sm:aspect-auto sm:h-[110px] sm:w-[110px]">
             <Image
               src={props.thumbnail}
@@ -78,9 +75,7 @@ export default function ArticleCard({
           </div>
         </div>
 
-        {/* 프로필 + 메타 정보 */}
         <div className="mt-3 flex flex-col gap-2 text-sm sm:mt-5 sm:flex-row sm:items-center sm:justify-between">
-          {/* 작성자 정보 */}
           <div className="flex items-center gap-3">
             <Image
               src={props.author.image ?? '/icon/IcPeople.avif'}

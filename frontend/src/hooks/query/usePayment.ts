@@ -38,6 +38,12 @@ export const usePaymentRefund = () => {
         queryKey: ['payment-mentee'],
       });
       queryClient.invalidateQueries({ queryKey: ['payment-mentor'] });
+      queryClient.invalidateQueries({
+        queryKey: ['schedule-reservations-detail'],
+      });
+      queryClient.invalidateQueries({ queryKey: ['schedule-reservations'] });
+      queryClient.invalidateQueries({ queryKey: ['reservation-my'] });
+      queryClient.invalidateQueries({ queryKey: ['reservation-done'] });
     },
   });
 };

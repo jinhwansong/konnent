@@ -40,7 +40,7 @@ export default function PaymentPage() {
         <>
           <ul>
             {payment?.items?.map((item: PaymentMenteeItem) => (
-              <li key={item.id} className="">
+              <li key={item.id} className="mt-8">
                 <em className="mb-2.5 block text-sm font-bold">
                   <span className="font-medium">주문날짜</span>{' '}
                   {format(new Date(item.createdAt), 'yyyy.MM.dd HH:mm')}

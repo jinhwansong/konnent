@@ -3,6 +3,7 @@ import {
   PaymentResponse,
   ReservationDaysResponse,
   ReservationDone,
+  ReservationMenteeResponse,
   ReservationRequests,
   ReservationResponse,
   ReservationTimeResponse,
@@ -46,4 +47,15 @@ export const getReservationDone = async (
   return fetcher<ReservationDone>(`reservation/done/${orderId}`, {
     method: 'GET',
   });
+};
+
+export const getMyReservations = async (
+  page: number,
+): Promise<ReservationMenteeResponse> => {
+  return fetcher<ReservationMenteeResponse>(
+    `reservation/my?page=${page}&limit=10`,
+    {
+      method: 'GET',
+    },
+  );
 };

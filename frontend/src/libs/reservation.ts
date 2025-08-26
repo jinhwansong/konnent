@@ -59,3 +59,14 @@ export const getMyReservations = async (
     },
   );
 };
+
+export const getPastReservations = async (
+  page: number,
+): Promise<ReservationMenteeResponse> => {
+  return fetcher<ReservationMenteeResponse>(
+    `reservation/past?page=${page}&limit=10`,
+    {
+      method: 'GET',
+    },
+  );
+};

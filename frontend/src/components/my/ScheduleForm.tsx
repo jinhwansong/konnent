@@ -6,6 +6,7 @@ import { DayOfWeek, TIME_OPTIONS, WEEK_OPTIONS } from '@/contact/schedule';
 import Button from '../common/Button';
 import Modal from '../common/Modal';
 import Select from '../common/Select';
+import { useRouter } from 'next/navigation';
 
 interface ScheduleFormProps {
   onSubmit: (data: ScheduleRequest) => void;
@@ -18,6 +19,7 @@ export default function ScheduleForm({
   title,
   defaultValues,
 }: ScheduleFormProps) {
+  const router = useRouter();
   const methods = useForm<ScheduleRequest>({
     mode: 'all',
     defaultValues: defaultValues ?? {
@@ -48,7 +50,7 @@ export default function ScheduleForm({
   }, [defaultValues, reset]);
 
   return (
-    <Modal link="/my/schedule/regular">
+    <Modal onClose={() => router.back()}>
       <h4 className="mb-5 text-xl leading-[1.4] font-semibold tracking-[-0.3px] text-[var(--text-bold)]">
         {title}
         <button
@@ -111,7 +113,7 @@ export default function ScheduleForm({
                   type="button"
                   onClick={() => remove(index)}
                   variant="danger"
-                  size="small"
+                  size="sm"
                   className="h-[45px]"
                 >
                   삭제

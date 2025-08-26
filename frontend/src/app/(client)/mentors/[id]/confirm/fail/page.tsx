@@ -1,15 +1,13 @@
 'use client';
 import { useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useToastStore } from '@/stores/useToast';
 import { useReservation } from '@/stores/useReservation';
 
-export default function FailPage({
-  params,
-}: {
-  params: { sessionId: string };
-}) {
+export default function FailPage() {
   const searchParams = useSearchParams();
+  const { sessionId } = useParams<{ sessionId: string }>();
+
   const router = useRouter();
   const { showToast } = useToastStore();
   const { reservation } = useReservation();
@@ -25,11 +23,11 @@ export default function FailPage({
     }
 
     const next = hasDraft
-      ? `/mentors/${params.sessionId}/confirm`
-      : `/mentors/${params.sessionId}/reserve`;
+      ? `/mentors/${sessionId}/confirm`
+      : `/mentors/${sessionId}/reserve`;
 
     router.replace(next);
-  }, [searchParams, router, params.sessionId, showToast, hasDraft]);
+  }, [searchParams, router, sessionId, showToast, hasDraft]);
 
   return null;
 }

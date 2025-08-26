@@ -12,6 +12,7 @@ import {
 import { useGetArticle, useLikedArticles } from '@/hooks/query/useArticle';
 import { useSession } from 'next-auth/react';
 import Select from '../common/Select';
+import Button from '../common/Button';
 
 export default function ArticleContent({
   initialCategory,
@@ -39,7 +40,7 @@ export default function ArticleContent({
   return (
     <section className="mx-auto mt-10 mb-16 w-[768px]">
       <div className="mb-10 flex w-full items-center justify-between">
-        <div className="mb-7 flex items-center gap-5">
+        <div className="flex items-center gap-5">
           <Select
             value={selected}
             onChange={setSelected}
@@ -55,12 +56,9 @@ export default function ArticleContent({
             className="w-[120px]"
           />
         </div>
-        <button
-          onClick={onRouter}
-          className="rounded-lg bg-[var(--primary-sub01)] px-4 py-3 text-sm font-medium text-white hover:bg-[var(--primary)]"
-        >
+        <Button onClick={onRouter} size="lg">
           ✏️ 아티클 작성
-        </button>
+        </Button>
       </div>
 
       {data?.data && data.data.length > 0 ? (

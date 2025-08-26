@@ -99,7 +99,7 @@ export default function ApplyModal() {
     },
   ];
   return (
-    <Modal link="/mentor">
+    <Modal onClose={() => router.back()}>
       <h4 className="mb-5 text-xl leading-[1.4] font-semibold tracking-[-0.3px] text-[var(--text-bold)]">
         감사합니다,
         <span className="text-[var(--primary-sub01)]">

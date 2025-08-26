@@ -15,7 +15,7 @@ export default function MyPageSidebar() {
     {
       title: '이용 내역',
       items: [
-        { name: '멘토링 일정', href: '/my/reservations' },
+        { name: '멘토링 일정', href: '/my/reservations/upcoming' },
         { name: '내가 쓴 후기', href: '/my/reviews' },
         { name: '결제 내역', href: '/my/payments' },
       ],

@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useDeleteSchedule, useGetSchedule } from '@/hooks/query/useSchedule';
 import { DayOfWeek, WEEK_OPTIONS } from '@/contact/schedule';
 import Modal from '../common/Modal';
@@ -8,7 +9,7 @@ import Modal from '../common/Modal';
 export default function ScheduleRegular() {
   const { data, isLoading } = useGetSchedule();
   const { mutate: deleteSchedule } = useDeleteSchedule();
-
+  const router = useRouter();
   if (isLoading) return null;
   const grouped = WEEK_OPTIONS.reduce(
     (acc, { value }) => {
@@ -28,7 +29,7 @@ export default function ScheduleRegular() {
     deleteSchedule(id);
   };
   return (
-    <Modal link="/my/schedule">
+    <Modal onClose={() => router.back()}>
       <h4 className="mb-5 text-xl leading-[1.4] font-semibold tracking-[-0.3px] text-[var(--text-bold)]">
         정기스케줄
         <Link

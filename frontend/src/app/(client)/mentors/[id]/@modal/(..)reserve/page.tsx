@@ -1,6 +1,11 @@
 import ReserveModal from '@/components/mentors/ReserveModal';
+export const dynamic = 'force-dynamic';
 
-export default function page({ params }: { params: { id: string } }) {
-  const { id } = params;
-  return <ReserveModal articleId={id} />;
+interface ReservePageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function ReservePage({ params }: ReservePageProps) {
+  const { id } = await params;
+  return <ReserveModal sessionId={id} />;
 }

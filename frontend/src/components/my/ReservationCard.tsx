@@ -1,0 +1,58 @@
+import { colorMap, MentoringStatus, statusMap } from '@/contact/schedule';
+import React from 'react';
+import Button from '../common/Button';
+import {
+  PastReservationItem,
+  ReservationMenteeItem,
+} from '@/types/reservation';
+import { formatDuration } from '@/utils/formatDuration';
+
+interface ReservationCardProp {
+  item: ReservationMenteeItem | PastReservationItem;
+  type: 'upcoming' | 'past';
+}
+
+export default function ReservationCard({ item, type }: ReservationCardProp) {
+  return (
+    <li className="mt-8 flex items-center gap-8 rounded border border-[var(--border-color)] p-5">
+      <div className="flex-1">
+        <div className="mb-2 flex items-center gap-2 text-sm">
+          <em
+            className={`rounded px-2 py-1 text-xs font-medium ${colorMap[item?.status as MentoringStatus]}`}
+          >
+            {statusMap[item?.status as MentoringStatus]}
+          </em>
+          <p className="font-medium">예정일시</p>
+          <span className="font-bold">
+            {item.date} {item.startTime} ~ {item.endTime}
+          </span>
+        </div>
+        <p className="line-clamp-2 text-sm font-medium text-[var(--text-subtle)]">
+          {item.sessionTitle}
+        </p>
+      </div>
+
+      <div className="flex w-28 flex-col justify-center text-xs font-medium">
+        <p className="mb-2 flex justify-between">
+          <span>멘토명</span> {item.mentorName}
+        </p>
+        <p className="flex justify-between">
+          <span>1회 멘토링</span> {formatDuration(item.duration)}
+        </p>
+      </div>
+
+      <div className="flex flex-shrink-0 flex-col gap-1">
+        {type === 'upcoming' && (
+          <Button type="button" size="smWide">
+            미팅참여
+          </Button>
+        )}
+        {type === 'past' && (
+          <Button type="button" size="smWide" variant="outline">
+            후기작성
+          </Button>
+        )}
+      </div>
+    </li>
+  );
+}

@@ -1,3 +1,5 @@
+import { MentoringStatus } from '@/contact/schedule';
+
 export type Slot = { startTime: string; endTime: string };
 
 export interface ReservationTimeItem {
@@ -49,17 +51,30 @@ export interface ReservationDone {
 }
 
 export interface ReservationMenteeItem {
+  id: string;
   date: string;
   startTime: string;
   endTime: string;
-  status: string;
+  status: MentoringStatus.CONFIRMED | MentoringStatus.PROGRESS;
   sessionTitle: string;
   mentorName: string;
   roomId: string;
-  canEnter: string;
+  duration: number;
+  canEnter: 'waiting' | 'progress' | 'closed';
+}
+export interface PastReservationItem {
+  id: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  status: MentoringStatus.COMPLETED;
+  sessionTitle: string;
+  mentorName: string;
+  duration: number;
+  reviewWritten: boolean;
 }
 export interface ReservationMenteeResponse {
-  data: ReservationMenteeItem[];
+  data: ReservationMenteeItem[] | PastReservationItem[];
   totalPage: number;
   message: string;
 }

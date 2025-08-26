@@ -106,12 +106,12 @@ export default function SessionDetail() {
         <div className="flex h-9 items-center gap-2 text-sm whitespace-nowrap text-[var(--text-sub)]">
           <Button
             variant="outline"
-            size="small"
+            size="sm"
             onClick={() => router.push(`/my/sessions/edit/${session?.id}`)}
           >
             수정
           </Button>
-          <Button variant="danger" size="small" onClick={handleDeleteSession}>
+          <Button variant="danger" size="sm" onClick={handleDeleteSession}>
             삭제
           </Button>
         </div>

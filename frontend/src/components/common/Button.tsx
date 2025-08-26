@@ -4,23 +4,25 @@ import React from 'react';
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   variant?: 'solid' | 'outline' | 'danger' | 'wish' | 'wish-none';
-  size?: 'large' | 'small' | 'larges';
+  size?: 'lg' | 'full-h' | 'smWide' | 'sm' | 'full';
   className?: string;
 }
 
 export default function Button({
   children,
   variant = 'solid',
-  size = 'large',
+  size = 'full',
   className,
   ...props
 }: ButtonProps) {
   const buttonClass = clsx(
     className,
     ' px-4 rounded-md text-sm font-medium transition-colors duration-200 text-center',
-    size === 'large' && 'w-full h-[50px]',
-    size === 'larges' && 'w-full',
-    size === 'small' && 'h-9 w-[80px]',
+    size === 'full' && 'w-full h-[50px]',
+    size === 'lg' && 'w-[120px] h-[50px]',
+    size === 'full-h' && 'w-full h-10',
+    size === 'sm' && 'h-9 w-[80px]',
+    size === 'smWide' && 'h-11 w-[100px]',
     variant === 'solid' && [
       'bg-[var(--primary-sub01)]  text-white',
       'hover:bg-[var(--primary)]',

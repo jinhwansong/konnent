@@ -93,10 +93,10 @@ export default function MentorDetail({ sessionId }: { sessionId: string }) {
           </ul>
 
           <div className="mt-6 flex flex-col gap-2">
-            <Button size="large" variant="solid" onClick={onRouter}>
+            <Button size="full" variant="solid" onClick={onRouter}>
               멘토링 신청하기
             </Button>
-            <Button size="large" variant="wish-none">
+            <Button size="full" variant="wish-none">
               <span className="flex items-center justify-center gap-2.5">
                 <FaHeart /> 찜하기
               </span>

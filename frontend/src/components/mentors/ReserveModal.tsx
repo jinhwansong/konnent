@@ -62,7 +62,7 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
     useGetSessionDetail(sessionId);
   // 멘토가 설정한 요일
   const { data: reservationsDays } = useGetReservationsDays(
-    session?.userId as string,
+    session?.userId ?? '',
   );
   // 예약 가능한 시간
   const { data: reservationsTime, isLoading: timeLoading } =
@@ -105,6 +105,7 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
     });
     router.push(`/mentors/${sessionId}/confirm`);
   };
+
   if (sessionLoading) return null;
   return (
     <Modal onClose={() => router.back()}>

@@ -1,12 +1,13 @@
 'use client';
 import { useEffect } from 'react';
 import { useToastStore } from '@/stores/useToast';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { postPayment } from '@/libs/reservation';
 import { useReservation } from '@/stores/useReservation';
 
-export default function SuccessPage({ sessionId }: { sessionId: string }) {
+export default function SuccessPage() {
   const { showToast } = useToastStore();
+  const { sessionId } = useParams<{ sessionId: string }>();
   const searchParams = useSearchParams();
   const router = useRouter();
   const { resetReservation } = useReservation();

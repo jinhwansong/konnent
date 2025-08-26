@@ -119,7 +119,7 @@ export default function Header() {
                 {open && (
                   <div className="absolute top-[44px] right-0 z-200 box-border flex w-[280px] flex-col overflow-hidden rounded-xl bg-[var(--background)] shadow-2xl transition-transform">
                     <div className="border-b border-[var(--border-color)] px-6 py-4">
-                      <div className="flex items-center gap-3.5">
+                      <div className="mb-3 flex items-center gap-3.5">
                         <Image
                           src={session.user.image ?? '/icon/IcPeople.avif'}
                           alt={session.user.name}
@@ -138,8 +138,8 @@ export default function Header() {
                       </div>
                       <Button
                         variant="outline"
-                        size="larges"
-                        className="mt-3 h-10"
+                        size="full-h"
+                        className=" "
                         onClick={() => {
                           setOpen(false);
                           router.push('/mypage');

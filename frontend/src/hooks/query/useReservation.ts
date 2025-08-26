@@ -1,5 +1,6 @@
 import {
   getMyReservations,
+  getPastReservations,
   getReservationDays,
   getReservationDone,
   getReservationTime,
@@ -45,11 +46,15 @@ export const useGetReservationDone = (orderId: string) => {
   });
 };
 
-export const useGetMyReservations = (page: number) => {
+export const useGetMyReservations = (
+  type: 'upcoming' | 'past',
+  page: number,
+) => {
   const { data: session } = useSession();
   return useQuery<ReservationMenteeResponse>({
-    queryKey: ['reservation-my', page],
-    queryFn: () => getMyReservations(page),
+    queryKey: ['reservation-my', page, type],
+    queryFn: () =>
+      type === 'upcoming' ? getMyReservations(page) : getPastReservations(page),
     retry: false,
     staleTime: 1000 * 60 * 5,
     enabled: !!session?.user,

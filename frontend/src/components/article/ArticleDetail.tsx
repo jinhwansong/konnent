@@ -13,6 +13,8 @@ import {
 import { useToastStore } from '@/stores/useToast';
 import Button from '../common/Button';
 import { useSession } from 'next-auth/react';
+import { getLabel } from '@/utils/getLabel';
+import { ARTICLE_OPTIONS } from '@/contact/article';
 
 export default function ArticleDetail({ articleId }: { articleId: string }) {
   const { data: article, isLoading } = useGetArticleDetail(articleId);
@@ -74,7 +76,9 @@ export default function ArticleDetail({ articleId }: { articleId: string }) {
             </span>
           </div>
           <span className="rounded-full bg-[var(--primary-sub02)] px-2 py-0.5 text-[var(--primary)]">
-            {article?.category}
+            <span>
+              {getLabel(article?.category as string, ARTICLE_OPTIONS)}
+            </span>
           </span>
           <span className="text-[var(--text-sub)]">
             {article?.createdAt &&
@@ -105,16 +109,12 @@ export default function ArticleDetail({ articleId }: { articleId: string }) {
             <div className="flex h-9 items-center gap-2 text-sm whitespace-nowrap text-[var(--text-sub)]">
               <Button
                 variant="outline"
-                size="small"
+                size="sm"
                 onClick={() => router.push(`/articles/edit/${articleId}`)}
               >
                 수정
               </Button>
-              <Button
-                variant="danger"
-                size="small"
-                onClick={handleDeleteArticle}
-              >
+              <Button variant="danger" size="sm" onClick={handleDeleteArticle}>
                 삭제
               </Button>
             </div>

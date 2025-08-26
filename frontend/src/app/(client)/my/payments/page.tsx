@@ -81,7 +81,7 @@ export default function PaymentPage() {
                     <Button
                       type="button"
                       variant="danger"
-                      size="small"
+                      size="sm"
                       onClick={() => handleRefund(item.paymentKey)}
                       disabled={item.status === 'refunded'}
                     >

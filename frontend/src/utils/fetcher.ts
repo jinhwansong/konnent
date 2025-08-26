@@ -1,5 +1,8 @@
 export const fetcher = async <T>(path: string, init: RequestInit = {}) => {
-  const res = await fetch(`/api/proxy/${path}`, {
+  const isServer = typeof window === 'undefined';
+
+  const BASE_URL = isServer ? process.env.NEXT_PUBLIC_AUTH_URL : '/api/proxy';
+  const res = await fetch(`${BASE_URL}/${path}`, {
     ...init,
     headers: {
       ...(init.body instanceof FormData

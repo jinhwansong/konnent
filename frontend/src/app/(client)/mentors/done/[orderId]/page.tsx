@@ -8,11 +8,11 @@ import {
 } from '@tanstack/react-query';
 import ReservationDoneDetail from '@/components/mentors/ReservationDoneDetail';
 
-export default async function page({
-  params,
-}: {
-  params: { orderId: string };
-}) {
+interface DonePageProps {
+  params: Promise<{ orderId: string }>;
+}
+
+export default async function DonePage({ params }: DonePageProps) {
   const { orderId } = await params;
   const queryClient = new QueryClient();
 

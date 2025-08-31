@@ -10,9 +10,14 @@ import { formatDuration } from '@/utils/formatDuration';
 interface ReservationCardProp {
   item: ReservationMenteeItem | PastReservationItem;
   type: 'upcoming' | 'past';
+  onClick: (reservationId: string) => void;
 }
 
-export default function ReservationCard({ item, type }: ReservationCardProp) {
+export default function ReservationCard({
+  item,
+  type,
+  onClick,
+}: ReservationCardProp) {
   return (
     <li className="mt-8 flex items-center gap-8 rounded border border-[var(--border-color)] p-5">
       <div className="flex-1">
@@ -43,12 +48,17 @@ export default function ReservationCard({ item, type }: ReservationCardProp) {
 
       <div className="flex flex-shrink-0 flex-col gap-1">
         {type === 'upcoming' && (
-          <Button type="button" size="smWide">
+          <Button type="button" size="smWide" onClick={() => onClick(item.id)}>
             미팅참여
           </Button>
         )}
         {type === 'past' && (
-          <Button type="button" size="smWide" variant="outline">
+          <Button
+            type="button"
+            size="smWide"
+            variant="outline"
+            onClick={() => onClick(item.id)}
+          >
             후기작성
           </Button>
         )}

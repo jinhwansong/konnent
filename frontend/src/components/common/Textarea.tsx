@@ -25,7 +25,7 @@ export default function Textarea({
   });
   const errorMessage = useErrorMessage(name);
   const textareaClass = clsx(
-    'text-sm rounded-lg px-4 py-3 resize-none',
+    'text-sm rounded-lg px-4 py-3 resize-none w-full',
     'border transition-all duration-150',
     'focus:outline-none focus:border-[var(--primary)]',
     errorMessage

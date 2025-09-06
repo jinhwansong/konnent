@@ -28,7 +28,7 @@ export default function MyPageSidebar() {
       items: [
         { name: '세션 만들기', href: '/my/sessions' },
         { name: '예약 확인', href: '/my/schedule' },
-        { name: '후기 모아보기', href: '/my/reviews/manage' },
+        { name: '후기 모아보기', href: '/my/review-manage' },
         { name: '내 수익', href: '/my/earnings' },
       ],
     },

@@ -30,6 +30,7 @@ export default function Button({
     variant === 'outline' && [
       'bg-transparent border border-[var(--border-color)] ',
       'hover:bg-[var(--primary-sub01)] hover:text-white',
+      'disabled:bg-transparent disabled:text-[var(--text-sub)] disabled:border-[var(--border-color)] disabled:cursor-not-allowed',
     ],
     variant === 'danger' && [
       'bg-white border border-red-300 text-red-500',

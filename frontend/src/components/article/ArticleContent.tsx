@@ -61,27 +61,28 @@ export default function ArticleContent({
         </Button>
       </div>
 
-      {data?.data && data.data.length > 0 ? (
-        <div className="flex flex-col gap-8">
-          {data.data.map((item) => (
-            <ArticleCard
-              key={item.id}
-              {...item}
-              liked={likedIds?.includes(item.id) ?? false}
-            />
-          ))}
-        </div>
+      {data?.data.length ? (
+        <>
+          <div className="flex flex-col gap-8">
+            {data?.data.map((item) => (
+              <ArticleCard
+                key={item.id}
+                {...item}
+                liked={likedIds?.includes(item.id) ?? false}
+              />
+            ))}
+          </div>
+          <Pagination
+            page={page}
+            totalPages={data?.totalPages || 1}
+            onChange={(newPage) => setPage(newPage)}
+          />
+        </>
       ) : (
         <p className="flex h-[calc(100vh-280px)] w-full items-center justify-center">
           게시물이 없습니다.
         </p>
       )}
-
-      <Pagination
-        page={page}
-        totalPages={data?.totalPages || 1}
-        onChange={(newPage) => setPage(newPage)}
-      />
     </section>
   );
 }

@@ -73,8 +73,8 @@ export interface PastReservationItem {
   duration: number;
   reviewWritten: boolean;
 }
-export interface ReservationMenteeResponse {
-  data: ReservationMenteeItem[] | PastReservationItem[];
+export interface ReservationMenteeResponse<T> {
+  data: T[];
   totalPage: number;
   message: string;
 }

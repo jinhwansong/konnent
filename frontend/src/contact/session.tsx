@@ -1,5 +1,5 @@
 import { SessionItem } from '@/types/session';
-import { format } from 'date-fns';
+import { formatDate } from '@/utils/formatDate';
 
 export const sessionsColumns = [
   {
@@ -36,7 +36,7 @@ export const sessionsColumns = [
   },
   {
     header: '등록일',
-    accessor: (row: SessionItem) => format(new Date(row.createdAt), 'yy.MM.dd'),
+    accessor: (row: SessionItem) => formatDate(row.createdAt),
     className: 'w-[100px]',
   },
 ];

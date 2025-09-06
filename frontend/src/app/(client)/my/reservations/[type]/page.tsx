@@ -6,15 +6,25 @@ import { useGetMyReservations } from '@/hooks/query/useReservation';
 import Button from '@/components/common/Button';
 import ReservationCard from '@/components/my/ReservationCard';
 import ReviewForm from '@/components/my/ReviewForm';
+import {
+  PastReservationItem,
+  ReservationMenteeItem,
+} from '@/types/reservation';
+import { usePostReview } from '@/hooks/query/useReview';
+import { ReviewRequest } from '@/types/review';
+import { useToastStore } from '@/stores/useToast';
 
 export default function ReservationsPage() {
+  const { showToast } = useToastStore();
   const { type } = useParams<{ type: 'upcoming' | 'past' }>();
   const searchParams = useSearchParams();
   const router = useRouter();
   const page = Number(searchParams.get('page')) || 1;
 
   // api 통합
-  const { data, isLoading } = useGetMyReservations(type, page);
+  const { data, isLoading } = useGetMyReservations<
+    typeof type extends 'upcoming' ? ReservationMenteeItem : PastReservationItem
+  >(type, page);
   const handlePageChange = (newPage: number) => {
     router.push(`/my/reservations/${type}?page=${newPage}`);
   };
@@ -38,6 +48,22 @@ export default function ReservationsPage() {
   };
   const handleMentoring = (id: string) => {};
 
+  const { mutate: postReview } = usePostReview();
+  const onSubmit = (data: ReviewRequest) => {
+    const item = { ...data, reservationId: selectedReservationId as string };
+    postReview(item, {
+      onSuccess: () => {
+        showToast('리뷰 작성을 완료했습니다.', 'success');
+        setIsOpen(false);
+      },
+      onError: (error) => {
+        const errorMessage =
+          error instanceof Error ? error.message : '오류가 발생했습니다.';
+        showToast(errorMessage, 'error');
+      },
+    });
+  };
+
   if (isLoading) return null;
 
   return (
@@ -57,30 +83,38 @@ export default function ReservationsPage() {
           </Button>
         ))}
       </div>
-      <ul>
-        {data?.data.map((item) => (
-          <ReservationCard
-            key={item.id}
-            item={item}
-            type={type}
-            onClick={
-              type === 'past'
-                ? (id) => handleReview(id)
-                : (id) => handleMentoring(id)
-            }
+      {data?.data.length ? (
+        <>
+          <ul>
+            {data?.data.map((item) => (
+              <ReservationCard
+                key={item.id}
+                item={item}
+                type={type}
+                onClick={
+                  type === 'past'
+                    ? (id) => handleReview(id)
+                    : (id) => handleMentoring(id)
+                }
+              />
+            ))}
+          </ul>
+          <Pagination
+            page={page}
+            totalPages={data?.totalPage || 1}
+            onChange={handlePageChange}
           />
-        ))}
-      </ul>
-      <Pagination
-        page={page}
-        totalPages={data?.totalPage || 1}
-        onChange={handlePageChange}
-      />
+        </>
+      ) : (
+        <p className="flex h-[calc(100vh-280px)] w-full items-center justify-center text-[var(--text-sub)]">
+          {type === 'past'
+            ? '종료된 세션이 없습니다.'
+            : '예정된 세션이 없습니다.'}
+        </p>
+      )}
+
       {isOpen && selectedReservationId && (
-        <ReviewForm
-          reservationId={selectedReservationId}
-          onClose={() => setIsOpen(false)}
-        />
+        <ReviewForm onSubmit={onSubmit} onClose={() => setIsOpen(false)} />
       )}
     </section>
   );

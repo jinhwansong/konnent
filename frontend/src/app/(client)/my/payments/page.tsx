@@ -50,7 +50,7 @@ export default function PaymentPage() {
                     <em className="mb-2.5 flex items-center gap-2.5 text-sm">
                       <span
                         className={[
-                          'rounded-[6px] px-2 py-[5px] text-[12px] font-medium',
+                          'rounded-sm px-2 py-[5px] text-[12px] font-medium',
                           statusClass(item.status),
                         ].join(' ')}
                       >

@@ -1,8 +1,10 @@
 import {
+  PastReservationItem,
   PaymentRequest,
   PaymentResponse,
   ReservationDaysResponse,
   ReservationDone,
+  ReservationMenteeItem,
   ReservationMenteeResponse,
   ReservationRequests,
   ReservationResponse,
@@ -51,8 +53,8 @@ export const getReservationDone = async (
 
 export const getMyReservations = async (
   page: number,
-): Promise<ReservationMenteeResponse> => {
-  return fetcher<ReservationMenteeResponse>(
+): Promise<ReservationMenteeResponse<ReservationMenteeItem>> => {
+  return fetcher<ReservationMenteeResponse<ReservationMenteeItem>>(
     `reservation/my?page=${page}&limit=10`,
     {
       method: 'GET',
@@ -62,8 +64,8 @@ export const getMyReservations = async (
 
 export const getPastReservations = async (
   page: number,
-): Promise<ReservationMenteeResponse> => {
-  return fetcher<ReservationMenteeResponse>(
+): Promise<ReservationMenteeResponse<PastReservationItem>> => {
+  return fetcher<ReservationMenteeResponse<PastReservationItem>>(
     `reservation/past?page=${page}&limit=10`,
     {
       method: 'GET',

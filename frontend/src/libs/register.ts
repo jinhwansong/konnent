@@ -22,34 +22,27 @@ export const duplicateNickname = (
   });
 };
 
-export const sendEmailVerification = ({
-  email,
-}: SendEmailVerificationRequest): Promise<MessageResponse> => {
+export const sendEmailVerification = (
+  data: SendEmailVerificationRequest,
+): Promise<MessageResponse> => {
   return fetcher<MessageResponse>('auth/email/verify/send', {
     method: 'POST',
-    body: JSON.stringify({ email }),
+    body: JSON.stringify(data),
   });
 };
 
-export const verifyEmailCode = ({
-  email,
-  code,
-}: VerifyEmailCodeRequest): Promise<MessageResponse> => {
+export const verifyEmailCode = (
+  data: VerifyEmailCodeRequest,
+): Promise<MessageResponse> => {
   return fetcher<MessageResponse>('auth/email/verify/confirm', {
     method: 'POST',
-    body: JSON.stringify({ email, code }),
+    body: JSON.stringify(data),
   });
 };
 
-export const registerUser = ({
-  email,
-  nickname,
-  password,
-  name,
-  phone,
-}: JoinRequest): Promise<MessageResponse> => {
+export const registerUser = (data: JoinRequest): Promise<MessageResponse> => {
   return fetcher<MessageResponse>('auth/join', {
     method: 'POST',
-    body: JSON.stringify({ email, nickname, password, name, phone }),
+    body: JSON.stringify(data),
   });
 };

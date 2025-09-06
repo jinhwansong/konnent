@@ -5,13 +5,16 @@ import clsx from 'clsx';
 import Button from '../common/Button';
 import Modal from '../common/Modal';
 import Textarea from '../common/Textarea';
-import { useToastStore } from '@/stores/useToast';
-import { Reviews } from '@/types/review';
-import { usePostReview } from '@/hooks/query/useReview';
+import {
+  ReviewMenteeItem,
+  ReviewMentorItem,
+  ReviewRequest,
+} from '@/types/review';
 import { FaStar } from 'react-icons/fa';
 
 interface ReviewFormProp {
-  reservationId: string;
+  selectedReview?: ReviewMenteeItem | ReviewMentorItem;
+  onSubmit: (data: ReviewRequest) => void;
   onClose: () => void;
 }
 const ratingLabels: Record<number, string> = {
@@ -22,11 +25,14 @@ const ratingLabels: Record<number, string> = {
   5: '최고였어요',
 };
 
-export default function ReviewForm({ reservationId, onClose }: ReviewFormProp) {
-  const { showToast } = useToastStore();
-  const methods = useForm({
+export default function ReviewForm({
+  onSubmit,
+  selectedReview,
+  onClose,
+}: ReviewFormProp) {
+  const methods = useForm<ReviewRequest>({
     mode: 'all',
-    defaultValues: {
+    defaultValues: selectedReview ?? {
       content: '',
       rating: 0,
     },
@@ -39,22 +45,6 @@ export default function ReviewForm({ reservationId, onClose }: ReviewFormProp) {
     formState: { isValid, errors },
   } = methods;
   const rating = watch('rating');
-  const { mutate: postReview } = usePostReview();
-  const onSubmit = (data: Reviews) => {
-    const item = { ...data, reservationId };
-    postReview(item, {
-      onSuccess: () => {
-        showToast('리뷰 작성을 완료했습니다.', 'success');
-        onClose();
-      },
-      onError: (error) => {
-        const errorMessage =
-          error instanceof Error ? error.message : '오류가 발생했습니다.';
-        showToast(errorMessage, 'error');
-      },
-    });
-  };
-
   return (
     <Modal onClose={onClose}>
       <h4 className="mb-5 text-xl leading-[1.4] font-semibold tracking-[-0.3px] text-[var(--text-bold)]">

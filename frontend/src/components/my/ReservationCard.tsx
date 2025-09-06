@@ -1,23 +1,24 @@
 import { colorMap, MentoringStatus, statusMap } from '@/contact/schedule';
 import React from 'react';
 import Button from '../common/Button';
+
+import { formatDuration } from '@/utils/formatDuration';
 import {
   PastReservationItem,
   ReservationMenteeItem,
 } from '@/types/reservation';
-import { formatDuration } from '@/utils/formatDuration';
 
-interface ReservationCardProp {
-  item: ReservationMenteeItem | PastReservationItem;
+interface ReservationCardProp<
+  T extends ReservationMenteeItem | PastReservationItem,
+> {
+  item: T;
   type: 'upcoming' | 'past';
   onClick: (reservationId: string) => void;
 }
 
-export default function ReservationCard({
-  item,
-  type,
-  onClick,
-}: ReservationCardProp) {
+export default function ReservationCard<
+  T extends ReservationMenteeItem | PastReservationItem,
+>({ item, type, onClick }: ReservationCardProp<T>) {
   return (
     <li className="mt-8 flex items-center gap-8 rounded border border-[var(--border-color)] p-5">
       <div className="flex-1">
@@ -58,6 +59,7 @@ export default function ReservationCard({
             size="smWide"
             variant="outline"
             onClick={() => onClick(item.id)}
+            disabled={(item as PastReservationItem).reviewWritten}
           >
             후기작성
           </Button>

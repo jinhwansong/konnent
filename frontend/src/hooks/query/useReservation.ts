@@ -7,8 +7,10 @@ import {
   postReservation,
 } from '@/libs/reservation';
 import {
+  PastReservationItem,
   ReservationDaysResponse,
   ReservationDone,
+  ReservationMenteeItem,
   ReservationMenteeResponse,
   ReservationRequests,
   ReservationTimeResponse,
@@ -45,22 +47,24 @@ export const useGetReservationDone = (orderId: string) => {
     refetchOnMount: false,
   });
 };
-
-export const useGetMyReservations = (
+export const useGetMyReservations = <
+  T extends ReservationMenteeItem | PastReservationItem,
+>(
   type: 'upcoming' | 'past',
   page: number,
 ) => {
   const { data: session } = useSession();
-  return useQuery<ReservationMenteeResponse>({
+  return useQuery<ReservationMenteeResponse<T>>({
     queryKey: ['reservation-my', page, type],
     queryFn: () =>
-      type === 'upcoming' ? getMyReservations(page) : getPastReservations(page),
+      type === 'upcoming'
+        ? (getMyReservations(page) as Promise<ReservationMenteeResponse<T>>)
+        : (getPastReservations(page) as Promise<ReservationMenteeResponse<T>>),
     retry: false,
     staleTime: 1000 * 60 * 5,
     enabled: !!session?.user,
   });
 };
-
 export const usePostReservation = () => {
   const queryClient = useQueryClient();
   return useMutation({

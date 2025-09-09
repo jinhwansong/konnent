@@ -61,9 +61,9 @@ export default function MentorItem(props: SessionItem) {
         <span>{formatDuration(props.duration)}</span>
         <span>{formatPrice(props.price)}</span>
       </div>
-      <p className="mt-5 h-11 w-full rounded-full border border-[var(--border-color)] text-center text-sm leading-10 transition-colors duration-200 hover:bg-[var(--primary)] hover:text-white">
+      <div className="mt-5 h-11 w-full rounded-full border border-[var(--border-color)] text-center text-sm leading-10 transition-colors duration-200 hover:bg-[var(--primary)] hover:text-white">
         1:1 상담 신청
-      </p>
+      </div>
     </Link>
   );
 }

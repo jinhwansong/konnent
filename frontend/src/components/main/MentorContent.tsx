@@ -1,10 +1,7 @@
 'use client';
 import React, { useState } from 'react';
-import {
-  categoryIcons,
-  categoryLabelMap,
-  CategoryTabType,
-} from '@/contact/mentoring';
+import { motion } from 'framer-motion';
+import { categoryIcons, CategoryTabType } from '@/contact/mentoring';
 import MentorItem from '@/components/main/MentorItem';
 import { useGetSession } from '@/hooks/query/useCommonSession';
 
@@ -15,24 +12,30 @@ export default function MentorContent({
 }) {
   const safeInitial = initialCategory ?? 'all';
   const [selected, setSelected] = useState<CategoryTabType>(safeInitial);
-  const { data, isLoading } = useGetSession(1, selected, 4, 'latest');
+  const { data, isLoading } = useGetSession(1, selected, 8, 'latest');
   if (isLoading) return null;
   return (
     <article className="mx-auto w-full px-5 sm:px-8 lg:w-[1200px] xl:px-0">
       <div className="flex justify-evenly gap-3 px-4 pb-2 sm:gap-4 md:gap-5">
-        {Object.entries(categoryIcons).map(([key, icon]) => (
+        {Object.entries(categoryIcons).map(([key, { icon, label }]) => (
           <button
             key={key}
             onClick={() => setSelected(key as CategoryTabType)}
             className={`flex shrink-0 flex-col items-center text-xs font-medium sm:text-sm ${
-              selected === key
-                ? 'text-[var(--primary)]'
-                : 'text-[var(--text-default)]'
+              selected === key ? 'text-[var(--primary)]' : ''
             }`}
           >
-            {icon}
+            <motion.div
+              whileHover={{
+                y: -6,
+                transition: { type: 'spring', stiffness: 300, damping: 15 },
+              }}
+            >
+              {icon}
+            </motion.div>
+
             <span className="mt-1 block text-center leading-tight break-keep sm:mt-2">
-              {categoryLabelMap[key as CategoryTabType]}
+              {label}
             </span>
           </button>
         ))}

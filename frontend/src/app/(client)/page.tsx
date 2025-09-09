@@ -12,8 +12,8 @@ export default async function Home() {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ['sessions', 1, 'all', 4, 'latest'],
-    queryFn: () => getSessions(1, 'all', 4, 'latest'),
+    queryKey: ['sessions', 1, 'all', 8, 'latest'],
+    queryFn: () => getSessions(1, 'all', 8, 'latest'),
   });
 
   await queryClient.prefetchQuery({

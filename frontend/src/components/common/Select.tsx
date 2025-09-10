@@ -56,7 +56,12 @@ function SelectUI<T extends string>({
         />
       </button>
       {isOpen && (
-        <ul className="scroll-custom absolute z-20 mt-2 h-[150px] w-full overflow-auto rounded-lg border border-[var(--border-color)] bg-[var(--background)] px-3 py-3">
+        <ul
+          className={clsx(
+            'scroll-custom absolute z-20 mt-2 w-full overflow-auto rounded-lg border border-[var(--border-color)] bg-[var(--background)] px-3 py-3',
+            'max-h-[200px]',
+          )}
+        >
           {options.map((item) => (
             <li
               key={item.label}

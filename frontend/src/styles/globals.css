@@ -4,22 +4,40 @@
 @import './calendar-custom.css';
 
 :root {
-  --primary: #6366f1;
+  --primary: #6366f1; /* 퍼플 */
   --primary-sub01: #818aff;
   --primary-sub02: #f4f5fa;
   --primary-sub03: #2c3e50;
   --primary-sub04: #6c9bcf;
+
   --background: #ffffff;
   --border-color: #eeeeee;
-  --background-sub01: #adb5bd;
+
   --text: #333333;
   --text-sub: #555555;
   --text-bold: #222222;
 
-  --code-bg: #f5f5f5;
-  --code-text: #25262b;
-  --code-block-bg: #f0f0f0;
-  --code-block-text: #1a1a1a;
+  /* 배경 & 텍스트 */
+  --editor-bg: #ffffff;
+  --editor-text: #2f2f2f;
+  --editor-text-sub: #6b7280; /* 회색톤 */
+  --editor-text-bold: #111111;
+
+  /* 코드 */
+  --editor-code-bg: #f6f8fa;
+  --editor-code-text: #d6336c;
+  --editor-code-block-bg: #f6f8fa;
+  --editor-code-block-text: #1f2937;
+  --editor-code-border: #e5e7eb;
+
+  /* 인용문 */
+  --editor-quote-border: #e5e7eb;
+  --editor-quote-bg: #fafafa;
+  --editor-quote-text: #4b5563;
+
+  /* 테이블 */
+  --editor-table-border: #e5e7eb;
+  --editor-table-header-bg: #f9fafb;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -27,8 +45,9 @@
     --primary: #818aff;
     --primary-sub01: #a5b4fc;
     --primary-sub02: #1e1f29;
-    --primary-sub03: #e5e7eb;
-    --primary-sub04: #7fb2f0;
+    --primary-sub03: #d1d5ff; /* 밝은 퍼플 톤으로 */
+    --primary-sub04: #93c5fd;
+
     --background: #0a0a0a;
     --border-color: #2e2e2e;
 
@@ -36,10 +55,26 @@
     --text-sub: #9ca3af;
     --text-bold: #ffffff;
 
-    --code-bg: #25262b;
-    --code-text: #f1f1f1;
-    --code-block-bg: #282c34;
-    --code-block-text: #abb2bf;
+    --editor-bg: #0f1115; /* 거의 블랙에 가까운 다크 그레이 */
+    --editor-text: #e5e7eb; /* 라이트 그레이 본문 */
+    --editor-text-sub: #9ca3af; /* 서브 텍스트 */
+    --editor-text-bold: #ffffff; /* 강조는 화이트 */
+
+    /* 코드 */
+    --editor-code-bg: #1e1e1e; /* 인라인 코드 */
+    --editor-code-text: #fca5a5; /* 은은한 살몬핑크/레드 */
+    --editor-code-block-bg: #1e1e1e;
+    --editor-code-block-text: #d1d5db;
+    --editor-code-border: #2e2e2e;
+
+    /* 인용문 */
+    --editor-quote-border: #374151; /* 다크 그레이 라인 */
+    --editor-quote-bg: #1a1c20; /* 살짝 톤 있는 다크 배경 */
+    --editor-quote-text: #9ca3af; /* 옅은 그레이 텍스트 */
+
+    /* 테이블 */
+    --editor-table-border: #2e2e2e;
+    --editor-table-header-bg: #1f2937;
   }
 }
 
@@ -196,95 +231,4 @@ input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
   appearance: none;
   margin: 0;
-}
-
-.editor_wrap .ProseMirror {
-  max-height: 600px;
-  padding: 1.25rem 1.5rem;
-  background-color: var(--background);
-  color: var(--text);
-  line-height: 1.75;
-  font-size: 1rem;
-  outline: none;
-  word-break: break-word;
-
-  p {
-    margin: 1rem 0;
-  }
-
-  strong {
-    font-weight: 600;
-    color: var(--text-bold);
-  }
-
-  em {
-    font-style: italic;
-    color: var(--text-sub);
-  }
-
-  s {
-    text-decoration: line-through;
-    color: var(--text-sub);
-  }
-
-  code {
-    background: var(--code-bg);
-    color: var(--code-text);
-    padding: 0.25em 0.5em;
-    border-radius: 6px;
-    font-family: 'Menlo', 'Monaco', monospace;
-    font-size: 0.875em;
-  }
-
-  pre {
-    background: var(--code-block-bg);
-    color: var(--code-block-text);
-    border-radius: 8px;
-    overflow-x: auto;
-    margin: 1.5rem 0;
-
-    code {
-      display: block;
-      padding: 1rem 1.25rem;
-      font-size: 0.875em;
-      background: transparent;
-    }
-  }
-
-  blockquote {
-    margin: 1.5rem 0;
-    padding-left: 1rem;
-    border-left: 4px solid var(--primary-sub01);
-    color: var(--text-sub);
-    font-style: italic;
-    background: var(--primary-sub02);
-    border-radius: 0 6px 6px 0;
-  }
-
-  ul,
-  ol {
-    list-style: revert;
-    padding-left: 1.5rem;
-    margin: 1rem 0;
-  }
-
-  li {
-    margin: 0.5rem 0;
-    line-height: 1.6;
-  }
-
-  hr {
-    border: none;
-    border-top: 2px dashed var(--border-color);
-    margin: 2rem 0;
-  }
-
-  img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    display: block;
-    margin: 1.25rem 0;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  }
 }

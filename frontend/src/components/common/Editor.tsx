@@ -59,7 +59,7 @@ export default function Editor({
   return (
     <div className="editor_wrap rounded-lg border border-[var(--border-color)]">
       <Toolbar editor={editor} onImageUpload={onImageUpload} />
-      <div className="scroll-custom overflow-auto">
+      <div className="scroll-custom h-[500px] overflow-auto">
         <EditorContent editor={editor} />
       </div>
     </div>

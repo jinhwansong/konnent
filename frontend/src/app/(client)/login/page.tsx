@@ -19,6 +19,7 @@ export default function LoginPage() {
     defaultValues: { email: '', password: '' },
   });
   const {
+    handleSubmit,
     formState: { isValid },
   } = methods;
   const onSubmit = async (data: LoginRequest) => {
@@ -85,7 +86,7 @@ export default function LoginPage() {
       </h4>
       <FormProvider {...methods}>
         <form
-          onSubmit={methods.handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmit)}
           noValidate
           className="flex w-full flex-col gap-5"
         >

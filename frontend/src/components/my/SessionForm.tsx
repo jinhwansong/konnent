@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
 import Editor from '@/components/common/Editor';
@@ -11,16 +11,12 @@ import { uploadSessionImage } from '@/libs/session';
 
 interface SessionFormProps {
   onSubmit: (data: SessionRequest) => void;
-  content: string;
-  setContent: React.Dispatch<React.SetStateAction<string>>;
   defaultValues?: SessionRequest;
   title: string;
 }
 
 export default function SessionForm({
   onSubmit,
-  content,
-  setContent,
   defaultValues,
   title,
 }: SessionFormProps) {
@@ -36,6 +32,9 @@ export default function SessionForm({
     },
   });
   const {
+    control,
+    handleSubmit,
+    register,
     formState: { isValid },
   } = methods;
   const handleImageUpload = async (files: File[]) => {
@@ -84,7 +83,7 @@ export default function SessionForm({
       </h4>
       <FormProvider {...methods}>
         <form
-          onSubmit={methods.handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmit)}
           noValidate
           className="flex w-full flex-col gap-5"
         >
@@ -106,7 +105,7 @@ export default function SessionForm({
               <Input
                 type="number"
                 placeholder="예: 50000"
-                {...methods.register('price', {
+                {...register('price', {
                   valueAsNumber: true,
                   required: '가격을 입력해주세요.',
                   min: {
@@ -124,7 +123,7 @@ export default function SessionForm({
               <Input
                 type="number"
                 placeholder="예: 60"
-                {...methods.register('duration', {
+                {...register('duration', {
                   valueAsNumber: true,
                   required: '시간을 입력해주세요.',
                   min: {
@@ -148,10 +147,17 @@ export default function SessionForm({
 
           <div className="flex flex-col gap-1">
             <label className="text-sm text-[var(--text-bold)]">설명</label>
-            <Editor
-              value={content}
-              onChange={setContent}
-              onImageUpload={handleImageUpload}
+            <Controller
+              name="description"
+              control={control}
+              rules={{ required: '내용을 입력하세요.' }}
+              render={({ field }) => (
+                <Editor
+                  value={field.value}
+                  onChange={field.onChange}
+                  onImageUpload={handleImageUpload}
+                />
+              )}
             />
           </div>
           <Button type="submit" disabled={!isValid}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import Button from '../common/Button';
 import Editor from '../common/Editor';
 import { useToastStore } from '@/stores/useToast';
@@ -11,16 +11,12 @@ import Select from '../common/Select';
 
 interface ArticleFormProps {
   onSubmit: (data: ArticleRequest) => void;
-  content: string;
-  setContent: React.Dispatch<React.SetStateAction<string>>;
   defaultValues?: ArticleRequest;
   title: string;
 }
 
 export default function ArticleForm({
   onSubmit,
-  content,
-  setContent,
   defaultValues,
   title,
 }: ArticleFormProps) {
@@ -35,6 +31,9 @@ export default function ArticleForm({
     },
   });
   const {
+    control,
+    register,
+    handleSubmit,
     formState: { isValid },
   } = methods;
   const handleImageUpload = async (files: File[]) => {
@@ -83,7 +82,7 @@ export default function ArticleForm({
       </h4>
       <FormProvider {...methods}>
         <form
-          onSubmit={methods.handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmit)}
           noValidate
           className="flex w-full flex-col gap-8"
         >
@@ -92,10 +91,9 @@ export default function ArticleForm({
               아티클 제목
             </label>
             <Input
-              name="title"
               type="text"
               placeholder="예: React 기초 강의"
-              rules={{ required: '제목은 필수 입력입니다.' }}
+              {...register('title', { required: '제목을 입력하세요' })}
             />
           </div>
 
@@ -113,10 +111,18 @@ export default function ArticleForm({
             <label className="text-sm text-[var(--text-bold)]">
               아티클 내용
             </label>
-            <Editor
-              value={content}
-              onChange={setContent}
-              onImageUpload={handleImageUpload}
+
+            <Controller
+              name="content"
+              control={control}
+              rules={{ required: '내용을 입력하세요.' }}
+              render={({ field }) => (
+                <Editor
+                  value={field.value}
+                  onChange={field.onChange}
+                  onImageUpload={handleImageUpload}
+                />
+              )}
             />
           </div>
           <div className="flex flex-col gap-1">
@@ -127,7 +133,7 @@ export default function ArticleForm({
               type="file"
               accept="image/*"
               className="w-full cursor-pointer rounded-lg border border-[var(--border-color)] bg-[var(--background)] px-4 py-2 text-sm file:mr-4 file:rounded-lg file:border-0 file:bg-[var(--primary-sub01)] file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-[var(--primary)] focus:outline-none"
-              {...methods.register('thumbnail', {
+              {...register('thumbnail', {
                 required: '썸네일 이미지를 선택해주세요.',
               })}
             />

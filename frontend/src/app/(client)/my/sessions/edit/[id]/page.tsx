@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useToastStore } from '@/stores/useToast';
 import { SessionRequest } from '@/types/session';
@@ -12,16 +12,12 @@ export default function EditSessionPage() {
   const router = useRouter();
   const { data: session, isLoading } = useGetSessionDetail(id as string);
   const { mutate: patchSession } = usePatchSession();
-  const [content, setContent] = useState<string>(session?.description || '');
 
   const onSubmit = async (data: SessionRequest) => {
     try {
       await patchSession({
         id: session?.id as string,
-        data: {
-          ...data,
-          description: content,
-        },
+        data,
       });
       showToast('세션수정을 완료했습니다.', 'success');
       router.push(`/my/sessions/${id}`);
@@ -34,8 +30,6 @@ export default function EditSessionPage() {
     <SessionForm
       defaultValues={session}
       onSubmit={onSubmit}
-      content={content}
-      setContent={setContent}
       title="세션 수정"
     />
   );

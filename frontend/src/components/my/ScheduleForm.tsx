@@ -27,6 +27,7 @@ export default function ScheduleForm({
     },
   });
   const {
+    handleSubmit,
     formState: { isValid },
     control,
     getValues,
@@ -70,7 +71,7 @@ export default function ScheduleForm({
 
       <FormProvider {...methods}>
         <form
-          onSubmit={methods.handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmit)}
           noValidate
           className="flex w-full flex-col gap-2.5"
         >

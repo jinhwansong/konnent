@@ -43,8 +43,13 @@ export const useGetArticleDetail = (id: string) => {
 };
 
 export const usePostArticle = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (data: ArticleRequest) => postArticle(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['article'] });
+    },
   });
 };
 

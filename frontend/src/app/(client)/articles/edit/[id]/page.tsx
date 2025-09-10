@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import ArticleForm from '@/components/article/ArticleForm';
 import { useToastStore } from '@/stores/useToast';
@@ -12,16 +12,12 @@ export default function EditArticlePage() {
   const router = useRouter();
   const { data: article, isLoading } = useGetArticleDetail(id as string);
   const { mutate: patchArticle } = usePatchArticle();
-  const [content, setContent] = useState<string>(article?.content || '');
 
   const onSubmit = async (data: ArticleRequest) => {
     try {
       await patchArticle({
         id: article?.id as string,
-        data: {
-          ...data,
-          content,
-        },
+        data,
       });
       showToast('아티클수정을 완료했습니다.', 'success');
       router.push(`/articles/${id}`);
@@ -34,8 +30,6 @@ export default function EditArticlePage() {
     <ArticleForm
       defaultValues={article}
       onSubmit={onSubmit}
-      content={content}
-      setContent={setContent}
       title="아티클 수정"
     />
   );

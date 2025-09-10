@@ -36,11 +36,11 @@ async function proxy(req: NextRequest): Promise<Response> {
   const res = await fetch(url, {
     method: req.method,
     headers,
-    body:
-      req.method !== 'GET' && req.method !== 'HEAD'
-        ? await req.text()
-        : undefined,
+    body: req.method !== 'GET' && req.method !== 'HEAD' ? req.body : undefined,
     redirect: 'manual',
+    ...(req.method !== 'GET' && req.method !== 'HEAD'
+      ? { duplex: 'half' }
+      : {}),
   });
 
   const responseBody = await res.arrayBuffer();

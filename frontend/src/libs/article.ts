@@ -26,6 +26,7 @@ export const getArticle = async (
 };
 
 export const postArticle = async (data: ArticleRequest) => {
+  console.log(data);
   const formData = new FormData();
   formData.append('title', data.title);
   formData.append('content', data.content);

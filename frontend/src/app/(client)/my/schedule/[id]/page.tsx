@@ -50,6 +50,7 @@ export default function ScheduleDetailPage() {
   });
   const {
     reset,
+    handleSubmit,
     formState: { isValid },
   } = methods;
   const onSubmit = (data: Reason) => {
@@ -132,7 +133,7 @@ export default function ScheduleDetailPage() {
           <FormProvider {...methods}>
             <form
               noValidate
-              onSubmit={methods.handleSubmit(onSubmit)}
+              onSubmit={handleSubmit(onSubmit)}
               className="flex w-full flex-col"
             >
               <div className="mb-4 rounded-lg border border-[var(--border-color)] p-4 text-sm">

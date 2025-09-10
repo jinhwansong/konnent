@@ -30,6 +30,7 @@ export default function SignPage() {
     },
   });
   const {
+    handleSubmit,
     formState: { errors, isValid },
   } = methods;
   const [email, nickname, password, passwordConfirm, name, phone, code] =
@@ -226,7 +227,7 @@ export default function SignPage() {
       </h4>
       <FormProvider {...methods}>
         <form
-          onSubmit={methods.handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmit)}
           noValidate
           className="flex w-full flex-col gap-5"
         >

@@ -8,6 +8,7 @@ import { FiBriefcase } from 'react-icons/fi';
 import Link from 'next/link';
 import { formatPrice } from '@/utils/formatPrice';
 import { formatDuration } from '@/utils/formatDuration';
+import { getImageUrl } from '@/utils/getImageUrl';
 
 export default function MentorItem(props: SessionItem) {
   return (
@@ -47,11 +48,11 @@ export default function MentorItem(props: SessionItem) {
           </ul>
         </div>
         <Image
-          src={props.mentor.image ?? '/icon/IcPeople.avif'}
+          src={getImageUrl(props.mentor.image)}
           width={40}
           height={40}
           alt={props.title}
-          className="border-[var( --border-color)] rounded-full border"
+          className="border-[var( --border-color)] h-10 w-10 rounded-full border"
         />
       </div>
       <div className="mt-3 border-t border-[var(--border-color)] pt-3">

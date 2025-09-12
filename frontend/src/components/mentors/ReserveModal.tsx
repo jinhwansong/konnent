@@ -11,11 +11,14 @@ import {
 import { useGetSessionDetail } from '@/hooks/query/useCommonSession';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import CheckboxGroup from '../common/CheckboxGroup';
-import { ReservationRequest, Slot } from '@/types/reservation';
+import { Slot } from '@/types/reservation';
 import { format, parse } from 'date-fns';
 import Textarea from '../common/Textarea';
 import Button from '../common/Button';
 import { useReservation } from '@/stores/useReservation';
+import { ReservationForm, reservationSchema } from '@/schema/reservation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import FormErrorMessage from '../common/FormErrorMessage';
 
 enum Weekday {
   SUNDAY = 0,
@@ -29,18 +32,30 @@ enum Weekday {
 
 export default function ReserveModal({ sessionId }: { sessionId: string }) {
   const router = useRouter();
-  const { setReservation, reservation } = useReservation();
-  const methods = useForm<ReservationRequest>({
-    mode: 'onChange',
+  const { setReservation, reservation, resetReservation } = useReservation();
+  const methods = useForm<ReservationForm>({
+    mode: 'onSubmit',
+    resolver: zodResolver(reservationSchema),
     defaultValues: {
       date: '',
       timeSlot: { startTime: '', endTime: '' },
       question: '',
     },
   });
+  const {
+    control,
+    watch,
+    reset,
+    trigger,
+    handleSubmit,
+
+    formState: { isValid, errors },
+  } = methods;
+
+  /** 예약 정보 초기화 */
   useEffect(() => {
     if (!reservation) return;
-    methods.reset(
+    reset(
       {
         date: reservation.date,
         timeSlot: {
@@ -51,20 +66,21 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
       },
       { keepDirty: false, keepTouched: false },
     );
-    methods.trigger();
-  }, [reservation, methods]);
-  const {
-    formState: { isValid },
-  } = methods;
-  // 선택한 날짜
-  const selectDate = methods.watch('date') || undefined;
+    trigger();
+  }, [reservation, reset, trigger]);
+
+  /** 선택한 날짜 */
+  const selectDate = watch('date');
+
   const { data: session, isLoading: sessionLoading } =
     useGetSessionDetail(sessionId);
-  // 멘토가 설정한 요일
+
+  /** 멘토가 설정한 요일 */
   const { data: reservationsDays } = useGetReservationsDays(
     session?.userId ?? '',
   );
-  // 예약 가능한 시간
+
+  /** 예약 가능한 시간 */
   const { data: reservationsTime, isLoading: timeLoading } =
     useGetReservationsTime(sessionId, selectDate as string);
 
@@ -72,6 +88,7 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
     () => reservationsTime?.data ?? [],
     [reservationsTime?.data],
   );
+
   const slotOptions = useMemo(
     () =>
       slots.map((slot) => ({
@@ -92,8 +109,8 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
     const isCorrectDay = enabledDayIndexes?.includes(date.getDay());
     return isFuture && isCorrectDay;
   };
-  const onSubmit = (data: ReservationRequest) => {
-    const slot = JSON.parse(data.timeSlot as unknown as string) as Slot;
+  const onSubmit = (data: ReservationForm) => {
+    const slot = data.timeSlot;
     setReservation({
       ...data,
       timeSlot: slot,
@@ -105,15 +122,18 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
     });
     router.push(`/mentors/${sessionId}/confirm`);
   };
-
+  const handleClose = () => {
+    router.replace(`/mentors/${session?.id}`);
+    resetReservation();
+  };
   if (sessionLoading) return null;
   return (
-    <Modal onClose={() => router.back()}>
+    <Modal onClose={() => handleClose()}>
       <h4 className="mb-5 text-xl leading-[1.4] font-semibold tracking-[-0.3px] text-[var(--text-bold)]">
         멘토링 예약
       </h4>
       <FormProvider {...methods}>
-        <form noValidate onSubmit={methods.handleSubmit(onSubmit)}>
+        <form noValidate onSubmit={handleSubmit(onSubmit)}>
           <Controller
             name="date"
             rules={{ required: '날짜를 선택해 주세요' }}
@@ -125,9 +145,10 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
                     ? parse(field.value, 'yyyy-MM-dd', new Date())
                     : null
                 }
-                onChange={(d) =>
-                  field.onChange(format(d as Date, 'yyyy-MM-dd'))
-                }
+                onChange={(d) => {
+                  field.onChange(format(d as Date, 'yyyy-MM-dd'));
+                  methods.setValue('timeSlot', { startTime: '', endTime: '' });
+                }}
                 locale="ko-KR"
                 calendarType="hebrew"
                 tileDisabled={({ date }) => !isDateEnabled(date)}
@@ -145,29 +166,48 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
 
           {selectDate && !timeLoading && slots.length > 0 && (
             <div className="mt-2 rounded-lg border border-[var(--border-color)] p-3">
-              <CheckboxGroup
-                className="grid grid-cols-3 gap-2 text-center"
+              <Controller
                 name="timeSlot"
-                rules={{ required: '시간을 선택해 주세요' }}
-                options={slotOptions}
-                type="radio"
+                control={control}
+                render={({ field }) => (
+                  <CheckboxGroup
+                    value={
+                      field.value ? JSON.stringify(field.value) : undefined
+                    }
+                    onChange={(val) => {
+                      field.onChange(JSON.parse(val as string));
+                    }}
+                    className="grid grid-cols-3 gap-2 text-center"
+                    options={slotOptions}
+                    type="radio"
+                  />
+                )}
+              />
+              <FormErrorMessage
+                message={errors.timeSlot?.message}
+                className="mt-1"
               />
             </div>
           )}
           <h4 className="mt-5 mb-2 text-sm">멘토님에게 남길 메시지</h4>
-          <Textarea
+          <Controller
             name="question"
-            maxLength={600}
-            className="h-32 w-full"
-            placeholder="멘토님께 남길말을 적어주세요"
-            rules={{
-              required: '멘토님께 남길말을 적어주세요',
-              maxLength: {
-                value: 600,
-                message: '최대 600자까지 입력 가능합니다',
-              },
-            }}
+            control={control}
+            render={({ field, fieldState }) => (
+              <Textarea
+                {...field}
+                placeholder="자기소개를 입력해주세요."
+                maxLength={500}
+                onChange={(e) => field.onChange(e.target.value)}
+                error={fieldState.error?.message}
+              />
+            )}
           />
+          <FormErrorMessage
+            message={errors.question?.message}
+            className="mt-1"
+          />
+
           <Button type="submit" disabled={!isValid} className="mt-5">
             다음으로
           </Button>

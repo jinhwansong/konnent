@@ -12,6 +12,21 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'k.kakaocdn.net', // 카카오
+      },
+      {
+        protocol: 'http',
+        hostname: 'k.kakaocdn.net', // 카카오
+      },
+      {
+        protocol: 'https',
+        hostname: 'ssl.pstatic.net', // 네이버
+      },
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+    ],
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 31536000,
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],

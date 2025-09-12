@@ -1,5 +1,3 @@
-import { RegisterOptions } from 'react-hook-form';
-
 export interface ApplyRequest {
   company: string;
   introduce: string;
@@ -9,15 +7,7 @@ export interface ApplyRequest {
   portfolio: string;
 }
 
-export interface Option<T extends string = string> {
+export interface Option<T = string> {
   label: string;
   value: T;
-}
-
-export interface CheckboxGroupProps {
-  name: string;
-  options: Option[];
-  rules?: RegisterOptions;
-  className: string;
-  type: 'checkbox' | 'radio';
 }

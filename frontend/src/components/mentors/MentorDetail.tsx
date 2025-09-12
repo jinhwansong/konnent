@@ -12,6 +12,7 @@ import { formatDuration } from '@/utils/formatDuration';
 import { CAREER_OPTIONS, POSITION_OPTIONS } from '@/contact/apply';
 import { careerIconMap, positionIconMap } from '@/contact/mentoring';
 import { useSession } from 'next-auth/react';
+import { getImageUrl } from '@/utils/getImageUrl';
 
 export default function MentorDetail({ sessionId }: { sessionId: string }) {
   const { data: session, isLoading } = useGetSessionDetail(sessionId);
@@ -59,11 +60,11 @@ export default function MentorDetail({ sessionId }: { sessionId: string }) {
 
         <aside className="self-start rounded-xl border border-[var(--border-color)] bg-white p-6 text-center shadow-sm md:sticky md:top-28">
           <Image
-            src={session?.image ?? '/icon/IcPeople.avif'}
+            src={getImageUrl(session?.image as string)}
             alt={session?.nickname as string}
             width={100}
             height={100}
-            className="mx-auto mb-4 rounded-full border object-cover"
+            className="mx-auto mb-4 h-24 w-24 rounded-full border object-cover"
           />
           <div className="text-lg font-semibold text-[var(--text-bold)]">
             {session?.nickname}

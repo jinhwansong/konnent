@@ -2,8 +2,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { CAREER_OPTIONS, POSITION_OPTIONS } from '@/contact/apply';
-import { FormProvider, useForm } from 'react-hook-form';
-import { ApplyRequest } from '@/types/apply';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import Input from '../common/Input';
 import CheckboxGroup from '../common/CheckboxGroup';
 import Textarea from '../common/Textarea';
@@ -14,6 +13,9 @@ import Modal from '../common/Modal';
 import { EXPERTISE_OPTIONS } from '@/contact/mentoring';
 import { useSession } from 'next-auth/react';
 import Select from '../common/Select';
+import { ApplyRequest, applySchema } from '@/schema/mentor';
+import { zodResolver } from '@hookform/resolvers/zod';
+import FormErrorMessage from '../common/FormErrorMessage';
 
 export default function ApplyModal() {
   const router = useRouter();
@@ -22,6 +24,7 @@ export default function ApplyModal() {
   const { mutate: applyMentor } = useMentorApply();
   const methods = useForm<ApplyRequest>({
     mode: 'all',
+    resolver: zodResolver(applySchema),
     defaultValues: {
       company: '',
       introduce: '',
@@ -32,7 +35,9 @@ export default function ApplyModal() {
     },
   });
   const {
-    formState: { isValid },
+    control,
+    handleSubmit,
+    formState: { isValid, errors },
   } = methods;
   const onSubmit = (data: ApplyRequest) => {
     applyMentor(data, {
@@ -47,57 +52,7 @@ export default function ApplyModal() {
       },
     });
   };
-  const MENTOR_APPLY_FIELDS = [
-    {
-      type: 'input',
-      name: 'company',
-      label: '회사명',
-      placeholder: '회사명을 입력해주세요.',
-      rules: { required: '회사명은 필수 입력입니다.' },
-    },
-    {
-      type: 'select',
-      name: 'position',
-      label: '직무',
-      placeholder: '직무를 선택해주세요.',
-      options: POSITION_OPTIONS,
-      rules: { required: '직무를 선택해주세요.' },
-    },
-    {
-      type: 'select',
-      name: 'career',
-      label: '연차',
-      placeholder: '연차를 선택해주세요.',
-      options: CAREER_OPTIONS,
-      rules: { required: '연차를 선택해주세요.' },
-    },
-    {
-      type: 'checkbox',
-      name: 'expertise',
-      label: '전문 분야',
-      options: EXPERTISE_OPTIONS,
-      rules: { required: '필수 입력입니다' },
-    },
-    {
-      type: 'textarea',
-      name: 'introduce',
-      label: '자기소개',
-      placeholder: '자기소개를 입력해주세요.',
-      rules: { required: '자기소개는 필수 입력입니다.' },
-    },
-    {
-      type: 'input',
-      name: 'portfolio',
-      label: '포트폴리오 링크',
-      placeholder: 'URL 형식으로 입력해주세요.',
-      rules: {
-        pattern: {
-          value: /^https?:\/\/.+/,
-          message: '유효한 URL을 입력해주세요.',
-        },
-      },
-    },
-  ];
+
   return (
     <Modal onClose={() => router.back()}>
       <h4 className="mb-5 text-xl leading-[1.4] font-semibold tracking-[-0.3px] text-[var(--text-bold)]">
@@ -113,60 +68,108 @@ export default function ApplyModal() {
       <FormProvider {...methods}>
         <form
           noValidate
-          onSubmit={methods.handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmit)}
           className="flex w-full flex-col gap-5"
         >
-          {MENTOR_APPLY_FIELDS.map((item) => {
-            switch (item.type) {
-              case 'input':
-                return (
-                  <FormFieldWrapper
-                    key={item.name}
-                    label={item.label}
-                    name={item.name}
-                  >
-                    <Input {...item} />
-                  </FormFieldWrapper>
-                );
-              case 'select':
-                return (
-                  <FormFieldWrapper
-                    key={item.name}
-                    label={item.label}
-                    name={item.name}
-                  >
-                    <Select {...item} options={item.options!} />
-                  </FormFieldWrapper>
-                );
-              case 'textarea':
-                return (
-                  <FormFieldWrapper
-                    key={item.name}
-                    label={item.label}
-                    name={item.name}
-                  >
-                    <Textarea {...item} maxLength={100} />
-                  </FormFieldWrapper>
-                );
-              case 'checkbox':
-                return (
-                  <FormFieldWrapper
-                    key={item.name}
-                    label={item.label}
-                    name={item.name}
-                  >
-                    <CheckboxGroup
-                      {...item}
-                      options={item.options!}
-                      type="checkbox"
-                      className="flex flex-wrap gap-2"
-                    />
-                  </FormFieldWrapper>
-                );
-              default:
-                return null;
-            }
-          })}
+          {/* 회사명 */}
+          <FormFieldWrapper
+            label="회사명"
+            name="company"
+            error={errors.company?.message}
+          >
+            <Input
+              name="company"
+              type="text"
+              placeholder="회사명을 입력해주세요."
+            />
+          </FormFieldWrapper>
+
+          {/* 직무 */}
+          <FormFieldWrapper
+            label="직무"
+            name="position"
+            error={errors.position?.message}
+          >
+            <Controller
+              name="position"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  value={field.value}
+                  onChange={field.onChange}
+                  options={POSITION_OPTIONS}
+                  placeholder="직무를 선택해주세요"
+                />
+              )}
+            />
+          </FormFieldWrapper>
+
+          {/* 연차 */}
+          <FormFieldWrapper
+            label="연차"
+            name="career"
+            error={errors.career?.message}
+          >
+            <Controller
+              name="career"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  value={field.value}
+                  onChange={field.onChange}
+                  options={CAREER_OPTIONS}
+                  placeholder="연차를 선택해주세요"
+                />
+              )}
+            />
+          </FormFieldWrapper>
+
+          {/* 전문분야 */}
+          <FormFieldWrapper
+            label="전문 분야"
+            name="expertise"
+            error={errors.expertise?.message}
+          >
+            <Controller
+              name="expertise"
+              control={control}
+              render={({ field }) => (
+                <CheckboxGroup
+                  options={EXPERTISE_OPTIONS}
+                  type="checkbox"
+                  className="flex flex-wrap gap-2"
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+          </FormFieldWrapper>
+
+          {/* 자기소개 */}
+          <FormFieldWrapper
+            label="자기소개"
+            name="introduce"
+            error={errors.introduce?.message}
+          >
+            <Textarea
+              name="introduce"
+              placeholder="자기소개를 입력해주세요."
+              maxLength={100}
+            />
+          </FormFieldWrapper>
+
+          {/* 포트폴리오 */}
+          <FormFieldWrapper
+            label="포트폴리오 링크"
+            name="portfolio"
+            error={errors.portfolio?.message}
+          >
+            <Input
+              name="portfolio"
+              type="text"
+              placeholder="URL 형식으로 입력해주세요."
+            />
+          </FormFieldWrapper>
           <Button type="submit" disabled={!isValid}>
             멘토지원
           </Button>
@@ -180,15 +183,22 @@ interface FormFieldWrapperProps {
   label: string;
   name: string;
   children: React.ReactNode;
+  error?: string;
 }
 
-function FormFieldWrapper({ label, name, children }: FormFieldWrapperProps) {
+function FormFieldWrapper({
+  label,
+  name,
+  children,
+  error,
+}: FormFieldWrapperProps) {
   return (
     <div className="relative flex flex-col gap-2" key={name}>
       <label htmlFor={name} className="text-sm text-[var(--text-bold)]">
         {label}
       </label>
       {children}
+      <FormErrorMessage message={error} />
     </div>
   );
 }

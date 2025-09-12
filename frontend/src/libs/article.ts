@@ -26,7 +26,6 @@ export const getArticle = async (
 };
 
 export const postArticle = async (data: ArticleRequest) => {
-  console.log(data);
   const formData = new FormData();
   formData.append('title', data.title);
   formData.append('content', data.content);
@@ -43,8 +42,8 @@ export const postArticle = async (data: ArticleRequest) => {
 
 export const uploadArticleImage = (
   formData: FormData,
-): Promise<{ urls: string[] }> => {
-  return fetcher<{ urls: string[] }>('article/upload-image', {
+): Promise<{ image: string[] }> => {
+  return fetcher<{ image: string[] }>('article/upload-image', {
     method: 'POST',
     body: formData,
   });

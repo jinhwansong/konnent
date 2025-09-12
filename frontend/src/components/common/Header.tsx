@@ -10,6 +10,7 @@ import { useToastStore } from '@/stores/useToast';
 import Image from 'next/image';
 import Button from './Button';
 import useClickOutside from '@/hooks/useClickOutside';
+import { getImageUrl } from '@/utils/getImageUrl';
 
 export default function Header() {
   const { showToast } = useToastStore();
@@ -24,7 +25,7 @@ export default function Header() {
   ];
 
   const menteeItem = [
-    { name: '멘토링 일정', href: '/my/reservations' },
+    { name: '멘토링 일정', href: '/my/reservations/upcoming' },
     { name: '내가 쓴 후기', href: '/my/reviews' },
     { name: '결제 내역', href: '/my/payments' },
   ];
@@ -32,14 +33,13 @@ export default function Header() {
   const mentorItem = [
     { name: '세션 만들기', href: '/my/sessions' },
     { name: '예약 확인', href: '/my/schedule' },
-    { name: '후기 모아보기', href: '/my/reviews/manage' },
+    { name: '후기 모아보기', href: '/my/review-manage' },
     { name: '내 수익', href: '/my/earnings' },
   ];
   // 로그아웃
   const handleLogout = async () => {
     try {
       signOut({
-        redirect: false,
         callbackUrl: '/',
       });
       showToast('로그아웃을 완료했습니다.', 'success');
@@ -110,10 +110,11 @@ export default function Header() {
                   className="flex items-center justify-center overflow-hidden rounded-full text-2xl"
                 >
                   <Image
-                    src={session.user.image ?? '/icon/IcPeople.avif'}
+                    src={getImageUrl(session?.user.image?.trim() as string)}
                     alt={session.user.name}
                     width={30}
                     height={30}
+                    className="h-8 w-8 object-cover"
                   />
                 </button>
                 {open && (
@@ -121,15 +122,17 @@ export default function Header() {
                     <div className="border-b border-[var(--border-color)] px-6 py-4">
                       <div className="mb-3 flex items-center gap-3.5">
                         <Image
-                          src={session.user.image ?? '/icon/IcPeople.avif'}
+                          src={getImageUrl(
+                            session?.user.image?.trim() as string,
+                          )}
                           alt={session.user.name}
                           width={40}
                           height={40}
-                          className="overflow-hidden rounded-full"
+                          className="h-10 w-10 overflow-hidden rounded-full object-cover"
                         />
                         <div>
                           <p className="font-semibold text-[var(--text-bold)]">
-                            {session.user.nickname}
+                            {session.user.name}
                           </p>
                           <p className="truncate text-sm">
                             {session.user.email}
@@ -142,7 +145,7 @@ export default function Header() {
                         className=" "
                         onClick={() => {
                           setOpen(false);
-                          router.push('/mypage');
+                          router.push('/my/profile');
                         }}
                       >
                         프로필 설정

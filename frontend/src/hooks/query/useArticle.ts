@@ -20,7 +20,7 @@ import { useSession } from 'next-auth/react';
 export const useGetArticle = (
   page: number,
   category: ArticleCategoryTabType = 'all',
-  limit: number = 10,
+  limit: number = 6,
   sort: string = 'latest',
 ) => {
   return useQuery<ArticleResponse>({

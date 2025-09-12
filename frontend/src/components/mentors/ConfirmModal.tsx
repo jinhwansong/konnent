@@ -64,8 +64,12 @@ export default function ConfirmModal({ sessionId }: { sessionId: string }) {
       showToast('결제 준비 중 오류가 발생했습니다.', 'error');
     }
   };
+  const handleClose = () => {
+    router.replace(`/mentors/${sessionId}`);
+    resetReservation();
+  };
   return (
-    <Modal onClose={() => router.back()}>
+    <Modal onClose={() => handleClose()}>
       <h4 className="mb-5 text-xl leading-[1.4] font-semibold tracking-[-0.3px] text-[var(--text-bold)]">
         예약 확인
       </h4>

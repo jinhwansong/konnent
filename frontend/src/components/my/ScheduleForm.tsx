@@ -1,12 +1,19 @@
 'use client';
 import React, { useEffect } from 'react';
-import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
+import {
+  Controller,
+  FormProvider,
+  useFieldArray,
+  useForm,
+} from 'react-hook-form';
 import { ScheduleRequest } from '@/types/schedule';
 import { DayOfWeek, TIME_OPTIONS, WEEK_OPTIONS } from '@/contact/schedule';
 import Button from '../common/Button';
 import Modal from '../common/Modal';
 import Select from '../common/Select';
 import { useRouter } from 'next/navigation';
+import { ScheduleFormValues, scheduleSchema } from '@/schema/schedule';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 interface ScheduleFormProps {
   onSubmit: (data: ScheduleRequest) => void;
@@ -20,8 +27,9 @@ export default function ScheduleForm({
   defaultValues,
 }: ScheduleFormProps) {
   const router = useRouter();
-  const methods = useForm<ScheduleRequest>({
+  const methods = useForm<ScheduleFormValues>({
     mode: 'all',
+    resolver: zodResolver(scheduleSchema),
     defaultValues: defaultValues ?? {
       data: [{ dayOfWeek: DayOfWeek.MONDAY, startTime: '', endTime: '' }],
     },
@@ -30,7 +38,6 @@ export default function ScheduleForm({
     handleSubmit,
     formState: { isValid },
     control,
-    getValues,
     reset,
   } = methods;
   const { fields, append, remove } = useFieldArray({
@@ -77,37 +84,46 @@ export default function ScheduleForm({
         >
           {fields.map((field, index) => (
             <div key={field.id} className="flex items-end gap-2.5">
-              <Select
+              {/* 요일 */}
+              <Controller
                 name={`data.${index}.dayOfWeek`}
-                placeholder="요일"
-                options={WEEK_OPTIONS}
-                className="w-[100px]"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={WEEK_OPTIONS}
+                    placeholder="요일"
+                    className="w-[100px]"
+                  />
+                )}
               />
 
-              <Select
+              {/* 시작 시간 */}
+              <Controller
                 name={`data.${index}.startTime`}
-                options={TIME_OPTIONS}
-                placeholder="시작 시간"
-                className="w-[120px]"
-                rules={{ required: '시작 시간을 선택해주세요.' }}
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={TIME_OPTIONS}
+                    placeholder="시작 시간"
+                    className="w-[120px]"
+                  />
+                )}
               />
 
-              <Select
+              {/* 종료 시간 */}
+              <Controller
                 name={`data.${index}.endTime`}
-                options={TIME_OPTIONS}
-                placeholder="종료 시간"
-                className="w-[120px]"
-                rules={{
-                  required: '종료 시간을 선택해주세요.',
-                  validate: (value) => {
-                    const start = getValues(`data.${index}.startTime`);
-                    return (
-                      !start ||
-                      value > start ||
-                      '종료 시간은 시작 시간보다 늦어야 합니다.'
-                    );
-                  },
-                }}
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={TIME_OPTIONS}
+                    placeholder="종료 시간"
+                    className="w-[120px]"
+                  />
+                )}
               />
               <div className="ml-auto">
                 <Button

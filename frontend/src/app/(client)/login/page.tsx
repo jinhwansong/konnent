@@ -4,21 +4,24 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
-import { LoginRequest } from '@/types/user';
 import { IcGoogle, IcKakao, IcNaver } from '@/assets';
 import clsx from 'clsx';
 import { useToastStore } from '@/stores/useToast';
+import { LoginRequest, loginSchema } from '@/schema/login';
 
 export default function LoginPage() {
   const { showToast } = useToastStore();
   const router = useRouter();
   const methods = useForm<LoginRequest>({
     mode: 'all',
+    resolver: zodResolver(loginSchema),
     defaultValues: { email: '', password: '' },
   });
   const {
+    register,
     handleSubmit,
     formState: { isValid },
   } = methods;
@@ -49,36 +52,6 @@ export default function LoginPage() {
     { name: 'naver', value: '네이버', img: <IcNaver /> },
     { name: 'google', value: '구글', img: <IcGoogle /> },
   ];
-  const INPUT_FIELDS = [
-    {
-      name: 'email',
-      type: 'text',
-      placeholder: '이메일을 입력해주세요.',
-      label: '이메일',
-      rules: {
-        required: '이메일은 필수 입력입니다.',
-        pattern: {
-          value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-          message: '올바른 이메일 형식을 입력해주세요.',
-        },
-      },
-    },
-    {
-      name: 'password',
-      type: 'password',
-      placeholder: '비밀번호를 입력해주세요.',
-      label: '비밀번호',
-      rules: {
-        required: '비밀번호는 필수 입력입니다.',
-        pattern: {
-          value:
-            /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[a-zA-Z\d!@#$%^&*(),.?":{}|<>]{8,}$/,
-          message: '올바른 비밀번호 형식을 입력해주세요.',
-        },
-      },
-    },
-  ];
-
   return (
     <section className="mx-auto mt-10 mb-16 w-[380px]">
       <h4 className="mb-5 text-center text-xl font-bold text-[var(--text-bold)]">
@@ -90,11 +63,20 @@ export default function LoginPage() {
           noValidate
           className="flex w-full flex-col gap-5"
         >
-          {INPUT_FIELDS.map((item) => (
-            <div key={item.name} className="flex flex-col gap-2">
-              <Input {...item} />
-            </div>
-          ))}
+          <div className="flex flex-col gap-2">
+            <Input
+              type="text"
+              placeholder="이메일을 입력해주세요."
+              {...register('email')}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Input
+              type="password"
+              placeholder="비밀번호를 입력해주세요."
+              {...register('password')}
+            />
+          </div>
 
           <Button type="submit" disabled={!isValid}>
             로그인

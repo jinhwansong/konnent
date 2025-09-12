@@ -3,11 +3,13 @@ import { Controller, FormProvider, useForm } from 'react-hook-form';
 import Button from '../common/Button';
 import Editor from '../common/Editor';
 import { useToastStore } from '@/stores/useToast';
-import { ArticleRequest } from '@/types/article';
 import Input from '../common/Input';
 import { uploadArticleImage } from '@/libs/article';
 import { ARTICLE_OPTIONS } from '@/contact/article';
 import Select from '../common/Select';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ArticleRequest, articleSchema } from '@/schema/article';
+import FormErrorMessage from '../common/FormErrorMessage';
 
 interface ArticleFormProps {
   onSubmit: (data: ArticleRequest) => void;
@@ -23,6 +25,7 @@ export default function ArticleForm({
   const { showToast } = useToastStore();
   const methods = useForm<ArticleRequest>({
     mode: 'all',
+    resolver: zodResolver(articleSchema),
     defaultValues: defaultValues ?? {
       title: '',
       content: '',
@@ -34,7 +37,7 @@ export default function ArticleForm({
     control,
     register,
     handleSubmit,
-    formState: { isValid },
+    formState: { isValid, errors },
   } = methods;
   const handleImageUpload = async (files: File[]) => {
     const formData = new FormData();
@@ -69,7 +72,7 @@ export default function ArticleForm({
     formData.append('quality', '80');
     try {
       const res = await uploadArticleImage(formData);
-      return res.urls;
+      return res.image;
     } catch {
       showToast('이미지 업로드에 실패했습니다.', 'error');
       return [];
@@ -93,18 +96,26 @@ export default function ArticleForm({
             <Input
               type="text"
               placeholder="예: React 기초 강의"
-              {...register('title', { required: '제목을 입력하세요' })}
+              {...register('title')}
             />
+            <FormErrorMessage message={errors.title?.message} />
           </div>
 
           <div className="flex flex-col gap-1">
             <label className="text-sm text-[var(--text-bold)]">카테고리</label>
-            <Select
+            <Controller
               name="category"
-              options={ARTICLE_OPTIONS}
-              placeholder="카테고리를 선택해주세요"
-              rules={{ required: '카테고리를 선택해주세요.' }}
+              control={control}
+              render={({ field }) => (
+                <Select
+                  value={field.value}
+                  onChange={field.onChange}
+                  options={ARTICLE_OPTIONS}
+                  placeholder="카테고리를 선택해주세요"
+                />
+              )}
             />
+            <FormErrorMessage message={errors.category?.message} />
           </div>
 
           <div className="flex flex-col gap-1">
@@ -115,7 +126,6 @@ export default function ArticleForm({
             <Controller
               name="content"
               control={control}
-              rules={{ required: '내용을 입력하세요.' }}
               render={({ field }) => (
                 <Editor
                   value={field.value}
@@ -124,6 +134,7 @@ export default function ArticleForm({
                 />
               )}
             />
+            <FormErrorMessage message={errors.content?.message} />
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-sm text-[var(--text-bold)]">
@@ -133,9 +144,7 @@ export default function ArticleForm({
               type="file"
               accept="image/*"
               className="w-full cursor-pointer rounded-lg border border-[var(--border-color)] bg-[var(--background)] px-4 py-2 text-sm file:mr-4 file:rounded-lg file:border-0 file:bg-[var(--primary-sub01)] file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-[var(--primary)] focus:outline-none"
-              {...register('thumbnail', {
-                required: '썸네일 이미지를 선택해주세요.',
-              })}
+              {...register('thumbnail')}
             />
           </div>
           <Button type="submit" disabled={!isValid}>

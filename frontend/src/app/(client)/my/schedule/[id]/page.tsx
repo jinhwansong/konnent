@@ -10,8 +10,11 @@ import { colorMap, MentoringStatus, statusMap } from '@/contact/schedule';
 import Button from '@/components/common/Button';
 import Modal from '@/components/common/Modal';
 import Textarea from '@/components/common/Textarea';
-import { FormProvider, useForm } from 'react-hook-form';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { Reason } from '@/types/schedule';
+import { ReasonForm, reasonSchema } from '@/schema/schedule';
+import { zodResolver } from '@hookform/resolvers/zod';
+import FormErrorMessage from '@/components/common/FormErrorMessage';
 
 export default function ScheduleDetailPage() {
   const { id } = useParams();
@@ -42,16 +45,18 @@ export default function ScheduleDetailPage() {
       value: `${schedule?.startTime} ~ ${schedule?.endTime}`,
     },
   ];
-  const methods = useForm({
+  const methods = useForm<ReasonForm>({
     mode: 'all',
+    resolver: zodResolver(reasonSchema),
     defaultValues: {
       rejectReason: '',
     },
   });
   const {
+    control,
     reset,
     handleSubmit,
-    formState: { isValid },
+    formState: { isValid, errors },
   } = methods;
   const onSubmit = (data: Reason) => {
     scheduleStatus(
@@ -148,12 +153,21 @@ export default function ScheduleDetailPage() {
                   <span>{schedule?.menteeName}</span>
                 </div>
               </div>
-              <Textarea
+              <Controller
                 name="rejectReason"
-                placeholder="거절 사유를 입력해주세요"
-                maxLength={1000}
-                className="h-[200px]"
-                rules={{ required: '거절 사유는 필수입니다.' }}
+                control={control}
+                render={({ field }) => (
+                  <Textarea
+                    {...field}
+                    placeholder="거절 사유를 입력해주세요"
+                    maxLength={1000}
+                    className="h-[200px]"
+                  />
+                )}
+              />
+              <FormErrorMessage
+                message={errors.rejectReason?.message}
+                className="mt-1"
               />
               <div className="mt-4 rounded-lg border border-[var(--border-color)] p-3 text-sm leading-relaxed">
                 <p className="text-[var(--text-sub)]">

@@ -17,16 +17,14 @@ export default async function Home() {
   });
 
   await queryClient.prefetchQuery({
-    queryKey: ['article', 1, 'all', 4, 'likes'],
-    queryFn: () => getArticle(1, 'all', 4, 'likes'),
+    queryKey: ['article', 1, 'all', 6, 'likes'],
+    queryFn: () => getArticle(1, 'all', 6, 'likes'),
   });
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <section>
-        <Slider />
-        <MentorContent initialCategory="all" />
-        <ArticleList type="likes" />
-      </section>
+      <Slider />
+      <MentorContent initialCategory="all" />
+      <ArticleList type="likes" />
     </HydrationBoundary>
   );
 }

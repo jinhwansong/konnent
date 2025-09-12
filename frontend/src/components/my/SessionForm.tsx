@@ -8,6 +8,9 @@ import { SessionRequest } from '@/types/session';
 import { EXPERTISE_OPTIONS } from '@/contact/mentoring';
 import Select from '../common/Select';
 import { uploadSessionImage } from '@/libs/session';
+import { SessionFormValues, sessionSchema } from '@/schema/session';
+import { zodResolver } from '@hookform/resolvers/zod';
+import FormErrorMessage from '../common/FormErrorMessage';
 
 interface SessionFormProps {
   onSubmit: (data: SessionRequest) => void;
@@ -21,8 +24,9 @@ export default function SessionForm({
   title,
 }: SessionFormProps) {
   const { showToast } = useToastStore();
-  const methods = useForm<SessionRequest>({
+  const methods = useForm<SessionFormValues>({
     mode: 'all',
+    resolver: zodResolver(sessionSchema),
     defaultValues: defaultValues ?? {
       title: '',
       description: '',
@@ -31,11 +35,11 @@ export default function SessionForm({
       category: '',
     },
   });
+
   const {
     control,
     handleSubmit,
-    register,
-    formState: { isValid },
+    formState: { isValid, errors },
   } = methods;
   const handleImageUpload = async (files: File[]) => {
     const formData = new FormData();
@@ -89,12 +93,19 @@ export default function SessionForm({
         >
           <div className="flex flex-col gap-1">
             <label className="text-sm text-[var(--text-bold)]">세션 제목</label>
-            <Input
+            <Controller
               name="title"
-              type="text"
-              placeholder="예: React 기초 강의"
-              rules={{ required: '제목은 필수 입력입니다.' }}
+              control={control}
+              render={({ field, fieldState }) => (
+                <Input
+                  {...field}
+                  type="text"
+                  placeholder="예: React 기초 강의"
+                  error={fieldState.error?.message}
+                />
+              )}
             />
+            <FormErrorMessage message={errors.title?.message} />
           </div>
 
           <div className="flex gap-4">
@@ -102,47 +113,59 @@ export default function SessionForm({
               <label className="text-sm text-[var(--text-bold)]">
                 가격 (원)
               </label>
-              <Input
-                type="number"
-                placeholder="예: 50000"
-                {...register('price', {
-                  valueAsNumber: true,
-                  required: '가격을 입력해주세요.',
-                  min: {
-                    value: 1000,
-                    message: '최소 1000원 이상이어야 합니다.',
-                  },
-                })}
+              <Controller
+                name="price"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Input
+                    {...field}
+                    type="number"
+                    placeholder="예: 50000"
+                    value={field.value === 0 ? '' : field.value}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                    error={fieldState.error?.message}
+                  />
+                )}
               />
+              <FormErrorMessage message={errors.price?.message} />
             </div>
 
             <div className="flex w-1/2 flex-col gap-1">
               <label className="text-sm text-[var(--text-bold)]">
                 시간 (분)
               </label>
-              <Input
-                type="number"
-                placeholder="예: 60"
-                {...register('duration', {
-                  valueAsNumber: true,
-                  required: '시간을 입력해주세요.',
-                  min: {
-                    value: 10,
-                    message: '최소 10분 이상이어야 합니다.',
-                  },
-                })}
+              <Controller
+                name="duration"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Input
+                    {...field}
+                    type="number"
+                    placeholder="예: 60"
+                    value={field.value === 0 ? '' : field.value}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                    error={fieldState.error?.message}
+                  />
+                )}
               />
+              <FormErrorMessage message={errors.duration?.message} />
             </div>
           </div>
 
           <div className="flex flex-col gap-1">
             <label className="text-sm text-[var(--text-bold)]">카테고리</label>
-            <Select
+            <Controller
               name="category"
-              options={EXPERTISE_OPTIONS}
-              placeholder="카테고리를 선택해주세요"
-              rules={{ required: '카테고리를 선택해주세요.' }}
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={EXPERTISE_OPTIONS}
+                  placeholder="카테고리를 선택해주세요"
+                />
+              )}
             />
+            <FormErrorMessage message={errors.category?.message} />
           </div>
 
           <div className="flex flex-col gap-1">
@@ -159,6 +182,7 @@ export default function SessionForm({
                 />
               )}
             />
+            <FormErrorMessage message={errors.description?.message} />
           </div>
           <Button type="submit" disabled={!isValid}>
             {title}

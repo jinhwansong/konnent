@@ -51,6 +51,7 @@ export const {
             image: user.image,
             phone: user.phone,
             role: user.role,
+            socials: user.socials,
           };
         } catch {
           return null;
@@ -98,6 +99,7 @@ export const {
           phone: decoded.phone,
           role: decoded.role,
           image: decoded.image ?? null,
+          socials: decoded.socials,
         } satisfies JWT;
       } catch {
         return null;
@@ -111,7 +113,7 @@ export const {
     error: '/auth/error',
   },
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger, session }) {
       if (user) {
         let backendUser = user;
 
@@ -136,11 +138,9 @@ export const {
             if (res.ok) {
               backendUser = await res.json();
             } else {
-              console.error('소셜 사용자 등록 실패');
               return token;
             }
-          } catch (err) {
-            console.error('소셜 로그인 처리 에러:', err);
+          } catch {
             return token;
           }
         }
@@ -152,8 +152,13 @@ export const {
         token.nickname = backendUser.nickname;
         token.phone = backendUser.phone;
         token.image = backendUser.image ?? null;
+        token.socials = backendUser.socials ?? [];
       }
-
+      if (trigger === 'update') {
+        if (session?.nickname) token.nickname = session.nickname;
+        if (session?.phone) token.phone = session.phone;
+        if (session?.image) token.image = session.image;
+      }
       return token;
     },
 
@@ -168,6 +173,7 @@ export const {
           phone: token.phone as string,
           role: token.role as string,
           image: token.image as string | null,
+          socials: token.socials ?? [],
         };
       }
       return session;

@@ -37,3 +37,17 @@ export interface SendEmailVerificationRequest {
 export interface VerifyEmailCodeRequest extends SendEmailVerificationRequest {
   code: string;
 }
+
+export interface NicknameRequest {
+  nickname: string;
+}
+export interface PhoneRequest {
+  phone: string;
+}
+export interface PasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+export interface PasswordFormValues extends PasswordRequest {
+  confirmPassword: string;
+}

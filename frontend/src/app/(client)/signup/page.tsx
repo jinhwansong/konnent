@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import Input from '@/components/common/Input';
 import {
   duplicateEmail,
@@ -13,12 +13,16 @@ import { useToastStore } from '@/stores/useToast';
 import { JoinInterface } from '@/types/user';
 import Button from '@/components/common/Button';
 import { useRouter } from 'next/navigation';
+import { SignForm, signSchema } from '@/schema/sign';
+import { zodResolver } from '@hookform/resolvers/zod';
+import FormErrorMessage from '@/components/common/FormErrorMessage';
 
 export default function SignPage() {
   const router = useRouter();
   const { showToast } = useToastStore();
-  const methods = useForm<JoinInterface>({
+  const methods = useForm<SignForm>({
     mode: 'all',
+    resolver: zodResolver(signSchema),
     defaultValues: {
       email: '',
       password: '',
@@ -29,28 +33,23 @@ export default function SignPage() {
       code: '',
     },
   });
+
   const {
+    register,
     handleSubmit,
+    watch,
     formState: { errors, isValid },
   } = methods;
-  const [email, nickname, password, passwordConfirm, name, phone, code] =
-    useWatch({
-      name: [
-        'email',
-        'nickname',
-        'password',
-        'passwordConfirm',
-        'name',
-        'phone',
-        'code',
-      ],
-      control: methods.control,
-    });
 
   const [isDuplicateChecked, setIsDuplicateChecked] = useState(false);
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
+
+  const email = watch('email');
+  const nickname = watch('nickname');
+  const code = watch('code');
+
   const onSubmit = async (data: JoinInterface) => {
     const { email, nickname, password, name, phone } = data;
     try {
@@ -61,77 +60,6 @@ export default function SignPage() {
       showToast('회원가입에 실패했습니다.', 'error');
     }
   };
-  const SIGN_FIELDS = [
-    {
-      name: 'password',
-      type: 'password',
-      placeholder: '비밀번호를 입력해주세요.',
-      label: '비밀번호',
-      rules: {
-        required: '비밀번호는 필수 입력입니다.',
-        pattern: {
-          value:
-            /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[a-zA-Z\d!@#$%^&*(),.?":{}|<>]{8,}$/,
-          message: '영문, 숫자, 특수문자를 포함한 8자 이상이어야 합니다.',
-        },
-      },
-    },
-    {
-      name: 'passwordConfirm',
-      type: 'password',
-      placeholder: '비밀번호를 다시 입력해주세요.',
-      label: '비밀번호 확인',
-      rules: {
-        required: '비밀번호 확인은 필수 입력입니다.',
-        validate: (value: string) => {
-          return value === password || '비밀번호가 일치하지 않습니다.';
-        },
-      },
-    },
-    {
-      name: 'name',
-      type: 'text',
-      placeholder: '이름을 입력해주세요.',
-      label: '이름',
-      rules: {
-        required: '이름은 필수 입력입니다.',
-        minLength: {
-          value: 2,
-          message: '이름은 2자 이상이어야 합니다.',
-        },
-      },
-    },
-    {
-      name: 'nickname',
-      type: 'text',
-      placeholder: '닉네임을 입력해주세요.',
-      label: '닉네임',
-      rules: {
-        required: '닉네임은 필수 입력입니다.',
-        minLength: {
-          value: 2,
-          message: '닉네임은 2자 이상이어야 합니다.',
-        },
-        maxLength: {
-          value: 12,
-          message: '닉네임은 12자 이하여야 합니다.',
-        },
-      },
-    },
-    {
-      name: 'phone',
-      type: 'text',
-      placeholder: '전화번호를 입력해주세요.',
-      label: '전화번호',
-      rules: {
-        required: '전화번호는 필수 입력입니다.',
-        pattern: {
-          value: /^01[0-9]{1}?[0-9]{3,4}?[0-9]{4}$/,
-          message: '올바른 전화번호 형식을 입력해주세요.',
-        },
-      },
-    },
-  ];
 
   // 이메일 중복검사
   const checkEmailDuplicate = async () => {
@@ -207,17 +135,8 @@ export default function SignPage() {
     return () => clearInterval(timer);
   }, [isCodeSent, isVerified, showToast]);
 
-  // 회원가입 버튼 활성화
   const isFormReady =
-    isValid &&
-    isDuplicateChecked &&
-    isVerified &&
-    email &&
-    password &&
-    passwordConfirm &&
-    name &&
-    phone &&
-    nickname;
+    isValid && isDuplicateChecked && isVerified && email && nickname;
 
   return (
     <section className="mx-auto mt-10 mb-16 w-[380px]">
@@ -231,20 +150,15 @@ export default function SignPage() {
           noValidate
           className="flex w-full flex-col gap-5"
         >
+          {/* 이메일 */}
           <div className="relative flex flex-col gap-2">
             <label className="text-sm">이메일</label>
             <Input
-              name="email"
-              type="text"
+              {...register('email')}
               placeholder="이메일을 입력해주세요."
-              rules={{
-                required: '이메일은 필수 입력입니다.',
-                pattern: {
-                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                  message: '올바른 이메일 형식을 입력해주세요.',
-                },
-              }}
+              type="text"
             />
+            <FormErrorMessage message={errors.email?.message} />
             <button
               className="absolute top-8 right-1 bg-[var(--background)] px-2.5 py-2.5 text-sm text-[var(--primary)] disabled:text-[var(--text-sub)]"
               disabled={!email || !!errors.email}
@@ -254,28 +168,27 @@ export default function SignPage() {
               중복확인
             </button>
           </div>
+          {/* 인증 코드 */}
           {isDuplicateChecked && (
             <div className="relative flex flex-col gap-2">
               <label className="text-sm text-[var(--text-bold)]">
                 인증 코드
               </label>
               <Input
-                name="code"
-                type="text"
+                {...register('code')}
                 placeholder="인증코드를 입력해주세요"
-                rules={{ required: '인증 코드를 입력해주세요.' }}
+                type="text"
               />
+              <FormErrorMessage message={errors.code?.message} />
               <button
                 type="button"
-                onClick={async () => {
-                  if (isVerified) return;
-
-                  if (!isCodeSent) {
-                    await handleSendCode();
-                  } else {
-                    await handleVerifyCode();
-                  }
-                }}
+                onClick={
+                  isVerified
+                    ? undefined
+                    : isCodeSent
+                      ? handleVerifyCode
+                      : handleSendCode
+                }
                 className="absolute top-8 right-1 bg-[var(--background)] px-2.5 py-2.5 text-sm text-[var(--primary)] disabled:text-[var(--text-sub)]"
                 disabled={!email || !!errors.email || isVerified}
               >
@@ -291,27 +204,77 @@ export default function SignPage() {
             </div>
           )}
 
-          {SIGN_FIELDS.map((item) => {
-            const isNickname = item.label === '닉네임';
-            const isDisabled = isNickname && (!nickname || !!errors.nickname);
-            return (
-              <div key={item.name} className="relative flex flex-col gap-2">
-                <label className="text-sm">{item.label}</label>
-                <Input {...item} />
+          {/* 비밀번호 */}
+          <div className="flex flex-col gap-2">
+            <label className="text-sm">비밀번호</label>
+            <Input
+              {...register('password')}
+              type="password"
+              placeholder="비밀번호를 입력해주세요."
+            />
+            <FormErrorMessage message={errors.password?.message} />
+          </div>
 
-                {isNickname && (
-                  <button
-                    className="absolute top-8 right-1 bg-[var(--background)] px-2.5 py-2.5 text-sm text-[var(--primary)] disabled:text-[var(--text-sub)]"
-                    disabled={isDisabled}
-                    type="button"
-                    onClick={checkNicknameDuplicate}
-                  >
-                    중복확인
-                  </button>
-                )}
-              </div>
-            );
-          })}
+          {/* 비밀번호 확인 */}
+          <div className="flex flex-col gap-2">
+            <label className="text-sm">비밀번호 확인</label>
+            <Input
+              {...register('passwordConfirm')}
+              type="password"
+              placeholder="비밀번호를 다시 입력해주세요."
+            />
+            <FormErrorMessage message={errors.passwordConfirm?.message} />
+          </div>
+
+          {/* 이름 */}
+          <div className="flex flex-col gap-2">
+            <label className="text-sm">이름</label>
+            <Input
+              {...register('name')}
+              placeholder="이름을 입력해주세요."
+              type="text"
+            />
+            <FormErrorMessage message={errors.name?.message} />
+          </div>
+
+          {/* 닉네임 */}
+          <div className="relative flex flex-col gap-2">
+            <label className="text-sm">닉네임</label>
+            <Input
+              {...register('nickname')}
+              placeholder="닉네임을 입력해주세요."
+              type="text"
+            />
+            <FormErrorMessage message={errors.nickname?.message} />
+            <button
+              type="button"
+              className="absolute top-8 right-1 bg-[var(--background)] px-2.5 py-2.5 text-sm text-[var(--primary)] disabled:text-[var(--text-sub)]"
+              disabled={!nickname || !!errors.nickname}
+              onClick={checkNicknameDuplicate}
+            >
+              중복확인
+            </button>
+          </div>
+
+          {/* 전화번호 */}
+          <div className="flex flex-col gap-2">
+            <label className="text-sm">전화번호</label>
+            <Input
+              {...register('phone')}
+              placeholder="전화번호를 입력해주세요."
+              type="text"
+              inputMode="numeric"
+              pattern="\d*"
+              maxLength={11}
+              onInput={(e) => {
+                e.currentTarget.value = e.currentTarget.value.replace(
+                  /[^0-9]/g,
+                  '',
+                );
+              }}
+            />
+            <FormErrorMessage message={errors.phone?.message} />
+          </div>
           <Button type="submit" disabled={!isFormReady}>
             회원가입
           </Button>

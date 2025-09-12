@@ -10,6 +10,7 @@ import { ARTICLE_OPTIONS } from '@/contact/article';
 import { useLikeArticle } from '@/hooks/query/useArticle';
 import { useToastStore } from '@/stores/useToast';
 import { useSession } from 'next-auth/react';
+import { getImageUrl } from '@/utils/getImageUrl';
 
 interface ArticleCardProps extends ArticleCardItem {
   type?: 'main' | 'other';
@@ -78,11 +79,11 @@ export default function ArticleCard({
         <div className="mt-3 flex flex-col gap-2 text-sm sm:mt-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <Image
-              src={props.author.image ?? '/icon/IcPeople.avif'}
+              src={getImageUrl(session?.user.image?.trim() as string)}
               width={32}
               height={32}
               alt="프로필"
-              className="rounded-full"
+              className="h-8 w-8 rounded-full"
             />
             <span>{props.author.nickname}</span>
             <Divider />

@@ -1,14 +1,22 @@
 .ProseMirror {
-  background-color: var(--editor-bg);
   color: var(--editor-text);
   font-family: 'Pretendard', sans-serif;
   line-height: 1.8;
   font-size: 1rem;
-  outline: none;
   word-break: break-word;
+}
+
+/* 에디터 전용 */
+.ProseMirror.editor {
+  background-color: var(--editor-bg);
+  outline: none;
   margin: 0 auto;
 }
 
+/* 뷰어 전용 */
+.ProseMirror.viewer {
+  background-color: transparent;
+}
 /* 문단 */
 .ProseMirror p {
   margin: 0.75rem 0;

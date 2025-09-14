@@ -1,5 +1,6 @@
 import React from 'react';
 import { Option } from '@/types/apply';
+import clsx from 'clsx';
 
 interface CheckboxGroupProps<T = string> {
   value: T[] | T | undefined;
@@ -26,7 +27,12 @@ export default function CheckboxGroup<T = string>({
         return (
           <label
             key={JSON.stringify(item.value)}
-            className={`h-10 cursor-pointer rounded-lg border px-3 text-sm leading-10 ${isChecked ? 'border-[var(--primary)] bg-[var(--primary)] text-white' : 'border-[var(--primary-sub02)] bg-[var(--primary-sub02)]'} hover:border-[var(--primary)] hover:bg-[var(--primary-sub02)] hover:text-[var(--primary)]`}
+            className={clsx(
+              'h-10 cursor-pointer rounded-lg border px-3 text-sm leading-9.5 transition-colors',
+              isChecked
+                ? 'hover:bg-[color-mix(in oklch,var(--primary),black_15%)] border-[var(--primary)] bg-[var(--primary)] text-white'
+                : 'border-[var(--border-color)] bg-[var(--editor-bg)] text-[var(--text)] hover:border-[var(--primary)] hover:bg-[var(--hover-bg)] hover:text-[var(--primary)]',
+            )}
           >
             <input
               type={type}

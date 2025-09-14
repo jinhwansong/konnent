@@ -2,7 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
-import EditableForm from '@/components/my/EditableForm';
+import EditableTextForm from '@/components/my/EditableTextForm';
 import PasswordForm from '@/components/my/PasswordForm';
 import { nicknameRegex, phoneRegex } from '@/schema/sign';
 import {
@@ -25,29 +25,35 @@ export default function ProfilePage() {
   const { mutate: patchPhone } = usePatchPhone();
   const { mutate: patchPassword } = usePatchPassword();
   const handleUpdateNickname = (nickname: string) => {
-    patchNickname(nickname, {
-      onSuccess: () => {
-        showToast('닉네임이 성공적으로 변경되었습니다!', 'success');
+    patchNickname(
+      { nickname },
+      {
+        onSuccess: () => {
+          showToast('닉네임이 성공적으로 변경되었습니다!', 'success');
+        },
+        onError: (error) => {
+          const errorMessage =
+            error instanceof Error ? error.message : '오류가 발생했습니다.';
+          showToast(errorMessage, 'error');
+        },
       },
-      onError: (error) => {
-        const errorMessage =
-          error instanceof Error ? error.message : '오류가 발생했습니다.';
-        showToast(errorMessage, 'error');
-      },
-    });
+    );
   };
 
   const handleUpdatePhone = (phone: string) => {
-    patchPhone(phone, {
-      onSuccess: () => {
-        showToast('전화번호가 성공적으로 변경되었습니다!', 'success');
+    patchPhone(
+      { phone },
+      {
+        onSuccess: () => {
+          showToast('전화번호가 성공적으로 변경되었습니다!', 'success');
+        },
+        onError: (error) => {
+          const errorMessage =
+            error instanceof Error ? error.message : '오류가 발생했습니다.';
+          showToast(errorMessage, 'error');
+        },
       },
-      onError: (error) => {
-        const errorMessage =
-          error instanceof Error ? error.message : '오류가 발생했습니다.';
-        showToast(errorMessage, 'error');
-      },
-    });
+    );
   };
 
   const handleUpdatePassword = (values: PasswordFormValues) => {
@@ -130,7 +136,7 @@ export default function ProfilePage() {
       <h4 className="mb-6 text-2xl font-bold text-[var(--text-bold)]">
         프로필 설정
       </h4>
-      <div className="flex items-start gap-12 rounded-lg border border-[var(--border-color)] bg-[var(--background)] p-12">
+      <div className="flex items-start gap-12 rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] p-10">
         <div className="flex flex-col items-center">
           <Image
             src={getImageUrl(session?.user.image?.trim() as string)}
@@ -172,13 +178,13 @@ export default function ProfilePage() {
         <div className="flex-1 space-y-6">
           {/* 이메일 */}
           <div>
-            <label className="text-sm font-medium text-[var(--text-sub)]">
+            <label className="text-sm font-medium text-[var(--text)]">
               이메일
             </label>
             <p className="mt-3 text-sm">{session?.user.email}</p>
           </div>
           {/* 닉네임 */}
-          <EditableForm
+          <EditableTextForm
             label="닉네임"
             name="nickname"
             placeholder={
@@ -196,7 +202,7 @@ export default function ProfilePage() {
             }}
             onSubmit={handleUpdateNickname}
           />
-          <EditableForm
+          <EditableTextForm
             placeholder={
               session?.user.phone ?? '변경할 전화번호를 설정해주세요'
             }
@@ -215,13 +221,12 @@ export default function ProfilePage() {
           />
           {/* 비밀번호 */}
           <PasswordForm onSubmit={handleUpdatePassword} />
-          <label className="text-sm font-medium text-[var(--text-sub)]">
+          <label className="text-sm font-medium text-[var(--text)]">
             SNS 연동 현황
           </label>
           <ul className="mt-3 flex items-center gap-4">
             {sns.map((item) => {
               const isLinked = linked?.includes(item.name);
-              console.log(isLinked);
               return (
                 <li
                   key={item.name}

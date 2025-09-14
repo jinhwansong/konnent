@@ -26,20 +26,33 @@ export default function ConfirmDialog({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* overlay */}
-      <div className="absolute inset-0 bg-black/50" onClick={onCancel} />
+      <div
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        onClick={onCancel}
+      />
 
       {/* dialog */}
-      <div className="relative z-10 w-[90%] max-w-sm rounded-xl bg-[var(--background)] p-6 shadow-lg">
+      <div className="relative z-10 w-[90%] max-w-sm rounded-xl border border-[var(--border-color)] bg-[var(--editor-bg)] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.5)]">
         <h2 className="mb-2 text-lg font-semibold text-[var(--text-bold)]">
           {title}
         </h2>
         <p className="mb-6 text-sm text-[var(--text-sub)]">{description}</p>
 
         <div className="flex justify-end gap-3">
-          <Button onClick={onCancel} variant="outline" size="smWide">
+          <Button
+            onClick={onCancel}
+            variant="outline"
+            size="smWide"
+            className="border-[var(--border-color)] text-[var(--text-sub)] hover:bg-[var(--primary-sub02)]"
+          >
             {cancelText}
           </Button>
-          <Button onClick={onConfirm} variant="danger" size="smWide">
+          <Button
+            onClick={onConfirm}
+            variant="danger"
+            size="smWide"
+            className="hover:bg-red-600"
+          >
             {confirmText}
           </Button>
         </div>

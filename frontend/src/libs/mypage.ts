@@ -1,22 +1,29 @@
 import {
+  CareerRequest,
+  CompanyHiddenRequest,
+  CompanyRequest,
+  ExpertiseRequest,
+  MentorProfileResponse,
   MessageResponse,
   NicknameRequest,
   PasswordRequest,
   PhoneRequest,
+  PositionRequest,
 } from '@/types/user';
+
 import { fetcher } from '@/utils/fetcher';
 
-export const patchNickname = async (nickname: string) => {
+export const patchNickname = async (data: NicknameRequest) => {
   return fetcher<NicknameRequest>(`user/nickname`, {
     method: 'PATCH',
-    body: JSON.stringify({ nickname }),
+    body: JSON.stringify(data),
   });
 };
 
-export const patchPhone = async (phone: string) => {
+export const patchPhone = async (data: PhoneRequest) => {
   return fetcher<PhoneRequest>(`user/phone`, {
     method: 'PATCH',
-    body: JSON.stringify({ phone }),
+    body: JSON.stringify(data),
   });
 };
 
@@ -42,5 +49,42 @@ export const uploadProfileImage = (
 export const deleteProfile = async () => {
   return fetcher<MessageResponse>(`user/me`, {
     method: 'Delete',
+  });
+};
+
+export const patchIsCompanyHidden = async (data: CompanyHiddenRequest) => {
+  return fetcher<CompanyHiddenRequest>(`mentor/company-name`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+};
+export const patchCompany = async (data: CompanyRequest) => {
+  return fetcher<CompanyRequest>(`mentor/company`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+};
+export const patchPosition = async (data: PositionRequest) => {
+  return fetcher<PositionRequest>(`mentor/position `, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+};
+export const patchCareer = async (data: CareerRequest) => {
+  return fetcher<CareerRequest>(`mentor/career`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+};
+export const patchExpertise = async (data: ExpertiseRequest) => {
+  return fetcher<ExpertiseRequest>(`mentor/expertise`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+};
+
+export const getMentorProfile = async () => {
+  return fetcher<MentorProfileResponse>(`mentor`, {
+    method: 'GET',
   });
 };

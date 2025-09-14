@@ -4,7 +4,7 @@ import React from 'react';
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   variant?: 'solid' | 'outline' | 'danger' | 'wish' | 'wish-none';
-  size?: 'lg' | 'full-h' | 'smWide' | 'sm' | 'full';
+  size?: 'lg' | 'full-h' | 'smWide' | 'sm' | 'full' | 'sm-h';
   className?: string;
 }
 
@@ -17,36 +17,45 @@ export default function Button({
 }: ButtonProps) {
   const buttonClass = clsx(
     className,
-    ' px-4 rounded-md text-sm font-medium transition-colors duration-200 text-center',
+    'px-4 rounded-md text-sm font-medium transition-colors duration-200 text-center',
     size === 'full' && 'w-full h-[50px]',
     size === 'lg' && 'w-[120px] h-[50px]',
     size === 'full-h' && 'w-full h-10',
-    size === 'sm' && 'h-9 w-[80px]',
+    size === 'sm' && 'h-10 w-[80px]',
+    size === 'sm-h' && 'h-[50px] w-[80px]',
     size === 'smWide' && 'h-11 w-[100px]',
+
+    // ✅ Solid
     variant === 'solid' && [
-      'bg-[var(--primary-sub01)]  text-white',
-      'hover:bg-[var(--primary)]',
+      'bg-[var(--primary)] text-white',
+      'hover:bg-[color-mix(in oklch,var(--primary),black_15%)]',
+      'disabled:bg-[var(--border-color)] disabled:text-[var(--text-sub)] disabled:cursor-not-allowed',
     ],
+
+    // ✅ Outline
     variant === 'outline' && [
-      'bg-transparent border border-[var(--border-color)] ',
-      'hover:bg-[var(--primary-sub01)] hover:text-white',
+      'bg-transparent border border-[var(--border-color)] text-[var(--text)]',
+      'hover:border-[var(--primary)] hover:text-[var(--primary)] hover:bg-[var(--hover-bg)]',
       'disabled:bg-transparent disabled:text-[var(--text-sub)] disabled:border-[var(--border-color)] disabled:cursor-not-allowed',
     ],
+
+    // ✅ Danger
     variant === 'danger' && [
-      'bg-white border border-red-300 text-red-500',
+      'border border-red-500 text-red-500 bg-transparent',
       'hover:bg-red-500 hover:text-white',
+      'disabled:border-[var(--border-color)] disabled:text-[var(--text-sub)] disabled:cursor-not-allowed',
     ],
+
+    // ✅ Wish
     variant === 'wish' && [
-      'bg-[var(--primary-sub02)]',
-      'border border-[var(--primary-sub04)]',
-      'text-[var(--primary-sub04)]',
+      'bg-[var(--primary-sub02)] border border-[var(--primary-sub04)] text-[var(--primary-sub04)]',
       'hover:bg-[var(--primary-sub04)] hover:text-white',
     ],
+
+    // ✅ Wish None
     variant === 'wish-none' && [
-      'bg-transparent',
-      'border border-[var(--border-color)]',
-      'text-[var(--background-sub01)]',
-      'hover:bg-[var(--primary-sub02)] hover:text-[var(--primary-sub04)]',
+      'bg-transparent border border-[var(--border-color)] text-[var(--text-sub)]',
+      'hover:bg-[var(--hover-bg)] hover:text-[var(--primary-sub04)]',
     ],
   );
   return (

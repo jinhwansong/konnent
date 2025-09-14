@@ -9,6 +9,9 @@ import {
 import Button from '@/components/common/Button';
 import { useToastStore } from '@/stores/useToast';
 import { FiClock, FiDollarSign, FiStar } from 'react-icons/fi';
+import { formatDate } from '@/utils/formatDate';
+import { formatDuration } from '@/utils/formatDuration';
+import { formatPrice } from '@/utils/formatPrice';
 
 export default function SessionDetail() {
   const { id } = useParams();
@@ -50,12 +53,12 @@ export default function SessionDetail() {
     {
       icon: <FiDollarSign size={16} />,
       label: '가격',
-      value: `${session?.price.toLocaleString()}원`,
+      value: `${formatPrice(session?.price as number)}`,
     },
     {
       icon: <FiClock size={16} />,
       label: '시간',
-      value: `${session?.duration}분`,
+      value: `${formatDuration(session?.duration as number)}`,
     },
     {
       icon: <FiStar size={16} />,
@@ -91,16 +94,7 @@ export default function SessionDetail() {
           >
             {session?.public ? '비공개로 전환' : '공개로 전환'}
           </button>
-          <span>
-            {new Date(session?.createdAt as string).toLocaleDateString(
-              'ko-KR',
-              {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-              },
-            )}
-          </span>
+          <span>{formatDate(session?.createdAt as string)}</span>
         </div>
 
         <div className="flex h-9 items-center gap-2 text-sm whitespace-nowrap text-[var(--text-sub)]">
@@ -136,7 +130,7 @@ export default function SessionDetail() {
 
       <div className="prose prose-sm max-w-none leading-relaxed text-[var(--text)]">
         <div
-          className="ProseMirror"
+          className="ProseMirror viewer"
           dangerouslySetInnerHTML={{ __html: session?.description ?? '' }}
         />
       </div>

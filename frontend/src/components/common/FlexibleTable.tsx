@@ -21,14 +21,14 @@ export default function FlexibleTable<T>({
   onRowClick,
 }: FlexibleTableProps<T>) {
   return (
-    <div className="min-h-[550px] w-full table-fixed overflow-x-auto">
-      <table className="min-w-full rounded-xl bg-[var(--background)] text-sm text-[var(--text)]">
-        <thead className="border-y border-[var(--border-color)] bg-[var(--primary-sub02)]">
-          <tr>
+    <div className="min-h-[550px] w-full overflow-x-auto">
+      <table className="min-w-full border-collapse rounded-xl bg-[var(--background)] text-sm text-[var(--text)]">
+        <thead>
+          <tr className="border-y border-[var(--border-color)] bg-[var(--primary-sub02)]">
             {columns.map((col, i) => (
               <th
                 key={i}
-                className="px-4 py-3 text-left text-sm font-medium text-[var(--text-bold)]"
+                className="px-6 py-4 text-left text-sm font-semibold text-[var(--text-bold)]"
               >
                 {col.header}
               </th>
@@ -38,7 +38,10 @@ export default function FlexibleTable<T>({
         <tbody>
           {data?.length === 0 ? (
             <tr>
-              <td colSpan={columns?.length} className="py-10 text-center">
+              <td
+                colSpan={columns?.length}
+                className="px-6 py-16 text-center text-[var(--text-sub)]"
+              >
                 데이터가 없습니다.
               </td>
             </tr>
@@ -47,7 +50,7 @@ export default function FlexibleTable<T>({
               <tr
                 key={i}
                 className={clsx(
-                  'border-t border-[var(--border-color)] transition-colors duration-150 hover:bg-[var(--primary-sub02)]',
+                  'border-t border-[var(--border-color)] transition-colors duration-150 hover:bg-[var(--hover-bg)]',
                   onRowClick ? 'cursor-pointer' : '',
                 )}
                 onClick={() => onRowClick?.(row)}
@@ -60,7 +63,7 @@ export default function FlexibleTable<T>({
                   return (
                     <td
                       key={j}
-                      className={`px-4 py-3 text-sm ${col.className ?? ''}`}
+                      className={`px-6 py-4 align-middle text-sm ${col.className ?? ''}`}
                     >
                       {content}
                     </td>

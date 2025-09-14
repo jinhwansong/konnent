@@ -1,5 +1,7 @@
 import { SessionItem } from '@/types/session';
 import { formatDate } from '@/utils/formatDate';
+import { formatDuration } from '@/utils/formatDuration';
+import { formatPrice } from '@/utils/formatPrice';
 
 export const sessionsColumns = [
   {
@@ -11,12 +13,12 @@ export const sessionsColumns = [
   },
   {
     header: '시간',
-    accessor: (row: SessionItem) => `${row.duration}분`,
+    accessor: (row: SessionItem) => `${formatDuration(row.duration)}`,
     className: 'w-[80px]',
   },
   {
     header: '가격',
-    accessor: (row: SessionItem) => `${row.price.toLocaleString()}원`,
+    accessor: (row: SessionItem) => `${formatPrice(row.price)}`,
     className: 'w-[100px]',
   },
   {

@@ -39,11 +39,23 @@ export default function MyPageSidebar() {
       ],
     },
   ];
-  const menteeItem = [...commonItem];
-  const mentorItem = [...commonItem, ...mentorExtra];
-  const pathname = usePathname();
-  const tabs = session?.user?.role === 'mentor' ? mentorItem : menteeItem;
+  const mentorExtraItem = {
+    name: '멘토 프로필 관리',
+    href: '/my/mentor-profile',
+  };
 
+  const pathname = usePathname();
+  const tabs =
+    session?.user?.role === 'mentor'
+      ? [
+          {
+            ...commonItem[0],
+            items: [...commonItem[0].items, mentorExtraItem],
+          },
+          ...commonItem.slice(1),
+          ...mentorExtra,
+        ]
+      : commonItem;
   const [open, setOpen] = useState(false);
 
   const handleDelete = async () => {
@@ -72,10 +84,10 @@ export default function MyPageSidebar() {
                 <Link
                   href={item.href}
                   className={clsx(
-                    'block w-full rounded-md px-3 py-2 text-sm text-[var(--text)]',
+                    'block w-full rounded-md px-3 py-3 text-sm transition-colors',
                     pathname.includes(item.href)
-                      ? 'bg-indigo-100 text-indigo-600'
-                      : 'hover:bg-[var(--primary-sub02)] hover:text-[var(--primary)]',
+                      ? 'bg-[var(--primary-sub02)] font-semibold text-[var(--primary)]'
+                      : 'text-[var(--text)] hover:bg-[var(--hover-bg)] hover:text-[var(--primary-sub01)]',
                   )}
                 >
                   {item.name}
@@ -87,8 +99,8 @@ export default function MyPageSidebar() {
       ))}
       <button
         className={clsx(
-          'w-full text-sm font-medium',
-          'text-red-500 hover:text-red-600',
+          'w-full rounded-md px-3 py-3 text-sm font-medium',
+          'text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-500',
         )}
         onClick={() => setOpen(true)}
       >

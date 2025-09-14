@@ -51,3 +51,28 @@ export interface PasswordRequest {
 export interface PasswordFormValues extends PasswordRequest {
   confirmPassword: string;
 }
+
+export interface CompanyHiddenRequest {
+  isCompanyHidden: boolean;
+}
+export interface CareerRequest {
+  career: string;
+}
+export interface ExpertiseRequest {
+  expertise: string[];
+}
+export interface PositionRequest {
+  position: string;
+}
+export interface CompanyRequest {
+  company: string;
+}
+
+export interface MentorProfileResponse {
+  message: string;
+  career: string;
+  company: string;
+  expertise: string[];
+  isCompanyHidden: boolean;
+  position: string;
+}

@@ -112,8 +112,7 @@ export default function LoginPage() {
                 'flex h-[50px] w-full items-center justify-center rounded-[5px] text-sm font-bold',
                 item.name === 'kakao' && 'bg-[#FAE500] text-[#392020]',
                 item.name === 'naver' && 'bg-[#1EC800] text-white',
-                item.name === 'google' &&
-                  'bg-[#f8f8f8] text-[var(--text-bold)]',
+                item.name === 'google' && 'bg-[#f8f8f8] text-[#222]',
               )}
             >
               {item.img}

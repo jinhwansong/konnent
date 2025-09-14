@@ -2,6 +2,7 @@ import Providers from './providers';
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
+import WebVitalsReporter from './reportWebVitals';
 
 export const metadata: Metadata = {
   title: 'Konnect - 취준생을 위한 멘토링 플랫폼',
@@ -39,6 +40,7 @@ export default function RootLayout({
       <body>
         <SessionProvider>
           <Providers>{children}</Providers>
+          <WebVitalsReporter />
         </SessionProvider>
       </body>
     </html>

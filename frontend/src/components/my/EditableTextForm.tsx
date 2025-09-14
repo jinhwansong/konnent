@@ -1,22 +1,22 @@
 'use client';
-import React, { useState } from 'react';
-import { RegisterOptions, SubmitHandler, useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { useForm, SubmitHandler, RegisterOptions } from 'react-hook-form';
 import Input from '../common/Input';
 import FormErrorMessage from '../common/FormErrorMessage';
 import Button from '../common/Button';
 
-interface EditableFieldProps {
+interface EditableTextFormProps {
   label: string;
   name: string;
   defaultValue: string;
-  rules: RegisterOptions;
+  rules?: RegisterOptions;
   onSubmit: (value: string) => Promise<void> | void;
   type?: string;
-  placeholder: string;
+  placeholder?: string;
   isPhone?: boolean;
 }
 
-export default function EditableForm({
+export default function EditableTextForm({
   label,
   name,
   defaultValue,
@@ -25,19 +25,22 @@ export default function EditableForm({
   type = 'text',
   placeholder,
   isPhone,
-}: EditableFieldProps) {
+}: EditableTextFormProps) {
   const [isEditing, setIsEditing] = useState(false);
+
   const {
     register,
     handleSubmit,
     reset,
-
     formState: { isValid, errors },
-  } = useForm<Record<string, string>>({
+  } = useForm<{ [key: string]: string }>({
     mode: 'all',
     defaultValues: { [name]: defaultValue },
   });
-  const submitHandler: SubmitHandler<Record<string, string>> = async (data) => {
+
+  const submitHandler: SubmitHandler<{ [key: string]: string }> = async (
+    data,
+  ) => {
     await onSubmit(data[name]);
     setIsEditing(false);
     reset({ [name]: data[name] });
@@ -50,40 +53,31 @@ export default function EditableForm({
     <form onSubmit={handleSubmit(submitHandler)} className="space-y-3">
       <em className="block text-sm font-medium text-[var(--text)]">{label}</em>
 
-      {!isEditing && (
+      {!isEditing ? (
         <div className="flex items-center gap-5">
-          <Input type={type} placeholder={placeholder} disabled />
+          <Input
+            type="text"
+            value={defaultValue}
+            placeholder={placeholder}
+            disabled
+          />
           <Button
             type="button"
-            size="sm"
+            size="sm-h"
             variant="outline"
-            className="h-[45px]"
             onClick={() => setIsEditing(true)}
           >
             설정
           </Button>
         </div>
-      )}
-
-      {isEditing && (
+      ) : (
         <>
           <Input
             type={isPhone ? 'text' : type}
             inputMode={isPhone ? 'numeric' : undefined}
-            pattern={isPhone ? '\\d*' : undefined}
             maxLength={isPhone ? 11 : undefined}
             placeholder={placeholder}
             {...register(name, rules)}
-            onInput={
-              isPhone
-                ? (e) => {
-                    e.currentTarget.value = e.currentTarget.value.replace(
-                      /[^0-9]/g,
-                      '',
-                    );
-                  }
-                : undefined
-            }
           />
           <FormErrorMessage message={errors[name]?.message as string} />
 

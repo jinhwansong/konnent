@@ -15,7 +15,7 @@ import { useSession } from 'next-auth/react';
 import Select from '../common/Select';
 import { ApplyRequest, applySchema } from '@/schema/mentor';
 import { zodResolver } from '@hookform/resolvers/zod';
-import FormErrorMessage from '../common/FormErrorMessage';
+import FormFieldWrapper from '../common/FormFieldWrapper';
 
 export default function ApplyModal() {
   const router = useRouter();
@@ -23,7 +23,7 @@ export default function ApplyModal() {
   const { data: session } = useSession();
   const { mutate: applyMentor } = useMentorApply();
   const methods = useForm<ApplyRequest>({
-    mode: 'all',
+    mode: 'onChange',
     resolver: zodResolver(applySchema),
     defaultValues: {
       company: '',
@@ -35,10 +35,12 @@ export default function ApplyModal() {
     },
   });
   const {
+    register,
     control,
     handleSubmit,
     formState: { isValid, errors },
   } = methods;
+
   const onSubmit = (data: ApplyRequest) => {
     applyMentor(data, {
       onSuccess: () => {
@@ -52,15 +54,15 @@ export default function ApplyModal() {
       },
     });
   };
-
   return (
     <Modal onClose={() => router.back()}>
       <h4 className="mb-5 text-xl leading-[1.4] font-semibold tracking-[-0.3px] text-[var(--text-bold)]">
-        감사합니다,
-        <span className="text-[var(--primary-sub01)]">
+        감사합니다,{' '}
+        <span className="font-bold text-[var(--primary)]">
           {session?.user?.nickname}
         </span>
-        님<br />
+        님
+        <br />
         지식공유자가 되기 위해서
         <br />
         아래 정보가 필요해요.
@@ -78,7 +80,7 @@ export default function ApplyModal() {
             error={errors.company?.message}
           >
             <Input
-              name="company"
+              {...register('company')}
               type="text"
               placeholder="회사명을 입력해주세요."
             />
@@ -152,7 +154,7 @@ export default function ApplyModal() {
             error={errors.introduce?.message}
           >
             <Textarea
-              name="introduce"
+              {...register('introduce')}
               placeholder="자기소개를 입력해주세요."
               maxLength={100}
             />
@@ -165,7 +167,7 @@ export default function ApplyModal() {
             error={errors.portfolio?.message}
           >
             <Input
-              name="portfolio"
+              {...register('portfolio')}
               type="text"
               placeholder="URL 형식으로 입력해주세요."
             />
@@ -176,29 +178,5 @@ export default function ApplyModal() {
         </form>
       </FormProvider>
     </Modal>
-  );
-}
-
-interface FormFieldWrapperProps {
-  label: string;
-  name: string;
-  children: React.ReactNode;
-  error?: string;
-}
-
-function FormFieldWrapper({
-  label,
-  name,
-  children,
-  error,
-}: FormFieldWrapperProps) {
-  return (
-    <div className="relative flex flex-col gap-2" key={name}>
-      <label htmlFor={name} className="text-sm text-[var(--text-bold)]">
-        {label}
-      </label>
-      {children}
-      <FormErrorMessage message={error} />
-    </div>
   );
 }

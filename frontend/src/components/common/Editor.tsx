@@ -57,10 +57,10 @@ export default function Editor({
 
   if (!editor) return null;
   return (
-    <div className="editor_wrap rounded-lg border border-[var(--border-color)]">
+    <div className="rounded-lg border border-[var(--border-color)]">
       <Toolbar editor={editor} onImageUpload={onImageUpload} />
       <div className="scroll-custom h-[500px] overflow-auto">
-        <EditorContent editor={editor} />
+        <EditorContent editor={editor} className="ProseMirror editor" />
       </div>
     </div>
   );

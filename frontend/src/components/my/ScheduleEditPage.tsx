@@ -30,7 +30,7 @@ export default function ScheduleEditPage() {
 
   return (
     <ScheduleForm
-      title="정기 스케줄 수정"
+      title="정기 스케줄 추가/수정"
       onSubmit={onSubmit}
       defaultValues={schedule}
     />

@@ -46,7 +46,7 @@ export default function EarningPage() {
   ];
 
   return (
-    <section className="flex-1">
+    <section className="flex-1 bg-[var(--editor-bg)]">
       <h4 className="mb-6 text-2xl font-bold text-[var(--text-bold)]">
         내 수익
       </h4>

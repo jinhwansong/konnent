@@ -12,6 +12,8 @@
 
   --background: #ffffff;
   --border-color: #eeeeee;
+  --hover-bg: #f4f5fa;
+  --card-bg: #ffffff;
 
   --text: #333333;
   --text-sub: #555555;
@@ -42,39 +44,43 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --primary: #818aff;
-    --primary-sub01: #a5b4fc;
-    --primary-sub02: #1e1f29;
-    --primary-sub03: #d1d5ff; /* 밝은 퍼플 톤으로 */
-    --primary-sub04: #93c5fd;
+    /* 메인 포인트 */
+    --primary: #4f46e5; /* 딥 인디고 퍼플 */
+    --primary-sub01: #6366f1; /* 기본 퍼플 */
+    --primary-sub02: #18181b; /* 서브 배경 */
+    --primary-sub03: #818cf8; /* 살짝 밝은 퍼플 */
+    --primary-sub04: #3b82f6; /* 블루 포인트 */
 
-    --background: #0a0a0a;
-    --border-color: #2e2e2e;
-
-    --text: #e5e7eb;
-    --text-sub: #9ca3af;
-    --text-bold: #ffffff;
-
-    --editor-bg: #0f1115; /* 거의 블랙에 가까운 다크 그레이 */
-    --editor-text: #e5e7eb; /* 라이트 그레이 본문 */
-    --editor-text-sub: #9ca3af; /* 서브 텍스트 */
-    --editor-text-bold: #ffffff; /* 강조는 화이트 */
+    /* 배경 & 보더 */
+    --background: #121212; /* 완전 블랙 대신 차콜 */
+    --border-color: #2a2a2a; /* 보더는 은은한 다크그레이 */
+    --hover-bg: #2a2d31;
+    /* 텍스트 */
+    --text: #d1d5db; /* 기본 텍스트 (라이트 그레이) */
+    --text-sub: #9ca3af; /* 서브 텍스트 */
+    --text-bold: #ffffff; /* 강조 텍스트 */
+    --card-bg: #1a1c1e;
+    /* 에디터 */
+    --editor-bg: #1a1c1e; /* 진한 차콜 */
+    --editor-text: #e5e7eb;
+    --editor-text-sub: #9ca3af;
+    --editor-text-bold: #ffffff;
 
     /* 코드 */
-    --editor-code-bg: #1e1e1e; /* 인라인 코드 */
-    --editor-code-text: #fca5a5; /* 은은한 살몬핑크/레드 */
-    --editor-code-block-bg: #1e1e1e;
+    --editor-code-bg: #1e1e22;
+    --editor-code-text: #f87171;
+    --editor-code-block-bg: #1e1e22;
     --editor-code-block-text: #d1d5db;
-    --editor-code-border: #2e2e2e;
+    --editor-code-border: #2f2f2f;
 
     /* 인용문 */
-    --editor-quote-border: #374151; /* 다크 그레이 라인 */
-    --editor-quote-bg: #1a1c20; /* 살짝 톤 있는 다크 배경 */
-    --editor-quote-text: #9ca3af; /* 옅은 그레이 텍스트 */
+    --editor-quote-border: #32363f;
+    --editor-quote-bg: #1c1e24;
+    --editor-quote-text: #9ca3af;
 
     /* 테이블 */
-    --editor-table-border: #2e2e2e;
-    --editor-table-header-bg: #1f2937;
+    --editor-table-border: #2f2f2f;
+    --editor-table-header-bg: #1e222a;
   }
 }
 

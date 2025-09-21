@@ -1,9 +1,11 @@
 'use client';
-import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useDeleteSchedule, useGetSchedule } from '@/hooks/query/useSchedule';
+import React from 'react';
+
 import { DayOfWeek, WEEK_OPTIONS } from '@/contact/schedule';
+import { useDeleteSchedule, useGetSchedule } from '@/hooks/query/useSchedule';
+
 import Modal from '../common/Modal';
 
 export default function ScheduleRegular() {
@@ -15,15 +17,15 @@ export default function ScheduleRegular() {
     (acc, { value }) => {
       acc[value] =
         data?.data
-          ?.filter((item) => item.dayOfWeek === value)
-          .map((item) => ({
+          ?.filter(item => item.dayOfWeek === value)
+          .map(item => ({
             start: item.startTime.slice(0, 5),
             end: item.endTime.slice(0, 5),
             id: item.id as string,
           })) ?? [];
       return acc;
     },
-    {} as Record<DayOfWeek, { start: string; end: string; id: string }[]>,
+    {} as Record<DayOfWeek, { start: string; end: string; id: string }[]>
   );
   const handleDelete = (id: string) => {
     deleteSchedule(id);

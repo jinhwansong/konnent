@@ -1,8 +1,9 @@
 'use client';
-import React from 'react';
-import Link from 'next/link';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
+import React from 'react';
 import { FiCheck } from 'react-icons/fi';
+
 import { useGetReservationDone } from '@/hooks/query/useReservation';
 
 export default function ReservationDoneDetail({

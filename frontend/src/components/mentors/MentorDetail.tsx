@@ -1,18 +1,20 @@
 'use client';
-import React from 'react';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { FiBriefcase } from 'react-icons/fi';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import React from 'react';
 import { FaHeart } from 'react-icons/fa';
-import Button from '../common/Button';
-import { useGetSessionDetail } from '@/hooks/query/useCommonSession';
-import { getLabel } from '@/utils/getLabel';
-import { formatPrice } from '@/utils/formatPrice';
-import { formatDuration } from '@/utils/formatDuration';
+import { FiBriefcase } from 'react-icons/fi';
+
 import { CAREER_OPTIONS, POSITION_OPTIONS } from '@/contact/apply';
 import { careerIconMap, positionIconMap } from '@/contact/mentoring';
-import { useSession } from 'next-auth/react';
-import { getImageUrl } from '@/utils/getImageUrl';
+import { useGetSessionDetail } from '@/hooks/query/useCommonSession';
+import { formatMinutesToKorean } from '@/utils/formatDuration';
+import { formatToKoreanWon } from '@/utils/formatPrice';
+import { buildImageUrl } from '@/utils/getImageUrl';
+import { findOptionLabel } from '@/utils/getLabel';
+
+import Button from '../common/Button';
 
 export default function MentorDetail({ sessionId }: { sessionId: string }) {
   const { data: session, isLoading } = useGetSessionDetail(sessionId);
@@ -40,11 +42,11 @@ export default function MentorDetail({ sessionId }: { sessionId: string }) {
             </div>
             <div>
               <span className="font-medium text-[var(--text)]">가격:</span>{' '}
-              {formatPrice(session?.price as number)}
+              {formatToKoreanWon(session?.price as number)}
             </div>
             <div>
               <span className="font-medium text-[var(--text)]">시간:</span>{' '}
-              {formatDuration(session?.duration as number)}
+              {formatMinutesToKorean(session?.duration as number)}
             </div>
             <div>
               <span className="font-medium text-[var(--text)]">평점:</span> ⭐{' '}
@@ -60,7 +62,7 @@ export default function MentorDetail({ sessionId }: { sessionId: string }) {
 
         <aside className="self-start rounded-xl border border-[var(--border-color)] bg-white p-6 text-center shadow-sm md:sticky md:top-28">
           <Image
-            src={getImageUrl(session?.image as string)}
+            src={buildImageUrl(session?.image as string)}
             alt={session?.nickname as string}
             width={100}
             height={100}
@@ -76,14 +78,16 @@ export default function MentorDetail({ sessionId }: { sessionId: string }) {
                 {positionIconMap[session?.position as string]}
               </span>
               <span>
-                {getLabel(session?.position as string, POSITION_OPTIONS)}
+                {findOptionLabel(session?.position as string, POSITION_OPTIONS)}
               </span>
             </li>
             <li className="flex items-center justify-center gap-1.5 text-[var(--text-bold)]">
               <span className="text-base text-[var(--background-sub01)]">
                 {careerIconMap[session?.career as string]}
               </span>
-              <span>{getLabel(session?.career as string, CAREER_OPTIONS)}</span>
+              <span>
+                {findOptionLabel(session?.career as string, CAREER_OPTIONS)}
+              </span>
             </li>
             {session?.company !== '비공개' && (
               <li className="flex items-center justify-center gap-1.5 font-medium text-[var(--primary)]">

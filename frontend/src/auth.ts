@@ -1,13 +1,13 @@
+import { sign, verify } from 'jsonwebtoken';
 import NextAuth from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
 import KakaoProvider from 'next-auth/providers/kakao';
 import NaverProvider from 'next-auth/providers/naver';
-import GoogleProvider from 'next-auth/providers/google';
-import { sign, verify } from 'jsonwebtoken';
 
-const privateKey = process.env.JWT_PRIVATE_KEY!.replace(/\\n/g, '\n');
-const publicKey = process.env.JWT_PUBLIC_KEY!.replace(/\\n/g, '\n');
+const JWT_PRIVATE_KEY = process.env.JWT_PRIVATE_KEY!.replace(/\\n/g, '\n');
+const JWT_PUBLIC_KEY = process.env.JWT_PUBLIC_KEY!.replace(/\\n/g, '\n');
 export const {
   handlers,
   signIn,
@@ -25,33 +25,38 @@ export const {
 
       async authorize(credentials) {
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_AUTH_URL}/auth`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              email: credentials?.email,
-              password: credentials?.password,
-            }),
-          });
-          const user = await res.json();
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_AUTH_URL}/auth`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                email: credentials?.email,
+                password: credentials?.password,
+              }),
+            }
+          );
+
+          const userData = await response.json();
+
           if (
-            !res.ok ||
-            user?.success === false ||
-            user?.code === 401 ||
-            user?.error
+            !response.ok ||
+            userData?.success === false ||
+            userData?.code === 401 ||
+            userData?.error
           ) {
             return null;
           }
 
           return {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            nickname: user.nickname,
-            image: user.image,
-            phone: user.phone,
-            role: user.role,
-            socials: user.socials,
+            id: userData.id,
+            email: userData.email,
+            name: userData.name,
+            nickname: userData.nickname,
+            image: userData.image,
+            phone: userData.phone,
+            role: userData.role,
+            socials: userData.socials,
           };
         } catch {
           return null;
@@ -77,7 +82,7 @@ export const {
   },
   jwt: {
     encode: async ({ token }) => {
-      return sign(token as object, privateKey, {
+      return sign(token as object, JWT_PRIVATE_KEY, {
         algorithm: 'RS256',
         expiresIn: '1d',
       });
@@ -85,21 +90,21 @@ export const {
     decode: async ({ token }): Promise<JWT | null> => {
       if (!token) return null;
       try {
-        const decoded = verify(token, publicKey, {
+        const decodedToken = verify(token, JWT_PUBLIC_KEY, {
           algorithms: ['RS256'],
         });
 
-        if (typeof decoded === 'string') return null;
+        if (typeof decodedToken === 'string') return null;
 
         return {
-          id: decoded.id,
-          email: decoded.email,
-          name: decoded.name,
-          nickname: decoded.nickname,
-          phone: decoded.phone,
-          role: decoded.role,
-          image: decoded.image ?? null,
-          socials: decoded.socials,
+          id: decodedToken.id,
+          email: decodedToken.email,
+          name: decodedToken.name,
+          nickname: decodedToken.nickname,
+          phone: decodedToken.phone,
+          role: decodedToken.role,
+          image: decodedToken.image ?? null,
+          socials: decodedToken.socials,
         } satisfies JWT;
       } catch {
         return null;
@@ -120,7 +125,7 @@ export const {
         if (account?.provider !== 'credentials') {
           // 소셜 로그인 시 백엔드에 등록
           try {
-            const res = await fetch(
+            const socialResponse = await fetch(
               `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/social`,
               {
                 method: 'POST',
@@ -132,11 +137,11 @@ export const {
                   name: user.name,
                   image: user.image,
                 }),
-              },
+              }
             );
 
-            if (res.ok) {
-              backendUser = await res.json();
+            if (socialResponse.ok) {
+              backendUser = await socialResponse.json();
             } else {
               return token;
             }
@@ -144,7 +149,6 @@ export const {
             return token;
           }
         }
-
         token.id = backendUser.id;
         token.email = backendUser.email;
         token.role = backendUser.role;
@@ -179,7 +183,10 @@ export const {
       return session;
     },
 
-    async signIn() {
+    async signIn({ account }) {
+      if (account && account.provider !== 'credentials') {
+        return true;
+      }
       return true;
     },
   },

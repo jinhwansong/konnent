@@ -7,7 +7,6 @@ enum ArticleCategory {
   TECH = 'tech', // 실무 기술 공유, 툴 사용 팁, 개발/디자인 등
   LIFESTYLE = 'lifestyle', // 멘토의 일상, 루틴, 생산성 팁 등
   MENTORING = 'mentoring', // 실제 멘토링 사례, 느낀 점, QnA 정리
-  NOTICE = 'notice', // 서비스 공지, 시스템 관련 안내 등
   STARTUP = 'startup', // 창업, 사이드 프로젝트, 스타트업 이야기
   PORTFOLIO = 'portfolio', // 	포트폴리오 작성/리뷰 관련 팁
   BOOK = 'book', // 	책 추천, 독서 후기, 학습 자료
@@ -22,7 +21,6 @@ export const ARTICLE_OPTIONS: Option<ArticleCategoryTabType>[] = [
   { label: '실무 기술/툴/개발', value: ArticleCategory.TECH },
   { label: '일상/루틴/생산성', value: ArticleCategory.LIFESTYLE },
   { label: '멘토링 후기/QnA', value: ArticleCategory.MENTORING },
-  { label: '공지사항', value: ArticleCategory.NOTICE },
   { label: '스타트업/사이드 프로젝트', value: ArticleCategory.STARTUP },
   { label: '포트폴리오 작성 팁', value: ArticleCategory.PORTFOLIO },
   { label: '책/독서/자료', value: ArticleCategory.BOOK },
@@ -37,7 +35,7 @@ export const ARTICLE_OPTION_ALL: Option<ArticleCategoryTabType>[] = [
 
 export type ArticleSortType = 'latest' | 'likes';
 
-export const articleSortOptions: Option<ArticleSortType>[] = [
+export const ARTICLE_OPTION_SORT: Option<ArticleSortType>[] = [
   { label: '최신순', value: 'latest' },
   { label: '좋아요순', value: 'likes' },
 ];

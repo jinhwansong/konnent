@@ -1,12 +1,13 @@
-import { colorMap, MentoringStatus, statusMap } from '@/contact/schedule';
 import React from 'react';
-import Button from '../common/Button';
 
-import { formatDuration } from '@/utils/formatDuration';
+import { colorMap, MentoringStatus, statusMap } from '@/contact/schedule';
 import {
   PastReservationItem,
   ReservationMenteeItem,
 } from '@/types/reservation';
+import { formatMinutesToKorean } from '@/utils/formatDuration';
+
+import Button from '../common/Button';
 
 interface ReservationCardProp<
   T extends ReservationMenteeItem | PastReservationItem,
@@ -43,7 +44,7 @@ export default function ReservationCard<
           <span>멘토명</span> {item.mentorName}
         </p>
         <p className="flex justify-between">
-          <span>1회 멘토링</span> {formatDuration(item.duration)}
+          <span>1회 멘토링</span> {formatMinutesToKorean(item.duration)}
         </p>
       </div>
 

@@ -10,24 +10,23 @@ import {
   PhoneRequest,
   PositionRequest,
 } from '@/types/user';
-
 import { fetcher } from '@/utils/fetcher';
 
-export const patchNickname = async (data: NicknameRequest) => {
+export const updateNickname = async (data: NicknameRequest) => {
   return fetcher<NicknameRequest>(`user/nickname`, {
     method: 'PATCH',
     body: JSON.stringify(data),
   });
 };
 
-export const patchPhone = async (data: PhoneRequest) => {
+export const updatePhone = async (data: PhoneRequest) => {
   return fetcher<PhoneRequest>(`user/phone`, {
     method: 'PATCH',
     body: JSON.stringify(data),
   });
 };
 
-export const patchPassword = async (data: PasswordRequest) => {
+export const updatePassword = async (data: PasswordRequest) => {
   return fetcher<MessageResponse>(`user/password`, {
     method: 'PATCH',
     body: JSON.stringify({
@@ -38,7 +37,7 @@ export const patchPassword = async (data: PasswordRequest) => {
 };
 
 export const uploadProfileImage = (
-  formData: FormData,
+  formData: FormData
 ): Promise<{ image: string }> => {
   return fetcher<{ image: string }>('user/profile', {
     method: 'PATCH',
@@ -52,31 +51,31 @@ export const deleteProfile = async () => {
   });
 };
 
-export const patchIsCompanyHidden = async (data: CompanyHiddenRequest) => {
+export const updateCompanyHidden = async (data: CompanyHiddenRequest) => {
   return fetcher<CompanyHiddenRequest>(`mentor/company-name`, {
     method: 'PATCH',
     body: JSON.stringify(data),
   });
 };
-export const patchCompany = async (data: CompanyRequest) => {
+export const updateCompany = async (data: CompanyRequest) => {
   return fetcher<CompanyRequest>(`mentor/company`, {
     method: 'PATCH',
     body: JSON.stringify(data),
   });
 };
-export const patchPosition = async (data: PositionRequest) => {
+export const updatePosition = async (data: PositionRequest) => {
   return fetcher<PositionRequest>(`mentor/position `, {
     method: 'PATCH',
     body: JSON.stringify(data),
   });
 };
-export const patchCareer = async (data: CareerRequest) => {
+export const updateCareer = async (data: CareerRequest) => {
   return fetcher<CareerRequest>(`mentor/career`, {
     method: 'PATCH',
     body: JSON.stringify(data),
   });
 };
-export const patchExpertise = async (data: ExpertiseRequest) => {
+export const updateExpertise = async (data: ExpertiseRequest) => {
   return fetcher<ExpertiseRequest>(`mentor/expertise`, {
     method: 'PATCH',
     body: JSON.stringify(data),

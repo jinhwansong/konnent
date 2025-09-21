@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 
 export default function useClickOutside(
   ref: React.RefObject<HTMLElement | null>,
-  onClick: () => void,
+  onClick: () => void
 ) {
   useEffect(() => {
+    if (typeof document === 'undefined') return;
     const handleClick = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
         onClick();

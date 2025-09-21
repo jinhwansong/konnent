@@ -1,5 +1,5 @@
-import { format } from 'date-fns';
+import { formatDate as newFormatDate } from './helpers';
 
-export const formatDate = (day: string) => {
-  return format(new Date(day), 'yy.MM.dd');
+export const formatToKoreanDate = (dateString: string): string => {
+  return newFormatDate(dateString);
 };

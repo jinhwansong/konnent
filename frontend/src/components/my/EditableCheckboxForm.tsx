@@ -1,11 +1,13 @@
 'use client';
 import { useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+
+import { findOptionLabel } from '@/utils/getLabel';
+
 import Button from '../common/Button';
 import CheckboxGroup from '../common/CheckboxGroup';
-import { getLabel } from '@/utils/getLabel';
-import Input from '../common/Input';
 import FormErrorMessage from '../common/FormErrorMessage';
+import Input from '../common/Input';
 
 interface EditableCheckboxFormProps {
   label: string;
@@ -33,9 +35,9 @@ export default function EditableCheckboxForm({
     defaultValues: { [name]: defaultValue },
   });
 
-  const submitHandler: SubmitHandler<{ [key: string]: string[] }> = async (
-    data,
-  ) => {
+  const submitHandler: SubmitHandler<{
+    [key: string]: string[];
+  }> = async data => {
     await onSubmit(data[name]);
     setIsEditing(false);
     reset({ [name]: data[name] });
@@ -54,7 +56,7 @@ export default function EditableCheckboxForm({
             type="text"
             value={
               defaultValue.length > 0
-                ? `${getLabel(defaultValue[0], options)}${
+                ? `${findOptionLabel(defaultValue[0], options)}${
                     defaultValue.length > 1
                       ? ` 외 ${defaultValue.length - 1}`
                       : ''
@@ -79,7 +81,7 @@ export default function EditableCheckboxForm({
             name={name}
             control={control}
             rules={{
-              validate: (value) =>
+              validate: value =>
                 (value?.length ?? 0) > 0 || '최소 1개 이상 선택해야 합니다.',
             }}
             render={({ field }) => (

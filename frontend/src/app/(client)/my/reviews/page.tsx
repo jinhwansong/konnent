@@ -1,4 +1,6 @@
 'use client';
+import React, { useState } from 'react';
+
 import Button from '@/components/common/Button';
 import Pagination from '@/components/common/Pagination';
 import ReviewForm from '@/components/my/ReviewForm';
@@ -10,10 +12,9 @@ import {
 } from '@/hooks/query/useReview';
 import { useToastStore } from '@/stores/useToast';
 import { Reviews } from '@/types/review';
-import React, { useState } from 'react';
 
 export default function ReviewPage() {
-  const { showToast } = useToastStore();
+  const { show } = useToastStore();
   const [page, setPage] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedReservationId, setSelectedReservationId] = useState<
@@ -25,7 +26,7 @@ export default function ReviewPage() {
   };
   const { data, isLoading } = useGetMenteeReview(page);
   const selectedReview = data?.data.find(
-    (review) => review.id === selectedReservationId,
+    review => review.id === selectedReservationId
   );
   const { mutate: patchReview } = usePatchReview();
   const { mutate: deleteReview } = useDeleteReview();
@@ -34,27 +35,27 @@ export default function ReviewPage() {
       { id: selectedReservationId as string, data },
       {
         onSuccess: () => {
-          showToast('리뷰 수정을 완료했습니다.', 'success');
+          show('리뷰 수정을 완료했습니다.', 'success');
           setIsOpen(false);
         },
-        onError: (error) => {
+        onError: error => {
           const errorMessage =
             error instanceof Error ? error.message : '오류가 발생했습니다.';
-          showToast(errorMessage, 'error');
+          show(errorMessage, 'error');
         },
-      },
+      }
     );
   };
   const onDelete = (id: string) => {
     deleteReview(id, {
       onSuccess: () => {
-        showToast('리뷰 삭제을 완료했습니다.', 'success');
+        show('리뷰 삭제을 완료했습니다.', 'success');
         setIsOpen(false);
       },
-      onError: (error) => {
+      onError: error => {
         const errorMessage =
           error instanceof Error ? error.message : '오류가 발생했습니다.';
-        showToast(errorMessage, 'error');
+        show(errorMessage, 'error');
       },
     });
   };
@@ -67,7 +68,7 @@ export default function ReviewPage() {
       {data?.data.length ? (
         <>
           <ul className="flex flex-col gap-6">
-            {data.data.map((item) => (
+            {data.data.map(item => (
               <ReviewItem
                 item={item}
                 type="mentee"
@@ -96,7 +97,7 @@ export default function ReviewPage() {
           <Pagination
             page={page}
             totalPages={data?.totalPage || 1}
-            onChange={(newPage) => setPage(newPage)}
+            onChange={newPage => setPage(newPage)}
           />
         </>
       ) : (

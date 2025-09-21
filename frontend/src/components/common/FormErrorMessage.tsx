@@ -3,12 +3,28 @@ import React from 'react';
 interface FormErrorMessageProps {
   message?: string;
   className?: string;
+  id?: string;
 }
 
-export default function FormErrorMessage({
-  message,
-  className,
-}: FormErrorMessageProps) {
-  if (!message) return null;
-  return <p className={`text-sm text-red-500 ${className}`}>{message}</p>;
-}
+const FormErrorMessage = React.forwardRef<HTMLParagraphElement, FormErrorMessageProps>(
+  ({ message, className, id, ...props }, ref) => {
+    if (!message) return null;
+    
+    return (
+      <p 
+        ref={ref}
+        id={id}
+        className={`text-sm text-[var(--danger)] ${className || ''}`}
+        role="alert"
+        aria-live="polite"
+        {...props}
+      >
+        {message}
+      </p>
+    );
+  }
+);
+
+FormErrorMessage.displayName = 'FormErrorMessage';
+
+export default React.memo(FormErrorMessage);

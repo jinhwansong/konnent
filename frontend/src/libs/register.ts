@@ -1,20 +1,22 @@
-import { fetcher } from '@/utils/fetcher';
 import {
   MessageResponse,
-  JoinRequest,
+  UserRegistrationRequest,
   SendEmailVerificationRequest,
   VerifyEmailCodeRequest,
 } from '@/types/user';
+import { fetcher } from '@/utils/fetcher';
 
-export const duplicateEmail = (email: string): Promise<MessageResponse> => {
+export const checkEmailAvailability = (
+  email: string
+): Promise<MessageResponse> => {
   return fetcher<MessageResponse>('auth/duplicateEmail', {
     method: 'POST',
     body: JSON.stringify({ email }),
   });
 };
 
-export const duplicateNickname = (
-  nickname: string,
+export const checkNicknameAvailability = (
+  nickname: string
 ): Promise<MessageResponse> => {
   return fetcher<MessageResponse>('auth/duplicateNickname', {
     method: 'POST',
@@ -23,7 +25,7 @@ export const duplicateNickname = (
 };
 
 export const sendEmailVerification = (
-  data: SendEmailVerificationRequest,
+  data: SendEmailVerificationRequest
 ): Promise<MessageResponse> => {
   return fetcher<MessageResponse>('auth/email/verify/send', {
     method: 'POST',
@@ -31,8 +33,8 @@ export const sendEmailVerification = (
   });
 };
 
-export const verifyEmailCode = (
-  data: VerifyEmailCodeRequest,
+export const postEmailCodeVerification = (
+  data: VerifyEmailCodeRequest
 ): Promise<MessageResponse> => {
   return fetcher<MessageResponse>('auth/email/verify/confirm', {
     method: 'POST',
@@ -40,7 +42,9 @@ export const verifyEmailCode = (
   });
 };
 
-export const registerUser = (data: JoinRequest): Promise<MessageResponse> => {
+export const createUser = (
+  data: UserRegistrationRequest
+): Promise<MessageResponse> => {
   return fetcher<MessageResponse>('auth/join', {
     method: 'POST',
     body: JSON.stringify(data),

@@ -1,7 +1,7 @@
 'use client';
 
-import * as React from 'react';
 import clsx from 'clsx';
+import * as React from 'react';
 
 type ToggleSize = 'sm' | 'md' | 'lg';
 
@@ -43,7 +43,7 @@ export const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
       className,
       ...props
     },
-    ref,
+    ref
   ) {
     const isControlled = typeof checked === 'boolean';
     const [internal, setInternal] = React.useState(Boolean(defaultChecked));
@@ -52,7 +52,7 @@ export const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
     const handleToggle = (
       e:
         | React.MouseEvent<HTMLButtonElement>
-        | React.KeyboardEvent<HTMLButtonElement>,
+        | React.KeyboardEvent<HTMLButtonElement>
     ) => {
       e.preventDefault();
       if (disabled) return;
@@ -71,7 +71,7 @@ export const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
         aria-checked={isOn}
         aria-disabled={disabled || undefined}
         onClick={handleToggle}
-        onKeyDown={(e) => {
+        onKeyDown={e => {
           if (e.key === 'Enter') {
             e.preventDefault();
             handleToggle(e);
@@ -88,7 +88,7 @@ export const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
           // ✅ 포커스 링
           'focus-visible:ring-[var(--primary)]',
           s.track,
-          className,
+          className
         )}
         {...props}
       >
@@ -99,10 +99,10 @@ export const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
             'transition-all duration-200',
             isOn ? s.translate : 'translate-x-[0.2rem]',
             'bg-[var(--card-bg)] dark:bg-[var(--card-bg)]',
-            s.thumb,
+            s.thumb
           )}
         />
       </button>
     );
-  },
+  }
 );

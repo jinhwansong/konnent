@@ -1,15 +1,17 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
+
+import { ARTICLE_OPTIONS } from '@/contact/article';
+import { uploadArticleImage } from '@/libs/article';
+import { ArticleRequest, articleSchema } from '@/schema/article';
+import { useToastStore } from '@/stores/useToast';
+
 import Button from '../common/Button';
 import Editor from '../common/Editor';
-import { useToastStore } from '@/stores/useToast';
-import Input from '../common/Input';
-import { uploadArticleImage } from '@/libs/article';
-import { ARTICLE_OPTIONS } from '@/contact/article';
-import Select from '../common/Select';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { ArticleRequest, articleSchema } from '@/schema/article';
 import FormErrorMessage from '../common/FormErrorMessage';
+import Input from '../common/Input';
+import Select from '../common/Select';
 
 interface ArticleFormProps {
   onSubmit: (data: ArticleRequest) => void;
@@ -22,7 +24,7 @@ export default function ArticleForm({
   defaultValues,
   title,
 }: ArticleFormProps) {
-  const { showToast } = useToastStore();
+  const { show } = useToastStore();
   const methods = useForm<ArticleRequest>({
     mode: 'all',
     resolver: zodResolver(articleSchema),
@@ -50,19 +52,19 @@ export default function ArticleForm({
       'image/avif',
     ];
 
-    files.forEach((file) => {
+    files.forEach(file => {
       if (file.name.length > 30) {
-        showToast('파일명은 글자수 30자 미만으로 적어주세요.', 'error');
+        show('파일명은 글자수 30자 미만으로 적어주세요.', 'error');
         return [];
       }
 
       if (file.size > 5 * 1024 * 1024) {
-        showToast('파일 크기는 5MB 미만으로 줄여주세요.', 'error');
+        show('파일 크기는 5MB 미만으로 줄여주세요.', 'error');
         return [];
       }
 
       if (!allowedTypes.includes(file.type)) {
-        showToast('지원하지 않는 이미지 형식입니다.', 'error');
+        show('지원하지 않는 이미지 형식입니다.', 'error');
         return [];
       }
       formData.append('images', file);
@@ -74,7 +76,7 @@ export default function ArticleForm({
       const res = await uploadArticleImage(formData);
       return res.image;
     } catch {
-      showToast('이미지 업로드에 실패했습니다.', 'error');
+      show('이미지 업로드에 실패했습니다.', 'error');
       return [];
     }
   };
@@ -89,8 +91,8 @@ export default function ArticleForm({
           noValidate
           className="flex w-full flex-col gap-8"
         >
-          <div className="flex flex-col gap-1">
-            <label className="text-sm text-[var(--text-bold)]">
+          <div>
+            <label className="mb-2 block text-sm text-[var(--text-bold)]">
               아티클 제목
             </label>
             <Input
@@ -102,7 +104,9 @@ export default function ArticleForm({
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm text-[var(--text-bold)]">카테고리</label>
+            <label className="mb-2 block text-sm text-[var(--text-bold)]">
+              카테고리
+            </label>
             <Controller
               name="category"
               control={control}
@@ -118,8 +122,8 @@ export default function ArticleForm({
             <FormErrorMessage message={errors.category?.message} />
           </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="text-sm text-[var(--text-bold)]">
+          <div>
+            <label className="mb-2 block text-sm text-[var(--text-bold)]">
               아티클 내용
             </label>
 
@@ -136,8 +140,8 @@ export default function ArticleForm({
             />
             <FormErrorMessage message={errors.content?.message} />
           </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-sm text-[var(--text-bold)]">
+          <div>
+            <label className="mb-2 block text-sm text-[var(--text-bold)]">
               썸네일 이미지
             </label>
             <input

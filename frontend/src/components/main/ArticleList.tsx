@@ -1,11 +1,13 @@
 'use client';
 import React from 'react';
+
 import { useGetArticle, useLikedArticles } from '@/hooks/query/useArticle';
+
 import ArticleCard from '../article/ArticleCard';
 
 export default function ArticleList({ type }: { type: string }) {
   const { data, isLoading } = useGetArticle(1, 'all', 6, type);
-  const articleIds = data?.data?.map((item) => item.id) ?? [];
+  const articleIds = data?.data?.map(item => item.id) ?? [];
   const { data: likedIds } = useLikedArticles(articleIds);
   if (isLoading) return null;
   return (

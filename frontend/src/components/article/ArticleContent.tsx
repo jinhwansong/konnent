@@ -1,18 +1,21 @@
 'use client';
-import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import ArticleCard from './ArticleCard';
-import Pagination from '../common/Pagination';
+import { useSession } from 'next-auth/react';
+import React, { useState } from 'react';
+
 import {
   ARTICLE_OPTION_ALL,
   ArticleCategoryTabType,
-  articleSortOptions,
+  ARTICLE_OPTION_SORT,
   ArticleSortType,
 } from '@/contact/article';
 import { useGetArticle, useLikedArticles } from '@/hooks/query/useArticle';
-import { useSession } from 'next-auth/react';
-import Select from '../common/Select';
+
 import Button from '../common/Button';
+import Pagination from '../common/Pagination';
+import Select from '../common/Select';
+
+import ArticleCard from './ArticleCard';
 
 export default function ArticleContent({
   initialCategory,
@@ -25,7 +28,7 @@ export default function ArticleContent({
   const [sort, setSort] = useState<ArticleSortType>('latest');
   const [selected, setSelected] = useState<ArticleCategoryTabType>(safeInitial);
   const { data, isLoading } = useGetArticle(page, selected, 10, sort);
-  const articleIds = data?.data?.map((item) => item.id) ?? [];
+  const articleIds = data?.data?.map(item => item.id) ?? [];
   const { data: likedIds } = useLikedArticles(articleIds);
   const { data: session } = useSession();
   const router = useRouter();
@@ -41,17 +44,17 @@ export default function ArticleContent({
     <section className="mx-auto mt-10 mb-16 w-[768px]">
       <div className="mb-10 flex w-full items-center justify-between">
         <div className="flex items-center gap-5">
-          <Select
+          <Select<ArticleCategoryTabType>
             value={selected}
             onChange={setSelected}
             options={ARTICLE_OPTION_ALL}
             placeholder="카테고리 선택"
             className="w-[192px]"
           />
-          <Select
+          <Select<ArticleSortType>
             value={sort}
             onChange={setSort}
-            options={articleSortOptions}
+            options={ARTICLE_OPTION_SORT}
             placeholder="정렬 기준"
             className="w-[120px]"
           />
@@ -64,7 +67,7 @@ export default function ArticleContent({
       {data?.data.length ? (
         <>
           <div className="flex flex-col gap-8">
-            {data?.data.map((item) => (
+            {data?.data.map(item => (
               <ArticleCard
                 key={item.id}
                 {...item}
@@ -75,7 +78,7 @@ export default function ArticleContent({
           <Pagination
             page={page}
             totalPages={data?.totalPages || 1}
-            onChange={(newPage) => setPage(newPage)}
+            onChange={newPage => setPage(newPage)}
           />
         </>
       ) : (

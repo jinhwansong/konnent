@@ -1,6 +1,8 @@
-export const getLabel = (
+import { findOptionLabel as newFindOptionLabel } from './helpers';
+
+export const findOptionLabel = (
   value: string,
-  options: { label: string; value: string }[],
+  options: { label: string; value: string }[]
 ): string => {
-  return options.find((opt) => opt.value === value)?.label ?? value;
+  return newFindOptionLabel(value, options);
 };

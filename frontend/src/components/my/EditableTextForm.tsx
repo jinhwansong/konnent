@@ -1,9 +1,10 @@
 'use client';
 import { useState } from 'react';
 import { useForm, SubmitHandler, RegisterOptions } from 'react-hook-form';
-import Input from '../common/Input';
-import FormErrorMessage from '../common/FormErrorMessage';
+
 import Button from '../common/Button';
+import FormErrorMessage from '../common/FormErrorMessage';
+import Input from '../common/Input';
 
 interface EditableTextFormProps {
   label: string;
@@ -38,9 +39,9 @@ export default function EditableTextForm({
     defaultValues: { [name]: defaultValue },
   });
 
-  const submitHandler: SubmitHandler<{ [key: string]: string }> = async (
-    data,
-  ) => {
+  const submitHandler: SubmitHandler<{
+    [key: string]: string;
+  }> = async data => {
     await onSubmit(data[name]);
     setIsEditing(false);
     reset({ [name]: data[name] });

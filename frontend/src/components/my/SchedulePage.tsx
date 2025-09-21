@@ -1,12 +1,13 @@
 'use client';
-import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+
 import FlexibleTable from '@/components/common/FlexibleTable';
 import Pagination from '@/components/common/Pagination';
-import { ScheduleReservationsItem } from '@/types/schedule';
-import { useGetScheduleReservations } from '@/hooks/query/useSchedule';
 import { scheduleColumns } from '@/contact/schedule';
+import { useGetScheduleReservations } from '@/hooks/query/useSchedule';
+import { ScheduleReservationsItem } from '@/types/schedule';
 
 export default function SchedulePage() {
   const [page, setPage] = useState(1);
@@ -32,12 +33,12 @@ export default function SchedulePage() {
       <FlexibleTable
         data={schedule?.data as ScheduleReservationsItem[]}
         columns={scheduleColumns}
-        onRowClick={(row) => router.push(`/my/schedule/${row.id}`)}
+        onRowClick={row => router.push(`/my/schedule/${row.id}`)}
       />
       <Pagination
         page={page}
         totalPages={schedule?.totalPages || 1}
-        onChange={(newPage) => setPage(newPage)}
+        onChange={newPage => setPage(newPage)}
       />
     </section>
   );

@@ -1,5 +1,6 @@
-import { ScheduleReservationsItem } from '@/types/schedule';
 import { format } from 'date-fns';
+
+import { ScheduleReservationsItem } from '@/types/schedule';
 
 export enum MentoringStatus {
   PENDING = 'pending',

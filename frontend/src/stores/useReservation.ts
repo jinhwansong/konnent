@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+
 import { ReservationRequest } from '@/types/reservation';
 
 export interface ReservationItem extends ReservationRequest {
@@ -12,13 +13,13 @@ export interface ReservationItem extends ReservationRequest {
 
 interface ReservationStore {
   reservation: ReservationItem;
-  resetReservation: () => void;
-  setReservation: (reservation: ReservationItem) => void;
-  updateReservation: (
+  reset: () => void;
+  set: (reservation: ReservationItem) => void;
+  update: (
     date: string,
     timeSlot: { startTime: string; endTime: string },
     question: string,
-    amount: number,
+    amount: number
   ) => void;
 }
 
@@ -37,9 +38,9 @@ export const useReservation = create<ReservationStore>()(
   persist(
     (set, get) => ({
       reservation: defaultReservation,
-      resetReservation: () => set({ reservation: defaultReservation }),
-      setReservation: (reservation) => set({ reservation }),
-      updateReservation: (date, timeSlot, question, amount) =>
+      reset: () => set({ reservation: defaultReservation }),
+      set: reservation => set({ reservation }),
+      update: (date, timeSlot, question, amount) =>
         set({
           reservation: {
             ...get().reservation,
@@ -52,6 +53,6 @@ export const useReservation = create<ReservationStore>()(
     }),
     {
       name: 'reservation-storage',
-    },
-  ),
+    }
+  )
 );

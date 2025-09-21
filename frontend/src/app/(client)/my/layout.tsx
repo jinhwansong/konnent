@@ -1,4 +1,4 @@
-import MyPageSidebar from '@/components/common/MyPageSidebar';
+import MyPageSidebar from '@/components/my/MyPageSidebar';
 
 export default function ClientLayout({
   children,

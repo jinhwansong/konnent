@@ -1,16 +1,18 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
-import Input from '@/components/common/Input';
+
 import Button from '@/components/common/Button';
 import Editor from '@/components/common/Editor';
-import { useToastStore } from '@/stores/useToast';
-import { SessionRequest } from '@/types/session';
+import Input from '@/components/common/Input';
 import { EXPERTISE_OPTIONS } from '@/contact/mentoring';
-import Select from '../common/Select';
 import { uploadSessionImage } from '@/libs/session';
 import { SessionFormValues, sessionSchema } from '@/schema/session';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useToastStore } from '@/stores/useToast';
+import { SessionRequest } from '@/types/session';
+
 import FormErrorMessage from '../common/FormErrorMessage';
+import Select from '../common/Select';
 
 interface SessionFormProps {
   onSubmit: (data: SessionRequest) => void;
@@ -23,7 +25,7 @@ export default function SessionForm({
   defaultValues,
   title,
 }: SessionFormProps) {
-  const { showToast } = useToastStore();
+  const { show } = useToastStore();
   const methods = useForm<SessionFormValues>({
     mode: 'all',
     resolver: zodResolver(sessionSchema),
@@ -52,19 +54,19 @@ export default function SessionForm({
       'image/avif',
     ];
 
-    files.forEach((file) => {
+    files.forEach(file => {
       if (file.name.length > 30) {
-        showToast('파일명은 글자수 30자 미만으로 적어주세요.', 'error');
+        show('파일명은 글자수 30자 미만으로 적어주세요.', 'error');
         return [];
       }
 
       if (file.size > 5 * 1024 * 1024) {
-        showToast('파일 크기는 5MB 미만으로 줄여주세요.', 'error');
+        show('파일 크기는 5MB 미만으로 줄여주세요.', 'error');
         return [];
       }
 
       if (!allowedTypes.includes(file.type)) {
-        showToast('지원하지 않는 이미지 형식입니다.', 'error');
+        show('지원하지 않는 이미지 형식입니다.', 'error');
         return [];
       }
       formData.append('images', file);
@@ -76,7 +78,7 @@ export default function SessionForm({
       const res = await uploadSessionImage(formData);
       return res.urls;
     } catch {
-      showToast('이미지 업로드에 실패했습니다.', 'error');
+      show('이미지 업로드에 실패했습니다.', 'error');
       return [];
     }
   };
@@ -122,7 +124,7 @@ export default function SessionForm({
                     type="number"
                     placeholder="예: 50000"
                     value={field.value === 0 ? '' : field.value}
-                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                    onChange={e => field.onChange(e.target.valueAsNumber)}
                     error={fieldState.error?.message}
                   />
                 )}
@@ -143,7 +145,7 @@ export default function SessionForm({
                     type="number"
                     placeholder="예: 60"
                     value={field.value === 0 ? '' : field.value}
-                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                    onChange={e => field.onChange(e.target.valueAsNumber)}
                     error={fieldState.error?.message}
                   />
                 )}

@@ -1,8 +1,9 @@
 'use client';
-import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { categoryIcons, CategoryTabType } from '@/contact/mentoring';
+import React, { useState } from 'react';
+
 import MentorItem from '@/components/main/MentorItem';
+import { categoryIcons, CategoryTabType } from '@/contact/mentoring';
 import { useGetSession } from '@/hooks/query/useCommonSession';
 
 export default function MentorContent({
@@ -44,7 +45,7 @@ export default function MentorContent({
       {/* 멘토링 세션 리스트 */}
       {data?.data && data.data.length > 0 ? (
         <div className="mt-7 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
-          {data.data.map((item) => (
+          {data.data.map(item => (
             <MentorItem key={item.id} {...item} />
           ))}
         </div>

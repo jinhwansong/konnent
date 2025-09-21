@@ -1,9 +1,12 @@
 'use client';
-import React from 'react';
+import { format } from 'date-fns';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { format } from 'date-fns';
+import { useSession } from 'next-auth/react';
+import React from 'react';
 import { FaEye, FaHeart } from 'react-icons/fa';
+
+import { ARTICLE_OPTIONS } from '@/contact/article';
 import {
   useDeleteArticle,
   useGetArticleDetail,
@@ -11,16 +14,16 @@ import {
   useLikedArticles,
 } from '@/hooks/query/useArticle';
 import { useToastStore } from '@/stores/useToast';
+import { findOptionLabel } from '@/utils/getLabel';
+
+import CommentSection from '../comment/CommentSection';
 import Button from '../common/Button';
-import { useSession } from 'next-auth/react';
-import { getLabel } from '@/utils/getLabel';
-import { ARTICLE_OPTIONS } from '@/contact/article';
 
 export default function ArticleDetail({ articleId }: { articleId: string }) {
   const { data: article, isLoading } = useGetArticleDetail(articleId);
   const { data: sessions } = useSession();
 
-  const { showToast } = useToastStore();
+  const { show } = useToastStore();
   const router = useRouter();
   const { mutate: deleteArticle } = useDeleteArticle();
   const { mutate: likeMutate } = useLikeArticle();
@@ -29,7 +32,7 @@ export default function ArticleDetail({ articleId }: { articleId: string }) {
   const handleLike = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
     e.preventDefault();
     if (!sessions?.user) {
-      showToast('로그인 한 사람만 이용 할 수 있습니다.', 'error');
+      show('로그인 한 사람만 이용 할 수 있습니다.', 'error');
       return router.push('/login');
     }
 
@@ -44,13 +47,13 @@ export default function ArticleDetail({ articleId }: { articleId: string }) {
       },
       {
         onSuccess: () => {
-          showToast('아티클 삭제를 완료했습니다.', 'success');
+          show('아티클 삭제를 완료했습니다.', 'success');
           router.push('/articles');
         },
         onError: () => {
-          showToast('아티클 삭제를 실패했습니다.', 'error');
+          show('아티클 삭제를 실패했습니다.', 'error');
         },
-      },
+      }
     );
   };
   if (isLoading) return null;
@@ -77,7 +80,7 @@ export default function ArticleDetail({ articleId }: { articleId: string }) {
           </div>
           <span className="rounded-full bg-[var(--primary-sub02)] px-2 py-0.5 text-[var(--primary)]">
             <span>
-              {getLabel(article?.category as string, ARTICLE_OPTIONS)}
+              {findOptionLabel(article?.category as string, ARTICLE_OPTIONS)}
             </span>
           </span>
           <span className="text-[var(--text-sub)]">
@@ -93,7 +96,7 @@ export default function ArticleDetail({ articleId }: { articleId: string }) {
           </span>
           <button
             type="button"
-            onClick={(e) => handleLike(e, articleId)}
+            onClick={e => handleLike(e, articleId)}
             className="flex items-center gap-1 hover:text-[var(--primary)]"
           >
             <FaHeart
@@ -126,6 +129,7 @@ export default function ArticleDetail({ articleId }: { articleId: string }) {
         className="ProseMirror"
         dangerouslySetInnerHTML={{ __html: article?.content ?? '' }}
       />
+      <CommentSection articleId={articleId} />
     </section>
   );
 }

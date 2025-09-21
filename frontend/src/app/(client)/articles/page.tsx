@@ -1,21 +1,38 @@
-import ArticleContent from '@/components/article/ArticleContent';
-import { getArticle } from '@/libs/article';
 import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
 } from '@tanstack/react-query';
+import { Suspense } from 'react';
 
-export default async function page() {
+import ArticleContent from '@/components/article/ArticleContent';
+import { queryKeys } from '@/hooks/query/queryKeys';
+import { fetchArticles } from '@/libs/article';
+
+export default async function ArticlesPage() {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ['article', 1, 'all', 10, 'latest'],
-    queryFn: () => getArticle(1, 'all', 10, 'latest'),
+    queryKey: queryKeys.articles.list({
+      page: 1,
+      category: 'all',
+      limit: 10,
+      sort: 'latest',
+    }),
+    queryFn: () => fetchArticles(1, 'all', 10, 'latest'),
   });
+
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <ArticleContent initialCategory="all" />
+      <Suspense
+        fallback={
+          <div className="flex h-64 items-center justify-center">
+            로딩 중...
+          </div>
+        }
+      >
+        <ArticleContent initialCategory="all" />
+      </Suspense>
     </HydrationBoundary>
   );
 }

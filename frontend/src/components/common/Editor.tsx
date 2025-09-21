@@ -1,11 +1,13 @@
 'use client';
-import React from 'react';
-import Toolbar from './Toolbar';
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
+
 import Color from '@tiptap/extension-color';
 import Image from '@tiptap/extension-image';
 import { TextStyle } from '@tiptap/extension-text-style';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import React from 'react';
+
+import Toolbar from './Toolbar';
 
 interface EditorWrapperProps {
   value: string;
@@ -59,7 +61,7 @@ export default function Editor({
   return (
     <div className="rounded-lg border border-[var(--border-color)]">
       <Toolbar editor={editor} onImageUpload={onImageUpload} />
-      <div className="scroll-custom h-[500px] overflow-auto">
+      <div className="scroll-custom overflow-auto">
         <EditorContent editor={editor} className="ProseMirror editor" />
       </div>
     </div>

@@ -1,4 +1,6 @@
 'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import {
   Controller,
@@ -6,14 +8,16 @@ import {
   useFieldArray,
   useForm,
 } from 'react-hook-form';
-import { ScheduleRequest } from '@/types/schedule';
+
 import { DayOfWeek, TIME_OPTIONS, WEEK_OPTIONS } from '@/contact/schedule';
+import { ScheduleFormValues, scheduleSchema } from '@/schema/schedule';
+import { ScheduleRequest } from '@/types/schedule';
+
 import Button from '../common/Button';
 import Modal from '../common/Modal';
 import Select from '../common/Select';
-import { useRouter } from 'next/navigation';
-import { ScheduleFormValues, scheduleSchema } from '@/schema/schedule';
-import { zodResolver } from '@hookform/resolvers/zod';
+
+
 
 interface ScheduleFormProps {
   onSubmit: (data: ScheduleRequest) => void;
@@ -47,7 +51,7 @@ export default function ScheduleForm({
   useEffect(() => {
     if (defaultValues?.data) {
       reset({
-        data: defaultValues.data.map((item) => ({
+        data: defaultValues.data.map(item => ({
           id: item.id,
           dayOfWeek: item.dayOfWeek as DayOfWeek,
           startTime: item.startTime.slice(0, 5),

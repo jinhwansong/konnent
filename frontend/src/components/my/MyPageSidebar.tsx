@@ -1,17 +1,18 @@
 'use client';
-import React, { useState } from 'react';
+import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import clsx from 'clsx';
-import ConfirmDialog from './ConfirmDialog';
+import { useSession, signOut } from 'next-auth/react';
+import React, { useState } from 'react';
+
 import { deleteProfile } from '@/libs/mypage';
-import { signOut } from 'next-auth/react';
 import { useToastStore } from '@/stores/useToast';
+
+import ConfirmDialog from '../common/ConfirmDialog';
 
 export default function MyPageSidebar() {
   const { data: session } = useSession();
-  const { showToast } = useToastStore();
+  const { show } = useToastStore();
 
   const commonItem = [
     {
@@ -61,25 +62,25 @@ export default function MyPageSidebar() {
   const handleDelete = async () => {
     try {
       const res = await deleteProfile();
-      showToast(res.message, 'success');
+      show(res.message, 'success');
       setOpen(false);
 
       signOut({
         callbackUrl: '/',
       });
     } catch {
-      showToast('회원탈퇴 중 오류가 발생했습니다.', 'error');
+      show('회원탈퇴 중 오류가 발생했습니다.', 'error');
     }
   };
   return (
     <aside className="w-[200px]">
-      {tabs.map((section) => (
+      {tabs.map(section => (
         <div key={section.title} className="mb-6">
           <h2 className="mb-2 text-sm font-semibold text-[var(--text-bold)]">
             {section.title}
           </h2>
           <ul className="space-y-1">
-            {section.items.map((item) => (
+            {section.items.map(item => (
               <li key={item.href}>
                 <Link
                   href={item.href}
@@ -87,7 +88,7 @@ export default function MyPageSidebar() {
                     'block w-full rounded-md px-3 py-3 text-sm transition-colors',
                     pathname.includes(item.href)
                       ? 'bg-[var(--primary-sub02)] font-semibold text-[var(--primary)]'
-                      : 'text-[var(--text)] hover:bg-[var(--hover-bg)] hover:text-[var(--primary-sub01)]',
+                      : 'text-[var(--text)] hover:bg-[var(--hover-bg)] hover:text-[var(--primary-sub01)]'
                   )}
                 >
                   {item.name}
@@ -100,7 +101,7 @@ export default function MyPageSidebar() {
       <button
         className={clsx(
           'w-full rounded-md px-3 py-3 text-sm font-medium',
-          'text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-500',
+          'text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-500'
         )}
         onClick={() => setOpen(true)}
       >

@@ -1,9 +1,12 @@
 'use client';
 import React from 'react';
-import { useToastStore } from '@/stores/useToast';
+
+import { Toggle } from '@/components/common/Toggle';
+import EditableCheckboxForm from '@/components/my/EditableCheckboxForm';
+import EditableSelectForm from '@/components/my/EditableSelectForm';
 import EditableTextForm from '@/components/my/EditableTextForm';
-import { EXPERTISE_OPTIONS } from '@/contact/mentoring';
 import { CAREER_OPTIONS, POSITION_OPTIONS } from '@/contact/apply';
+import { EXPERTISE_OPTIONS } from '@/contact/mentoring';
 import {
   usePatchIsCompanyHidden,
   usePatchExpertise,
@@ -12,12 +15,10 @@ import {
   usePatchCompany,
   useGetMentorProfile,
 } from '@/hooks/query/useMypage';
-import { Toggle } from '@/components/common/Toggle';
-import EditableCheckboxForm from '@/components/my/EditableCheckboxForm';
-import EditableSelectForm from '@/components/my/EditableSelectForm';
+import { useToastStore } from '@/stores/useToast';
 
 export default function MentorProfilePage() {
-  const { showToast } = useToastStore();
+  const { show } = useToastStore();
   const { mutate: patchCompany } = usePatchCompany();
   const { mutate: patchPosition } = usePatchPosition();
   const { mutate: patchCareer } = usePatchCareer();
@@ -27,45 +28,45 @@ export default function MentorProfilePage() {
   const handleUpdateCompany = async (value: string) => {
     try {
       await patchCompany({ company: value });
-      showToast('회사명이 수정되었습니다.', 'success');
+      show('회사명이 수정되었습니다.', 'success');
     } catch {
-      showToast('회사명 수정 중 오류가 발생했습니다.', 'error');
+      show('회사명 수정 중 오류가 발생했습니다.', 'error');
     }
   };
 
   const handleUpdatePosition = async (value: string) => {
     try {
       await patchPosition({ position: value });
-      showToast('직무가 수정되었습니다.', 'success');
+      show('직무가 수정되었습니다.', 'success');
     } catch {
-      showToast('직무 수정 중 오류가 발생했습니다.', 'error');
+      show('직무 수정 중 오류가 발생했습니다.', 'error');
     }
   };
 
   const handleUpdateCareer = async (value: string) => {
     try {
       await patchCareer({ career: value });
-      showToast('연차가 수정되었습니다.', 'success');
+      show('연차가 수정되었습니다.', 'success');
     } catch {
-      showToast('연차 수정 중 오류가 발생했습니다.', 'error');
+      show('연차 수정 중 오류가 발생했습니다.', 'error');
     }
   };
 
   const handleUpdateExpertise = async (value: string[]) => {
     try {
       await patchExpertise({ expertise: value });
-      showToast('전문분야가 수정되었습니다.', 'success');
+      show('전문분야가 수정되었습니다.', 'success');
     } catch {
-      showToast('전문분야 수정 중 오류가 발생했습니다.', 'error');
+      show('전문분야 수정 중 오류가 발생했습니다.', 'error');
     }
   };
 
   const handleUpdateIsCompanyHidden = async (value: boolean) => {
     try {
       await patchIsCompanyHidden({ isCompanyHidden: value });
-      showToast('회사명 공개 여부가 변경되었습니다.', 'success');
+      show('회사명 공개 여부가 변경되었습니다.', 'success');
     } catch {
-      showToast('회사명 공개 설정 중 오류가 발생했습니다.', 'error');
+      show('회사명 공개 설정 중 오류가 발생했습니다.', 'error');
     }
   };
   if (isLoading) return null;
@@ -126,7 +127,7 @@ export default function MentorProfilePage() {
           </div>
           <Toggle
             checked={mentor?.isCompanyHidden}
-            onCheckedChange={(v) => handleUpdateIsCompanyHidden(v)}
+            onCheckedChange={v => handleUpdateIsCompanyHidden(v)}
           />
         </div>
       </div>

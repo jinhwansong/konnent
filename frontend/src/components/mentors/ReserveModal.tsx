@@ -1,24 +1,26 @@
 'use client';
-import React, { useEffect, useMemo } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { format, parse } from 'date-fns';
 import { useRouter } from 'next/navigation';
+import React, { useEffect, useMemo } from 'react';
 import Calendar from 'react-calendar';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
-import Modal from '../common/Modal';
+
+import { useGetSessionDetail } from '@/hooks/query/useCommonSession';
 import {
   useGetReservationsDays,
   useGetReservationsTime,
 } from '@/hooks/query/useReservation';
-import { useGetSessionDetail } from '@/hooks/query/useCommonSession';
-import { Controller, FormProvider, useForm } from 'react-hook-form';
-import CheckboxGroup from '../common/CheckboxGroup';
-import { Slot } from '@/types/reservation';
-import { format, parse } from 'date-fns';
-import Textarea from '../common/Textarea';
-import Button from '../common/Button';
-import { useReservation } from '@/stores/useReservation';
 import { ReservationForm, reservationSchema } from '@/schema/reservation';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useReservation } from '@/stores/useReservation';
+import { Slot } from '@/types/reservation';
+
+import Button from '../common/Button';
+import CheckboxGroup from '../common/CheckboxGroup';
 import FormErrorMessage from '../common/FormErrorMessage';
+import Modal from '../common/Modal';
+import Textarea from '../common/Textarea';
 
 enum Weekday {
   SUNDAY = 0,
@@ -32,7 +34,7 @@ enum Weekday {
 
 export default function ReserveModal({ sessionId }: { sessionId: string }) {
   const router = useRouter();
-  const { setReservation, reservation, resetReservation } = useReservation();
+  const { set, reservation, reset } = useReservation();
   const methods = useForm<ReservationForm>({
     mode: 'onSubmit',
     resolver: zodResolver(reservationSchema),
@@ -45,7 +47,7 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
   const {
     control,
     watch,
-    reset,
+    reset: resetReservationForm,
     trigger,
     handleSubmit,
 
@@ -55,7 +57,7 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
   /** 예약 정보 초기화 */
   useEffect(() => {
     if (!reservation) return;
-    reset(
+    resetReservationForm(
       {
         date: reservation.date,
         timeSlot: {
@@ -64,10 +66,10 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
         },
         question: reservation.question ?? '',
       },
-      { keepDirty: false, keepTouched: false },
+      { keepDirty: false, keepTouched: false }
     );
     trigger();
-  }, [reservation, reset, trigger]);
+  }, [reservation, resetReservationForm, trigger]);
 
   /** 선택한 날짜 */
   const selectDate = watch('date');
@@ -77,7 +79,7 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
 
   /** 멘토가 설정한 요일 */
   const { data: reservationsDays } = useGetReservationsDays(
-    session?.userId ?? '',
+    session?.userId ?? ''
   );
 
   /** 예약 가능한 시간 */
@@ -86,21 +88,21 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
 
   const slots = useMemo<Slot[]>(
     () => reservationsTime?.data ?? [],
-    [reservationsTime?.data],
+    [reservationsTime?.data]
   );
 
   const slotOptions = useMemo(
     () =>
-      slots.map((slot) => ({
+      slots.map(slot => ({
         label: `${slot.startTime.slice(0, 5)} ~ ${slot.endTime.slice(0, 5)}`,
         value: JSON.stringify(slot),
       })),
-    [slots],
+    [slots]
   );
 
   // 예약이 가능한 날짜
   const enabledDayIndexes = reservationsDays?.data.map(
-    (day) => Weekday[day as keyof typeof Weekday],
+    day => Weekday[day as keyof typeof Weekday]
   );
 
   const isDateEnabled = (date: Date) => {
@@ -111,7 +113,7 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
   };
   const onSubmit = (data: ReservationForm) => {
     const slot = data.timeSlot;
-    setReservation({
+    set({
       ...data,
       timeSlot: slot,
       sessionId: session?.id as string,
@@ -124,7 +126,7 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
   };
   const handleClose = () => {
     router.replace(`/mentors/${session?.id}`);
-    resetReservation();
+    reset();
   };
   if (sessionLoading) return null;
   return (
@@ -145,7 +147,7 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
                     ? parse(field.value, 'yyyy-MM-dd', new Date())
                     : null
                 }
-                onChange={(d) => {
+                onChange={d => {
                   field.onChange(format(d as Date, 'yyyy-MM-dd'));
                   methods.setValue('timeSlot', { startTime: '', endTime: '' });
                 }}
@@ -174,7 +176,7 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
                     value={
                       field.value ? JSON.stringify(field.value) : undefined
                     }
-                    onChange={(val) => {
+                    onChange={val => {
                       field.onChange(JSON.parse(val as string));
                     }}
                     className="grid grid-cols-3 gap-2 text-center"
@@ -198,7 +200,7 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
                 {...field}
                 placeholder="자기소개를 입력해주세요."
                 maxLength={500}
-                onChange={(e) => field.onChange(e.target.value)}
+                onChange={e => field.onChange(e.target.value)}
                 error={fieldState.error?.message}
               />
             )}

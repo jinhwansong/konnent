@@ -1,12 +1,16 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+
+import { withQueryDefaults } from '@/hooks/query/options';
 import {
-  patchNickname,
-  patchPhone,
-  patchPassword,
-  patchIsCompanyHidden,
-  patchCompany,
-  patchPosition,
-  patchCareer,
-  patchExpertise,
+  updateNickname,
+  updatePhone,
+  updatePassword,
+  updateCompanyHidden,
+  updateCompany,
+  updatePosition,
+  updateCareer,
+  updateExpertise,
   getMentorProfile,
 } from '@/libs/mypage';
 import {
@@ -20,54 +24,51 @@ import {
   PhoneRequest,
   PositionRequest,
 } from '@/types/user';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { useSession } from 'next-auth/react';
-import { useQueryClient } from '@tanstack/react-query';
 
-export const usePatchNickname = () => {
+export const useUpdateNickname = () => {
   const { update } = useSession();
   return useMutation({
-    mutationFn: (nickname: NicknameRequest) => patchNickname(nickname),
-    onSuccess: async (data) => {
+    mutationFn: (nickname: NicknameRequest) => updateNickname(nickname),
+    onSuccess: async data => {
       await update({ nickname: data.nickname });
     },
   });
 };
 
-export const usePatchPhone = () => {
+export const useUpdatePhone = () => {
   const { update } = useSession();
   return useMutation({
-    mutationFn: (phone: PhoneRequest) => patchPhone(phone),
-    onSuccess: async (data) => {
+    mutationFn: (phone: PhoneRequest) => updatePhone(phone),
+    onSuccess: async data => {
       await update({ phone: data.phone });
     },
   });
 };
 
-export const usePatchPassword = () => {
+export const useUpdatePassword = () => {
   return useMutation({
-    mutationFn: (data: PasswordRequest) => patchPassword(data),
+    mutationFn: (data: PasswordRequest) => updatePassword(data),
   });
 };
 
 export const useGetMentorProfile = () => {
   const { data: session } = useSession();
 
-  return useQuery<MentorProfileResponse>({
-    queryKey: ['mentor-profile', session],
-    queryFn: () => getMentorProfile(),
-    retry: false,
-    staleTime: 1000 * 60 * 5,
-    enabled: !!session?.user,
-  });
+  return useQuery<MentorProfileResponse>(
+    withQueryDefaults({
+      queryKey: ['mentor-profile'],
+      queryFn: () => getMentorProfile(),
+      enabled: !!session?.user,
+    })
+  );
 };
 
 export const usePatchCompany = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CompanyRequest) => patchCompany(data),
-    onMutate: async (newData) => {
+    mutationFn: (data: CompanyRequest) => updateCompany(data),
+    onMutate: async newData => {
       await queryClient.cancelQueries({ queryKey: ['mentor-profile'] });
 
       const prevData = queryClient.getQueryData<MentorProfileResponse>([
@@ -78,13 +79,13 @@ export const usePatchCompany = () => {
       if (prevData) {
         queryClient.setQueryData<MentorProfileResponse>(
           ['mentor-profile'],
-          (old) =>
+          old =>
             old
               ? {
                   ...old,
                   company: newData.company,
                 }
-              : old,
+              : old
         );
       }
 
@@ -106,8 +107,8 @@ export const usePatchPosition = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: PositionRequest) => patchPosition(data),
-    onMutate: async (newData) => {
+    mutationFn: (data: PositionRequest) => updatePosition(data),
+    onMutate: async newData => {
       await queryClient.cancelQueries({ queryKey: ['mentor-profile'] });
 
       const prevData = queryClient.getQueryData<MentorProfileResponse>([
@@ -118,13 +119,13 @@ export const usePatchPosition = () => {
       if (prevData) {
         queryClient.setQueryData<MentorProfileResponse>(
           ['mentor-profile'],
-          (old) =>
+          old =>
             old
               ? {
                   ...old,
                   position: newData.position,
                 }
-              : old,
+              : old
         );
       }
 
@@ -146,8 +147,8 @@ export const usePatchCareer = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CareerRequest) => patchCareer(data),
-    onMutate: async (newData) => {
+    mutationFn: (data: CareerRequest) => updateCareer(data),
+    onMutate: async newData => {
       await queryClient.cancelQueries({ queryKey: ['mentor-profile'] });
 
       const prevData = queryClient.getQueryData<MentorProfileResponse>([
@@ -158,13 +159,13 @@ export const usePatchCareer = () => {
       if (prevData) {
         queryClient.setQueryData<MentorProfileResponse>(
           ['mentor-profile'],
-          (old) =>
+          old =>
             old
               ? {
                   ...old,
                   career: newData.career,
                 }
-              : old,
+              : old
         );
       }
 
@@ -186,8 +187,8 @@ export const usePatchExpertise = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: ExpertiseRequest) => patchExpertise(data),
-    onMutate: async (newData) => {
+    mutationFn: (data: ExpertiseRequest) => updateExpertise(data),
+    onMutate: async newData => {
       await queryClient.cancelQueries({ queryKey: ['mentor-profile'] });
 
       const prevData = queryClient.getQueryData<MentorProfileResponse>([
@@ -198,13 +199,13 @@ export const usePatchExpertise = () => {
       if (prevData) {
         queryClient.setQueryData<MentorProfileResponse>(
           ['mentor-profile'],
-          (old) =>
+          old =>
             old
               ? {
                   ...old,
                   expertise: newData.expertise,
                 }
-              : old,
+              : old
         );
       }
 
@@ -225,8 +226,8 @@ export const usePatchIsCompanyHidden = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CompanyHiddenRequest) => patchIsCompanyHidden(data),
-    onMutate: async (newData) => {
+    mutationFn: (data: CompanyHiddenRequest) => updateCompanyHidden(data),
+    onMutate: async newData => {
       await queryClient.cancelQueries({ queryKey: ['mentor-profile'] });
 
       const prevData = queryClient.getQueryData<MentorProfileResponse>([
@@ -237,13 +238,13 @@ export const usePatchIsCompanyHidden = () => {
       if (prevData) {
         queryClient.setQueryData<MentorProfileResponse>(
           ['mentor-profile'],
-          (old) =>
+          old =>
             old
               ? {
                   ...old,
                   isCompanyHidden: newData.isCompanyHidden,
                 }
-              : old,
+              : old
         );
       }
 

@@ -2,8 +2,8 @@ import { ReviewRequest, ReviewResponse, Reviews } from '@/types/review';
 import { MessageResponse } from '@/types/user';
 import { fetcher } from '@/utils/fetcher';
 
-export const postReview = async (
-  data: ReviewRequest,
+export const createReview = async (
+  data: ReviewRequest
 ): Promise<MessageResponse> => {
   return fetcher<MessageResponse>('review', {
     method: 'POST',
@@ -11,15 +11,15 @@ export const postReview = async (
   });
 };
 
-export const deleteReview = async (id: string) => {
+export const removeReview = async (id: string) => {
   return fetcher(`review/${id}`, {
     method: 'DELETE',
   });
 };
 
-export const patchReview = async (
+export const updateReview = async (
   id: string,
-  data: Reviews,
+  data: Reviews
 ): Promise<MessageResponse> => {
   return fetcher<MessageResponse>(`review/${id}`, {
     method: 'PATCH',
@@ -27,15 +27,15 @@ export const patchReview = async (
   });
 };
 
-export const getMentorReview = async (
-  page: number,
+export const fetchMentorReviews = async (
+  page: number
 ): Promise<ReviewResponse> => {
   return fetcher<ReviewResponse>(`review/received?page=${page}&limit=10`, {
     method: 'GET',
   });
 };
-export const getMenteeReview = async (
-  page: number,
+export const fetchMenteeReviews = async (
+  page: number
 ): Promise<ReviewResponse> => {
   return fetcher<ReviewResponse>(`review/my?page=${page}&limit=10`, {
     method: 'GET',

@@ -1,19 +1,21 @@
 'use client';
-import React, { useRef, useState } from 'react';
+
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import { signOut } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
+import React, { useRef, useState } from 'react';
 import { FiMenu, FiSearch, FiX } from 'react-icons/fi';
+
 import Logo from '@/assets/logo.svg';
-import { useToastStore } from '@/stores/useToast';
-import Image from 'next/image';
-import Button from './Button';
 import useClickOutside from '@/hooks/useClickOutside';
-import { getImageUrl } from '@/utils/getImageUrl';
+import { useToastStore } from '@/stores/useToast';
+import { buildImageUrl } from '@/utils/helpers';
+
+import Button from './Button';
 
 export default function Header() {
-  const { showToast } = useToastStore();
+  const { show } = useToastStore();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -42,10 +44,10 @@ export default function Header() {
       signOut({
         callbackUrl: '/',
       });
-      showToast('로그아웃을 완료했습니다.', 'success');
+      show('로그아웃을 완료했습니다.', 'success');
       setOpen(false);
     } catch {
-      showToast('로그아웃에 실패했습니다.', 'error');
+      show('로그아웃에 실패했습니다.', 'error');
     }
   };
 
@@ -62,7 +64,7 @@ export default function Header() {
 
           <nav className="hidden lg:block">
             <ul className="flex gap-8">
-              {mainNav.map((item) => (
+              {mainNav.map(item => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
@@ -79,7 +81,7 @@ export default function Header() {
         <div className="flex items-center lg:gap-2">
           <button
             className="text-2xl lg:hidden"
-            onClick={() => setIsMenuOpen((prev) => !prev)}
+            onClick={() => setIsMenuOpen(prev => !prev)}
           >
             {isMenuOpen ? <FiX /> : <FiMenu />}
           </button>
@@ -106,11 +108,11 @@ export default function Header() {
             {session ? (
               <li className="relative ml-2" ref={openRef}>
                 <button
-                  onClick={() => setOpen((prev) => !prev)}
+                  onClick={() => setOpen(prev => !prev)}
                   className="flex items-center justify-center overflow-hidden rounded-full text-2xl"
                 >
                   <Image
-                    src={getImageUrl(session?.user.image?.trim() as string)}
+                    src={buildImageUrl(session?.user.image?.trim())}
                     alt={session.user.name}
                     width={30}
                     height={30}
@@ -122,9 +124,7 @@ export default function Header() {
                     <div className="border-b border-[var(--border-color)] px-6 py-4">
                       <div className="mb-3 flex items-center gap-3.5">
                         <Image
-                          src={getImageUrl(
-                            session?.user.image?.trim() as string,
-                          )}
+                          src={buildImageUrl(session?.user.image?.trim())}
                           alt={session.user.name}
                           width={40}
                           height={40}
@@ -155,7 +155,7 @@ export default function Header() {
                       {(session.user.role === 'mentee'
                         ? menteeItem
                         : mentorItem
-                      ).map((item) => (
+                      ).map(item => (
                         <li key={item.name}>
                           <Link
                             onClick={() => setOpen(false)}
@@ -230,7 +230,7 @@ export default function Header() {
 
           <nav>
             <ul className="flex flex-col gap-4">
-              {mainNav.map((item) => (
+              {mainNav.map(item => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
@@ -266,7 +266,7 @@ export default function Header() {
                 {(session.user?.role === 'mentee'
                   ? menteeItem
                   : mentorItem
-                ).map((item) => (
+                ).map(item => (
                   <li key={item.name}>
                     <Link
                       href={item.href}

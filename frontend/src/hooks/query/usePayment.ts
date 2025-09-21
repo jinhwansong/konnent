@@ -1,32 +1,34 @@
-import {
-  getMenteePayment,
-  getMentorPayment,
-  paymentRefunds,
-} from '@/libs/payment';
-import { PaymentMentee, PaymentMentor } from '@/types/payment';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 
+import { withQueryDefaults } from '@/hooks/query/options';
+import {
+  getMenteeIncome,
+  getMentorIncome,
+  paymentRefunds,
+} from '@/libs/payment';
+import { PaymentMentee, PaymentMentor } from '@/types/payment';
+
 export const useGetMentorPayment = (page: number) => {
   const { data: session } = useSession();
-  return useQuery<PaymentMentor>({
-    queryKey: ['payment-mentor', page],
-    queryFn: () => getMentorPayment(page),
-    retry: false,
-    staleTime: 1000 * 60 * 5,
-    enabled: !!session?.user,
-  });
+  return useQuery<PaymentMentor>(
+    withQueryDefaults({
+      queryKey: ['payment-mentor', page],
+      queryFn: () => getMentorIncome(page),
+      enabled: !!session?.user,
+    })
+  );
 };
 
 export const useGetMenteePayment = (page: number) => {
   const { data: session } = useSession();
-  return useQuery<PaymentMentee>({
-    queryKey: ['payment-mentee', page],
-    queryFn: () => getMenteePayment(page),
-    retry: false,
-    staleTime: 1000 * 60 * 5,
-    enabled: !!session?.user,
-  });
+  return useQuery<PaymentMentee>(
+    withQueryDefaults({
+      queryKey: ['payment-mentee', page],
+      queryFn: () => getMenteeIncome(page),
+      enabled: !!session?.user,
+    })
+  );
 };
 
 export const usePaymentRefund = () => {

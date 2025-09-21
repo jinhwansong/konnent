@@ -1,11 +1,11 @@
 'use client';
-import React, { useRef, useState } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
+import React, { useRef, useState } from 'react';
 import { GoArrowRight, GoArrowLeft } from 'react-icons/go';
+import { Autoplay } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper/types';
-import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
 
 export default function Slider() {
@@ -56,7 +56,7 @@ export default function Slider() {
       }`}
     >
       <div className="pointer-events-none absolute top-1/2 right-5 left-5 z-10 flex -translate-y-1/2 justify-between px-5 sm:px-8 lg:mx-auto lg:max-w-[1200px] xl:px-0">
-        {arrowItem.map((item) => (
+        {arrowItem.map(item => (
           <button
             key={item.id}
             onClick={item.arrow}
@@ -92,7 +92,7 @@ export default function Slider() {
             spaceBetween: 24,
           },
         }}
-        onSwiper={(swiper) => {
+        onSwiper={swiper => {
           swiperRef.current = swiper;
         }}
       >

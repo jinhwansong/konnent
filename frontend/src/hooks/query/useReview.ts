@@ -1,18 +1,20 @@
-import {
-  deleteReview,
-  getMenteeReview,
-  getMentorReview,
-  patchReview,
-  postReview,
-} from '@/libs/review';
-import { PatchReview, ReviewRequest, ReviewResponse } from '@/types/review';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
+
+import { withQueryDefaults } from '@/hooks/query/options';
+import {
+  removeReview,
+  fetchMenteeReviews,
+  fetchMentorReviews,
+  updateReview,
+  createReview,
+} from '@/libs/review';
+import { PatchReview, ReviewRequest, ReviewResponse } from '@/types/review';
 
 export const usePostReview = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: ReviewRequest) => postReview(data),
+    mutationFn: (data: ReviewRequest) => createReview(data),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['review-mentee'],
@@ -33,7 +35,7 @@ export const usePostReview = () => {
 export const useDeleteReview = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => deleteReview(id),
+    mutationFn: (id: string) => removeReview(id),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['review-mentee'],
@@ -54,7 +56,7 @@ export const useDeleteReview = () => {
 export const usePatchReview = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: PatchReview) => patchReview(id, data),
+    mutationFn: ({ id, data }: PatchReview) => updateReview(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['review-mentee'],
@@ -71,21 +73,21 @@ export const usePatchReview = () => {
 
 export const useGetMentorReview = (page: number) => {
   const { data: session } = useSession();
-  return useQuery<ReviewResponse>({
-    queryKey: ['review-mentor', page],
-    queryFn: () => getMentorReview(page),
-    retry: false,
-    staleTime: 1000 * 60 * 5,
-    enabled: !!session?.user,
-  });
+  return useQuery<ReviewResponse>(
+    withQueryDefaults({
+      queryKey: ['review-mentor', page],
+      queryFn: () => fetchMentorReviews(page),
+      enabled: !!session?.user,
+    })
+  );
 };
 export const useGetMenteeReview = (page: number) => {
   const { data: session } = useSession();
-  return useQuery<ReviewResponse>({
-    queryKey: ['review-mentee', page],
-    queryFn: () => getMenteeReview(page),
-    retry: false,
-    staleTime: 1000 * 60 * 5,
-    enabled: !!session?.user,
-  });
+  return useQuery<ReviewResponse>(
+    withQueryDefaults({
+      queryKey: ['review-mentee', page],
+      queryFn: () => fetchMenteeReviews(page),
+      enabled: !!session?.user,
+    })
+  );
 };

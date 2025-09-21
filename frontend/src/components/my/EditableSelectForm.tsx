@@ -1,10 +1,12 @@
 'use client';
 import { useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+
+import { findOptionLabel } from '@/utils/getLabel';
+
 import Button from '../common/Button';
-import Select from '../common/Select';
 import Input from '../common/Input';
-import { getLabel } from '@/utils/getLabel';
+import Select from '../common/Select';
 
 interface EditableSelectFormProps {
   label: string;
@@ -29,9 +31,9 @@ export default function EditableSelectForm({
     defaultValues: { [name]: defaultValue },
   });
 
-  const submitHandler: SubmitHandler<{ [key: string]: string }> = async (
-    data,
-  ) => {
+  const submitHandler: SubmitHandler<{
+    [key: string]: string;
+  }> = async data => {
     await onSubmit(data[name]);
     setIsEditing(false);
     reset({ [name]: data[name] });
@@ -48,7 +50,7 @@ export default function EditableSelectForm({
         <div className="flex items-center gap-5">
           <Input
             type="text"
-            value={getLabel(defaultValue, options) || placeholder}
+            value={findOptionLabel(defaultValue, options) || placeholder}
             placeholder={placeholder}
             disabled
           />

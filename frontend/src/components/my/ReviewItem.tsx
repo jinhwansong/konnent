@@ -1,8 +1,9 @@
-import React from 'react';
-import { ReviewMenteeItem, ReviewMentorItem } from '@/types/review';
-import { FaStar } from 'react-icons/fa';
 import clsx from 'clsx';
-import { formatDate } from '@/utils/formatDate';
+import React from 'react';
+import { FaStar } from 'react-icons/fa';
+
+import { ReviewMenteeItem, ReviewMentorItem } from '@/types/review';
+import { formatToKoreanDate } from '@/utils/formatDate';
 
 interface ReviewListProps {
   item: ReviewMentorItem | ReviewMenteeItem;
@@ -16,7 +17,7 @@ export default function ReviewItem({ item, type, actions }: ReviewListProps) {
       <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="text-sm text-[var(--text-sub)]">
-            {formatDate(item.createdAt)}
+            {formatToKoreanDate(item.createdAt)}
           </span>
           <span className="text-sm font-medium text-[var(--primary)]">
             {type === 'mentor'
@@ -26,14 +27,14 @@ export default function ReviewItem({ item, type, actions }: ReviewListProps) {
         </div>
 
         <div className="flex items-center gap-1">
-          {[1, 2, 3, 4, 5].map((star) => (
+          {[1, 2, 3, 4, 5].map(star => (
             <FaStar
               key={star}
               size={16}
               className={clsx(
                 star <= item.rating
                   ? 'fill-[var(--primary)] text-[var(--primary)]'
-                  : 'text-[var(--border-color)]',
+                  : 'text-[var(--border-color)]'
               )}
             />
           ))}

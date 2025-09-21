@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { JSX } from 'react';
 import {
   FiLayers,
@@ -22,9 +23,9 @@ import {
   FiMoreHorizontal,
 } from 'react-icons/fi';
 
-import { CAREER_OPTIONS, POSITION_OPTIONS } from './apply';
 import { Option } from '@/types/apply';
-import Image from 'next/image';
+
+import { CAREER_OPTIONS, POSITION_OPTIONS } from './apply';
 
 export enum MentoringCategory {
   BUSINESS = 'business', // 경영/전략/기획

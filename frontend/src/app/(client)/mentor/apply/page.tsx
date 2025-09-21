@@ -1,5 +1,6 @@
-import MentorPage from '../page';
 import ApplyModal from '@/components/mentor/ApplyModal';
+
+import MentorPage from '../page';
 
 export default function Page() {
   return (

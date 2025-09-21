@@ -1,7 +1,5 @@
 import { SessionItem } from '@/types/session';
-import { formatDate } from '@/utils/formatDate';
-import { formatDuration } from '@/utils/formatDuration';
-import { formatPrice } from '@/utils/formatPrice';
+import { formatCurrency, formatDate, formatDuration } from '@/utils/helpers';
 
 export const sessionsColumns = [
   {
@@ -18,7 +16,7 @@ export const sessionsColumns = [
   },
   {
     header: '가격',
-    accessor: (row: SessionItem) => `${formatPrice(row.price)}`,
+    accessor: (row: SessionItem) => `${formatCurrency(row.price)}`,
     className: 'w-[100px]',
   },
   {

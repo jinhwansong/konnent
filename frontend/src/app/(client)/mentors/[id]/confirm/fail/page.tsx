@@ -1,15 +1,16 @@
 'use client';
-import { useEffect } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { useToastStore } from '@/stores/useToast';
+import { useEffect } from 'react';
+
 import { useReservation } from '@/stores/useReservation';
+import { useToastStore } from '@/stores/useToast';
 
 export default function FailPage() {
   const searchParams = useSearchParams();
   const { sessionId } = useParams<{ sessionId: string }>();
 
   const router = useRouter();
-  const { showToast } = useToastStore();
+  const { show } = useToastStore();
   const { reservation } = useReservation();
   const hasDraft = Boolean(reservation && reservation.timeSlot?.startTime);
   useEffect(() => {
@@ -17,9 +18,9 @@ export default function FailPage() {
     const message = searchParams.get('message');
 
     if (code === 'USER_CANCEL') {
-      showToast('사용자가 결제를 취소했습니다.', 'error');
+      show('사용자가 결제를 취소했습니다.', 'error');
     } else {
-      showToast(`결제 실패${message ? `: ${message}` : ''}`, 'error');
+      show(`결제 실패${message ? `: ${message}` : ''}`, 'error');
     }
 
     const next = hasDraft
@@ -27,7 +28,7 @@ export default function FailPage() {
       : `/mentors/${sessionId}/reserve`;
 
     router.replace(next);
-  }, [searchParams, router, sessionId, showToast, hasDraft]);
+  }, [searchParams, router, sessionId, show, hasDraft]);
 
   return null;
 }

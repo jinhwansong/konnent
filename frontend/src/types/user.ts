@@ -1,4 +1,4 @@
-export interface UserProp {
+export interface UserResponse {
   message: string;
   email: string;
   name: string;
@@ -14,12 +14,12 @@ export interface LoginRequest {
   password: string;
 }
 
-export interface JoinInterface extends JoinRequest {
+export interface SignupFormData extends UserRegistrationRequest {
   passwordConfirm: string;
   code: string;
 }
 
-export interface JoinRequest {
+export interface UserRegistrationRequest {
   email: string;
   password: string;
   name: string;

@@ -1,8 +1,9 @@
 'use client';
 import React, { useState } from 'react';
+
 import Pagination from '@/components/common/Pagination';
-import { useGetMentorReview } from '@/hooks/query/useReview';
 import ReviewItem from '@/components/my/ReviewItem';
+import { useGetMentorReview } from '@/hooks/query/useReview';
 
 export default function ReviewManagePage() {
   const [page, setPage] = useState(1);
@@ -16,14 +17,14 @@ export default function ReviewManagePage() {
       {data?.data.length ? (
         <>
           <ul className="flex flex-col gap-6">
-            {data.data.map((item) => (
+            {data.data.map(item => (
               <ReviewItem item={item} type="mentor" key={item.id} />
             ))}
           </ul>
           <Pagination
             page={page}
             totalPages={data?.totalPage || 1}
-            onChange={(newPage) => setPage(newPage)}
+            onChange={newPage => setPage(newPage)}
           />
         </>
       ) : (

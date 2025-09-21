@@ -1,29 +1,30 @@
 'use client';
-import React, { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams } from 'next/navigation';
-import { useToastStore } from '@/stores/useToast';
+import React, { useState } from 'react';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
+
+import Button from '@/components/common/Button';
+import FormErrorMessage from '@/components/common/FormErrorMessage';
+import Modal from '@/components/common/Modal';
+import Textarea from '@/components/common/Textarea';
+import { colorMap, MentoringStatus, statusMap } from '@/contact/schedule';
 import {
   useGetScheduleReservationsDetail,
   useScheduleStatus,
 } from '@/hooks/query/useSchedule';
-import { colorMap, MentoringStatus, statusMap } from '@/contact/schedule';
-import Button from '@/components/common/Button';
-import Modal from '@/components/common/Modal';
-import Textarea from '@/components/common/Textarea';
-import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { Reason } from '@/types/schedule';
 import { ReasonForm, reasonSchema } from '@/schema/schedule';
-import { zodResolver } from '@hookform/resolvers/zod';
-import FormErrorMessage from '@/components/common/FormErrorMessage';
+import { useToastStore } from '@/stores/useToast';
+import { Reason } from '@/types/schedule';
 
 export default function ScheduleDetailPage() {
   const { id } = useParams();
-  const { showToast } = useToastStore();
+  const { show } = useToastStore();
   const { data: schedule, isLoading } = useGetScheduleReservationsDetail(
-    id as string,
+    id as string
   );
   const [popup, setPopup] = useState(false);
-  const closePopup = () => setPopup((prev) => !prev);
+  const closePopup = () => setPopup(prev => !prev);
   const { mutate: scheduleStatus } = useScheduleStatus();
   const infoList = [
     {
@@ -65,14 +66,14 @@ export default function ScheduleDetailPage() {
         onSuccess: () => {
           closePopup();
           reset();
-          showToast('예약거절을 완료했습니다.', 'success');
+          show('예약거절을 완료했습니다.', 'success');
         },
-        onError: (error) => {
+        onError: error => {
           const errorMessage =
             error instanceof Error ? error.message : '오류가 발생했습니다.';
-          showToast(errorMessage, 'error');
+          show(errorMessage, 'error');
         },
-      },
+      }
     );
   };
   if (isLoading) return null;

@@ -1,12 +1,13 @@
-import React from 'react';
-import { Metadata } from 'next';
 import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
 } from '@tanstack/react-query';
-import { getSessionDetail } from '@/libs/main';
+import { Metadata } from 'next';
+import React from 'react';
+
 import MentorDetail from '@/components/mentors/MentorDetail';
+import { fetchSessionDetail } from '@/libs/main';
 
 interface MentorsPageProps {
   params: Promise<{ id: string }>;
@@ -17,7 +18,7 @@ export async function generateMetadata({
 }: MentorsPageProps): Promise<Metadata> {
   const { id } = await params;
 
-  const session = await getSessionDetail(id);
+  const session = await fetchSessionDetail(id);
 
   return {
     title: session.title,
@@ -37,7 +38,7 @@ export default async function MentorsPage({ params }: MentorsPageProps) {
 
   await queryClient.prefetchQuery({
     queryKey: ['main-session', id],
-    queryFn: () => getSessionDetail(id),
+    queryFn: () => fetchSessionDetail(id),
   });
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

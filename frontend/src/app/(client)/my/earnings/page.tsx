@@ -1,11 +1,12 @@
 'use client';
-import React, { useState } from 'react';
 import { format } from 'date-fns';
+import React, { useState } from 'react';
+
 import FlexibleTable from '@/components/common/FlexibleTable';
 import Pagination from '@/components/common/Pagination';
 import { useGetMentorPayment } from '@/hooks/query/usePayment';
 import { PaymentMentorItem } from '@/types/payment';
-import { formatPrice } from '@/utils/formatPrice';
+import { formatToKoreanWon } from '@/utils/formatPrice';
 
 export default function EarningPage() {
   const [page, setPage] = useState(1);
@@ -54,13 +55,13 @@ export default function EarningPage() {
         <div className="rounded-xl border border-[var(--border-color)] p-5">
           <p className="mb-1 text-xs text-[var(--text-sub)]">이번 달 수익</p>
           <p className="text-2xl font-semibold text-[var(--text-bold)]">
-            ₩{formatPrice(Number(payment?.monthlyIncome))}
+            {formatToKoreanWon(Number(payment?.monthlyIncome))}
           </p>
         </div>
         <div className="rounded-xl border border-[var(--border-color)] p-5">
           <p className="mb-1 text-xs text-[var(--text-sub)]">누적 수익</p>
           <p className="text-2xl font-semibold text-[var(--text-bold)]">
-            ₩{formatPrice(Number(payment?.totalIncome))}
+            {formatToKoreanWon(Number(payment?.totalIncome))}
           </p>
         </div>
       </div>
@@ -71,7 +72,7 @@ export default function EarningPage() {
       <Pagination
         page={page}
         totalPages={payment?.totalPage || 1}
-        onChange={(newPage) => setPage(newPage)}
+        onChange={newPage => setPage(newPage)}
       />
     </section>
   );

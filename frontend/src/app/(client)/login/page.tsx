@@ -1,19 +1,21 @@
 'use client';
-import React from 'react';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import clsx from 'clsx';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import { useCallback, useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import Input from '@/components/common/Input';
-import Button from '@/components/common/Button';
+
 import { IcGoogle, IcKakao, IcNaver } from '@/assets';
-import clsx from 'clsx';
-import { useToastStore } from '@/stores/useToast';
+import Button from '@/components/common/Button';
+import Input from '@/components/common/Input';
 import { LoginRequest, loginSchema } from '@/schema/login';
+import { useToastStore } from '@/stores/useToast';
 
 export default function LoginPage() {
-  const { showToast } = useToastStore();
+  const { show } = useToastStore();
   const router = useRouter();
   const methods = useForm<LoginRequest>({
     mode: 'all',
@@ -25,33 +27,41 @@ export default function LoginPage() {
     handleSubmit,
     formState: { isValid },
   } = methods;
-  const onSubmit = async (data: LoginRequest) => {
-    const { email, password } = data;
-    try {
-      const res = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      });
+  const handleLogin = useCallback(
+    async (data: LoginRequest) => {
+      const { email, password } = data;
+      try {
+        const res = await signIn('credentials', {
+          email,
+          password,
+          redirect: false,
+        });
 
-      if (res?.code) {
-        showToast('이메일 또는 비밀번호가 잘못되었습니다.', 'error');
-      } else {
-        showToast('로그인에 성공했습니다.', 'success');
-        router.push('/');
+        if (res?.code) {
+          show('이메일 또는 비밀번호가 잘못되었습니다.', 'error');
+        } else {
+          show('로그인에 성공했습니다.', 'success');
+          router.push('/');
+        }
+      } catch {
+        show('로그인에 실패했습니다.', 'error');
       }
-    } catch {
-      showToast('로그인에 실패했습니다.', 'error');
-    }
-  };
-  const onSocial = (provider: string) => {
+    },
+    [show, router]
+  );
+
+  const handleSocialLogin = useCallback((provider: string) => {
     signIn(provider, { callbackUrl: '/' });
-  };
-  const sns = [
-    { name: 'kakao', value: '카카오', img: <IcKakao /> },
-    { name: 'naver', value: '네이버', img: <IcNaver /> },
-    { name: 'google', value: '구글', img: <IcGoogle /> },
-  ];
+  }, []);
+
+  const socialProviders = useMemo(
+    () => [
+      { name: 'kakao', value: '카카오', img: <IcKakao /> },
+      { name: 'naver', value: '네이버', img: <IcNaver /> },
+      { name: 'google', value: '구글', img: <IcGoogle /> },
+    ],
+    []
+  );
   return (
     <section className="mx-auto mt-10 mb-16 w-[380px]">
       <h4 className="mb-5 text-center text-xl font-bold text-[var(--text-bold)]">
@@ -59,7 +69,7 @@ export default function LoginPage() {
       </h4>
       <FormProvider {...methods}>
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(handleLogin)}
           noValidate
           className="flex w-full flex-col gap-5"
         >
@@ -103,20 +113,20 @@ export default function LoginPage() {
           간편로그인
         </span>
         <div className="flex w-full flex-col gap-4">
-          {sns.map((item) => (
+          {socialProviders.map(provider => (
             <button
-              key={item.name}
+              key={provider.name}
               type="button"
-              onClick={() => onSocial(item.name)}
+              onClick={() => handleSocialLogin(provider.name)}
               className={clsx(
                 'flex h-[50px] w-full items-center justify-center rounded-[5px] text-sm font-bold',
-                item.name === 'kakao' && 'bg-[#FAE500] text-[#392020]',
-                item.name === 'naver' && 'bg-[#1EC800] text-white',
-                item.name === 'google' && 'bg-[#f8f8f8] text-[#222]',
+                provider.name === 'kakao' && 'bg-[#FAE500] text-[#392020]',
+                provider.name === 'naver' && 'bg-[#1EC800] text-white',
+                provider.name === 'google' && 'bg-[#f8f8f8] text-[#222]'
               )}
             >
-              {item.img}
-              <span className="ml-2">{item.value}로 로그인</span>
+              {provider.img}
+              <span className="ml-2">{provider.value}로 로그인</span>
             </button>
           ))}
         </div>

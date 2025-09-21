@@ -1,14 +1,24 @@
 'use client';
-import React from 'react';
+
 import { AnimatePresence, motion } from 'framer-motion';
+import React from 'react';
+
 import { useToastStore } from '@/stores/useToast';
 
-export default function Toast() {
+const Toast = React.forwardRef<HTMLDivElement>((props, ref) => {
   const { toasts } = useToastStore();
+  
   return (
-    <div className="fixed bottom-10 left-1/2 z-[9999] flex -translate-x-1/2 flex-col items-center gap-2">
+    <div 
+      ref={ref}
+      className="fixed bottom-10 left-1/2 z-[9999] flex -translate-x-1/2 flex-col items-center gap-2"
+      role="region"
+      aria-live="polite"
+      aria-label="Toast notifications"
+      {...props}
+    >
       <AnimatePresence initial={false}>
-        {toasts.map((toast) => (
+        {toasts.map(toast => (
           <motion.div
             key={toast.id}
             initial={{ opacity: 0, y: 30 }}
@@ -17,9 +27,11 @@ export default function Toast() {
             transition={{ duration: 0.3 }}
             className={`min-w-[200px] rounded-lg px-4 py-3 text-sm shadow-md ${
               toast.type === 'success'
-                ? 'bg-green-500 text-white'
-                : 'bg-red-500 text-white'
+                ? 'bg-[var(--success)] text-white'
+                : 'bg-[var(--danger)] text-white'
             }`}
+            role="alert"
+            aria-live={toast.type === 'error' ? 'assertive' : 'polite'}
           >
             {toast.message}
           </motion.div>
@@ -27,4 +39,8 @@ export default function Toast() {
       </AnimatePresence>
     </div>
   );
-}
+});
+
+Toast.displayName = 'Toast';
+
+export default React.memo(Toast);

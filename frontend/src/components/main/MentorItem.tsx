@@ -1,14 +1,15 @@
-import React from 'react';
 import Image from 'next/image';
-import { CAREER_OPTIONS, POSITION_OPTIONS } from '@/contact/apply';
-import { getLabel } from '@/utils/getLabel';
-import { SessionItem } from '@/types/main';
-import { careerIconMap, positionIconMap } from '@/contact/mentoring';
-import { FiBriefcase } from 'react-icons/fi';
 import Link from 'next/link';
-import { formatPrice } from '@/utils/formatPrice';
-import { formatDuration } from '@/utils/formatDuration';
-import { getImageUrl } from '@/utils/getImageUrl';
+import React from 'react';
+import { FiBriefcase } from 'react-icons/fi';
+
+import { CAREER_OPTIONS, POSITION_OPTIONS } from '@/contact/apply';
+import { careerIconMap, positionIconMap } from '@/contact/mentoring';
+import { SessionItem } from '@/types/main';
+import { formatMinutesToKorean } from '@/utils/formatDuration';
+import { formatToKoreanWon } from '@/utils/formatPrice';
+import { buildImageUrl } from '@/utils/getImageUrl';
+import { findOptionLabel } from '@/utils/getLabel';
 
 export default function MentorItem(props: SessionItem) {
   return (
@@ -29,13 +30,17 @@ export default function MentorItem(props: SessionItem) {
               <span className="text-[var(--background-sub01)]">
                 {positionIconMap[props.mentor.position]}
               </span>{' '}
-              <span>{getLabel(props.mentor.position, POSITION_OPTIONS)}</span>
+              <span>
+                {findOptionLabel(props.mentor.position, POSITION_OPTIONS)}
+              </span>
             </li>
             <li className="mt-1 flex items-center gap-1.5 text-sm text-[var(--text-bold)]">
               <span className="text-[var(--background-sub01)]">
                 {careerIconMap[props.mentor.career]}
               </span>
-              <span>{getLabel(props.mentor.career, CAREER_OPTIONS)}</span>
+              <span>
+                {findOptionLabel(props.mentor.career, CAREER_OPTIONS)}
+              </span>
             </li>
             {props.mentor.company !== '비공개' && (
               <li className="mt-1.5 flex items-center gap-1.5 text-sm font-medium text-[var(--primary)]">
@@ -48,7 +53,7 @@ export default function MentorItem(props: SessionItem) {
           </ul>
         </div>
         <Image
-          src={getImageUrl(props.mentor.image)}
+          src={buildImageUrl(props.mentor.image)}
           width={40}
           height={40}
           alt={props.title}
@@ -59,8 +64,8 @@ export default function MentorItem(props: SessionItem) {
         <p className="line-clamp-3 text-sm break-words">{props.description}</p>
       </div>
       <div className="mt-3 flex justify-between text-sm">
-        <span>{formatDuration(props.duration)}</span>
-        <span>{formatPrice(props.price)}</span>
+        <span>{formatMinutesToKorean(props.duration)}</span>
+        <span>{formatToKoreanWon(props.price)}</span>
       </div>
       <div className="mt-5 h-11 w-full rounded-full border border-[var(--border-color)] text-center text-sm leading-10 transition-colors duration-200 hover:bg-[var(--primary)] hover:text-white">
         1:1 상담 신청

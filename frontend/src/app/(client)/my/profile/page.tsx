@@ -1,75 +1,77 @@
 'use client';
-import React from 'react';
+
+import clsx from 'clsx';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
-import EditableTextForm from '@/components/my/EditableTextForm';
-import PasswordForm from '@/components/my/PasswordForm';
-import { nicknameRegex, phoneRegex } from '@/schema/sign';
-import {
-  usePatchNickname,
-  usePatchPassword,
-  usePatchPhone,
-} from '@/hooks/query/useMypage';
-import { useToastStore } from '@/stores/useToast';
-import { PasswordFormValues } from '@/types/user';
-import { uploadProfileImage } from '@/libs/mypage';
-import clsx from 'clsx';
-import { getImageUrl } from '@/utils/getImageUrl';
-import { IcGoogle, IcKakao } from '@/assets';
+import { useMemo } from 'react';
 import { SiNaver } from 'react-icons/si';
 
+import { IcGoogle, IcKakao } from '@/assets';
+import EditableTextForm from '@/components/my/EditableTextForm';
+import PasswordForm from '@/components/my/PasswordForm';
+import {
+  useUpdateNickname,
+  useUpdatePassword,
+  useUpdatePhone,
+} from '@/hooks/query/useMypage';
+import { uploadProfileImage } from '@/libs/mypage';
+import { NICKNAME_REGEX, PHONE_REGEX } from '@/schema/sign';
+import { useToastStore } from '@/stores/useToast';
+import { PasswordFormValues } from '@/types/user';
+import { buildImageUrl } from '@/utils/helpers';
+
 export default function ProfilePage() {
-  const { showToast } = useToastStore();
+  const { show } = useToastStore();
   const { data: session, status, update } = useSession();
-  const { mutate: patchNickname } = usePatchNickname();
-  const { mutate: patchPhone } = usePatchPhone();
-  const { mutate: patchPassword } = usePatchPassword();
+  const { mutate: updateNickname } = useUpdateNickname();
+  const { mutate: updatePhone } = useUpdatePhone();
+  const { mutate: updatePassword } = useUpdatePassword();
   const handleUpdateNickname = (nickname: string) => {
-    patchNickname(
+    updateNickname(
       { nickname },
       {
         onSuccess: () => {
-          showToast('닉네임이 성공적으로 변경되었습니다!', 'success');
+          show('닉네임이 성공적으로 변경되었습니다!', 'success');
         },
-        onError: (error) => {
+        onError: error => {
           const errorMessage =
             error instanceof Error ? error.message : '오류가 발생했습니다.';
-          showToast(errorMessage, 'error');
+          show(errorMessage, 'error');
         },
-      },
+      }
     );
   };
 
   const handleUpdatePhone = (phone: string) => {
-    patchPhone(
+    updatePhone(
       { phone },
       {
         onSuccess: () => {
-          showToast('전화번호가 성공적으로 변경되었습니다!', 'success');
+          show('전화번호가 성공적으로 변경되었습니다!', 'success');
         },
-        onError: (error) => {
+        onError: error => {
           const errorMessage =
             error instanceof Error ? error.message : '오류가 발생했습니다.';
-          showToast(errorMessage, 'error');
+          show(errorMessage, 'error');
         },
-      },
+      }
     );
   };
 
   const handleUpdatePassword = (values: PasswordFormValues) => {
-    patchPassword(values, {
+    updatePassword(values, {
       onSuccess: () => {
-        showToast('비밀번호가 성공적으로 변경되었습니다!', 'success');
+        show('비밀번호가 성공적으로 변경되었습니다!', 'success');
       },
-      onError: (error) => {
+      onError: error => {
         const errorMessage =
           error instanceof Error ? error.message : '오류가 발생했습니다.';
-        showToast(errorMessage, 'error');
+        show(errorMessage, 'error');
       },
     });
   };
   const handleProfileImageUpload = async (
-    file: File,
+    file: File
   ): Promise<string | null> => {
     const formData = new FormData();
     const allowedTypes = [
@@ -82,17 +84,17 @@ export default function ProfilePage() {
     ];
 
     if (file.name.length > 30) {
-      showToast('파일명은 글자수 30자 미만으로 적어주세요.', 'error');
+      show('파일명은 글자수 30자 미만으로 적어주세요.', 'error');
       return null;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      showToast('파일 크기는 5MB 미만으로 줄여주세요.', 'error');
+      show('파일 크기는 5MB 미만으로 줄여주세요.', 'error');
       return null;
     }
 
     if (!allowedTypes.includes(file.type)) {
-      showToast('지원하지 않는 이미지 형식입니다.', 'error');
+      show('지원하지 않는 이미지 형식입니다.', 'error');
       return null;
     }
 
@@ -105,28 +107,31 @@ export default function ProfilePage() {
       const res = await uploadProfileImage(formData);
       return res.image;
     } catch {
-      showToast('이미지 업로드에 실패했습니다.', 'error');
+      show('이미지 업로드에 실패했습니다.', 'error');
       return null;
     }
   };
 
-  const sns = [
-    {
-      name: 'kakao',
-      value: '카카오',
-      img: <IcKakao />,
-    },
-    {
-      name: 'naver',
-      value: '네이버',
-      img: <SiNaver size={14} />,
-    },
-    {
-      name: 'google',
-      value: '구글',
-      img: <IcGoogle />,
-    },
-  ];
+  const snsProviders = useMemo(
+    () => [
+      {
+        name: 'kakao',
+        value: '카카오',
+        img: <IcKakao />,
+      },
+      {
+        name: 'naver',
+        value: '네이버',
+        img: <SiNaver size={14} />,
+      },
+      {
+        name: 'google',
+        value: '구글',
+        img: <IcGoogle />,
+      },
+    ],
+    []
+  );
 
   const linked = session?.user.socials;
   if (status === 'loading') return null;
@@ -139,7 +144,7 @@ export default function ProfilePage() {
       <div className="flex items-start gap-12 rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] p-10">
         <div className="flex flex-col items-center">
           <Image
-            src={getImageUrl(session?.user.image?.trim() as string)}
+            src={buildImageUrl(session?.user.image?.trim() as string)}
             alt={session?.user.name ?? '프로필 이미지'}
             width={96}
             height={96}
@@ -150,14 +155,14 @@ export default function ProfilePage() {
             className="sr-only"
             type="file"
             accept="image/*"
-            onChange={async (e) => {
+            onChange={async e => {
               const file = e.target.files?.[0];
               if (!file) return;
 
               const url = await handleProfileImageUpload(file);
               if (url) {
                 await update({ image: url });
-                showToast('프로필 이미지가 변경되었습니다!', 'success');
+                show('프로필 이미지가 변경되었습니다!', 'success');
               }
             }}
           />
@@ -167,7 +172,7 @@ export default function ProfilePage() {
               'border border-[var(--border-color)] bg-transparent',
               'hover:bg-[var(--primary-sub01)] hover:text-white',
               'mt-4 w-full cursor-pointer rounded-md py-2 text-center text-sm font-medium',
-              'transition-colors duration-200',
+              'transition-colors duration-200'
             )}
           >
             프로필 변경
@@ -196,7 +201,7 @@ export default function ProfilePage() {
               minLength: { value: 2, message: '2자 이상 입력하세요' },
               maxLength: { value: 12, message: '12자 이하로 입력하세요' },
               pattern: {
-                value: nicknameRegex,
+                value: NICKNAME_REGEX,
                 message: '한글, 영문, 숫자만 사용 가능합니다',
               },
             }}
@@ -212,7 +217,7 @@ export default function ProfilePage() {
             rules={{
               required: '전화번호를 입력하세요',
               pattern: {
-                value: phoneRegex,
+                value: PHONE_REGEX,
                 message: '올바른 전화번호 형식을 입력해주세요.',
               },
             }}
@@ -225,24 +230,25 @@ export default function ProfilePage() {
             SNS 연동 현황
           </label>
           <ul className="mt-3 flex items-center gap-4">
-            {sns.map((item) => {
-              const isLinked = linked?.includes(item.name);
+            {snsProviders.map(provider => {
+              const isLinked = linked?.includes(provider.name);
               return (
                 <li
-                  key={item.name}
+                  key={provider.name}
                   className={clsx(
                     'flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-[var(--border-color)] transition',
                     isLinked
                       ? [
-                          item.name === 'kakao' && 'bg-[#FAE500]',
-                          item.name === 'naver' && 'bg-[#1EC800] text-white',
-                          item.name === 'google' && 'bg-[#f8f8f8]',
+                          provider.name === 'kakao' && 'bg-[#FAE500]',
+                          provider.name === 'naver' &&
+                            'bg-[#1EC800] text-white',
+                          provider.name === 'google' && 'bg-[#f8f8f8]',
                         ]
-                      : 'bg-[#F2F3F7] opacity-60',
+                      : 'bg-[#F2F3F7] opacity-60'
                   )}
                 >
                   <div className={clsx(!isLinked && 'grayscale')}>
-                    {item.img}
+                    {provider.img}
                   </div>
                 </li>
               );

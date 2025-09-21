@@ -1,18 +1,30 @@
 'use client';
-import React, { useState } from 'react';
+
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import Pagination from '@/components/common/Pagination';
+import { useCallback, useState } from 'react';
+
 import FlexibleTable from '@/components/common/FlexibleTable';
+import Pagination from '@/components/common/Pagination';
+import { sessionsColumns } from '@/contact/session';
 import { useGetSession } from '@/hooks/query/useSession';
 import { SessionItem } from '@/types/session';
-import { sessionsColumns } from '@/contact/session';
 
-export default function SessionPage() {
+export default function SessionsPage() {
   const [page, setPage] = useState(1);
   const router = useRouter();
-  const { data: sessions, isLoading } = useGetSession(page);
-  if (isLoading) return null;
+  const { data: sessions } = useGetSession(page);
+
+  const handlePageChange = useCallback((newPage: number) => {
+    setPage(newPage);
+  }, []);
+
+  const handleRowClick = useCallback(
+    (row: SessionItem) => {
+      router.push(`/my/sessions/${row.id}`);
+    },
+    [router]
+  );
 
   return (
     <section className="flex-1">
@@ -23,6 +35,7 @@ export default function SessionPage() {
         <Link
           href="/my/sessions/create"
           className="block rounded-md bg-[var(--primary-sub01)] px-4 py-3 text-center text-sm font-medium text-white transition-colors duration-200 hover:bg-[var(--primary)]"
+          aria-label="새 세션 등록"
         >
           + 세션 등록
         </Link>
@@ -30,12 +43,12 @@ export default function SessionPage() {
       <FlexibleTable
         data={sessions?.data as SessionItem[]}
         columns={sessionsColumns}
-        onRowClick={(row) => router.push(`/my/sessions/${row.id}`)}
+        onRowClick={handleRowClick}
       />
       <Pagination
         page={page}
         totalPages={sessions?.totalPages || 1}
-        onChange={(newPage) => setPage(newPage)}
+        onChange={handlePageChange}
       />
     </section>
   );

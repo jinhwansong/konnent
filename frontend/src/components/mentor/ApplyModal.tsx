@@ -1,25 +1,27 @@
 'use client';
-import React from 'react';
-import { useRouter } from 'next/navigation';
-import { CAREER_OPTIONS, POSITION_OPTIONS } from '@/contact/apply';
-import { Controller, FormProvider, useForm } from 'react-hook-form';
-import Input from '../common/Input';
-import CheckboxGroup from '../common/CheckboxGroup';
-import Textarea from '../common/Textarea';
-import Button from '../common/Button';
-import { useMentorApply } from '@/hooks/query/useMentorApply';
-import { useToastStore } from '@/stores/useToast';
-import Modal from '../common/Modal';
-import { EXPERTISE_OPTIONS } from '@/contact/mentoring';
-import { useSession } from 'next-auth/react';
-import Select from '../common/Select';
-import { ApplyRequest, applySchema } from '@/schema/mentor';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import React from 'react';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
+
+import { CAREER_OPTIONS, POSITION_OPTIONS } from '@/contact/apply';
+import { EXPERTISE_OPTIONS } from '@/contact/mentoring';
+import { useMentorApply } from '@/hooks/query/useMentorApply';
+import { ApplyRequest, applySchema } from '@/schema/mentor';
+import { useToastStore } from '@/stores/useToast';
+
+import Button from '../common/Button';
+import CheckboxGroup from '../common/CheckboxGroup';
 import FormFieldWrapper from '../common/FormFieldWrapper';
+import Input from '../common/Input';
+import Modal from '../common/Modal';
+import Select from '../common/Select';
+import Textarea from '../common/Textarea';
 
 export default function ApplyModal() {
   const router = useRouter();
-  const { showToast } = useToastStore();
+  const { show } = useToastStore();
   const { data: session } = useSession();
   const { mutate: applyMentor } = useMentorApply();
   const methods = useForm<ApplyRequest>({
@@ -44,13 +46,13 @@ export default function ApplyModal() {
   const onSubmit = (data: ApplyRequest) => {
     applyMentor(data, {
       onSuccess: () => {
-        showToast('멘토신청을 완료했습니다.', 'success');
+        show('멘토신청을 완료했습니다.', 'success');
         router.push('/');
       },
-      onError: (error) => {
+      onError: error => {
         const errorMessage =
           error instanceof Error ? error.message : '오류가 발생했습니다.';
-        showToast(errorMessage, 'error');
+        show(errorMessage, 'error');
       },
     });
   };

@@ -1,21 +1,22 @@
 'use client';
-import React, { useState } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import Pagination from '@/components/common/Pagination';
-import { useGetMyReservations } from '@/hooks/query/useReservation';
+import React, { useState } from 'react';
+
 import Button from '@/components/common/Button';
+import Pagination from '@/components/common/Pagination';
 import ReservationCard from '@/components/my/ReservationCard';
 import ReviewForm from '@/components/my/ReviewForm';
+import { useGetMyReservations } from '@/hooks/query/useReservation';
+import { usePostReview } from '@/hooks/query/useReview';
+import { useToastStore } from '@/stores/useToast';
 import {
   PastReservationItem,
   ReservationMenteeItem,
 } from '@/types/reservation';
-import { usePostReview } from '@/hooks/query/useReview';
 import { ReviewRequest } from '@/types/review';
-import { useToastStore } from '@/stores/useToast';
 
 export default function ReservationsPage() {
-  const { showToast } = useToastStore();
+  const { show } = useToastStore();
   const { type } = useParams<{ type: 'upcoming' | 'past' }>();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -46,20 +47,22 @@ export default function ReservationsPage() {
     setSelectedReservationId(id);
     setIsOpen(true);
   };
-  const handleMentoring = (id: string) => {};
+  const handleMentoring = (id: string) => {
+    console.log(id);
+  };
 
   const { mutate: postReview } = usePostReview();
   const onSubmit = (data: ReviewRequest) => {
     const item = { ...data, reservationId: selectedReservationId as string };
     postReview(item, {
       onSuccess: () => {
-        showToast('리뷰 작성을 완료했습니다.', 'success');
+        show('리뷰 작성을 완료했습니다.', 'success');
         setIsOpen(false);
       },
-      onError: (error) => {
+      onError: error => {
         const errorMessage =
           error instanceof Error ? error.message : '오류가 발생했습니다.';
-        showToast(errorMessage, 'error');
+        show(errorMessage, 'error');
       },
     });
   };
@@ -72,7 +75,7 @@ export default function ReservationsPage() {
         멘토링 일정
       </h4>
       <div className="flex gap-2.5">
-        {sessionTap.map((item) => (
+        {sessionTap.map(item => (
           <Button
             key={item.name}
             size="lg"
@@ -86,15 +89,15 @@ export default function ReservationsPage() {
       {data?.data.length ? (
         <>
           <ul>
-            {data?.data.map((item) => (
+            {data?.data.map(item => (
               <ReservationCard
                 key={item.id}
                 item={item}
                 type={type}
                 onClick={
                   type === 'past'
-                    ? (id) => handleReview(id)
-                    : (id) => handleMentoring(id)
+                    ? id => handleReview(id)
+                    : id => handleMentoring(id)
                 }
               />
             ))}

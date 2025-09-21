@@ -51,7 +51,7 @@ export default function FlexibleTable<T>({
                 key={i}
                 className={clsx(
                   'border-t border-[var(--border-color)] transition-colors duration-150 hover:bg-[var(--hover-bg)]',
-                  onRowClick ? 'cursor-pointer' : '',
+                  onRowClick ? 'cursor-pointer' : ''
                 )}
                 onClick={() => onRowClick?.(row)}
               >

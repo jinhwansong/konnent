@@ -1,5 +1,5 @@
-import React from 'react';
 import Link from 'next/link';
+import React from 'react';
 
 export default function Footer() {
   const services = [
@@ -58,7 +58,7 @@ export default function Footer() {
         <ul className="flex flex-col gap-2 md:flex-row md:justify-between lg:flex-[1] lg:gap-8">
           <li className="flex gap-4 lg:flex-col">
             <em className="text-sm font-bold">이용약관</em>
-            {terms.map((service) => (
+            {terms.map(service => (
               <Link
                 key={service.id}
                 href={service.link}
@@ -70,7 +70,7 @@ export default function Footer() {
           </li>
           <li className="flex gap-4 lg:flex-col">
             <em className="text-sm font-bold">서비스</em>
-            {services.map((service) => (
+            {services.map(service => (
               <Link
                 key={service.id}
                 href={service.link}
@@ -82,7 +82,7 @@ export default function Footer() {
           </li>
           <li className="flex gap-4 lg:flex-col">
             <em className="text-sm font-bold">소셜</em>
-            {socials.map((service) => (
+            {socials.map(service => (
               <Link
                 key={service.id}
                 href={service.link}

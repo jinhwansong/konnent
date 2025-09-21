@@ -3,22 +3,23 @@ import {
   HydrationBoundary,
   QueryClient,
 } from '@tanstack/react-query';
-import { getSessions } from '@/libs/main';
+
+import ArticleList from '@/components/main/ArticleList';
 import MentorContent from '@/components/main/MentorContent';
 import Slider from '@/components/main/Slider';
-import { getArticle } from '@/libs/article';
-import ArticleList from '@/components/main/ArticleList';
+import { fetchArticles } from '@/libs/article';
+import { fetchSessions } from '@/libs/main';
 export default async function Home() {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
     queryKey: ['sessions', 1, 'all', 8, 'latest'],
-    queryFn: () => getSessions(1, 'all', 8, 'latest'),
+    queryFn: () => fetchSessions(1, 'all', 8, 'latest'),
   });
 
   await queryClient.prefetchQuery({
     queryKey: ['article', 1, 'all', 6, 'likes'],
-    queryFn: () => getArticle(1, 'all', 6, 'likes'),
+    queryFn: () => fetchArticles(1, 'all', 6, 'likes'),
   });
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

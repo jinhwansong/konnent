@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import Input from '../common/Input';
-import FormErrorMessage from '../common/FormErrorMessage';
-import Button from '../common/Button';
+
+import { PASSWORD_REGEX } from '@/schema/sign';
 import { PasswordFormValues } from '@/types/user';
-import { passwordRegex } from '@/schema/sign';
+
+import Button from '../common/Button';
+import FormErrorMessage from '../common/FormErrorMessage';
+import Input from '../common/Input';
 
 export default function PasswordForm({
   onSubmit,
@@ -27,7 +29,7 @@ export default function PasswordForm({
     },
   });
 
-  const submitHandler: SubmitHandler<PasswordFormValues> = async (data) => {
+  const submitHandler: SubmitHandler<PasswordFormValues> = async data => {
     await onSubmit(data);
     setIsEditing(false);
     reset();
@@ -73,7 +75,7 @@ export default function PasswordForm({
                   required: '현재 비밀번호를 입력하세요',
                   minLength: { value: 8, message: '8자 이상 입력하세요' },
                   pattern: {
-                    value: passwordRegex,
+                    value: PASSWORD_REGEX,
                     message: '영문, 숫자, 특수문자를 포함해야 합니다',
                   },
                 })}
@@ -90,7 +92,7 @@ export default function PasswordForm({
                   required: '새 비밀번호를 입력하세요',
                   minLength: { value: 8, message: '8자 이상 입력하세요' },
                   pattern: {
-                    value: passwordRegex,
+                    value: PASSWORD_REGEX,
                     message: '영문, 숫자, 특수문자를 포함해야 합니다',
                   },
                 })}
@@ -107,10 +109,10 @@ export default function PasswordForm({
                   required: '비밀번호 확인을 입력하세요',
                   minLength: { value: 8, message: '8자 이상 입력하세요' },
                   pattern: {
-                    value: passwordRegex,
+                    value: PASSWORD_REGEX,
                     message: '영문, 숫자, 특수문자를 포함해야 합니다',
                   },
-                  validate: (val) =>
+                  validate: val =>
                     val === watch('newPassword') ||
                     '비밀번호가 일치하지 않습니다',
                 })}

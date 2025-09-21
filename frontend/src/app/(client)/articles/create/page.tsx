@@ -1,24 +1,32 @@
 'use client';
-import React from 'react';
+
 import { useRouter } from 'next/navigation';
+import { useCallback } from 'react';
+
 import ArticleForm from '@/components/article/ArticleForm';
-import { useToastStore } from '@/stores/useToast';
 import { usePostArticle } from '@/hooks/query/useArticle';
+import { useToastStore } from '@/stores/useToast';
 import { ArticleRequest } from '@/types/article';
 
 export default function ArticleCreatePage() {
-  const { showToast } = useToastStore();
+  const { show } = useToastStore();
   const { mutate: postArticle } = usePostArticle();
   const router = useRouter();
 
-  const onSubmit = async (data: ArticleRequest) => {
-    try {
-      await postArticle(data);
-      showToast('아티클 등록을 완료했습니다.', 'success');
-      router.push('/articles');
-    } catch {
-      showToast('아티클 등록에 실패했습니다.', 'error');
-    }
-  };
-  return <ArticleForm onSubmit={onSubmit} title="아티클 등록" />;
+  const handleSubmit = useCallback(
+    async (data: ArticleRequest) => {
+      postArticle(data, {
+        onSuccess: () => {
+          show('아티클 등록을 완료했습니다.', 'success');
+          router.push('/articles');
+        },
+        onError: () => {
+          show('아티클 등록에 실패했습니다.', 'error');
+        },
+      });
+    },
+    [postArticle, show, router]
+  );
+
+  return <ArticleForm onSubmit={handleSubmit} title="아티클 등록" />;
 }

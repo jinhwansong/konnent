@@ -1,3 +1,5 @@
-export const formatPrice = (price: number): string => {
-  return price.toLocaleString('ko-KR') + '원';
+import { formatCurrency as newFormatCurrency } from './helpers';
+
+export const formatToKoreanWon = (amount: number): string => {
+  return newFormatCurrency(amount);
 };

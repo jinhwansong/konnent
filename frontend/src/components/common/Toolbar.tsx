@@ -1,6 +1,6 @@
 'use client';
-import React, { useRef, useState } from 'react';
 import { Editor } from '@tiptap/react';
+import React, { useRef, useState } from 'react';
 import {
   MdCode,
   MdFormatBold,
@@ -54,7 +54,7 @@ export default function Toolbar({ editor, onImageUpload }: IToolbar) {
     if (e.target.files?.length) {
       const files = Array.from(e.target.files);
       const urls = await onImageUpload(files);
-      urls.forEach((url) => {
+      urls.forEach(url => {
         if (url) {
           editor.chain().focus().setImage({ src: url }).run();
         }
@@ -94,7 +94,7 @@ export default function Toolbar({ editor, onImageUpload }: IToolbar) {
         <div className="relative" ref={colorRef}>
           <button
             type="button"
-            onClick={() => setShowColorPicker((prev) => !prev)}
+            onClick={() => setShowColorPicker(prev => !prev)}
             className={`${baseBtn} ${editor.isActive('textStyle') ? activeBtn : ''}`}
           >
             <MdFormatColorText />
@@ -102,7 +102,7 @@ export default function Toolbar({ editor, onImageUpload }: IToolbar) {
 
           {showColorPicker && (
             <div className="absolute top-full left-0 z-50 mt-2 grid w-56 grid-cols-5 gap-1 rounded-md border border-[var(--border-color)] bg-[var(--background)] p-2 shadow-lg">
-              {COLORS.map((color) => (
+              {COLORS.map(color => (
                 <button
                   type="button"
                   key={color}
@@ -123,7 +123,7 @@ export default function Toolbar({ editor, onImageUpload }: IToolbar) {
         </div>
       </div>
 
-      <div className="mx-1 h-6 w-px bg-gray-300" />
+      <div className="mx-1 h-6 w-px bg-[var(--border-color)]" />
 
       {/* Code & Block */}
       <div className="flex gap-2">
@@ -150,7 +150,7 @@ export default function Toolbar({ editor, onImageUpload }: IToolbar) {
         </button>
       </div>
 
-      <div className="mx-1 h-6 w-px bg-gray-300" />
+      <div className="mx-1 h-6 w-px bg-[var(--border-color)]" />
 
       <div className="flex items-center gap-2">
         <button

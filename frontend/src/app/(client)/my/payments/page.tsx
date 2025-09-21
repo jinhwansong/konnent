@@ -1,19 +1,19 @@
 'use client';
+import { format } from 'date-fns';
+import Link from 'next/link';
 import React, { useState } from 'react';
+
+import Button from '@/components/common/Button';
+import Pagination from '@/components/common/Pagination';
 import {
   useGetMenteePayment,
   usePaymentRefund,
 } from '@/hooks/query/usePayment';
-import Pagination from '@/components/common/Pagination';
-import Link from 'next/link';
-import { PaymentMenteeItem } from '@/types/payment';
-import { format } from 'date-fns';
-import { formatPrice } from '@/utils/formatPrice';
-import Button from '@/components/common/Button';
 import { useToastStore } from '@/stores/useToast';
-
+import { PaymentMenteeItem } from '@/types/payment';
+import { formatToKoreanWon } from '@/utils/formatPrice';
 export default function PaymentPage() {
-  const { showToast } = useToastStore();
+  const { show } = useToastStore();
   const [page, setPage] = useState(1);
   const { data: payment, isLoading } = useGetMenteePayment(page);
   const { mutate: paymentRefund } = usePaymentRefund();
@@ -26,8 +26,8 @@ export default function PaymentPage() {
       : 'bg-green-100 text-green-700';
   const handleRefund = (paymentKey: string) => {
     paymentRefund(paymentKey, {
-      onSuccess: (data) => {
-        showToast(data.message, 'success');
+      onSuccess: data => {
+        show(data.message, 'success');
       },
     });
   };
@@ -67,7 +67,7 @@ export default function PaymentPage() {
                   <div className="flex w-full justify-between text-sm font-medium">
                     <p>금액</p>
                     <span className="text-[var(--text-bold)]">
-                      ₩{formatPrice(item.price)}
+                      {formatToKoreanWon(item.price)}
                     </span>
                   </div>
                   <div className="flex shrink-0 flex-col items-end gap-2">
@@ -95,7 +95,7 @@ export default function PaymentPage() {
           <Pagination
             page={page}
             totalPages={payment?.totalPage || 1}
-            onChange={(newPage) => setPage(newPage)}
+            onChange={newPage => setPage(newPage)}
           />
         </>
       ) : (

@@ -1,16 +1,17 @@
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { format, isToday, parseISO } from 'date-fns';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import React from 'react';
 import { FaEye, FaHeart } from 'react-icons/fa';
-import { ArticleCardItem } from '@/types/article';
-import { getLabel } from '@/utils/getLabel';
+
 import { ARTICLE_OPTIONS } from '@/contact/article';
 import { useLikeArticle } from '@/hooks/query/useArticle';
 import { useToastStore } from '@/stores/useToast';
-import { useSession } from 'next-auth/react';
-import { getImageUrl } from '@/utils/getImageUrl';
+import { ArticleCardItem } from '@/types/article';
+import { buildImageUrl } from '@/utils/getImageUrl';
+import { findOptionLabel } from '@/utils/getLabel';
 
 interface ArticleCardProps extends ArticleCardItem {
   type?: 'main' | 'other';
@@ -22,14 +23,14 @@ export default function ArticleCard({
   type,
   ...props
 }: ArticleCardProps) {
-  const { showToast } = useToastStore();
+  const { show } = useToastStore();
   const router = useRouter();
   const { data: session } = useSession();
   const { mutate: likeMutate } = useLikeArticle();
   const handleLike = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
     e.preventDefault();
     if (!session) {
-      showToast('로그인 한 사람만 이용 할 수 있습니다.', 'error');
+      show('로그인 한 사람만 이용 할 수 있습니다.', 'error');
       return router.push('/login');
     }
 
@@ -79,7 +80,7 @@ export default function ArticleCard({
         <div className="mt-3 flex flex-col gap-2 text-sm sm:mt-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <Image
-              src={getImageUrl(session?.user.image?.trim() as string)}
+              src={buildImageUrl(session?.user.image?.trim() as string)}
               width={32}
               height={32}
               alt="프로필"
@@ -87,7 +88,7 @@ export default function ArticleCard({
             />
             <span>{props.author.nickname}</span>
             <Divider />
-            <span>{getLabel(props.category, ARTICLE_OPTIONS)}</span>
+            <span>{findOptionLabel(props.category, ARTICLE_OPTIONS)}</span>
           </div>
 
           {/* 날짜 + 조회수 + 좋아요 */}
@@ -101,7 +102,7 @@ export default function ArticleCard({
             <Divider />
             <button
               type="button"
-              onClick={(e) => handleLike(e, props.id)}
+              onClick={e => handleLike(e, props.id)}
               className="flex items-center gap-1 hover:text-[var(--primary)]"
             >
               <FaHeart

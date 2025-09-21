@@ -1,4 +1,5 @@
 import React from 'react';
+
 import FormErrorMessage from './FormErrorMessage';
 
 interface FormFieldWrapperProps {
@@ -6,21 +7,33 @@ interface FormFieldWrapperProps {
   name: string;
   children: React.ReactNode;
   error?: string;
+  required?: boolean;
+  className?: string;
+  description?: string;
 }
 
-export default function FormFieldWrapper({
-  label,
-  name,
-  children,
-  error,
-}: FormFieldWrapperProps) {
-  return (
-    <div className="relative flex flex-col gap-2" key={name}>
-      <label htmlFor={name} className="text-sm text-[var(--text-bold)]">
-        {label}
-      </label>
-      {children}
-      <FormErrorMessage message={error} />
-    </div>
-  );
-}
+const FormFieldWrapper = React.forwardRef<HTMLDivElement, FormFieldWrapperProps>(
+  ({ label, name, children, error, required = false, className, description, ...props }, ref) => {
+    return (
+      <div 
+        ref={ref}
+        className={`relative flex flex-col gap-2 ${className || ''}`}
+        {...props}
+      >
+        <label htmlFor={name} className="text-sm font-medium text-[var(--text-bold)]">
+          {label}
+          {required && <span className="text-[var(--danger)] ml-1" aria-label="required">*</span>}
+        </label>
+        {description && (
+          <p className="text-xs text-[var(--text-sub)]">{description}</p>
+        )}
+        {children}
+        <FormErrorMessage message={error} id={`${name}-error`} />
+      </div>
+    );
+  }
+);
+
+FormFieldWrapper.displayName = 'FormFieldWrapper';
+
+export default React.memo(FormFieldWrapper);

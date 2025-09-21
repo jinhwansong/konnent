@@ -1,12 +1,12 @@
-import React from 'react';
-
-import { getReservationDone } from '@/libs/reservation';
 import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
 } from '@tanstack/react-query';
+import React from 'react';
+
 import ReservationDoneDetail from '@/components/mentors/ReservationDoneDetail';
+import { getReservationComplete } from '@/libs/reservation';
 
 interface DonePageProps {
   params: Promise<{ orderId: string }>;
@@ -18,7 +18,7 @@ export default async function DonePage({ params }: DonePageProps) {
 
   await queryClient.prefetchQuery({
     queryKey: ['reservationDone', orderId],
-    queryFn: () => getReservationDone(orderId),
+    queryFn: () => getReservationComplete(orderId),
   });
 
   return (

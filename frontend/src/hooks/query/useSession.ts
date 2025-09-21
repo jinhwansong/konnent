@@ -1,10 +1,14 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+
+import { withQueryDefaults } from '@/hooks/query/options';
 import {
-  deleteSession,
-  getSession,
-  getSessionDetail,
-  patchSession,
-  postSession,
-  toggleSessionPublic,
+  removeSession,
+  fetchSessions,
+  fetchSessionDetail,
+  updateSession,
+  createSession,
+  updateSessionVisibility,
 } from '@/libs/session';
 import {
   PatchSession,
@@ -12,30 +16,29 @@ import {
   SessionRequest,
   SessionResponse,
 } from '@/types/session';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useSession } from 'next-auth/react';
 
 export const useGetSession = (page: number) => {
   const { data: session } = useSession();
 
-  return useQuery<SessionResponse>({
-    queryKey: ['session', page],
-    queryFn: () => getSession(page),
-    retry: false,
-    staleTime: 1000 * 60 * 5,
-    enabled: !!session?.user,
-  });
+  return useQuery<SessionResponse>(
+    withQueryDefaults({
+      queryKey: ['session', page],
+      queryFn: () => fetchSessions(page),
+      enabled: !!session?.user,
+    })
+  );
 };
 
 export const useGetSessionDetail = (id: string) => {
   const { data: session } = useSession();
 
-  return useQuery<SessionDetailResponse>({
-    queryKey: ['session-detail', id],
-    queryFn: () => getSessionDetail(id),
-    retry: false,
-    enabled: !!session?.user,
-  });
+  return useQuery<SessionDetailResponse>(
+    withQueryDefaults({
+      queryKey: ['session-detail', id],
+      queryFn: () => fetchSessionDetail(id),
+      enabled: !!session?.user,
+    })
+  );
 };
 
 export const useTogglePublic = () => {
@@ -43,7 +46,7 @@ export const useTogglePublic = () => {
 
   return useMutation({
     mutationFn: ({ id, isPublic }: { id: string; isPublic: boolean }) =>
-      toggleSessionPublic(id, isPublic),
+      updateSessionVisibility(id, isPublic),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['session-detail'] });
@@ -55,17 +58,17 @@ export const useTogglePublic = () => {
 export const useDeleteSession = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id }: { id: string }) => deleteSession(id),
+    mutationFn: ({ id }: { id: string }) => removeSession(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['session'] });
     },
   });
 };
 
-export const usePostSession = () => {
+export const useCreateSession = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: SessionRequest) => postSession(data),
+    mutationFn: (data: SessionRequest) => createSession(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['session'] });
     },
@@ -75,7 +78,7 @@ export const usePostSession = () => {
 export const usePatchSession = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: PatchSession) => patchSession(id, data),
+    mutationFn: ({ id, data }: PatchSession) => updateSession(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['session-detail'] });
       queryClient.invalidateQueries({ queryKey: ['session'] });

@@ -1,22 +1,23 @@
 'use client';
-import { useEffect } from 'react';
-import { useToastStore } from '@/stores/useToast';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { postPayment } from '@/libs/reservation';
+import { useEffect } from 'react';
+
+import { createPayment } from '@/libs/reservation';
 import { useReservation } from '@/stores/useReservation';
+import { useToastStore } from '@/stores/useToast';
 
 export default function SuccessPage() {
-  const { showToast } = useToastStore();
+  const { show } = useToastStore();
   const { sessionId } = useParams<{ sessionId: string }>();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { resetReservation } = useReservation();
+  const { reset } = useReservation();
   useEffect(() => {
     const orderId = searchParams.get('orderId');
     const paymentKey = searchParams.get('paymentKey');
     const amount = searchParams.get('amount');
     if (!orderId || !paymentKey || !amount) {
-      showToast('결제 정보가 유효하지 않습니다.', 'error');
+      show('결제 정보가 유효하지 않습니다.', 'error');
       router.replace(`/mentors/${sessionId}/confirm`);
       return;
     }
@@ -26,14 +27,14 @@ export default function SuccessPage() {
       price: Number(amount),
     };
     try {
-      postPayment(data);
-      showToast('결제가 완료되었어요. 예약이 확정되었습니다.', 'success');
-      resetReservation();
+      createPayment(data);
+      show('결제가 완료되었어요. 예약이 확정되었습니다.', 'success');
+      reset();
       router.replace(`/mentors/done/${orderId}`);
     } catch {
-      showToast('예약 확정에 실패했습니다.', 'error');
+      show('예약 확정에 실패했습니다.', 'error');
       router.replace(`/mentors/${sessionId}/confirm`);
     }
-  }, [router, searchParams, sessionId, showToast, resetReservation]);
+  }, [router, searchParams, sessionId, show, reset]);
   return null;
 }

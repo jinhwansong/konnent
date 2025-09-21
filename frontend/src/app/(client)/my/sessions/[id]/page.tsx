@@ -1,22 +1,23 @@
 'use client';
-import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import React from 'react';
+import { FiClock, FiDollarSign, FiStar } from 'react-icons/fi';
+
+import Button from '@/components/common/Button';
 import {
   useDeleteSession,
   useGetSessionDetail,
   useTogglePublic,
 } from '@/hooks/query/useSession';
-import Button from '@/components/common/Button';
 import { useToastStore } from '@/stores/useToast';
-import { FiClock, FiDollarSign, FiStar } from 'react-icons/fi';
-import { formatDate } from '@/utils/formatDate';
-import { formatDuration } from '@/utils/formatDuration';
-import { formatPrice } from '@/utils/formatPrice';
+import { formatToKoreanDate } from '@/utils/formatDate';
+import { formatMinutesToKorean } from '@/utils/formatDuration';
+import { formatToKoreanWon } from '@/utils/formatPrice';
 
 export default function SessionDetail() {
   const { id } = useParams();
   const router = useRouter();
-  const { showToast } = useToastStore();
+  const { show } = useToastStore();
   const { mutate: togglePublic } = useTogglePublic();
   const { mutate: deleteSession } = useDeleteSession();
   const { data: session, isLoading } = useGetSessionDetail(id as string);
@@ -37,13 +38,13 @@ export default function SessionDetail() {
       },
       {
         onSuccess: () => {
-          showToast('세션삭제를 완료했습니다.', 'success');
+          show('세션삭제를 완료했습니다.', 'success');
           router.push('/my/sessions');
         },
         onError: () => {
-          showToast('세션삭제를 실패했습니다.', 'error');
+          show('세션삭제를 실패했습니다.', 'error');
         },
-      },
+      }
     );
   };
 
@@ -53,12 +54,12 @@ export default function SessionDetail() {
     {
       icon: <FiDollarSign size={16} />,
       label: '가격',
-      value: `${formatPrice(session?.price as number)}`,
+      value: `${formatToKoreanWon(session?.price as number)}`,
     },
     {
       icon: <FiClock size={16} />,
       label: '시간',
-      value: `${formatDuration(session?.duration as number)}`,
+      value: `${formatMinutesToKorean(session?.duration as number)}`,
     },
     {
       icon: <FiStar size={16} />,
@@ -94,7 +95,7 @@ export default function SessionDetail() {
           >
             {session?.public ? '비공개로 전환' : '공개로 전환'}
           </button>
-          <span>{formatDate(session?.createdAt as string)}</span>
+          <span>{formatToKoreanDate(session?.createdAt as string)}</span>
         </div>
 
         <div className="flex h-9 items-center gap-2 text-sm whitespace-nowrap text-[var(--text-sub)]">

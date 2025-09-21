@@ -10,24 +10,24 @@ interface ToastItem {
 
 interface ToastStore {
   toasts: ToastItem[];
-  showToast: (message: string, type?: ToastType) => void;
-  removeToast: (id: string) => void;
+  show: (message: string, type?: ToastType) => void;
+  remove: (id: string) => void;
 }
 
 export const useToastStore = create<ToastStore>((set, get) => ({
   toasts: [],
-  showToast: (message, type = 'success') => {
+  show: (message, type = 'success') => {
     const id = Date.now().toString();
-    const toasts = { id, message, type };
-    set({ toasts: [...get().toasts, toasts] });
+    const toast = { id, message, type };
+    set({ toasts: [...get().toasts, toast] });
 
     setTimeout(() => {
-      set((state) => ({
-        toasts: state.toasts.filter((item) => item.id !== id),
+      set(state => ({
+        toasts: state.toasts.filter(item => item.id !== id),
       }));
     }, 2500);
   },
-  removeToast: (id) => {
-    set({ toasts: get().toasts.filter((t) => t.id !== id) });
+  remove: id => {
+    set({ toasts: get().toasts.filter(toast => toast.id !== id) });
   },
 }));

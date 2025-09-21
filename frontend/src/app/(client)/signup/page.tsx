@@ -1,25 +1,27 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+
+import Button from '@/components/common/Button';
+import FormErrorMessage from '@/components/common/FormErrorMessage';
 import Input from '@/components/common/Input';
 import {
-  duplicateEmail,
-  duplicateNickname,
-  registerUser,
+  checkEmailAvailability,
+  checkNicknameAvailability,
+  createUser,
   sendEmailVerification,
-  verifyEmailCode,
+  postEmailCodeVerification,
 } from '@/libs/register';
-import { useToastStore } from '@/stores/useToast';
-import { JoinInterface } from '@/types/user';
-import Button from '@/components/common/Button';
-import { useRouter } from 'next/navigation';
 import { SignForm, signSchema } from '@/schema/sign';
-import { zodResolver } from '@hookform/resolvers/zod';
-import FormErrorMessage from '@/components/common/FormErrorMessage';
+import { useToastStore } from '@/stores/useToast';
+import { UserRegistrationRequest } from '@/types/user';
 
 export default function SignPage() {
   const router = useRouter();
-  const { showToast } = useToastStore();
+  const { show } = useToastStore();
   const methods = useForm<SignForm>({
     mode: 'all',
     resolver: zodResolver(signSchema),
@@ -50,62 +52,61 @@ export default function SignPage() {
   const nickname = watch('nickname');
   const code = watch('code');
 
-  const onSubmit = async (data: JoinInterface) => {
-    const { email, nickname, password, name, phone } = data;
-    try {
-      await registerUser({ email, nickname, password, name, phone });
-      showToast('회원가입을 완료햤습니다.', 'success');
-      router.push('/login');
-    } catch {
-      showToast('회원가입에 실패했습니다.', 'error');
-    }
-  };
+  const handleJoin = useCallback(
+    async (data: UserRegistrationRequest) => {
+      const { email, nickname, password, name, phone } = data;
+      try {
+        await createUser({ email, nickname, password, name, phone });
+        show('회원가입을 완료했습니다.', 'success');
+        router.push('/login');
+      } catch {
+        show('회원가입에 실패했습니다.', 'error');
+      }
+    },
+    [show, router]
+  );
 
-  // 이메일 중복검사
-  const checkEmailDuplicate = async () => {
+  const checkEmailDuplicate = useCallback(async () => {
     try {
-      await duplicateEmail(email);
-      showToast('사용 가능한 이메일입니다.', 'success');
+      await checkEmailAvailability(email);
+      show('사용 가능한 이메일입니다.', 'success');
       setIsDuplicateChecked(true);
       setIsCodeSent(false);
       setIsVerified(false);
     } catch {
-      showToast('이미 사용 중인 이메일입니다.', 'error');
+      show('이미 사용 중인 이메일입니다.', 'error');
     }
-  };
+  }, [email, show]);
 
-  // 닉네임 중복검사
-  const checkNicknameDuplicate = async () => {
+  const checkNicknameDuplicate = useCallback(async () => {
     try {
-      await duplicateNickname(nickname);
-      showToast('사용 가능한 닉네임입니다.', 'success');
+      await checkNicknameAvailability(nickname);
+      show('사용 가능한 닉네임입니다.', 'success');
     } catch {
-      showToast('이미 사용 중인 닉네임입니다.', 'error');
+      show('이미 사용 중인 닉네임입니다.', 'error');
     }
-  };
+  }, [nickname, show]);
 
-  // 이메일 인증 코드 전송
-  const handleSendCode = async () => {
+  const handleSendCode = useCallback(async () => {
     try {
       await sendEmailVerification({ email });
-      showToast('인증 코드가 전송되었습니다.', 'success');
+      show('인증 코드가 전송되었습니다.', 'success');
       setIsCodeSent(true);
       setTimeLeft(180);
     } catch {
-      showToast('이메일 전송 실패', 'error');
+      show('이메일 전송 실패', 'error');
     }
-  };
+  }, [email, show]);
 
-  // 인증 코드 검증
-  const handleVerifyCode = async () => {
+  const handleVerifyCode = useCallback(async () => {
     try {
-      await verifyEmailCode({ email, code });
-      showToast('이메일 인증이 완료되었습니다.', 'success');
+      await postEmailCodeVerification({ email, code });
+      show('이메일 인증이 완료되었습니다.', 'success');
       setIsVerified(true);
     } catch {
-      showToast('이메일 인증이 실패했습니다.', 'error');
+      show('이메일 인증이 실패했습니다.', 'error');
     }
-  };
+  }, [email, code, show]);
 
   // 이메일 수정 시 인증 상태 초기화
   useEffect(() => {
@@ -119,10 +120,10 @@ export default function SignPage() {
     if (!isCodeSent || isVerified) return;
 
     const timer = setInterval(() => {
-      setTimeLeft((prev) => {
+      setTimeLeft(prev => {
         if (prev <= 1) {
           clearInterval(timer);
-          showToast('인증 코드가 만료되었습니다.', 'error');
+          show('인증 코드가 만료되었습니다.', 'error');
           setIsCodeSent(false);
           setIsDuplicateChecked(false); // 다시 중복확인부터
           setTimeLeft(0);
@@ -133,10 +134,12 @@ export default function SignPage() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [isCodeSent, isVerified, showToast]);
+  }, [isCodeSent, isVerified, show]);
 
-  const isFormReady =
-    isValid && isDuplicateChecked && isVerified && email && nickname;
+  const isFormReady = useMemo(
+    () => isValid && isDuplicateChecked && isVerified && email && nickname,
+    [isValid, isDuplicateChecked, isVerified, email, nickname]
+  );
 
   return (
     <section className="mx-auto mt-10 mb-16 w-[380px]">
@@ -146,7 +149,7 @@ export default function SignPage() {
       </h4>
       <FormProvider {...methods}>
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(handleJoin)}
           noValidate
           className="flex w-full flex-col gap-5"
         >
@@ -160,7 +163,7 @@ export default function SignPage() {
             />
             <FormErrorMessage message={errors.email?.message} />
             <button
-              className="absolute top-8 right-1 bg-[var(--background)] px-2.5 py-2.5 text-sm text-[var(--primary)] disabled:text-[var(--text-sub)]"
+              className="absolute top-8 right-1 bg-[var(--editor-bg)] px-2.5 py-2.5 text-sm text-[var(--primary)] disabled:text-[var(--text-sub)]"
               disabled={!email || !!errors.email}
               type="button"
               onClick={checkEmailDuplicate}
@@ -189,7 +192,7 @@ export default function SignPage() {
                       ? handleVerifyCode
                       : handleSendCode
                 }
-                className="absolute top-8 right-1 bg-[var(--background)] px-2.5 py-2.5 text-sm text-[var(--primary)] disabled:text-[var(--text-sub)]"
+                className="absolute top-8 right-1 bg-[var(--editor-bg)] px-2.5 py-2.5 text-sm text-[var(--primary)] disabled:text-[var(--text-sub)]"
                 disabled={!email || !!errors.email || isVerified}
               >
                 {isVerified ? '인증완료' : isCodeSent ? '인증하기' : '코드전송'}
@@ -248,7 +251,7 @@ export default function SignPage() {
             <FormErrorMessage message={errors.nickname?.message} />
             <button
               type="button"
-              className="absolute top-8 right-1 bg-[var(--background)] px-2.5 py-2.5 text-sm text-[var(--primary)] disabled:text-[var(--text-sub)]"
+              className="absolute top-8 right-1 bg-[var(--editor-bg)] px-2.5 py-2.5 text-sm text-[var(--primary)] disabled:text-[var(--text-sub)]"
               disabled={!nickname || !!errors.nickname}
               onClick={checkNicknameDuplicate}
             >
@@ -266,10 +269,10 @@ export default function SignPage() {
               inputMode="numeric"
               pattern="\d*"
               maxLength={11}
-              onInput={(e) => {
+              onInput={e => {
                 e.currentTarget.value = e.currentTarget.value.replace(
                   /[^0-9]/g,
-                  '',
+                  ''
                 );
               }}
             />

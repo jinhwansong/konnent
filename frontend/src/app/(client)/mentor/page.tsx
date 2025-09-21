@@ -1,11 +1,13 @@
 'use client';
-import React, { useState } from 'react';
+import clsx from 'clsx';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { FAQ_OPTIONS, REASON_OPTIONS } from '@/contact/mentor';
-import { BiCaretDown } from 'react-icons/bi';
 import { useSession } from 'next-auth/react';
-import clsx from 'clsx';
+import React, { useState } from 'react';
+import { BiCaretDown } from 'react-icons/bi';
+
+import { FAQ_OPTIONS, REASON_OPTIONS } from '@/contact/mentor';
+
 
 export default function MentorPage() {
   const router = useRouter();
@@ -13,7 +15,7 @@ export default function MentorPage() {
 
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const onToggle = (id: number) => {
-    setOpenIndex((prev) => (prev === id ? null : id));
+    setOpenIndex(prev => (prev === id ? null : id));
   };
   const onRouter = () => {
     if (!sessions) {
@@ -62,7 +64,7 @@ export default function MentorPage() {
               className={clsx(
                 'rounded-lg border border-[var(--border-color)]',
                 'bg-[var(--background)] px-8 py-10 text-center',
-                'transition hover:bg-[var(--hover-bg)] hover:shadow-md',
+                'transition hover:bg-[var(--hover-bg)] hover:shadow-md'
               )}
             >
               <Image
@@ -86,19 +88,19 @@ export default function MentorPage() {
         <h4 className="mt-12 mb-6 text-center text-2xl font-bold text-[var(--text-bold)]">
           자주 묻는 질문
         </h4>
-        {FAQ_OPTIONS.map((faqs) => (
+        {FAQ_OPTIONS.map(faqs => (
           <button
             key={faqs.id}
             onClick={() => onToggle(faqs.id)}
             className={clsx(
               'mt-5 w-full rounded-[1rem]',
               'bg-[var(--hover-bg)]',
-              'p-7 text-left transition-colors',
+              'p-7 text-left transition-colors'
             )}
           >
             <details
               open={openIndex === faqs.id}
-              onClick={(e) => e.preventDefault()}
+              onClick={e => e.preventDefault()}
               className="group"
             >
               <summary className="relative font-medium text-[var(--text-bold)] marker:text-[0px]">

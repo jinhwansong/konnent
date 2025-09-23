@@ -13,7 +13,7 @@ import CommentForm from './CommentForm';
 
 interface CommentItemProps {
   data: CommentItem;
-  isMine?: boolean;
+  isMine?: string;
   onDelete?: (id: string) => void;
   onEdit?: (id: string, content: string) => void;
   onReply?: (parentId: string, content: string) => void;
@@ -35,9 +35,8 @@ export default function CommentItems({
     onEdit?.(data.id, editValue.trim());
     setEditing(false);
   };
-
   return (
-    <li className="group mb-6 rounded-lg bg-[var(--card-bg)] p-5 transition-colors">
+    <div className="group rounded-lg bg-[var(--card-bg-sub)] p-5 transition-colors">
       <div className="flex items-start gap-3">
         {/* 아바타 */}
         <Image
@@ -94,7 +93,7 @@ export default function CommentItems({
           {/* 액션 버튼 → hover 시에만 노출 */}
           {!isEditing && (
             <div className="mt-1 hidden gap-3 text-xs text-[var(--text-sub)] group-hover:flex">
-              {isMine && (
+              {isMine === data.author.nickname && (
                 <>
                   <button
                     onClick={() => setEditing(true)}
@@ -145,6 +144,6 @@ export default function CommentItems({
           ))}
         </ul>
       )}
-    </li>
+    </div>
   );
 }

@@ -20,7 +20,13 @@ interface CommentSectionProps {
 }
 
 export default function CommentSection({ articleId }: CommentSectionProps) {
-  const { data: comment } = useGetComment(articleId);
+  const {
+    data: comment,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useGetComment(articleId);
   const { mutate: deleteComment } = useDeleteComment();
   const { mutate: patchComment } = usePatchComment();
   const { mutate: postComment } = usePostComment();
@@ -97,14 +103,19 @@ export default function CommentSection({ articleId }: CommentSectionProps) {
         댓글 {comment?.pages[0].totalAll}개
       </h3>
       <CommentForm onSubmit={handleCreateComment} />
-      <div className="my-6 h-px bg-[var(--border-color)]" />
+      <div className="my-10 h-px bg-[var(--border-color)]" />
       <VirtualizedList<CommentItem>
         list={comments}
         emptyText="아직 댓글이 없습니다."
+        window={true}
+        loadMore={fetchNextPage}
+        hasMore={hasNextPage}
+        loading={isFetchingNextPage}
+        error={isError ? '댓글을 불러오지 못했습니다.' : undefined}
         item={item => (
           <CommentItems
             data={item}
-            isMine={session?.user.nickname === item.author.nickname}
+            isMine={session?.user.nickname}
             onDelete={id => handleDeleteComment(id)}
             onEdit={(id, content) => handlePatchComment({ id, content })}
             onReply={(parentId, content) =>

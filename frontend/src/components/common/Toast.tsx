@@ -7,9 +7,9 @@ import { useToastStore } from '@/stores/useToast';
 
 const Toast = React.forwardRef<HTMLDivElement>((props, ref) => {
   const { toasts } = useToastStore();
-  
+
   return (
-    <div 
+    <div
       ref={ref}
       className="fixed bottom-10 left-1/2 z-[9999] flex -translate-x-1/2 flex-col items-center gap-2"
       role="region"
@@ -27,8 +27,8 @@ const Toast = React.forwardRef<HTMLDivElement>((props, ref) => {
             transition={{ duration: 0.3 }}
             className={`min-w-[200px] rounded-lg px-4 py-3 text-sm shadow-md ${
               toast.type === 'success'
-                ? 'bg-[var(--success)] text-white'
-                : 'bg-[var(--danger)] text-white'
+                ? 'bg-[var(--color-success)] text-white'
+                : 'bg-[var(--color-danger)] text-white'
             }`}
             role="alert"
             aria-live={toast.type === 'error' ? 'assertive' : 'polite'}

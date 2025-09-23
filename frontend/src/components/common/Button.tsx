@@ -24,7 +24,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const buttonClass = cn(
       className,
-      'px-4 rounded-md text-sm font-medium transition-colors duration-200 text-center focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2',
+      'px-4 rounded-md text-sm font-medium transition-colors duration-200 text-center ',
       size === 'full' && 'w-full h-[45px]',
       size === 'lg' && 'w-[120px] h-[45px]',
       size === 'full-h' && 'w-full h-10',
@@ -48,8 +48,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
       // ✅ Danger
       variant === 'danger' && [
-        'border border-[var(--danger)] text-[var(--danger)] bg-transparent',
-        'hover:bg-[var(--danger)] hover:text-white',
+        'border border-[var(--color-danger)] text-[var(--color-danger)] bg-transparent',
+        'hover:bg-[var(--color-danger)] hover:text-white',
         'disabled:border-[var(--border-color)] disabled:text-[var(--text-sub)] disabled:cursor-not-allowed',
       ],
 

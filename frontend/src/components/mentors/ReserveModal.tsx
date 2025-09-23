@@ -36,7 +36,7 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
   const router = useRouter();
   const { set, reservation, reset } = useReservation();
   const methods = useForm<ReservationForm>({
-    mode: 'onSubmit',
+    mode: 'all',
     resolver: zodResolver(reservationSchema),
     defaultValues: {
       date: '',
@@ -48,28 +48,22 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
     control,
     watch,
     reset: resetReservationForm,
-    trigger,
     handleSubmit,
 
     formState: { isValid, errors },
   } = methods;
-
   /** 예약 정보 초기화 */
   useEffect(() => {
     if (!reservation) return;
-    resetReservationForm(
-      {
-        date: reservation.date,
-        timeSlot: {
-          startTime: reservation.timeSlot.startTime,
-          endTime: reservation.timeSlot.endTime,
-        },
-        question: reservation.question ?? '',
+    resetReservationForm({
+      date: reservation.date,
+      timeSlot: {
+        startTime: reservation.timeSlot.startTime,
+        endTime: reservation.timeSlot.endTime,
       },
-      { keepDirty: false, keepTouched: false }
-    );
-    trigger();
-  }, [reservation, resetReservationForm, trigger]);
+      question: reservation.question ?? '',
+    });
+  }, [reservation, resetReservationForm]);
 
   /** 선택한 날짜 */
   const selectDate = watch('date');
@@ -93,10 +87,16 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
 
   const slotOptions = useMemo(
     () =>
-      slots.map(slot => ({
-        label: `${slot.startTime.slice(0, 5)} ~ ${slot.endTime.slice(0, 5)}`,
-        value: JSON.stringify(slot),
-      })),
+      slots.map(slot => {
+        const value = {
+          startTime: slot.startTime.slice(0, 5),
+          endTime: slot.endTime.slice(0, 5),
+        };
+        return {
+          label: `${value.startTime} ~ ${value.endTime}`,
+          value: JSON.stringify(value),
+        };
+      }),
     [slots]
   );
 
@@ -200,7 +200,6 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
                 {...field}
                 placeholder="자기소개를 입력해주세요."
                 maxLength={500}
-                onChange={e => field.onChange(e.target.value)}
                 error={fieldState.error?.message}
               />
             )}

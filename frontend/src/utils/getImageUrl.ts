@@ -1,5 +1,5 @@
 import { buildImageUrl as newBuildImageUrl } from './helpers';
 
-export const buildImageUrl = (url: string): string => {
+export const buildImageUrl = (url: string) => {
   return newBuildImageUrl(url);
 };

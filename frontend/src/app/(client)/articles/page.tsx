@@ -6,19 +6,13 @@ import {
 import { Suspense } from 'react';
 
 import ArticleContent from '@/components/article/ArticleContent';
-import { queryKeys } from '@/hooks/query/queryKeys';
 import { fetchArticles } from '@/libs/article';
 
 export default async function ArticlesPage() {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: queryKeys.articles.list({
-      page: 1,
-      category: 'all',
-      limit: 10,
-      sort: 'latest',
-    }),
+    queryKey: ['article', 1, 'all', 10, 'latest'],
     queryFn: () => fetchArticles(1, 'all', 10, 'latest'),
   });
 

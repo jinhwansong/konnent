@@ -15,34 +15,50 @@ interface CheckboxGroupProps<T = string> {
   name?: string;
 }
 
-const CheckboxGroup = React.forwardRef<HTMLFieldSetElement, CheckboxGroupProps<string>>(
-  ({ value, onChange, options, type, label, error, disabled = false, className, name, ...props }, ref) => {
+const CheckboxGroup = React.forwardRef<
+  HTMLFieldSetElement,
+  CheckboxGroupProps<string>
+>(
+  (
+    {
+      value,
+      onChange,
+      options,
+      type,
+      label,
+      error,
+      disabled = false,
+      className,
+      name,
+      ...props
+    },
+    ref
+  ) => {
     const fieldsetId = name || `${type}-group`;
     const groupName = name || `checkbox-group-${type}`;
 
     return (
-      <fieldset 
+      <fieldset
         ref={ref}
-        className={className}
         disabled={disabled}
         aria-invalid={error ? 'true' : 'false'}
         aria-describedby={error ? `${fieldsetId}-error` : undefined}
         {...props}
       >
         {label && (
-          <legend className="text-sm font-medium text-[var(--text-bold)] mb-2">
+          <legend className="mb-2 text-sm font-medium text-[var(--text-bold)]">
             {label}
           </legend>
         )}
-        <div className="flex flex-wrap gap-2">
+        <div className={clsx('flex flex-wrap gap-2', className)}>
           {options.map(item => {
             const isChecked =
               type === 'radio'
                 ? value !== undefined && isEqual(value as string, item.value)
-                : Array.isArray(value) && value.some(v => isEqual(v, item.value));
-            
+                : Array.isArray(value) &&
+                  value.some(v => isEqual(v, item.value));
+
             const inputId = `${fieldsetId}-${item.value}`;
-            
             return (
               <label
                 key={JSON.stringify(item.value)}
@@ -52,7 +68,7 @@ const CheckboxGroup = React.forwardRef<HTMLFieldSetElement, CheckboxGroupProps<s
                   isChecked
                     ? 'hover:bg-[color-mix(in oklch,var(--primary),black_15%)] border-[var(--primary)] bg-[var(--primary)] text-white'
                     : 'border-[var(--border-color)] bg-[var(--editor-bg)] text-[var(--text)] hover:border-[var(--primary)] hover:bg-[var(--hover-bg)] hover:text-[var(--primary)]',
-                  disabled && 'opacity-60 cursor-not-allowed'
+                  disabled && 'cursor-not-allowed opacity-60'
                 )}
               >
                 <input
@@ -69,8 +85,13 @@ const CheckboxGroup = React.forwardRef<HTMLFieldSetElement, CheckboxGroupProps<s
                       onChange(item.value);
                     } else {
                       const newValue = checked
-                        ? ([...((value as string[]) ?? []), item.value] as string[])
-                        : (value as string[]).filter(v => !isEqual(v, item.value));
+                        ? ([
+                            ...((value as string[]) ?? []),
+                            item.value,
+                          ] as string[])
+                        : (value as string[]).filter(
+                            v => !isEqual(v, item.value)
+                          );
                       onChange(newValue);
                     }
                   }}
@@ -81,7 +102,11 @@ const CheckboxGroup = React.forwardRef<HTMLFieldSetElement, CheckboxGroupProps<s
           })}
         </div>
         {error && (
-          <p id={`${fieldsetId}-error`} className="mt-1 text-sm text-[var(--danger)]" role="alert">
+          <p
+            id={`${fieldsetId}-error`}
+            className="mt-1 text-sm text-[var(--color-danger)]"
+            role="alert"
+          >
             {error}
           </p>
         )}

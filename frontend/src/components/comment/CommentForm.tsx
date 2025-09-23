@@ -37,14 +37,18 @@ export default function CommentForm({ onSubmit }: CommentProps) {
     if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
       e.preventDefault();
       if (isValid && !isSubmitting && session) {
-        handleSubmit(onSubmit)();
+        handleSubmit(handleFormSubmit)();
       }
     }
+    reset();
   };
-
+  const handleFormSubmit = async (data: CommentRequest) => {
+    await onSubmit(data);
+    reset();
+  };
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form onSubmit={handleSubmit(handleFormSubmit)} noValidate>
         <Textarea
           {...register('content')}
           onKeyDown={onKeyDown}

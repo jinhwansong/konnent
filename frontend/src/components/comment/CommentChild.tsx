@@ -11,7 +11,7 @@ import Textarea from '../common/Textarea';
 
 interface CommentChildProps {
   data: CommentItem;
-  isMine?: boolean;
+  isMine?: string;
   onDelete?: (id: string) => void;
   onEdit?: (id: string, content: string) => void;
 }
@@ -30,7 +30,7 @@ export default function CommentChild({
     onEdit?.(data.id, editValue.trim());
     setEditing(false);
   };
-
+  console.log(data);
   return (
     <li className="group flex gap-3">
       <FiCornerDownRight className="mt-1 text-[var(--text-sub)]" size={16} />
@@ -55,7 +55,7 @@ export default function CommentChild({
             </span>
           </div>
 
-          {!isEditing && isMine && (
+          {!isEditing && isMine === data.author.nickname && (
             <div className="hidden gap-2 text-xs text-[var(--text-sub)] group-hover:flex">
               <button
                 onClick={() => setEditing(true)}

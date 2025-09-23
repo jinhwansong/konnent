@@ -15,17 +15,17 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
     const sizeClasses = {
       sm: 'h-[400px] w-[400px]',
       md: 'h-[600px] w-[500px]',
-      lg: 'h-[700px] w-[600px]'
+      lg: 'h-[700px] w-[600px]',
     };
 
     useEffect(() => {
       const handleEscape = (e: KeyboardEvent) => {
         if (e.key === 'Escape') onClose();
       };
-      
+
       document.addEventListener('keydown', handleEscape);
       document.body.style.overflow = 'hidden';
-      
+
       return () => {
         document.removeEventListener('keydown', handleEscape);
         document.body.style.overflow = 'unset';
@@ -33,36 +33,29 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
     }, [onClose]);
 
     return (
-      <section 
+      <section
         className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
         role="dialog"
         aria-modal="true"
-        aria-labelledby={title ? "modal-title" : undefined}
+        aria-labelledby={title ? 'modal-title' : undefined}
       >
         <div
           className="absolute inset-0"
           onClick={onClose}
           aria-hidden="true"
         />
-        <article 
+        <article
           ref={ref}
           className={`relative mx-auto box-border flex flex-col overflow-y-auto rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] p-5 shadow-[0_8px_24px_rgba(0,0,0,0.5)] ${sizeClasses[size]} ${className || ''}`}
         >
-          <div className="flex items-center justify-between mb-4">
-            {title && (
-              <h2 id="modal-title" className="text-lg font-semibold text-[var(--text-bold)]">
-                {title}
-              </h2>
-            )}
-            <button
-              type="button"
-              onClick={onClose}
-              className="ml-auto focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 rounded-md p-1 hover:bg-[var(--hover-bg)]"
-              aria-label="Close modal"
-            >
-              <IcClose className="stroke-[var(--text-bold)]" />
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute top-5 right-5 ml-auto rounded-md p-1 hover:bg-[var(--hover-bg)]"
+            aria-label="Close modal"
+          >
+            <IcClose className="stroke-[var(--text-bold)]" />
+          </button>
           {children}
         </article>
       </section>

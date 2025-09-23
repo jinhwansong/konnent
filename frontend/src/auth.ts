@@ -6,6 +6,8 @@ import GoogleProvider from 'next-auth/providers/google';
 import KakaoProvider from 'next-auth/providers/kakao';
 import NaverProvider from 'next-auth/providers/naver';
 
+import { login, logout, socialLogin } from './libs/user';
+
 const JWT_PRIVATE_KEY = process.env.JWT_PRIVATE_KEY!.replace(/\\n/g, '\n');
 const JWT_PUBLIC_KEY = process.env.JWT_PUBLIC_KEY!.replace(/\\n/g, '\n');
 export const {
@@ -25,38 +27,22 @@ export const {
 
       async authorize(credentials) {
         try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_AUTH_URL}/auth`,
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                email: credentials?.email,
-                password: credentials?.password,
-              }),
-            }
+          if (!credentials?.email || !credentials?.password) return null;
+
+          const user = await login(
+            credentials?.email as string,
+            credentials?.password as string
           );
 
-          const userData = await response.json();
-
-          if (
-            !response.ok ||
-            userData?.success === false ||
-            userData?.code === 401 ||
-            userData?.error
-          ) {
-            return null;
-          }
-
           return {
-            id: userData.id,
-            email: userData.email,
-            name: userData.name,
-            nickname: userData.nickname,
-            image: userData.image,
-            phone: userData.phone,
-            role: userData.role,
-            socials: userData.socials,
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            nickname: user.nickname,
+            image: user.image,
+            phone: user.phone,
+            role: user.role,
+            socials: user.socials,
           };
         } catch {
           return null;
@@ -122,28 +108,19 @@ export const {
       if (user) {
         let backendUser = user;
 
-        if (account?.provider !== 'credentials') {
+        if (account?.provider && account.provider !== 'credentials') {
           // 소셜 로그인 시 백엔드에 등록
           try {
-            const socialResponse = await fetch(
-              `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/social`,
-              {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  provider: account?.provider?.toUpperCase(),
-                  socialId: account?.providerAccountId,
-                  email: user.email,
-                  name: user.name,
-                  image: user.image,
-                }),
-              }
-            );
+            const res = await socialLogin({
+              provider: account?.provider?.toUpperCase(),
+              socialId: account?.providerAccountId,
+              email: user.email!,
+              name: user.name,
+              image: user.image,
+            });
 
-            if (socialResponse.ok) {
-              backendUser = await socialResponse.json();
-            } else {
-              return token;
+            if (res) {
+              backendUser = res;
             }
           } catch {
             return token;
@@ -159,6 +136,8 @@ export const {
         token.socials = backendUser.socials ?? [];
       }
       if (trigger === 'update') {
+        if (session?.fcm) token.fcm = session.fcm as string;
+
         if (session?.nickname) token.nickname = session.nickname;
         if (session?.phone) token.phone = session.phone;
         if (session?.image) token.image = session.image;
@@ -194,10 +173,7 @@ export const {
   events: {
     async signOut() {
       try {
-        await fetch(`${process.env.NEXT_PUBLIC_AUTH_URL}/auth/logout`, {
-          method: 'POST',
-          credentials: 'include',
-        });
+        logout();
       } catch (error) {
         console.error('로그아웃 알림 에러:', error);
       }

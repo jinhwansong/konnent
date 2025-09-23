@@ -22,6 +22,8 @@ interface VirtualizedListProps<T> {
   loading?: boolean;
   /** 에러 상태 */
   error?: string;
+  /** 윈도우스크롤 */
+  window?: boolean;
 }
 
 const VirtualizedListInner = React.forwardRef(
@@ -36,6 +38,7 @@ const VirtualizedListInner = React.forwardRef(
       className,
       loading,
       error,
+      window = true,
       ...props
     }: VirtualizedListProps<T>,
     ref: React.Ref<HTMLDivElement>
@@ -43,7 +46,7 @@ const VirtualizedListInner = React.forwardRef(
     /** 에러 상태 */
     if (error) {
       return (
-        <div className="flex h-48 items-center justify-center text-sm text-[var(--danger)]">
+        <div className="flex h-48 items-center justify-center text-sm text-[var(--color-danger)]">
           {error}
         </div>
       );
@@ -61,7 +64,7 @@ const VirtualizedListInner = React.forwardRef(
     return (
       <div ref={ref} className={`${className || ''}`} {...props}>
         <Virtuoso
-          useWindowScroll
+          useWindowScroll={window}
           data={list}
           style={{ height: height || '100%' }}
           endReached={() => {
@@ -69,7 +72,11 @@ const VirtualizedListInner = React.forwardRef(
               loadMore();
             }
           }}
-          itemContent={(index, itemData) => item(itemData, index)}
+          itemContent={(index, itemData) => (
+            <div className={index !== list.length - 1 ? 'pb-6' : ''}>
+              {item(itemData, index)}
+            </div>
+          )}
           components={{
             Footer: () =>
               loading ? (

@@ -6,24 +6,25 @@ interface FormErrorMessageProps {
   id?: string;
 }
 
-const FormErrorMessage = React.forwardRef<HTMLParagraphElement, FormErrorMessageProps>(
-  ({ message, className, id, ...props }, ref) => {
-    if (!message) return null;
-    
-    return (
-      <p 
-        ref={ref}
-        id={id}
-        className={`text-sm text-[var(--danger)] ${className || ''}`}
-        role="alert"
-        aria-live="polite"
-        {...props}
-      >
-        {message}
-      </p>
-    );
-  }
-);
+const FormErrorMessage = React.forwardRef<
+  HTMLParagraphElement,
+  FormErrorMessageProps
+>(({ message, className, id, ...props }, ref) => {
+  if (!message) return null;
+
+  return (
+    <p
+      ref={ref}
+      id={id}
+      className={`text-sm text-[var(--color-danger)] ${className || ''}`}
+      role="alert"
+      aria-live="polite"
+      {...props}
+    >
+      {message}
+    </p>
+  );
+});
 
 FormErrorMessage.displayName = 'FormErrorMessage';
 

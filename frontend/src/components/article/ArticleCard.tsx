@@ -68,7 +68,7 @@ export default function ArticleCard({
 
           <div className="aspect-[16/9] w-full shrink-0 overflow-hidden rounded-lg sm:aspect-auto sm:h-[110px] sm:w-[110px]">
             <Image
-              src={props.thumbnail}
+              src={buildImageUrl(props.thumbnail)}
               alt="썸네일"
               width={110}
               height={110}
@@ -80,7 +80,7 @@ export default function ArticleCard({
         <div className="mt-3 flex flex-col gap-2 text-sm sm:mt-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <Image
-              src={buildImageUrl(session?.user.image?.trim() as string)}
+              src={buildImageUrl(props.author.image)}
               width={32}
               height={32}
               alt="프로필"

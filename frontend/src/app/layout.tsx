@@ -2,6 +2,8 @@ import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
 
+import NotificationInitializer from '@/hooks/useNotificationInitializer';
+
 import Providers from './providers';
 import WebVitalsReporter from './reportWebVitals';
 
@@ -42,6 +44,7 @@ export default function RootLayout({
         <SessionProvider>
           <Providers>{children}</Providers>
           <WebVitalsReporter />
+          <NotificationInitializer />
         </SessionProvider>
       </body>
     </html>

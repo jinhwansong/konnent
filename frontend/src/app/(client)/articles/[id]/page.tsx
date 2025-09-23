@@ -7,7 +7,6 @@ import { Metadata } from 'next';
 import { Suspense } from 'react';
 
 import ArticleDetail from '@/components/article/ArticleDetail';
-import { queryKeys } from '@/hooks/query/queryKeys';
 import { fetchArticleDetail } from '@/libs/article';
 
 interface ArticlePageProps {
@@ -44,7 +43,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: queryKeys.articles.detail(id),
+    queryKey: ['articleDetail', id],
     queryFn: () => fetchArticleDetail(id),
   });
 

@@ -70,7 +70,8 @@ function SelectComponent<T extends string>(
             'focus:border-[var(--primary)] focus:outline-none',
             disabled &&
               'cursor-not-allowed bg-[var(--primary-sub02)] opacity-60',
-            error && 'border-[var(--danger)] focus:border-[var(--danger)]'
+            error &&
+              'border-[var(--color-danger)] focus:border-[var(--color-danger)]'
           )}
         >
           {selected?.label || (
@@ -117,7 +118,7 @@ function SelectComponent<T extends string>(
       {error && (
         <p
           id={`${selectId}-error`}
-          className="mt-1 text-sm text-[var(--danger)]"
+          className="mt-1 text-sm text-[var(--color-danger)]"
           role="alert"
         >
           {error}

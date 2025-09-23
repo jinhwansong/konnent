@@ -11,6 +11,7 @@ declare module 'next-auth' {
       role: string;
       image: string | null;
       socials: string[];
+      fcm?: string;
     };
   }
 
@@ -23,6 +24,7 @@ declare module 'next-auth' {
     role: string;
     image: string | null;
     socials: string[];
+    fcm?: string;
   }
 }
 
@@ -36,5 +38,6 @@ declare module 'next-auth/jwt' {
     role: string;
     image: string | null;
     socials: string[];
+    fcm?: string;
   }
 }

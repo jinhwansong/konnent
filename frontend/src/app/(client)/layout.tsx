@@ -1,6 +1,6 @@
 import Footer from '@/components/common/Footer';
-import Header from '@/components/common/Header';
 import Toast from '@/components/common/Toast';
+import Header from '@/components/main/Header';
 
 export default function ClientLayout({
   children,

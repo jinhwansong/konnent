@@ -1,94 +1,63 @@
-import React from 'react';
+'use client';
 
-import { cn } from '@/utils/helpers';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { ReactNode, ButtonHTMLAttributes } from 'react';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
-  variant?: 'solid' | 'outline' | 'danger' | 'wish' | 'wish-none';
-  size?: 'lg' | 'full-h' | 'smWide' | 'sm' | 'full' | 'sm-h';
-  loading?: boolean;
-}
-
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      children,
-      variant = 'solid',
-      size = 'full',
-      loading = false,
-      className,
-      disabled,
-      ...props
+const buttonVariants = cva(
+   'inline-flex items-center justify-center rounded-full font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none text-sm',
+  {
+    variants: {
+      variant: {
+        primary: 'bg-[var(--primary)] text-white hover:bg-[var(--primary-sub01)] focus:ring-[var(--primary)] shadow-sm',
+        secondary: 'bg-[var(--card-bg-sub)] text-[var(--text)] hover:bg-[var(--hover-bg)] focus:ring-[var(--primary)]',
+        outline: 'border border-[var(--border-color)] bg-[var(--background)] text-[var(--text)] hover:bg-[var(--hover-bg)] focus:ring-[var(--primary)]',
+        ghost: 'text-[var(--text)] hover:bg-[var(--hover-bg)] focus:ring-[var(--primary)]',
+        danger: 'bg-[var(--color-danger)] text-white hover:bg-red-600 focus:ring-[var(--color-danger)] shadow-sm',
+      },
+      size: {
+        sm: 'h-7 px-3 text-xs',
+        md: 'h-8 px-4 text-sm',
+        lg: 'h-10 px-6 text-sm',
+        icon: 'h-8 w-8',
+      },
     },
-    ref
-  ) => {
-    const buttonClass = cn(
-      className,
-      'px-4 rounded-md text-sm font-medium transition-colors duration-200 text-center ',
-      size === 'full' && 'w-full h-[45px]',
-      size === 'lg' && 'w-[120px] h-[45px]',
-      size === 'full-h' && 'w-full h-10',
-      size === 'sm' && 'h-[40px] w-[80px]',
-      size === 'sm-h' && 'h-[45px] w-[80px]',
-      size === 'smWide' && 'h-11 w-[100px]',
-
-      // ✅ Solid
-      variant === 'solid' && [
-        'bg-[var(--primary)] text-white',
-        'hover:bg-[color-mix(in oklch,var(--primary),black_15%)]',
-        'disabled:bg-[var(--border-color)] disabled:text-[var(--text-sub)] disabled:cursor-not-allowed',
-      ],
-
-      // ✅ Outline
-      variant === 'outline' && [
-        'bg-transparent border border-[var(--border-color)] text-[var(--text)]',
-        'hover:border-[var(--primary)] hover:text-[var(--primary)] hover:bg-[var(--hover-bg)]',
-        'disabled:bg-transparent disabled:text-[var(--text-sub)] disabled:border-[var(--border-color)] disabled:cursor-not-allowed',
-      ],
-
-      // ✅ Danger
-      variant === 'danger' && [
-        'border border-[var(--color-danger)] text-[var(--color-danger)] bg-transparent',
-        'hover:bg-[var(--color-danger)] hover:text-white',
-        'disabled:border-[var(--border-color)] disabled:text-[var(--text-sub)] disabled:cursor-not-allowed',
-      ],
-
-      // ✅ Wish
-      variant === 'wish' && [
-        'bg-[var(--primary-sub02)] border border-[var(--primary-sub04)] text-[var(--primary-sub04)]',
-        'hover:bg-[var(--primary-sub04)] hover:text-white',
-      ],
-
-      // ✅ Wish None
-      variant === 'wish-none' && [
-        'bg-transparent border border-[var(--border-color)] text-[var(--text-sub)]',
-        'hover:bg-[var(--hover-bg)] hover:text-[var(--primary-sub04)]',
-      ],
-      loading && 'cursor-wait'
-    );
-
-    return (
-      <button
-        ref={ref}
-        type="button"
-        className={buttonClass}
-        disabled={disabled || loading}
-        aria-disabled={disabled || loading}
-        {...props}
-      >
-        {loading ? (
-          <span className="flex items-center gap-2">
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-            {children}
-          </span>
-        ) : (
-          children
-        )}
-      </button>
-    );
+    defaultVariants: {
+      variant: 'primary',
+      size: 'md',
+    },
   }
 );
 
-Button.displayName = 'Button';
+interface ButtonProps 
+  extends ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  children: ReactNode;
+  loading?: boolean;
+}
 
-export default React.memo(Button);
+export default function Button({ 
+  className = '',
+  variant,
+  size,
+  loading = false,
+  disabled,
+  children,
+  ...props 
+}: ButtonProps) {
+  return (
+    <button
+      className={`${buttonVariants({ variant, size })} ${className}`}
+      disabled={disabled || loading}
+      {...props}
+    >
+      {loading ? (
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+          <span>로딩 중...</span>
+        </div>
+      ) : (
+        children
+      )}
+    </button>
+  );
+}

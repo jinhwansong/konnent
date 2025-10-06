@@ -1,100 +1,50 @@
-import React, { type ReactNode } from 'react';
-import { Virtuoso } from 'react-virtuoso';
+'use client';
+
+import { useEffect, useRef } from 'react';
+import { Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 
 interface VirtualizedListProps<T> {
-  /** 렌더링할 데이터 리스트 */
-  list: T[];
-  /** 각 아이템을 렌더링하는 함수 */
-  item: (itemData: T, index: number) => ReactNode;
-  /** 데이터가 없을 때 표시할 문구 */
-  emptyText?: string;
-  /** 추가 데이터를 로드하는 함수 (무한 스크롤용) */
-  loadMore?: () => void;
-  /** 더 불러올 데이터가 있는지 여부 */
-  hasMore?: boolean;
-  /** 리스트 높이 */
-  height?: number | string;
-  /** 리스트 vs 그리드 */
-  variant?: 'list' | 'grid';
-  /** className */
+  data: T[];
+  renderItem: (item: T, index: number) => React.ReactNode;
   className?: string;
-  /** 로딩 상태 */
-  loading?: boolean;
-  /** 에러 상태 */
-  error?: string;
-  /** 윈도우스크롤 */
-  window?: boolean;
+  overscan?: number;
 }
 
-const VirtualizedListInner = React.forwardRef(
-  <T,>(
-    {
-      list,
-      item,
-      emptyText = '데이터가 없습니다.',
-      loadMore,
-      hasMore = false,
-      height,
-      className,
-      loading,
-      error,
-      window = true,
-      ...props
-    }: VirtualizedListProps<T>,
-    ref: React.Ref<HTMLDivElement>
-  ) => {
-    /** 에러 상태 */
-    if (error) {
-      return (
-        <div className="flex h-48 items-center justify-center text-sm text-[var(--color-danger)]">
-          {error}
-        </div>
-      );
-    }
+export default function VirtualizedList<T>({ 
+  data, 
+  renderItem, 
+  className = '',
+  overscan = 5 
+}: VirtualizedListProps<T>) {
+  const virtuosoRef = useRef<VirtuosoHandle>(null);
 
-    /** 데이터가 없을경우 */
-    if (!list || list.length === 0) {
-      return (
-        <div className="flex h-48 items-center justify-center text-sm text-[var(--text-sub)]">
-          {loading ? '로딩 중...' : emptyText}
-        </div>
-      );
+  // 데이터가 변경될 때마다 맨 아래로 스크롤
+  useEffect(() => {
+    if (virtuosoRef.current && data.length > 0) {
+      setTimeout(() => {
+        virtuosoRef.current?.scrollToIndex({ 
+          index: data.length - 1, 
+          align: 'end' 
+        });
+      }, 100);
     }
+  }, [data.length]);
 
-    return (
-      <div ref={ref} className={`${className || ''}`} {...props}>
-        <Virtuoso
-          useWindowScroll={window}
-          data={list}
-          style={{ height: height || '100%' }}
-          endReached={() => {
-            if (hasMore && loadMore && !loading) {
-              loadMore();
-            }
-          }}
-          itemContent={(index, itemData) => (
-            <div className={index !== list.length - 1 ? 'pb-6' : ''}>
-              {item(itemData, index)}
-            </div>
-          )}
-          components={{
-            Footer: () =>
-              loading ? (
-                <div className="flex justify-center py-4">
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-[var(--primary)] border-t-transparent" />
-                </div>
-              ) : null,
-          }}
-        />
-      </div>
-    );
+  if (data.length === 0) {
+    return null;
   }
-);
 
-VirtualizedListInner.displayName = 'VirtualizedList';
-
-const VirtualizedList = React.memo(VirtualizedListInner) as <T>(
-  props: VirtualizedListProps<T> & React.RefAttributes<HTMLDivElement>
-) => React.ReactElement | null;
-
-export default VirtualizedList;
+  return (
+    <div className={`flex-1 overflow-y-auto px-2 custom-scrollbar ${className}`}>
+      <Virtuoso
+        ref={virtuosoRef}
+        data={data}
+        itemContent={(index, item) => renderItem(item, index)}
+        overscan={overscan}
+        followOutput="smooth"
+        className="h-full"
+        style={{ height: '100%' }}
+      />
+    </div>
+  );
+}

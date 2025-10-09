@@ -4,19 +4,22 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { ReactNode, ButtonHTMLAttributes } from 'react';
 
 const buttonVariants = cva(
-   'inline-flex items-center justify-center rounded-full font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none text-sm',
+  'inline-flex items-center justify-center rounded-md font-medium transition-all duration-200  disabled:opacity-50 text-sm',
   {
     variants: {
       variant: {
-        primary: 'bg-[var(--primary)] text-white hover:bg-[var(--primary-sub01)] focus:ring-[var(--primary)] shadow-sm',
-        secondary: 'bg-[var(--card-bg-sub)] text-[var(--text)] hover:bg-[var(--hover-bg)] focus:ring-[var(--primary)]',
-        outline: 'border border-[var(--border-color)] bg-[var(--background)] text-[var(--text)] hover:bg-[var(--hover-bg)] focus:ring-[var(--primary)]',
-        ghost: 'text-[var(--text)] hover:bg-[var(--hover-bg)] focus:ring-[var(--primary)]',
-        danger: 'bg-[var(--color-danger)] text-white hover:bg-red-600 focus:ring-[var(--color-danger)] shadow-sm',
+        primary:
+          'bg-[var(--primary)] text-white hover:bg-[var(--primary-sub01)] ',
+        secondary:
+          'bg-[var(--card-bg-sub)] text-[var(--text)] hover:bg-[var(--hover-bg)] ',
+        outline:
+          'border border-[var(--border-color)] bg-[var(--background)] text-[var(--text)] hover:bg-[var(--hover-bg)] ',
+        ghost: 'text-[var(--text)] hover:bg-[var(--hover-bg)] ',
+        danger: 'bg-[var(--color-danger)] text-white hover:bg-red-600 ',
       },
       size: {
-        sm: 'h-7 px-3 text-xs',
-        md: 'h-8 px-4 text-sm',
+        sm: 'h-8 px-4 text-xs',
+        md: 'h-11 px-4 text-sm',
         lg: 'h-10 px-6 text-sm',
         icon: 'h-8 w-8',
       },
@@ -28,21 +31,21 @@ const buttonVariants = cva(
   }
 );
 
-interface ButtonProps 
+interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   children: ReactNode;
   loading?: boolean;
 }
 
-export default function Button({ 
+export default function Button({
   className = '',
   variant,
   size,
   loading = false,
   disabled,
   children,
-  ...props 
+  ...props
 }: ButtonProps) {
   return (
     <button
@@ -52,7 +55,7 @@ export default function Button({
     >
       {loading ? (
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+          <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
           <span>로딩 중...</span>
         </div>
       ) : (

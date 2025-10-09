@@ -30,7 +30,7 @@ export default function ReservationCard<
             {statusMap[item?.status as MentoringStatus]}
           </em>
           <p className="font-medium">예정일시</p>
-          <span className="font-bold">
+          <span className="font-medium">
             {item.date} {item.startTime} ~ {item.endTime}
           </span>
         </div>
@@ -50,14 +50,14 @@ export default function ReservationCard<
 
       <div className="flex flex-shrink-0 flex-col gap-1">
         {type === 'upcoming' && (
-          <Button type="button" size="smWide" onClick={() => onClick(item.id)}>
+          <Button type="button" size="sm" onClick={() => onClick(item.id)}>
             미팅참여
           </Button>
         )}
         {type === 'past' && (
           <Button
             type="button"
-            size="smWide"
+            size="sm"
             variant="outline"
             onClick={() => onClick(item.id)}
             disabled={(item as PastReservationItem).reviewWritten}

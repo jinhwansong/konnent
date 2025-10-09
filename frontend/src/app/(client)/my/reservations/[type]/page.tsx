@@ -8,6 +8,7 @@ import ReservationCard from '@/components/my/ReservationCard';
 import ReviewForm from '@/components/my/ReviewForm';
 import { useGetMyReservations } from '@/hooks/query/useReservation';
 import { usePostReview } from '@/hooks/query/useReview';
+import { joinRoomRequest } from '@/libs/chat';
 import { useToastStore } from '@/stores/useToast';
 import {
   PastReservationItem,
@@ -47,8 +48,28 @@ export default function ReservationsPage() {
     setSelectedReservationId(id);
     setIsOpen(true);
   };
-  const handleMentoring = (id: string) => {
-    console.log(id);
+
+  const handleMentoring = async (id: string) => {
+    try {
+      const data = await joinRoomRequest(id);
+
+      switch (data.status) {
+        case 'waiting':
+          show('멘토링이 시작되기 전 입니다.', 'error');
+          break;
+        case 'progress':
+          show('멘토링 방에 입장합니다.', 'success');
+          router.push(`/rooms/${data.roomId}`);
+          break;
+        case 'closed':
+          show('멘토링이 종료되어 입장할 수 없습니다.', 'error');
+          break;
+        default:
+          show('알 수 없는 상태입니다.', 'error');
+      }
+    } catch {
+      show('멘토링 상태를 확인하지 못했습니다.', 'error');
+    }
   };
 
   const { mutate: postReview } = usePostReview();
@@ -79,7 +100,7 @@ export default function ReservationsPage() {
           <Button
             key={item.name}
             size="lg"
-            variant={type === item.type ? 'solid' : 'outline'}
+            variant={type === item.type ? 'primary' : 'outline'}
             onClick={() => router.push(item.link)}
           >
             {item.name}

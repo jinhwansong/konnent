@@ -23,7 +23,7 @@ const SIZE: Record<
   md: {
     track: 'h-6 w-11',
     thumb: 'h-5 w-5',
-    translate: 'translate-x-[1.25rem]',
+    translate: 'translate-x-[1.3rem]',
   },
   lg: {
     track: 'h-7 w-14',
@@ -79,14 +79,12 @@ export const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
         }}
         className={clsx(
           'relative inline-flex shrink-0 cursor-pointer rounded-full transition-colors duration-200',
-          'ring-offset-2 outline-none focus-visible:ring-2',
+          'outline-none',
           // ✅ 트랙 배경 색상
           isOn
             ? 'bg-[var(--primary)]'
             : 'bg-[var(--border-color)] dark:bg-[var(--border-color)]',
           disabled && 'cursor-not-allowed opacity-60',
-          // ✅ 포커스 링
-          'focus-visible:ring-[var(--primary)]',
           s.track,
           className
         )}

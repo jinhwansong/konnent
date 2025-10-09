@@ -4,6 +4,10 @@
 
 실시간 채팅 시스템이 `/chat` 네임스페이스의 Socket.IO를 통해 구현되어 있습니다.
 
+**두 가지 백엔드 게이트웨이를 지원합니다:**
+1. **일반 채팅** (`realtime/chat/chat.gateway.ts`) - 기본 채팅 기능
+2. **예약 채팅** (`chat/chat.gateway.ts`) - JWT + 시간 검증 기반
+
 ## 파일 구조
 
 ```
@@ -80,7 +84,7 @@ import ChatRoom from '@/components/chat/ChatRoom';
 />
 ```
 
-### 3. 커스텀 훅 사용
+### 3. 일반 채팅 모드 (기본값)
 
 ```tsx
 import { useChatSocket } from '@/hooks/useChatSocket';
@@ -99,70 +103,113 @@ const {
     name: '홍길동',
     isMentor: false,
   },
-  onNewMessage: (msg) => console.log('New message:', msg),
-  onUserJoined: (user) => console.log('User joined:', user),
+  mode: 'general', // 생략 가능 (기본값)
+  onNewMessage: (msg) => console.log('💬 새 메시지:', msg),
+  onUserJoined: (user) => console.log('🙋 사용자 입장:', user),
 });
 ```
 
-### 4. 예약 기반 채팅 (시간 제한)
+### 4. 예약 채팅 모드 (JWT + 시간 검증)
 
 ```tsx
-import { useReservationChat } from '@/hooks/useReservationChat';
+import { useChatSocket } from '@/hooks/useChatSocket';
 
-const { isConnected, isJoined, error } = useReservationChat({
-  roomId: 'room-123',
-  userId: 'user-456',
-  onJoinSuccess: (data) => console.log('Joined:', data),
-  onJoinDenied: (data) => console.error('Denied:', data.reason),
+const {
+  isConnected,
+  isJoined,
+  error,
+  sendMessage,
+  leaveRoom,
+} = useChatSocket({
+  roomId: 'reservation-room-123',
+  user: {
+    id: 'user-456',
+    name: '홍길동',
+    isMentor: false,
+  },
+  mode: 'reservation', // 예약 모드 사용
+  onJoinSuccess: (data) => console.log('🎉 입장 성공:', data),
+  onJoinDenied: (data) => console.error('🚫 입장 거부:', data.reason),
 });
+
+// 에러 처리 예시
+if (error) {
+  // "예약 시간이 아닙니다.", "인증 토큰이 유효하지 않습니다." 등
+  console.error(error);
+}
 ```
 
 ## 백엔드 게이트웨이 이벤트
 
-### 클라이언트 → 서버
+### 일반 채팅 모드 (realtime/chat/chat.gateway.ts)
+
+> **🔒 보안**: JWT 토큰으로 사용자 인증 후 DB에서 사용자 정보(role 포함)를 조회합니다.  
+> 클라이언트는 `roomId`만 전송하며, 사용자 정보는 백엔드에서 자동으로 채워집니다.
+
+#### 클라이언트 → 서버
 
 | 이벤트 | 페이로드 | 설명 |
 |--------|---------|------|
-| `user_connected` | `{ roomId, userId, userName, userImage, isMentor }` | 방 입장 |
-| `user_disconnected` | `{ roomId, userId }` | 방 퇴장 |
-| `new_message` | `{ roomId, userId, userName, message, type, fileUrl?, fileName? }` | 메시지 전송 |
-| `join_room` | `{ roomId, userId, token }` | 예약 방 입장 (시간 검증) |
+| `user_connected` | `{ roomId }` | 방 입장 (JWT 인증) |
+| `user_disconnected` | `{ roomId }` | 방 퇴장 |
+| `new_message` | `{ roomId, message, type?, fileUrl?, fileName? }` | 메시지 전송 |
+
+#### 서버 → 클라이언트
+
+| 이벤트 | 페이로드 | 설명 |
+|--------|---------|------|
+| `user_connected` | `{ userId, userName, userImage, isMentor, socketId }` | 사용자 입장 알림 (DB 조회 정보) |
+| `user_disconnected` | `{ userId, userName, socketId }` | 사용자 퇴장 알림 |
+| `users_list` | `ChatUser[]` | 참여자 목록 (입장 시, DB 조회 정보) |
+| `messages_history` | `ChatMessage[]` | 메시지 히스토리 (입장 시) |
+| `new_message` | `ChatMessage` | 새 메시지 브로드캐스트 (DB 조회 정보 포함) |
+| `join_denied` | `{ reason: string }` | 인증 실패 시 |
+
+### 예약 채팅 모드 (chat/chat.gateway.ts)
+
+#### 클라이언트 → 서버
+
+| 이벤트 | 페이로드 | 설명 |
+|--------|---------|------|
+| `join_room` | `{ roomId, userId, token }` | 예약 방 입장 (JWT + 시간 검증) |
 | `leave_room` | `{ roomId, userId }` | 예약 방 퇴장 |
 
-### 서버 → 클라이언트
+#### 서버 → 클라이언트
 
 | 이벤트 | 페이로드 | 설명 |
 |--------|---------|------|
-| `user_connected` | `{ userId, userName, userImage, isMentor, socketId }` | 사용자 입장 알림 |
-| `user_disconnected` | `{ userId, userName, socketId }` | 사용자 퇴장 알림 |
-| `new_message` | `ChatMessage` | 새 메시지 |
-| `users_list` | `ChatUser[]` | 참여자 목록 |
-| `messages_history` | `ChatMessage[]` | 메시지 히스토리 |
 | `join_success` | `{ roomId, userId }` | 방 입장 성공 |
-| `join_denied` | `{ reason }` | 방 입장 거부 |
+| `join_denied` | `{ reason }` | 방 입장 거부 (INVALID_TOKEN, NOT_IN_TIME_WINDOW 등) |
+| `user_joined` | `{ userId, socketId }` | 다른 사용자 입장 알림 |
+| `user_left` | `{ userId, socketId }` | 사용자 퇴장 알림 |
 
 ## 인증 설정
 
-### JWT 토큰 저장
+### JWT 토큰
 
-소켓 연결 시 자동으로 다음 위치에서 토큰을 찾습니다:
+소켓 연결 시 **next-auth 세션**에서 자동으로 JWT 토큰을 가져옵니다:
 
-1. `localStorage.getItem('accessToken')`
-2. `document.cookie` (accessToken 쿠키)
+```tsx
+const { data: session } = useSession();
+const token = session?.accessToken;
 
-```ts
-// 로그인 후
-localStorage.setItem('accessToken', 'your-jwt-token');
-
-// 또는
-document.cookie = 'accessToken=your-jwt-token';
+// useChatSocket 훅에서 자동으로 처리됨
+// auth: { token } 형태로 소켓에 전달
 ```
+
+백엔드에서는 `socket.handshake.auth.token`을 검증하고 DB에서 사용자 정보를 조회합니다.
+
+### 멘토 여부 판별
+
+- ❌ **클라이언트에서 전송 X**: `isMentor` 값은 조작 가능하므로 보내지 않습니다.
+- ✅ **백엔드에서 조회**: JWT 토큰 검증 후 `user.role === UserRole.MENTOR`로 판별합니다.
+- 💡 **장점**: 보안 강화, 프론트엔드 코드 단순화
 
 ## 환경 변수
 
 ```bash
 # .env.local
-NEXT_PUBLIC_API_URL=http://localhost:3030
+NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
 ## TODO: 향후 개선 사항

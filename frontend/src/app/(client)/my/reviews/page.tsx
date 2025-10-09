@@ -77,15 +77,15 @@ export default function ReviewPage() {
                   <div className="flex justify-end gap-2">
                     <Button
                       onClick={() => handleReview(item.id)}
-                      variant="solid"
                       size="sm"
+                      variant="primary"
                     >
                       수정
                     </Button>
                     <Button
                       onClick={() => onDelete(item.id)}
-                      variant="danger"
                       size="sm"
+                      variant="danger"
                     >
                       삭제
                     </Button>

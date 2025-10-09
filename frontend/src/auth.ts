@@ -158,6 +158,19 @@ export const {
           image: token.image as string | null,
           socials: token.socials ?? [],
         };
+          session.accessToken = sign(
+            {
+              sub: token.id,
+              email: token.email,
+              role: token.role,
+              name: token.name,
+            },
+            JWT_PRIVATE_KEY,
+            {
+              algorithm: 'RS256',
+              expiresIn: '1h',
+            }
+          );
       }
       return session;
     },

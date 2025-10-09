@@ -100,14 +100,15 @@ export default function UserMenu() {
               />
               <div>
                 <p className="font-semibold text-[var(--text-bold)]">
-                  {session.user.name}
+                  {session.user.nickname}
                 </p>
                 <p className="truncate text-sm">{session.user.email}</p>
               </div>
             </div>
             <Button
               variant="outline"
-              size="full-h"
+              size="md"
+              className="w-full"
               onClick={() => {
                 setOpen(false);
                 router.push('/my/profile');

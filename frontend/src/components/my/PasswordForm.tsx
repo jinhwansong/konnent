@@ -121,8 +121,13 @@ export default function PasswordForm({
             </div>
           </div>
           {/* 버튼 */}
-          <div className="flex justify-end gap-3">
-            <Button type="submit" size="sm" variant="solid" disabled={!isValid}>
+          <div className="flex justify-end gap-2">
+            <Button
+              type="submit"
+              size="sm"
+              variant="primary"
+              disabled={!isValid}
+            >
               저장
             </Button>
             <Button

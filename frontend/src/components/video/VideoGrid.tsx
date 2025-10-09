@@ -4,13 +4,16 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { FiVideo, FiVideoOff, FiMic, FiMicOff } from 'react-icons/fi';
 
-import { useSocket } from '@/hooks/useSocket';
+import { useChatSocket } from '@/hooks/useChatSocket';
 import { useWebRTC } from '@/hooks/useWebRTC';
+
 
 import ScreenShareControls from './ScreenShareControls';
 import ScreenShareIndicator from './ScreenShareIndicator';
 import ScreenShareModal from './ScreenShareModal';
 import VideoTile from './VideoTile';
+
+
 
 interface User {
   id: string;
@@ -31,7 +34,16 @@ export default function VideoGrid({
   isConnected: _isConnected 
 }: VideoGridProps) {
   const { data: session } = useSession();
-  const { socket, users } = useSocket(roomId);
+  const { socket, users } = useChatSocket({
+    roomId,
+    user: {
+      id: currentUser.id,
+      name: currentUser.name,
+      image: currentUser.image,
+      isMentor: currentUser.isMentor || false,
+    },
+    enabled: !!session?.user,
+  });
   const { 
     localStream, 
     remoteStreams, 

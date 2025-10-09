@@ -64,7 +64,7 @@ export default function EditableTextForm({
           />
           <Button
             type="button"
-            size="sm-h"
+            size="lg"
             variant="outline"
             onClick={() => setIsEditing(true)}
           >
@@ -82,8 +82,13 @@ export default function EditableTextForm({
           />
           <FormErrorMessage message={errors[name]?.message as string} />
 
-          <div className="flex justify-end gap-3">
-            <Button type="submit" size="sm" variant="solid" disabled={!isValid}>
+          <div className="flex justify-end gap-2">
+            <Button
+              type="submit"
+              size="sm"
+              variant="primary"
+              disabled={!isValid}
+            >
               저장
             </Button>
             <Button

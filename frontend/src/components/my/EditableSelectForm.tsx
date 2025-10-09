@@ -56,7 +56,7 @@ export default function EditableSelectForm({
           />
           <Button
             type="button"
-            size="sm-h"
+            size="lg"
             variant="outline"
             onClick={() => setIsEditing(true)}
           >
@@ -77,8 +77,8 @@ export default function EditableSelectForm({
               />
             )}
           />
-          <div className="flex justify-end gap-3">
-            <Button type="submit" size="sm" variant="solid">
+          <div className="flex justify-end gap-2">
+            <Button type="submit" size="sm" variant="primary">
               저장
             </Button>
             <Button

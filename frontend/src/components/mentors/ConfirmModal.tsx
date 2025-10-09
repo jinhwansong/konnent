@@ -91,10 +91,11 @@ export default function ConfirmModal({ sessionId }: { sessionId: string }) {
             variant="outline"
             onClick={() => router.push(`/mentors/${sessionId}/reserve`)}
             type="button"
+            className="flex-1"
           >
             이전으로
           </Button>
-          <Button type="button" onClick={handleReservation}>
+          <Button type="button" onClick={handleReservation} className="flex-1">
             결제하기
           </Button>
         </div>

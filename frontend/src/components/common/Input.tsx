@@ -23,7 +23,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     const inputClass = clsx(
-      'text-sm h-[45px] rounded-lg px-4',
+      'text-sm h-11 rounded-lg px-4',
       'border transition-colors duration-200',
       'bg-[var(--editor-bg)] text-[var(--text)] placeholder-[var(--text-sub)]',
       'hover:border-[var(--primary-sub01)]',
@@ -40,7 +40,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const inputId = id || props.name;
 
     return (
-      <div className="w-full">
+      <div className="flex-1">
         {label && (
           <label
             htmlFor={inputId}

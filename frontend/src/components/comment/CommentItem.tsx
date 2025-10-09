@@ -78,7 +78,7 @@ export default function CommentItems({
                   >
                     취소
                   </Button>
-                  <Button size="sm" variant="solid" onClick={handleSave}>
+                  <Button size="sm" variant="primary" onClick={handleSave}>
                     저장
                   </Button>
                 </div>

@@ -48,7 +48,7 @@ export default function ReviewForm({
   } = methods;
 
   return (
-    <Modal onClose={onClose}>
+    <Modal onClose={onClose} size="sm">
       <h4 className="mb-5 text-xl font-semibold text-[var(--text-bold)]">
         리뷰 작성
       </h4>
@@ -104,10 +104,15 @@ export default function ReviewForm({
           />
 
           <div className="mt-5 flex gap-2.5">
-            <Button variant="outline" onClick={onClose} type="button">
+            <Button
+              variant="outline"
+              onClick={onClose}
+              type="button"
+              className="flex-1"
+            >
               취소
             </Button>
-            <Button type="submit" disabled={!isValid}>
+            <Button type="submit" disabled={!isValid} className="flex-1">
               작성하기
             </Button>
           </div>

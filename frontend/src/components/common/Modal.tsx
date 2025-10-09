@@ -13,7 +13,7 @@ interface ModalProps {
 const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
   ({ children, onClose, title, size = 'md', className }, ref) => {
     const sizeClasses = {
-      sm: 'h-[400px] w-[400px]',
+      sm: ' w-[400px]',
       md: 'h-[600px] w-[500px]',
       lg: 'h-[700px] w-[600px]',
     };

@@ -11,6 +11,7 @@ export interface ScheduleReservationsItem {
   menteeName: string;
   menteeEmail: string;
   menteePhone: string;
+  roomId: string;
 }
 export interface ScheduleReservationsResponse {
   data: ScheduleReservationsItem[];

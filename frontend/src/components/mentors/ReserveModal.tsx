@@ -209,7 +209,7 @@ export default function ReserveModal({ sessionId }: { sessionId: string }) {
             className="mt-1"
           />
 
-          <Button type="submit" disabled={!isValid} className="mt-5">
+          <Button type="submit" disabled={!isValid} className="mt-3 w-full">
             다음으로
           </Button>
         </form>

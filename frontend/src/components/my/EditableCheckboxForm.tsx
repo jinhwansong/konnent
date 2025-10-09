@@ -68,7 +68,7 @@ export default function EditableCheckboxForm({
           />
           <Button
             type="button"
-            size="sm"
+            size="md"
             variant="outline"
             onClick={() => setIsEditing(true)}
           >
@@ -97,8 +97,8 @@ export default function EditableCheckboxForm({
 
           <FormErrorMessage message={errors[name]?.message as string} />
 
-          <div className="flex justify-end gap-3">
-            <Button type="submit" size="sm" variant="solid">
+          <div className="flex justify-end gap-2">
+            <Button type="submit" size="sm" variant="primary">
               저장
             </Button>
             <Button

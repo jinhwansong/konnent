@@ -1,6 +1,6 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 
@@ -19,6 +19,7 @@ import { Reason } from '@/types/schedule';
 
 export default function ScheduleDetailPage() {
   const { id } = useParams();
+  const router = useRouter();
   const { show } = useToastStore();
   const { data: schedule, isLoading } = useGetScheduleReservationsDetail(
     id as string
@@ -76,8 +77,11 @@ export default function ScheduleDetailPage() {
       }
     );
   };
-  if (isLoading) return null;
 
+  const handleJoinMeeting = () => {
+    router.push(`/rooms/${schedule?.roomId}`);
+  };
+  if (isLoading) return null;
   return (
     <section className="flex-1 text-sm text-[var(--text)]">
       <h1 className="mb-6 text-2xl leading-snug font-bold text-[var(--text-bold)]">
@@ -129,6 +133,11 @@ export default function ScheduleDetailPage() {
       {schedule?.status === 'confirmed' && (
         <Button type="button" variant="danger" onClick={closePopup}>
           예약 거절하기
+        </Button>
+      )}
+      {schedule?.status === 'progress' && (
+        <Button type="button" variant="primary" onClick={handleJoinMeeting}>
+          미팅 참가하기
         </Button>
       )}
       {popup && (

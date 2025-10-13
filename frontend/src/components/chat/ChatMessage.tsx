@@ -2,7 +2,6 @@
 
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import Image from 'next/image';
 
 interface ChatMessageProps {
   message: {
@@ -65,7 +64,7 @@ export default function ChatMessage({ message, isCurrentUser }: ChatMessageProps
       {/* 프로필 이미지 */}
       <div className="flex-shrink-0">
         <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[var(--card-bg-sub)]">
-          {message.userImage ? (
+          {/* {message.userImage ? (
             <Image
               src={message.userImage}
               alt={message.userName}
@@ -77,7 +76,8 @@ export default function ChatMessage({ message, isCurrentUser }: ChatMessageProps
             <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--primary-sub02)] text-xs font-medium text-[var(--text-sub)]">
               {message.userName.charAt(0)}
             </div>
-          )}
+          )} */}
+          d
         </div>
       </div>
 

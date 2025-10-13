@@ -1,262 +1,385 @@
-# Chat 시스템 사용 가이드
+<div align="center">
 
-## 개요
+# 🤝 Konnect
 
-실시간 채팅 시스템이 `/chat` 네임스페이스의 Socket.IO를 통해 구현되어 있습니다.
+### 멘토와 멘티를 연결하는 1:1 실시간 멘토링 플랫폼
 
-## 파일 구조
+멘토링 예약부터 화상채팅, 결제까지 한 곳에서 관리하는 올인원 멘토링 솔루션
 
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=flat-square&logo=nestjs&logoColor=white)](https://nestjs.com/)
+[![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?style=flat-square&logo=socket.io&logoColor=white)](https://socket.io/)
+
+[데모 보기](#) | [API 문서](#) | [기술 블로그](#)
+
+</div>
+
+---
+
+## 📖 프로젝트 소개
+
+**Konnect**는 멘토와 멘티를 실시간으로 연결하는 1:1 멘토링 플랫폼입니다.
+
+복잡한 멘토링 프로세스를 하나의 플랫폼에서 해결할 수 있도록 설계되었으며,  
+예약 관리, 실시간 화상/채팅 세션, 결제, 리뷰까지 전체 멘토링 라이프사이클을 지원합니다.
+
+### 💡 주요 특징
+
+- 🎯 **간편한 멘토 검색 및 예약** - 분야별 멘토 필터링, 실시간 스케줄 확인
+- 💬 **실시간 커뮤니케이션** - Socket.IO 기반 채팅 + WebRTC 화상 통화
+- 💳 **안전한 결제 시스템** - Toss Payments 연동 에스크로 결제
+- 🔔 **스마트 알림** - 예약, 세션 시작, 리뷰 요청 등 실시간 푸시 알림
+- 📝 **아티클 & 커뮤니티** - 멘토의 지식 공유 및 커뮤니티 기능
+- 👨‍💼 **관리자 대시보드** - 사용자, 멘토링, 결제 통합 관리
+
+---
+
+## 🎨 미리보기
+
+![preview](./docs/preview.png)
+
+<details>
+<summary>📱 더 많은 스크린샷 보기</summary>
+
+- 메인 페이지
+- 멘토 검색
+- 예약 캘린더
+- 채팅 & 화상 세션
+- 결제 화면
+
+</details>
+
+---
+
+## 🛠️ 기술 스택
+
+### Frontend
+
+| Category | Technologies |
+|----------|-------------|
+| **Framework** | ![Next.js](https://img.shields.io/badge/Next.js_15-000000?style=flat-square&logo=next.js&logoColor=white) ![React 19](https://img.shields.io/badge/React_19-61DAFB?style=flat-square&logo=react&logoColor=black) |
+| **Language** | ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white) |
+| **Styling** | ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white) ![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=flat-square&logo=framer&logoColor=white) |
+| **State Management** | ![React Query](https://img.shields.io/badge/React_Query-FF4154?style=flat-square&logo=react-query&logoColor=white) ![Zustand](https://img.shields.io/badge/Zustand-000000?style=flat-square) |
+| **Form** | ![React Hook Form](https://img.shields.io/badge/React_Hook_Form-EC5990?style=flat-square&logo=reacthookform&logoColor=white) ![Zod](https://img.shields.io/badge/Zod-3E67B1?style=flat-square) |
+| **Real-time** | ![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?style=flat-square&logo=socket.io&logoColor=white) ![WebRTC](https://img.shields.io/badge/WebRTC-333333?style=flat-square&logo=webrtc&logoColor=white) |
+| **Auth** | ![NextAuth.js](https://img.shields.io/badge/NextAuth.js-000000?style=flat-square&logo=next.js&logoColor=white) |
+| **Payment** | ![Toss Payments](https://img.shields.io/badge/Toss_Payments-0064FF?style=flat-square) |
+| **Editor** | ![TipTap](https://img.shields.io/badge/TipTap-000000?style=flat-square) |
+| **Notification** | ![Firebase](https://img.shields.io/badge/Firebase_FCM-FFCA28?style=flat-square&logo=firebase&logoColor=black) |
+
+### Backend
+
+| Category | Technologies |
+|----------|-------------|
+| **Framework** | ![NestJS](https://img.shields.io/badge/NestJS_10-E0234E?style=flat-square&logo=nestjs&logoColor=white) ![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white) |
+| **Language** | ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white) |
+| **ORM** | ![TypeORM](https://img.shields.io/badge/TypeORM-FE0902?style=flat-square) ![Mongoose](https://img.shields.io/badge/Mongoose-880000?style=flat-square&logo=mongoose&logoColor=white) |
+| **Database** | ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white) ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat-square&logo=mongodb&logoColor=white) ![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white) |
+| **Real-time** | ![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?style=flat-square&logo=socket.io&logoColor=white) ![WebRTC](https://img.shields.io/badge/WebRTC-333333?style=flat-square&logo=webrtc&logoColor=white) |
+| **Auth** | ![JWT](https://img.shields.io/badge/JWT-000000?style=flat-square&logo=json-web-tokens&logoColor=white) ![Passport](https://img.shields.io/badge/Passport-34E27A?style=flat-square&logo=passport&logoColor=white) ![OAuth](https://img.shields.io/badge/OAuth_2.0-EB5424?style=flat-square) |
+| **API Docs** | ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=flat-square&logo=swagger&logoColor=black) |
+| **Email** | ![Nodemailer](https://img.shields.io/badge/Nodemailer-0072C6?style=flat-square) |
+| **Notification** | ![Firebase Admin](https://img.shields.io/badge/Firebase_Admin-FFCA28?style=flat-square&logo=firebase&logoColor=black) |
+| **Scheduling** | ![Cron](https://img.shields.io/badge/Cron_Jobs-000000?style=flat-square) |
+
+### Infrastructure & DevOps
+
+| Category | Technologies |
+|----------|-------------|
+| **Cloud** | ![AWS](https://img.shields.io/badge/AWS-232F3E?style=flat-square&logo=amazon-aws&logoColor=white) (EC2, RDS) |
+| **Web Server** | ![Nginx](https://img.shields.io/badge/Nginx-009639?style=flat-square&logo=nginx&logoColor=white) |
+| **Process Manager** | ![PM2](https://img.shields.io/badge/PM2-2B037A?style=flat-square&logo=pm2&logoColor=white) |
+| **Version Control** | ![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white) |
+
+---
+
+## ✨ 주요 기능
+
+### 👩‍🏫 멘토링 기능
+
+- **멘토 프로필 관리**
+  - 전문 분야, 경력, 소개, 가격 설정
+  - 포트폴리오 및 인증서 업로드
+  - 리뷰 및 평점 시스템
+
+- **스케줄 관리**
+  - 캘린더 기반 가능 시간 설정
+  - 실시간 예약 확인 및 승인/거절
+  - 자동 시간대 변환
+
+- **예약 시스템**
+  - 실시간 가능 시간 조회
+  - 즉시 예약 & 승인 대기 예약
+  - 예약 취소 및 환불 정책
+
+### 💬 실시간 채팅 & 화상채팅
+
+- **채팅 시스템** (Socket.IO)
+  - 1:1 실시간 메시지
+  - 파일 첨부 (이미지, 문서)
+  - 메시지 히스토리 (MongoDB)
+  - 커서 기반 무한스크롤
+  - 타이핑 인디케이터 (예정)
+
+- **화상 채팅** (WebRTC)
+  - P2P 화상 통화
+  - 화면 공유 (예정)
+  - 네트워크 품질 모니터링
+
+### 🔔 알림 시스템
+
+- **인앱 알림** (Socket.IO)
+  - 실시간 알림 푸시
+  - 알림 카테고리별 필터링
+  - 읽음/안 읽음 상태 관리
+
+- **푸시 알림** (Firebase FCM)
+  - 모바일/웹 푸시 알림
+  - 예약 확정, 세션 시작 알림
+  - 리뷰 요청, 결제 알림
+
+- **이메일 알림** (Nodemailer)
+  - 예약 확인 메일
+  - 세션 리마인더
+  - 영수증 발송
+
+### 💳 결제 시스템
+
+- **Toss Payments 연동**
+  - 신용카드, 계좌이체, 간편결제
+  - 에스크로 결제 (멘토링 완료 후 정산)
+  - 결제 실패 시 자동 재시도
+  - 부분 환불 지원
+
+- **정산 시스템**
+  - 멘토 수익 대시보드
+  - 자동 정산 스케줄링
+  - 세금계산서 발행
+
+### 📝 아티클 & 커뮤니티
+
+- **아티클 작성** (TipTap)
+  - 마크다운 지원 에디터
+  - 이미지 업로드 & 리사이징
+  - 태그 및 카테고리 분류
+  - 좋아요 & 북마크
+
+- **댓글 시스템**
+  - 대댓글 지원
+  - 실시간 댓글 알림
+  - 신고 기능
+
+### 🧑‍💼 관리자 페이지
+
+- **대시보드**
+  - 주요 지표 모니터링 (예약, 매출, 사용자)
+  - 실시간 통계 차트
+
+- **사용자 관리**
+  - 사용자 검색 및 필터링
+  - 계정 정지/해제
+  - 멘토 승인 관리
+
+- **컨텐츠 관리**
+  - 아티클 검토 및 관리
+  - 신고 처리
+  - 공지사항 작성
+
+---
+
+## 🏗️ 시스템 아키텍처
+
+```text
+┌─────────────────────────────────────────────────────────────────┐
+│                          Client Layer                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                   │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
+│  │   Next.js    │  │ Socket.IO    │  │   WebRTC     │          │
+│  │  (SSR/CSR)   │  │   Client     │  │  (P2P Call)  │          │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘          │
+│         │                 │                  │                   │
+│         │                 │                  │                   │
+└─────────┼─────────────────┼──────────────────┼───────────────────┘
+          │                 │                  │
+          │  REST API       │  WebSocket       │  Signaling
+          │  (HTTP/HTTPS)   │  (Socket.IO)     │
+          │                 │                  │
+┌─────────┼─────────────────┼──────────────────┼───────────────────┐
+│         ▼                 ▼                  ▼                   │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                    Nginx (Reverse Proxy)                 │    │
+│  │           SSL/TLS Termination + Load Balancing           │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                              │                                   │
+│         ┌────────────────────┼────────────────────┐             │
+│         ▼                    ▼                    ▼             │
+│  ┌─────────────┐      ┌─────────────┐      ┌─────────────┐    │
+│  │   NestJS    │      │  Socket.IO  │      │   WebRTC    │    │
+│  │ API Server  │      │   Gateway   │      │  Signaling  │    │
+│  │             │      │  (Chat/Noti)│      │   Server    │    │
+│  └──────┬──────┘      └──────┬──────┘      └─────────────┘    │
+│         │                    │                                  │
+│         │                    │                                  │
+│  Backend Layer (AWS EC2)                                        │
+├─────────┼────────────────────┼──────────────────────────────────┤
+│         │                    │                                  │
+│         ▼                    ▼                                  │
+│  ┌─────────────────────────────────────────────────┐           │
+│  │           Data Access & Caching Layer            │           │
+│  ├─────────────┬──────────────┬─────────────────────┤           │
+│  │   TypeORM   │   Mongoose   │   Redis (ioredis)   │           │
+│  └──────┬──────┴──────┬───────┴──────┬──────────────┘           │
+│         │             │              │                          │
+│         ▼             ▼              ▼                          │
+│  ┌────────────┐ ┌────────────┐ ┌────────────┐                 │
+│  │   MySQL    │ │  MongoDB   │ │   Redis    │                 │
+│  │  (AWS RDS) │ │ (Chat/Log) │ │  (Cache)   │                 │
+│  │            │ │            │ │            │                 │
+│  │ • Users    │ │ • Messages │ │ • Session  │                 │
+│  │ • Mentors  │ │ • Notifi.  │ │ • Queue    │                 │
+│  │ • Reserv.  │ │ • Logs     │ │ • Lock     │                 │
+│  │ • Payments │ │            │ │            │                 │
+│  └────────────┘ └────────────┘ └────────────┘                 │
+│                                                                  │
+│  Database Layer (AWS RDS + MongoDB Atlas)                       │
+└──────────────────────────────────────────────────────────────────┘
+
+External Services:
+┌────────────────────────────────────────────────────────────────┐
+│  • Toss Payments API      (결제)                              │
+│  • Firebase FCM           (푸시 알림)                         │
+│  • OAuth Providers        (Google, Kakao, Naver)             │
+│  • AWS S3                 (파일 스토리지)                     │
+│  • SMTP Server            (이메일 발송)                       │
+└────────────────────────────────────────────────────────────────┘
 ```
-frontend/src/
-├── components/chat/
-│   ├── ChatPanel.tsx        # 메인 채팅 패널 (이미 rooms/[roomId]에 연결됨)
-│   ├── ChatRoom.tsx         # 독립 실행형 채팅방 컴포넌트
-│   ├── ChatMessage.tsx      # 메시지 표시 컴포넌트
-│   ├── ChatInput.tsx        # 메시지 입력 컴포넌트
-│   ├── ChatExample.tsx      # 사용 예제
-│   └── FilePreview.tsx      # 파일 미리보기
-├── hooks/
-│   ├── useChatSocket.ts     # 일반 채팅방용 소켓 훅
-│   └── useReservationChat.ts # 예약 기반 채팅방용 소켓 훅
-└── types/
-    └── chat.ts              # 채팅 관련 타입 정의
+
+### 📊 데이터베이스 구조
+
+```text
+MySQL (관계형 데이터)
+├── users              # 사용자 정보
+├── mentors            # 멘토 프로필
+├── mentoring_schedules # 멘토 스케줄
+├── mentoring_reservations # 예약 정보
+├── mentoring_sessions # 세션 기록
+├── payments           # 결제 내역
+├── reviews            # 리뷰
+├── articles           # 아티클
+└── comments           # 댓글
+
+MongoDB (비관계형 데이터)
+├── chatMessages       # 채팅 메시지
+├── chatRooms          # 채팅방
+├── notifications      # 알림
+└── activityLogs       # 활동 로그
+
+Redis (캐싱 & 세션)
+├── user:sessions      # 사용자 세션
+├── cache:*            # API 캐시
+├── queue:emails       # 이메일 큐
+└── lock:*             # 분산 락
 ```
 
-## 현재 구현 상태
+---
 
-### ✅ 완료된 항목
+## 🚀 설치 및 실행 가이드
 
-1. **Socket.IO 연결**
-   - `/chat` 네임스페이스 연결
-   - JWT 토큰 자동 인증
-   - 자동 재연결 설정
+### 사전 요구사항
 
-2. **ChatPanel 컴포넌트**
-   - `rooms/[roomId]` 페이지에 이미 통합됨
-   - `useChatSocket` 훅과 연결 완료
-   - 실시간 메시지 송수신
-   - 사용자 목록 표시
+- **Node.js** v20 이상
+- **npm** 또는 **yarn**
+- **MySQL** 8.0 이상
+- **MongoDB** 6.0 이상
+- **Redis** 7.0 이상
 
-3. **이벤트 처리**
-   - `user_connected`: 사용자 입장
-   - `user_disconnected`: 사용자 퇴장
-   - `new_message`: 메시지 송수신
-   - `users_list`: 참여자 목록
-   - `messages_history`: 메시지 히스토리
 
-## 사용 방법
+## 📂 프로젝트 구조
 
-### 1. 기본 사용 (이미 구현됨)
-
-`rooms/[roomId]` 페이지에서 자동으로 ChatPanel이 실행됩니다:
-
-```tsx
-// app/(mentoring)/rooms/[roomId]/page.tsx
-<ChatPanel 
-  roomId={roomId}
-  currentUser={{
-    id: session.user.id,
-    name: session.user.name,
-    image: session.user.image || undefined,
-    isMentor: false,
-  }}
-/>
+```text
+konnect/
+├── backend/                    # NestJS 백엔드
+│   ├── src/
+│   │   ├── admin/              # 관리자 기능
+│   │   ├── auth/               # 인증/인가
+│   │   ├── users/              # 사용자 관리
+│   │   ├── mentors/            # 멘토 관리
+│   │   ├── reservation/        # 예약 시스템
+│   │   ├── session/            # 세션 관리
+│   │   ├── chat/               # 채팅 (REST API)
+│   │   ├── realtime/           # 실시간 통신 (Socket.IO)
+│   │   │   ├── chat/           # 채팅 게이트웨이
+│   │   │   └── notification/   # 알림 게이트웨이
+│   │   ├── payment/            # 결제 시스템
+│   │   ├── article/            # 아티클
+│   │   ├── review/             # 리뷰
+│   │   ├── notification/       # 알림
+│   │   ├── mail/               # 이메일
+│   │   ├── fcm/                # Firebase FCM
+│   │   ├── scheduler/          # 크론 작업
+│   │   ├── entities/           # TypeORM 엔티티
+│   │   ├── schema/             # Mongoose 스키마
+│   │   ├── common/             # 공통 모듈
+│   │   └── main.ts             # 진입점
+│   ├── test/                   # E2E 테스트
+│   └── package.json
+│
+├── frontend/                   # Next.js 프론트엔드
+│   ├── src/
+│   │   ├── app/                # App Router 페이지
+│   │   │   ├── (auth)/         # 인증 페이지
+│   │   │   ├── (main)/         # 메인 페이지
+│   │   │   ├── (mentoring)/    # 멘토링 페이지
+│   │   │   └── admin/          # 관리자 페이지
+│   │   ├── components/         # React 컴포넌트
+│   │   │   ├── chat/           # 채팅 컴포넌트
+│   │   │   ├── video/          # 화상 컴포넌트
+│   │   │   └── ...
+│   │   ├── hooks/              # 커스텀 훅
+│   │   │   ├── query/          # React Query 훅
+│   │   │   ├── useChatSocket.ts
+│   │   │   └── ...
+│   │   ├── libs/               # API 클라이언트
+│   │   ├── stores/             # Zustand 스토어
+│   │   ├── types/              # TypeScript 타입
+│   │   ├── utils/              # 유틸리티 함수
+│   │   └── styles/             # 전역 스타일
+│   ├── public/                 # 정적 파일
+│   └── package.json
+│
+└── README.md
 ```
 
-### 2. 독립 실행형 채팅방
+---
 
-```tsx
-import ChatRoom from '@/components/chat/ChatRoom';
+## 🧪 테스트
 
-<ChatRoom
-  roomId="room-123"
-  user={{
-    id: 'user-456',
-    name: '홍길동',
-    image: 'https://...',
-    isMentor: false,
-  }}
-  onClose={() => console.log('Chat closed')}
-/>
-```
-
-### 3. 커스텀 훅 사용
-
-```tsx
-import { useChatSocket } from '@/hooks/useChatSocket';
-
-const {
-  isConnected,
-  isJoined,
-  messages,
-  users,
-  sendMessage,
-  leaveRoom,
-} = useChatSocket({
-  roomId: 'room-123',
-  user: {
-    id: 'user-456',
-    name: '홍길동',
-    isMentor: false,
-  },
-  onNewMessage: (msg) => console.log('New message:', msg),
-  onUserJoined: (user) => console.log('User joined:', user),
-});
-```
-
-### 4. 예약 기반 채팅 (시간 제한)
-
-```tsx
-import { useReservationChat } from '@/hooks/useReservationChat';
-
-const { isConnected, isJoined, error } = useReservationChat({
-  roomId: 'room-123',
-  userId: 'user-456',
-  onJoinSuccess: (data) => console.log('Joined:', data),
-  onJoinDenied: (data) => console.error('Denied:', data.reason),
-});
-```
-
-## 백엔드 게이트웨이 이벤트
-
-### 클라이언트 → 서버
-
-| 이벤트 | 페이로드 | 설명 |
-|--------|---------|------|
-| `user_connected` | `{ roomId, userId, userName, userImage, isMentor }` | 방 입장 |
-| `user_disconnected` | `{ roomId, userId }` | 방 퇴장 |
-| `new_message` | `{ roomId, userId, userName, message, type, fileUrl?, fileName? }` | 메시지 전송 |
-| `join_room` | `{ roomId, userId, token }` | 예약 방 입장 (시간 검증) |
-| `leave_room` | `{ roomId, userId }` | 예약 방 퇴장 |
-
-### 서버 → 클라이언트
-
-| 이벤트 | 페이로드 | 설명 |
-|--------|---------|------|
-| `user_connected` | `{ userId, userName, userImage, isMentor, socketId }` | 사용자 입장 알림 |
-| `user_disconnected` | `{ userId, userName, socketId }` | 사용자 퇴장 알림 |
-| `new_message` | `ChatMessage` | 새 메시지 |
-| `users_list` | `ChatUser[]` | 참여자 목록 |
-| `messages_history` | `ChatMessage[]` | 메시지 히스토리 |
-| `join_success` | `{ roomId, userId }` | 방 입장 성공 |
-| `join_denied` | `{ reason }` | 방 입장 거부 |
-
-## 인증 설정
-
-### JWT 토큰 저장
-
-소켓 연결 시 자동으로 다음 위치에서 토큰을 찾습니다:
-
-1. `localStorage.getItem('accessToken')`
-2. `document.cookie` (accessToken 쿠키)
-
-```ts
-// 로그인 후
-localStorage.setItem('accessToken', 'your-jwt-token');
-
-// 또는
-document.cookie = 'accessToken=your-jwt-token';
-```
-
-## 환경 변수
+### Backend 테스트
 
 ```bash
-# .env.local
-NEXT_PUBLIC_API_URL=http://localhost:3030
+cd backend
+
+# 단위 테스트
+npm run test
+
+# E2E 테스트
+npm run test:e2e
+
+# 커버리지
+npm run test:cov
 ```
 
-## TODO: 향후 개선 사항
-
-### 1. 파일 업로드
-현재 파일 첨부 UI는 있지만, 실제 업로드 로직이 필요합니다:
-
-```tsx
-// ChatPanel.tsx 수정 필요
-const handleSendMessage = async (message: string, files?: File[]) => {
-  if (files && files.length > 0) {
-    // 1. 파일을 서버에 업로드
-    const formData = new FormData();
-    files.forEach(file => formData.append('files', file));
-    
-    const response = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData,
-    });
-    
-    const { fileUrls } = await response.json();
-    
-    // 2. 파일 URL과 함께 메시지 전송
-    sendMessage(message, 'file', fileUrls[0], files[0].name);
-  } else {
-    sendMessage(message);
-  }
-};
-```
-
-### 2. 읽음 표시
-메시지 읽음 상태 추적:
-
-```tsx
-// 백엔드에 추가 필요
-socket.emit('mark_as_read', { roomId, messageId });
-socket.on('message_read', ({ userId, messageId }) => {
-  // UI 업데이트
-});
-```
-
-### 3. 타이핑 인디케이터
-사용자가 입력 중일 때 표시:
-
-```tsx
-socket.emit('typing_start', { roomId, userId });
-socket.emit('typing_stop', { roomId, userId });
-socket.on('user_typing', ({ userId, userName }) => {
-  // "OOO님이 입력 중..." 표시
-});
-```
-
-### 4. 메시지 페이지네이션
-오래된 메시지 로드:
-
-```tsx
-const loadMoreMessages = async (before: string) => {
-  const response = await fetch(`/api/chat/rooms/${roomId}/messages?before=${before}`);
-  const oldMessages = await response.json();
-  // 메시지 목록에 추가
-};
-```
-
-## 트러블슈팅
-
-### 연결이 안 될 때
-1. JWT 토큰이 localStorage 또는 쿠키에 있는지 확인
-2. `NEXT_PUBLIC_API_URL` 환경 변수 확인
-3. 백엔드 서버가 실행 중인지 확인
-4. 브라우저 콘솔에서 소켓 에러 확인
-
-### 메시지가 전송되지 않을 때
-1. `isJoined` 상태가 `true`인지 확인
-2. 네트워크 탭에서 WebSocket 연결 확인
-3. 백엔드 로그 확인
-
-### 예약 방 입장 실패
-- `INVALID_TOKEN`: JWT 토큰 만료 또는 무효
-- `RESERVATION_NOT_FOUND`: 예약 정보 없음
-- `NOT_IN_TIME_WINDOW`: 예약 시간이 아님
-- `NOT_PARTICIPANT`: 참여자 권한 없음
-
-## 테스트
+### Frontend 테스트
 
 ```bash
-# 개발 서버 실행
-npm run dev
+cd frontend
 
-# 채팅 테스트 페이지 접속
-http://localhost:3000/rooms/test-room-id
+# 단위 테스트
+npm run test
+
+# 커버리지
+npm run test:coverage
 ```
-
-## 참고
-
-- Socket.IO 문서: https://socket.io/docs/v4/
-- Next.js 문서: https://nextjs.org/docs
-

@@ -11,7 +11,6 @@ import type {
   JoinDeniedEvent,
 } from '@/types/chat';
 
-
 interface UseChatSocketOptions {
   roomId: string;
   user: {
@@ -65,9 +64,9 @@ export function useChatSocket(options: UseChatSocketOptions) {
       fileName?: string
     ) => {
       if (!socketRef.current || !isJoined) {
-        console.warn(
-          '⚠️ [채팅] 메시지를 보낼 수 없습니다 (연결 안 됨 또는 방 미입장)'
-        );
+        // console.warn(
+        //   '⚠️ [채팅] 메시지를 보낼 수 없습니다 (연결 안 됨 또는 방 미입장)'
+        // );
         return;
       }
 
@@ -98,7 +97,7 @@ export function useChatSocket(options: UseChatSocketOptions) {
     } else {
       socketRef.current.emit('user_disconnected', { roomId });
     }
-    console.log('👋 [채팅] 방 퇴장 요청:', roomId);
+  //  console.log('👋 [채팅] 방 퇴장 요청:', roomId);
 
     setIsJoined(false);
   }, [roomId, user.id, mode]);
@@ -137,7 +136,7 @@ export function useChatSocket(options: UseChatSocketOptions) {
 
     // 연결 성공 시
     socket.on('connect', () => {
-      console.log('✅ [채팅] 소켓 연결 성공:', socket.id);
+   //   console.log('✅ [채팅] 소켓 연결 성공:', socket.id);
       setIsConnected(true);
       setError(null);
 
@@ -153,7 +152,7 @@ export function useChatSocket(options: UseChatSocketOptions) {
       } else {
         // 일반 채팅: user_connected 이벤트 사용 (JWT로 사용자 정보 조회)
         socket.emit('user_connected', { roomId });
-        console.log('🚪 [일반 채팅] 방 입장 요청 전송 (JWT 검증):', roomId);
+        // console.log('🚪 [일반 채팅] 방 입장 요청 전송 (JWT 검증):', roomId);
       }
     });
 
@@ -166,14 +165,14 @@ export function useChatSocket(options: UseChatSocketOptions) {
 
     // 연결 에러
     socket.on('connect_error', err => {
-      console.error('⚠️ [채팅] 연결 에러:', err.message);
+   //   console.error('⚠️ [채팅] 연결 에러:', err.message);
       setError(err.message);
       setIsConnected(false);
     });
 
     // 방 입장 성공 (예약 모드)
     socket.on('join_success', (data: JoinSuccessEvent) => {
-      console.log('🎉 [예약 채팅] 방 입장 성공:', data);
+    //  console.log('🎉 [예약 채팅] 방 입장 성공:', data);
       setIsJoined(true);
       setError(null);
       onJoinSuccess?.(data);
@@ -188,8 +187,9 @@ export function useChatSocket(options: UseChatSocketOptions) {
         NOT_PARTICIPANT: '이 채팅방의 참가자가 아닙니다.',
         SERVER_ERROR: '서버 오류가 발생했습니다.',
       };
-      const errorMsg = errorMessages[data.reason] || `입장 거부: ${data.reason}`;
-      console.warn('🚫 [예약 채팅] 방 입장 거절:', data.reason);
+      const errorMsg =
+        errorMessages[data.reason] || `입장 거부: ${data.reason}`;
+    //  console.warn('🚫 [예약 채팅] 방 입장 거절:', data.reason);
       setError(errorMsg);
       setIsJoined(false);
       onJoinDenied?.(data);
@@ -197,19 +197,19 @@ export function useChatSocket(options: UseChatSocketOptions) {
 
     // 사용자 입장 알림 (예약 모드)
     socket.on('user_joined', data => {
-      console.log(`🙋‍♀️ [예약 채팅] ${data.userId}님이 입장했습니다.`);
+   //   console.log(`🙋‍♀️ [예약 채팅] ${data.userId}님이 입장했습니다.`);
       onUserJoined?.(data);
     });
 
     // 사용자 퇴장 알림 (예약 모드)
     socket.on('user_left', data => {
-      console.log(`👋 [예약 채팅] ${data.userId}님이 퇴장했습니다.`);
+ //     console.log(`👋 [예약 채팅] ${data.userId}님이 퇴장했습니다.`);
       onUserLeft?.(data);
     });
 
     // 사용자 목록 수신 (일반 모드)
     socket.on('users_list', (usersList: ChatUser[]) => {
-      console.log('👥 [일반 채팅] 사용자 목록:', usersList.length, '명');
+     // console.log('👥 [일반 채팅] 사용자 목록:', usersList.length, '명');
       setUsers(usersList);
       setIsJoined(true); // 사용자 목록을 받으면 입장 성공으로 간주
       onUsersListUpdate?.(usersList);
@@ -217,14 +217,14 @@ export function useChatSocket(options: UseChatSocketOptions) {
 
     // 메시지 기록 수신 (일반 모드)
     socket.on('messages_history', (messagesList: ChatMessage[]) => {
-      console.log('📜 [일반 채팅] 메시지 기록:', messagesList.length, '개');
+     // console.log('📜 [일반 채팅] 메시지 기록:', messagesList.length, '개');
       setMessages(messagesList);
       onMessagesHistory?.(messagesList);
     });
 
     // 사용자 입장 알림 (일반 모드)
     socket.on('user_connected', (data: UserConnectedEvent) => {
-      console.log('🙋 [일반 채팅] 사용자 입장:', data.userName);
+      // console.log('🙋 [일반 채팅] 사용자 입장:', data.userName);
       setUsers(prev => {
         const exists = prev.some(u => u.id === data.userId);
         if (exists) return prev;
@@ -244,21 +244,26 @@ export function useChatSocket(options: UseChatSocketOptions) {
 
     // 사용자 퇴장 알림 (일반 모드)
     socket.on('user_disconnected', (data: UserDisconnectedEvent) => {
-      console.log('👋 [일반 채팅] 사용자 퇴장:', data.userName);
+      // console.log('👋 [일반 채팅] 사용자 퇴장:', data.userName);
       setUsers(prev => prev.filter(u => u.id !== data.userId));
       onUserLeft?.(data);
     });
 
     // 새 메시지 수신 (공통)
     socket.on('new_message', (message: ChatMessage) => {
-      console.log('💬 [채팅] 새 메시지:', message.userName, '-', message.message);
+      // console.log(
+      //   '💬 [채팅] 새 메시지:',
+      //   message.sender.name,
+      //   '-',
+      //   message.message
+      // );
       setMessages(prev => [...prev, message]);
       onNewMessage?.(message);
     });
 
     // 정리 (컴포넌트 언마운트 시)
     return () => {
-      console.log('🧹 [채팅] 소켓 연결 정리 중...');
+      // console.log('🧹 [채팅] 소켓 연결 정리 중...');
 
       // 연결 해제 전에 방 퇴장
       if (socket.connected) {
@@ -323,4 +328,3 @@ export function useChatSocket(options: UseChatSocketOptions) {
     socket: socketRef.current,
   };
 }
-

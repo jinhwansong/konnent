@@ -67,7 +67,7 @@ export const scheduleColumns = [
         {statusMap[row.status as MentoringStatus] ?? row.status}
       </span>
     ),
-    className: 'w-[90px]',
+    className: 'w-[100px]',
   },
   {
     header: '멘티 이름',
@@ -75,13 +75,6 @@ export const scheduleColumns = [
       <span className="line-clamp-1">{row.menteeName}</span>
     ),
     className: 'w-[120px]',
-  },
-  {
-    header: '연락처',
-    accessor: (row: ScheduleReservationsItem) => (
-      <span className="line-clamp-1">{row.menteePhone}</span>
-    ),
-    className: 'w-[130px]',
   },
   {
     header: '신청일',

@@ -33,12 +33,44 @@ export default function VideoTile({
   const internalVideoRef = useRef<HTMLVideoElement>(null);
   const videoRef = externalVideoRef || internalVideoRef;
   const [_isSpeaking, _setIsSpeaking] = useState(false);
+  
+  // 디버깅: props 확인
+  console.log('🎬 VideoTile rendered:', {
+    userName: user.name,
+    isLocal,
+    isAudioEnabled,
+    isVideoEnabled,
+    hasStream: !!stream,
+  });
 
   useEffect(() => {
-    if (videoRef.current && stream) {
-      videoRef.current.srcObject = stream;
+    const videoElement = videoRef.current;
+    if (videoElement && stream) {
+      videoElement.srcObject = stream;
+      
+      // 원격 비디오의 경우 명시적으로 재생 및 음소거 해제
+      if (!isLocal) {
+        videoElement.muted = false;
+        videoElement.volume = 1.0;
+        
+        // play() 호출을 조금 지연시켜 확실하게 재생
+        const playPromise = videoElement.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              console.log('✅ Remote video playing with audio');
+            })
+            .catch(err => {
+              console.warn('⚠️ Remote video autoplay failed:', err);
+              // 사용자 인터랙션 후 재시도
+              document.addEventListener('click', () => {
+                videoElement.play().catch(console.error);
+              }, { once: true });
+            });
+        }
+      }
     }
-  }, [stream, videoRef]);
+  }, [stream, videoRef, isLocal]);
 
   // 오디오 레벨 모니터링 (실제로는 Web Audio API 사용)
   useEffect(() => {
@@ -64,9 +96,11 @@ export default function VideoTile({
         autoPlay
         playsInline
         muted={isLocal}
+        controls={false}
         className={`w-full h-full object-cover absolute inset-0 ${
           !isVideoEnabled ? 'opacity-0' : ''
         }`}
+        style={{ objectFit: 'cover' }}
       />
 
       <div className="absolute bottom-4 left-4 right-4">
@@ -103,9 +137,13 @@ export default function VideoTile({
 
           {/* 상태 표시 */}
           <div className="flex items-center gap-2">
-            <div className={`w-3 h-3 rounded-full ${
-              isAudioEnabled ? 'bg-[var(--color-success)]' : 'bg-[var(--color-danger)]'
-            }`} />
+            {/* 오디오 상태: 켜짐=초록, 꺼짐=빨강 */}
+            <div 
+              className={`w-3 h-3 rounded-full ${
+                isAudioEnabled ? 'bg-green-500' : 'bg-red-500'
+              }`}
+              title={isAudioEnabled ? '오디오 켜짐' : '오디오 꺼짐'}
+            />
 
             {_isSpeaking && (
               <div className="w-3 h-3 bg-[var(--color-warning)] rounded-full animate-pulse" />

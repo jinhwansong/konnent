@@ -30,7 +30,7 @@ export default function CommentChild({
     onEdit?.(data.id, editValue.trim());
     setEditing(false);
   };
-  console.log(data);
+
   return (
     <li className="group flex gap-3">
       <FiCornerDownRight className="mt-1 text-[var(--text-sub)]" size={16} />

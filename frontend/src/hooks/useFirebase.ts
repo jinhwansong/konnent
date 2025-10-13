@@ -40,8 +40,6 @@ export function useFcmToken(userId?: string) {
 
       // foreground 메시지 처리
       const unsubscribe = onMessage(m, payload => {
-        console.log('📩 foreground message:', payload);
-
         if (Notification.permission === 'granted') {
           const noti = new Notification(
             payload.notification?.title || 'Konnect 알림',

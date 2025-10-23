@@ -26,6 +26,11 @@ const nextConfig: NextConfig = {
         hostname: 'ssl.pstatic.net', // 네이버
       },
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+
+      {
+        protocol: 'https',
+        hostname: 'requirements-monetary-gtk-english.trycloudflare.com',
+      },
     ],
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 31536000,

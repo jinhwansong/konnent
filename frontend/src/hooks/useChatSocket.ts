@@ -97,7 +97,7 @@ export function useChatSocket(options: UseChatSocketOptions) {
     } else {
       socketRef.current.emit('user_disconnected', { roomId });
     }
-  //  console.log('👋 [채팅] 방 퇴장 요청:', roomId);
+    //  console.log('👋 [채팅] 방 퇴장 요청:', roomId);
 
     setIsJoined(false);
   }, [roomId, user.id, mode]);
@@ -118,14 +118,16 @@ export function useChatSocket(options: UseChatSocketOptions) {
       return;
     }
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3030';
+    // Cloudflare 터널 환경에서는 백엔드 터널 URL 사용
+    const apiUrl = 'https://interim-cow-connector-prominent.trycloudflare.com';
 
     // 소켓 연결 생성
     const socket = io(`${apiUrl}/chat`, {
       auth: {
         token,
       },
-      transports: ['websocket', 'polling'],
+      withCredentials: true,
+      transports: ['polling', 'websocket'], // Cloudflare에서는 폴링 우선
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
@@ -136,7 +138,7 @@ export function useChatSocket(options: UseChatSocketOptions) {
 
     // 연결 성공 시
     socket.on('connect', () => {
-   //   console.log('✅ [채팅] 소켓 연결 성공:', socket.id);
+      //   console.log('✅ [채팅] 소켓 연결 성공:', socket.id);
       setIsConnected(true);
       setError(null);
 
@@ -165,14 +167,14 @@ export function useChatSocket(options: UseChatSocketOptions) {
 
     // 연결 에러
     socket.on('connect_error', err => {
-   //   console.error('⚠️ [채팅] 연결 에러:', err.message);
+      //   console.error('⚠️ [채팅] 연결 에러:', err.message);
       setError(err.message);
       setIsConnected(false);
     });
 
     // 방 입장 성공 (예약 모드)
     socket.on('join_success', (data: JoinSuccessEvent) => {
-    //  console.log('🎉 [예약 채팅] 방 입장 성공:', data);
+      //  console.log('🎉 [예약 채팅] 방 입장 성공:', data);
       setIsJoined(true);
       setError(null);
       onJoinSuccess?.(data);
@@ -189,7 +191,7 @@ export function useChatSocket(options: UseChatSocketOptions) {
       };
       const errorMsg =
         errorMessages[data.reason] || `입장 거부: ${data.reason}`;
-    //  console.warn('🚫 [예약 채팅] 방 입장 거절:', data.reason);
+      //  console.warn('🚫 [예약 채팅] 방 입장 거절:', data.reason);
       setError(errorMsg);
       setIsJoined(false);
       onJoinDenied?.(data);
@@ -197,19 +199,19 @@ export function useChatSocket(options: UseChatSocketOptions) {
 
     // 사용자 입장 알림 (예약 모드)
     socket.on('user_joined', data => {
-   //   console.log(`🙋‍♀️ [예약 채팅] ${data.userId}님이 입장했습니다.`);
+      //   console.log(`🙋‍♀️ [예약 채팅] ${data.userId}님이 입장했습니다.`);
       onUserJoined?.(data);
     });
 
     // 사용자 퇴장 알림 (예약 모드)
     socket.on('user_left', data => {
- //     console.log(`👋 [예약 채팅] ${data.userId}님이 퇴장했습니다.`);
+      //     console.log(`👋 [예약 채팅] ${data.userId}님이 퇴장했습니다.`);
       onUserLeft?.(data);
     });
 
     // 사용자 목록 수신 (일반 모드)
     socket.on('users_list', (usersList: ChatUser[]) => {
-     // console.log('👥 [일반 채팅] 사용자 목록:', usersList.length, '명');
+      // console.log('👥 [일반 채팅] 사용자 목록:', usersList.length, '명');
       setUsers(usersList);
       setIsJoined(true); // 사용자 목록을 받으면 입장 성공으로 간주
       onUsersListUpdate?.(usersList);
@@ -217,7 +219,7 @@ export function useChatSocket(options: UseChatSocketOptions) {
 
     // 메시지 기록 수신 (일반 모드)
     socket.on('messages_history', (messagesList: ChatMessage[]) => {
-     // console.log('📜 [일반 채팅] 메시지 기록:', messagesList.length, '개');
+      // console.log('📜 [일반 채팅] 메시지 기록:', messagesList.length, '개');
       setMessages(messagesList);
       onMessagesHistory?.(messagesList);
     });

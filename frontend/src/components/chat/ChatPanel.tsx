@@ -3,7 +3,9 @@
 import { useCallback, useState, useRef, useEffect, useMemo } from 'react';
 import { FiMessageCircle, FiUsers, FiArrowDown } from 'react-icons/fi';
 
-import VirtualizedList, { type ChatVirtualHandle } from '@/components/common/VirtualizedList';
+import VirtualizedList, {
+  type ChatVirtualHandle,
+} from '@/components/common/VirtualizedList';
 import {
   useChatMessages,
   useSendMessage,
@@ -15,7 +17,6 @@ import type { ChatMessage as ChatMessageType } from '@/types/chat';
 
 import ChatInput from './ChatInput';
 import ChatMessage from './ChatMessage';
-
 
 interface User {
   id: string;
@@ -44,15 +45,12 @@ export default function ChatPanel({ roomId, currentUser }: ChatPanelProps) {
     limit: 20,
   });
 
-  const historyMessages = useMemo(
-    () => {
-      if (!messagesData?.pages) return [];
-      
-      // pages를 역순으로 하여 오래된 페이지가 먼저 오도록
-      return [...messagesData.pages].reverse().flatMap(page => page.data);
-    },
-    [messagesData?.pages]
-  );
+  const historyMessages = useMemo(() => {
+    if (!messagesData?.pages) return [];
+
+    // pages를 역순으로 하여 오래된 페이지가 먼저 오도록
+    return [...messagesData.pages].reverse().flatMap(page => page.data);
+  }, [messagesData?.pages]);
 
   // REST API로 메시지 전송 (자동 캐시 무효화)
   const sendMessageMutation = useSendMessage();
@@ -71,7 +69,11 @@ export default function ChatPanel({ roomId, currentUser }: ChatPanelProps) {
   );
 
   // WebSocket으로 실시간 메시지 수신 및 전송
-  const { isConnected, users, sendMessage: sendSocketMessage } = useChatSocket({
+  const {
+    isConnected,
+    users,
+    sendMessage: sendSocketMessage,
+  } = useChatSocket({
     roomId,
     user: {
       id: currentUser.id,
@@ -80,7 +82,7 @@ export default function ChatPanel({ roomId, currentUser }: ChatPanelProps) {
       isMentor: currentUser.isMentor || false,
     },
     enabled: true,
-    mode: 'general', 
+    mode: 'general',
     onNewMessage: handleNewMessage,
   });
 
@@ -92,7 +94,7 @@ export default function ChatPanel({ roomId, currentUser }: ChatPanelProps) {
       try {
         // TODO: 파일 업로드 로직 추가
         if (files && files.length > 0) {
-          console.log('Files to upload:', files);
+          ('Files to upload:', files);
           // 1. 파일을 먼저 업로드하고 URL 받기
           // const formData = new FormData();
           // files.forEach(file => formData.append('files', file));
@@ -135,16 +137,16 @@ export default function ChatPanel({ roomId, currentUser }: ChatPanelProps) {
   useEffect(() => {
     if (isAtBottom && messagesData && messagesData.pages.length > 2) {
       // 하단에 도달했고 3페이지 이상이면 캐시 초기화 (2페이지는 유지)
-      console.log('🔄 캐시 초기화 예약', { pagesCount: messagesData.pages.length });
+      ('🔄 캐시 초기화 예약', { pagesCount: messagesData.pages.length });
       const timer = setTimeout(() => {
         requestAnimationFrame(() => {
-          console.log('🔄 캐시 초기화 실행');
+          ('🔄 캐시 초기화 실행');
           resetToLatest(roomId);
         });
       }, 2000); // 2초 딜레이로 증가
 
       return () => {
-        console.log('🔄 캐시 초기화 취소');
+        ('🔄 캐시 초기화 취소');
         clearTimeout(timer);
       };
     }
@@ -225,7 +227,7 @@ export default function ChatPanel({ roomId, currentUser }: ChatPanelProps) {
         {!isAtBottom && (
           <button
             onClick={scrollToBottom}
-            className="absolute bottom-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--primary)] text-white shadow-lg transition-all hover:bg-[var(--primary-dark)] hover:shadow-xl"
+            className="absolute right-4 bottom-4 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--primary)] text-white shadow-lg transition-all hover:bg-[var(--primary-dark)] hover:shadow-xl"
             aria-label="최신 메시지로 이동"
           >
             <FiArrowDown className="h-5 w-5" />

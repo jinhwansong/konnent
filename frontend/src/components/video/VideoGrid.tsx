@@ -7,15 +7,9 @@ import { FiVideo, FiVideoOff, FiMic, FiMicOff } from 'react-icons/fi';
 import { useWebRTC } from '@/hooks/useWebRTC';
 import { useWebRTCSocket } from '@/hooks/useWebRTCSocket';
 
-
-import AudioDebugger from './AudioDebugger';
-import MicrophoneSelector from './MicrophoneSelector';
-import MicrophoneTest from './MicrophoneTest';
 import ScreenShareControls from './ScreenShareControls';
 import ScreenShareIndicator from './ScreenShareIndicator';
 import VideoTile from './VideoTile';
-
-
 
 interface User {
   id: string;
@@ -30,10 +24,10 @@ interface VideoGridProps {
   isConnected: boolean;
 }
 
-export default function VideoGrid({ 
-  roomId, 
-  currentUser, 
-  isConnected: _isConnected 
+export default function VideoGrid({
+  roomId,
+  currentUser,
+  isConnected: _isConnected,
 }: VideoGridProps) {
   const { data: session } = useSession();
   const { socket, users, notifyStreamReady } = useWebRTCSocket({
@@ -46,19 +40,19 @@ export default function VideoGrid({
     },
     enabled: !!session?.user,
   });
-  const { 
-    localStream, 
+  const {
+    localStream,
     remoteStreams,
     remoteTrackStates,
-    isLoading, 
-    error, 
+    isLoading,
+    error,
     isScreenSharing,
     localVideoRef,
-    initializeLocalStream, 
-    toggleVideo, 
-    toggleAudio, 
+    initializeLocalStream,
+    toggleVideo,
+    toggleAudio,
     startScreenShare,
-    stopScreenShare 
+    stopScreenShare,
   } = useWebRTC({
     roomId,
     userId: session?.user?.id || '',
@@ -67,18 +61,22 @@ export default function VideoGrid({
 
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
-  const [remoteScreenSharing, setRemoteScreenSharing] = useState<{userId: string, userName: string} | null>(null);
-  const [testMode, setTestMode] = useState(false); // 테스트 모드: 자신의 목소리 들리게
-  
+  const [remoteScreenSharing, setRemoteScreenSharing] = useState<{
+    userId: string;
+    userName: string;
+  } | null>(null);
+
   // Socket 기반 원격 사용자 트랙 상태
-  const [remoteTrackStatesSocket, setRemoteTrackStatesSocket] = useState<Map<string, { isAudioEnabled: boolean; isVideoEnabled: boolean }>>(new Map());
+  const [remoteTrackStatesSocket, setRemoteTrackStatesSocket] = useState<
+    Map<string, { isAudioEnabled: boolean; isVideoEnabled: boolean }>
+  >(new Map());
 
   useEffect(() => {
     if (socket && session?.user) {
       initializeLocalStream().then(() => {
         // 스트림 준비 완료 알림
         notifyStreamReady();
-        
+
         // 초기 트랙 상태 전송
         socket.emit('track_state_changed', {
           roomId,
@@ -90,27 +88,14 @@ export default function VideoGrid({
     }
   }, [socket, session, initializeLocalStream, notifyStreamReady, roomId]);
 
-  // 마이크 디바이스 변경 핸들러
-  const handleMicrophoneChange = async (deviceId: string) => {
-    console.log('🎤 Changing microphone to:', deviceId);
-    
-    // 기존 스트림 정지
-    if (localStream) {
-      localStream.getTracks().forEach(track => track.stop());
-    }
-    
-    // 새 스트림 초기화
-    await initializeLocalStream(deviceId);
-    
-    // 스트림 준비 완료 알림
-    notifyStreamReady();
-  };
-
   // Socket 이벤트 리스너
   useEffect(() => {
     if (!socket) return;
 
-    const handleScreenShareStarted = (data: { userId: string; userName: string }) => {
+    const handleScreenShareStarted = (data: {
+      userId: string;
+      userName: string;
+    }) => {
       if (data.userId !== session?.user?.id) {
         setRemoteScreenSharing(data);
       }
@@ -122,12 +107,12 @@ export default function VideoGrid({
       }
     };
 
-    const handleTrackStateChanged = (data: { 
-      userId: string; 
-      isVideoEnabled: boolean; 
-      isAudioEnabled: boolean; 
+    const handleTrackStateChanged = (data: {
+      userId: string;
+      isVideoEnabled: boolean;
+      isAudioEnabled: boolean;
     }) => {
-      console.log('📻 Received track state change:', data);
+      ('📻 Received track state change:', data);
       if (data.userId !== session?.user?.id) {
         setRemoteTrackStatesSocket(prev => {
           const newMap = new Map(prev);
@@ -155,7 +140,7 @@ export default function VideoGrid({
     toggleVideo();
     const newState = !isVideoEnabled;
     setIsVideoEnabled(newState);
-    
+
     // Socket으로 비디오 상태 전송
     socket?.emit('track_state_changed', {
       roomId,
@@ -169,7 +154,7 @@ export default function VideoGrid({
     toggleAudio();
     const newState = !isAudioEnabled;
     setIsAudioEnabled(newState);
-    
+
     // Socket으로 오디오 상태 전송
     socket?.emit('track_state_changed', {
       roomId,
@@ -195,15 +180,16 @@ export default function VideoGrid({
     const socketState = remoteTrackStatesSocket.get(userId);
     const trackState = remoteTrackStates.get(userId);
     const finalState = socketState || trackState;
-    
-    console.log('🎯 VideoGrid - Connected user state:', {
-      userId,
-      userName: user?.name || '상대방',
-      socketState,
-      trackState,
-      finalState,
-    });
-    
+
+    ('🎯 VideoGrid - Connected user state:',
+      {
+        userId,
+        userName: user?.name || '상대방',
+        socketState,
+        trackState,
+        finalState,
+      });
+
     return {
       id: userId,
       name: user?.name || '상대방',
@@ -215,10 +201,12 @@ export default function VideoGrid({
   });
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex h-full items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-[var(--primary-sub02)] border-t-[var(--primary)] rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-[var(--text-sub)]">화상 연결을 준비하고 있습니다...</p>
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-[var(--primary-sub02)] border-t-[var(--primary)]" />
+          <p className="text-[var(--text-sub)]">
+            화상 연결을 준비하고 있습니다...
+          </p>
         </div>
       </div>
     );
@@ -226,100 +214,171 @@ export default function VideoGrid({
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex h-full items-center justify-center">
         <div className="text-center">
-          <p className="text-[var(--color-danger)] mb-2">연결 오류</p>
-          <p className="text-[var(--text-sub)] text-sm">{error}</p>
+          <p className="mb-2 text-[var(--color-danger)]">연결 오류</p>
+          <p className="text-sm text-[var(--text-sub)]">{error}</p>
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="h-full p-4">
-      {/* 비디오 그리드 */}
-      <div className="grid h-full grid-cols-2 gap-4">
-        {/* 현재 사용자  */}
-        <VideoTile
-          stream={localStream}
-          user={currentUser}
-          isLocal={!testMode} // 테스트 모드에서는 자신의 목소리 들림
-          isVideoEnabled={isVideoEnabled}
-          isAudioEnabled={isAudioEnabled}
-          videoRef={localVideoRef as React.RefObject<HTMLVideoElement>}
-          isScreenSharing={isScreenSharing}
-        />
+  // 화면공유 중인 사용자 확인
+  const screenSharingUser = isScreenSharing
+    ? currentUser
+    : remoteScreenSharing
+      ? connectedUsers.find(u => u.id === remoteScreenSharing.userId)
+      : null;
 
-        {/* 연결된 모든 사용자 (상대방) */}
-        {connectedUsers.length > 0 ? (
-          connectedUsers.map((user) => (
+  const screenSharingStream = isScreenSharing
+    ? localStream
+    : remoteScreenSharing
+      ? remoteStreams.get(remoteScreenSharing.userId)
+      : null;
+
+  return (
+    <div className="relative h-full p-4">
+      {/* 화면공유가 있을 때의 레이아웃 */}
+      {screenSharingUser ? (
+        <div className="relative h-full">
+          {/* 메인 화면공유 영역 */}
+          <div className="h-full w-full overflow-hidden rounded-xl bg-black">
             <VideoTile
-              key={user.id}
-              stream={remoteStreams.get(user.id) || null}
-              user={user}
-              isLocal={false}
-              isVideoEnabled={user.isVideoEnabled}
-              isAudioEnabled={user.isAudioEnabled}
-              isScreenSharing={remoteScreenSharing?.userId === user.id}
+              stream={screenSharingStream}
+              user={screenSharingUser}
+              isLocal={isScreenSharing}
+              isVideoEnabled={true}
+              isAudioEnabled={screenSharingUser.isAudioEnabled}
+              videoRef={
+                isScreenSharing
+                  ? (localVideoRef as React.RefObject<HTMLVideoElement>)
+                  : undefined
+              }
+              isScreenSharing={true}
+              isMainScreen={true}
             />
-          ))
-        ) : (
-          <div className="flex items-center justify-center bg-[var(--card-bg)] rounded-xl">
-            <div className="text-center">
-              <div className="w-16 h-16 border-4 border-[var(--primary-sub02)] border-t-[var(--primary)] rounded-full animate-spin mx-auto mb-4" />
-              <p className="text-[var(--text)] font-semibold mb-2">상대방을 기다리는 중...</p>
-              <p className="text-[var(--text-sub)] text-sm">상대방이 입장하면 화상 연결이 시작됩니다</p>
-              <p className="text-[var(--text-sub)] text-xs mt-2">
-                WebRTC 사용자: {users.length}명 대기 중
-              </p>
-            </div>
           </div>
-        )}
-      </div>
+
+          {/* 우측 하단 작은 비디오들 */}
+          <div className="absolute right-4 bottom-4 flex max-w-xs flex-col gap-2">
+            {/* 현재 사용자 (화면공유 중이 아닌 경우) */}
+            {!isScreenSharing && (
+              <div className="h-36 w-48">
+                <VideoTile
+                  stream={localStream}
+                  user={currentUser}
+                  isLocal={true}
+                  isVideoEnabled={isVideoEnabled}
+                  isAudioEnabled={isAudioEnabled}
+                  videoRef={localVideoRef as React.RefObject<HTMLVideoElement>}
+                  isScreenSharing={false}
+                  isSmall={true}
+                />
+              </div>
+            )}
+
+            {/* 다른 사용자들 */}
+            {connectedUsers
+              .filter(user => user.id !== remoteScreenSharing?.userId)
+              .map(user => (
+                <div key={user.id} className="h-36 w-48">
+                  <VideoTile
+                    stream={remoteStreams.get(user.id) || null}
+                    user={user}
+                    isLocal={false}
+                    isVideoEnabled={user.isVideoEnabled}
+                    isAudioEnabled={user.isAudioEnabled}
+                    isScreenSharing={false}
+                    isSmall={true}
+                  />
+                </div>
+              ))}
+          </div>
+        </div>
+      ) : (
+        /* 일반 그리드 레이아웃 (화면공유 없을 때) */
+        <div className="grid h-full grid-cols-2 gap-4">
+          {/* 현재 사용자  */}
+          <VideoTile
+            stream={localStream}
+            user={currentUser}
+            isLocal={true}
+            isVideoEnabled={isVideoEnabled}
+            isAudioEnabled={isAudioEnabled}
+            videoRef={localVideoRef as React.RefObject<HTMLVideoElement>}
+            isScreenSharing={false}
+          />
+
+          {/* 연결된 모든 사용자 (상대방) */}
+          {connectedUsers.length > 0 ? (
+            connectedUsers.map(user => (
+              <VideoTile
+                key={user.id}
+                stream={remoteStreams.get(user.id) || null}
+                user={user}
+                isLocal={false}
+                isVideoEnabled={user.isVideoEnabled}
+                isAudioEnabled={user.isAudioEnabled}
+                isScreenSharing={false}
+              />
+            ))
+          ) : (
+            <div className="flex aspect-video items-center justify-center rounded-xl bg-[var(--card-bg-sub)]">
+              <div className="text-center">
+                <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-[var(--primary-sub02)] border-t-[var(--primary)]" />
+                <p className="mb-2 font-semibold text-[var(--text)]">
+                  상대방을 기다리는 중...
+                </p>
+                <p className="text-sm text-[var(--text-sub)]">
+                  상대방이 입장하면 화상 연결이 시작됩니다
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* 컨트롤 버튼들 */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 transform">
         <div className="flex items-center gap-3 rounded-full border border-[var(--border-color)] bg-[var(--card-bg)]/90 px-4 py-2 shadow-lg backdrop-blur-sm">
           {/* 비디오 토글 */}
-           <button
-             onClick={handleToggleVideo}
-             className={`rounded-full p-2 transition-all ${
-               isVideoEnabled
-                 ? 'bg-[var(--card-bg-sub)] text-[var(--text)] hover:bg-[var(--hover-bg)]'
-                 : 'bg-[var(--color-danger)] text-white hover:bg-red-600'
-             }`}
-           >
-             {isVideoEnabled ? (
-               <FiVideo className="h-4 w-4" />
-             ) : (
-               <FiVideoOff className="h-4 w-4" />
-             )}
-           </button>
+          <button
+            onClick={handleToggleVideo}
+            className={`rounded-full p-2 transition-all ${
+              isVideoEnabled
+                ? 'bg-[var(--card-bg-sub)] text-[var(--text)] hover:bg-[var(--hover-bg)]'
+                : 'bg-[var(--color-danger)] text-white hover:bg-red-600'
+            }`}
+          >
+            {isVideoEnabled ? (
+              <FiVideo className="h-4 w-4" />
+            ) : (
+              <FiVideoOff className="h-4 w-4" />
+            )}
+          </button>
 
-           {/* 오디오 토글 */}
-           <button
-             onClick={handleToggleAudio}
-             className={`rounded-full p-2 transition-all ${
-               isAudioEnabled
-                 ? 'bg-[var(--card-bg-sub)] text-[var(--text)] hover:bg-[var(--hover-bg)]'
-                 : 'bg-[var(--color-danger)] text-white hover:bg-red-600'
-             }`}
-           >
-             {isAudioEnabled ? (
-               <FiMic className="h-4 w-4" />
-             ) : (
-               <FiMicOff className="h-4 w-4" />
-             )}
-           </button>
+          {/* 오디오 토글 */}
+          <button
+            onClick={handleToggleAudio}
+            className={`rounded-full p-2 transition-all ${
+              isAudioEnabled
+                ? 'bg-[var(--card-bg-sub)] text-[var(--text)] hover:bg-[var(--hover-bg)]'
+                : 'bg-[var(--color-danger)] text-white hover:bg-red-600'
+            }`}
+          >
+            {isAudioEnabled ? (
+              <FiMic className="h-4 w-4" />
+            ) : (
+              <FiMicOff className="h-4 w-4" />
+            )}
+          </button>
 
-           {/* 화면 공유 컨트롤 */}
-           <ScreenShareControls
-             isSharing={isScreenSharing}
-             onStartShare={handleScreenShare}
-             onStopShare={handleStopScreenShare}
-           />
-
-         
+          {/* 화면 공유 컨트롤 */}
+          <ScreenShareControls
+            isSharing={isScreenSharing}
+            onStartShare={handleScreenShare}
+            onStopShare={handleStopScreenShare}
+          />
         </div>
       </div>
 
@@ -330,39 +389,6 @@ export default function VideoGrid({
           onStopShare={() => setRemoteScreenSharing(null)}
           userName={remoteScreenSharing.userName}
         />
-      )}
-
-      {/* 마이크 테스트 (항상 표시) */}
-      <MicrophoneTest stream={localStream} />
-      
-      {/* 마이크 선택기 (항상 표시) */}
-      <MicrophoneSelector onDeviceChange={handleMicrophoneChange} />
-
-      {/* 오디오 디버거 (개발 중에만 표시) */}
-      {process.env.NODE_ENV === 'development' && (
-        <>
-          <AudioDebugger stream={localStream} label="Local Stream" index={0} />
-          {Array.from(remoteStreams.entries()).map(([userId, stream], idx) => (
-            <AudioDebugger 
-              key={userId} 
-              stream={stream} 
-              label={`Remote: ${users.find(u => u.id === userId)?.name || userId}`} 
-              index={idx + 1}
-            />
-          ))}
-          
-          {/* 테스트 모드 토글 버튼 */}
-          <button
-            onClick={() => setTestMode(!testMode)}
-            className={`fixed bottom-4 right-4 px-4 py-2 rounded-lg text-sm font-semibold transition-all z-50 ${
-              testMode 
-                ? 'bg-red-500 text-white hover:bg-red-600' 
-                : 'bg-gray-700 text-white hover:bg-gray-600'
-            }`}
-          >
-            {testMode ? '🔊 테스트 모드 ON (자신 목소리 들림)' : '🔇 테스트 모드 OFF'}
-          </button>
-        </>
       )}
     </div>
   );

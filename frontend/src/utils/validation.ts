@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { MAX_FILE_SIZE, FILE_TYPES } from './constants';
+import { MAX_FILE_SIZE, FILE_TYPES } from '../contact/constants';
 
 // 공통 정규식
 export const REGEX_PATTERNS = {

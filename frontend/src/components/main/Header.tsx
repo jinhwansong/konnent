@@ -1,31 +1,38 @@
+'use client';
+
+
 import LogoLink from './LogoLink';
 import MainNav from './MainNav';
 import NotificationMenu from './NotificationMenu';
 import UserMenu from './UserMenu';
 
 export default function Header() {
-  return (
-    <header className="border-b border-[var(--border-color)]">
-      <div className="mx-auto flex w-full items-center justify-between px-5 py-3 md:px-8 lg:w-[1200px] lg:px-0">
-        <div className="flex items-center gap-6 lg:gap-16">
-          <LogoLink />
-          <MainNav />
-        </div>
 
-        <div className="flex items-center lg:gap-2">
-          <ul className="hidden items-center lg:flex">
+  return (
+    <>
+      <header className="z-50 border-b border-[var(--border-color)]  ">
+        <div className="mx-auto flex w-full items-center justify-between px-4 py-3 max-w-7xl">
+          <div className="flex items-center gap-10">
+            {/* 로고 */}
+            <div className="flex items-center">
+              <LogoLink />
+            </div>
+
+            {/* 데스크톱 네비게이션 */}
+            <div className="flex items-center space-x-8">
+              <MainNav />
+            </div>
+
+            {/* 데스크톱 액션 버튼들 */}
+          </div>
+          <div className="flex items-center space-x-4">
             <NotificationMenu />
-            <Divider />
             <UserMenu />
-          </ul>
+          </div>
         </div>
-      </div>
-    </header>
-  );
-}
+      </header>
 
-function Divider() {
-  return (
-    <div className="flex h-3.5 w-px flex-shrink-0 bg-[var(--border-color)]" />
+
+    </>
   );
 }

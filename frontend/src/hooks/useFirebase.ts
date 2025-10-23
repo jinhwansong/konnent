@@ -24,7 +24,7 @@ const firebaseConfig = {
 // 앱 중복 초기화 방지
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
-export function useFcmToken(userId?: string) {
+export function useFirebase(userId?: string) {
   const { data: session } = useSession();
   const [token, setToken] = useState<string | null>(null);
   const [messaging, setMessaging] = useState<Messaging | null>(null);

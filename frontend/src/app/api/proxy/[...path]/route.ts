@@ -22,6 +22,7 @@ async function proxy(req: NextRequest): Promise<Response> {
     req,
     secret: process.env.NEXTAUTH_SECRET,
     raw: true,
+    cookieName: '__Secure-authjs.session-token',
   });
   const path = req.nextUrl.pathname.replace(/^\/api\/proxy/, '');
   const url = `${backendUrl}${path}${req.nextUrl.search}`;
@@ -43,10 +44,18 @@ async function proxy(req: NextRequest): Promise<Response> {
       : {}),
   });
 
-  const responseBody = await res.arrayBuffer();
+  // const responseBody = await res.arrayBuffer();
 
-  return new Response(responseBody, {
-    status: res.status,
-    headers: res.headers,
-  });
+  // return new Response(responseBody, {
+  //   status: res.status,
+  //   headers: res.headers,
+  // });
+ const responseHeaders = new Headers(res.headers);
+ responseHeaders.delete('content-encoding');
+ responseHeaders.delete('content-length'); 
+
+ return new Response(res.body, {
+   status: res.status,
+   headers: responseHeaders,
+ });
 }

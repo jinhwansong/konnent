@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BiBell, BiX } from 'react-icons/bi';
 import { FiSearch } from 'react-icons/fi';
 
@@ -19,6 +19,7 @@ import { formatToKoreanDate } from '@/utils/formatDate';
 
 export default function NotificationMenu() {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const popupRef = useRef<HTMLLIElement | null>(null);
   useClickOutside(popupRef, () => setOpen(false));
 
@@ -34,6 +35,10 @@ export default function NotificationMenu() {
 
   const notifications = getNotification ?? [];
   const readCount = getUnreadCount?.count ?? 0;
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   // handlers
   const handleRead = (id: string, isRead: boolean) => {
     if (!isRead) {
@@ -53,32 +58,32 @@ export default function NotificationMenu() {
     deleteAllNotifications();
   };
   return (
-    <li className="relative mx-2 flex gap-2" ref={popupRef}>
+    <li className="relative flex items-center gap-1 " ref={popupRef}>
       {/* 검색 버튼 */}
       <button
         type="button"
-        className="flex h-6 w-6 items-center justify-center text-lg text-[var(--text-sub)] hover:text-[var(--primary)]"
+        className="inline-flex items-center justify-center p-2 rounded-lg text-[var(--text-sub)] hover:text-[var(--text)] hover:bg-[var(--hover-bg)]  transition-colors duration-200"
       >
-        <FiSearch />
+        <FiSearch className="h-5 w-5" />
       </button>
 
       {/* 알림 버튼 */}
       <button
         type="button"
-        className="relative flex h-6 w-6 items-center justify-center text-lg text-[var(--text-sub)] hover:text-[var(--primary)]"
+        className="relative inline-flex items-center justify-center p-2 rounded-lg text-[var(--text-sub)] hover:text-[var(--text)] hover:bg-[var(--hover-bg)]  transition-colors duration-200"
         onClick={() => setOpen(prev => !prev)}
       >
-        <BiBell />
-        {readCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--color-danger)] text-[10px] font-bold text-white">
-            {readCount}
+        <BiBell className="h-5 w-5" />
+        {mounted && readCount > 0 && (
+          <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold text-white bg-[var(--color-danger)] rounded-full min-w-[18px] h-[18px]">
+            {readCount > 9 ? '9+' : readCount}
           </span>
         )}
       </button>
 
       {/* 알림 드롭다운 */}
-      {open && (
-        <div className="absolute top-12 right-0 z-50 w-[360px] rounded-2xl border border-[var(--border-color)] bg-[var(--card-bg)]">
+      {mounted && open && (
+        <div className="absolute top-12 right-0 z-50 w-[360px] rounded-xl border border-[var(--border-color)] bg-[var(--card-bg)] shadow-xl">
           {session ? (
             notifications.length > 0 ? (
               <>
@@ -93,7 +98,7 @@ export default function NotificationMenu() {
                         handleReadAll();
                         setOpen(false);
                       }}
-                      className="hover:text-[var(--primary)]"
+                      className="hover:text-[var(--primary)] transition-colors duration-200"
                     >
                       모두 읽음
                     </button>
@@ -103,7 +108,7 @@ export default function NotificationMenu() {
                         handleRemoveAll();
                         setOpen(false);
                       }}
-                      className="hover:text-[var(--primary)]"
+                      className="hover:text-[var(--primary)] transition-colors duration-200"
                     >
                       모두 삭제
                     </button>
@@ -118,7 +123,7 @@ export default function NotificationMenu() {
                       className={`flex cursor-pointer items-start gap-3 px-4 py-3 transition-colors ${
                         noti.isRead
                           ? 'bg-[var(--card-bg)] hover:bg-[var(--hover-bg)]'
-                          : 'bg-[var(--hover-bg)] hover:bg-[var(--primary-sub02)]'
+                          : 'bg-[var(--primary-sub02)] hover:bg-[var(--primary-sub01)]/20'
                       }`}
                       onClick={() => {
                         handleRead(noti.id, noti.isRead);
@@ -136,14 +141,14 @@ export default function NotificationMenu() {
 
                       <button
                         type="button"
-                        className="ml-2 text-[var(--text-sub)] hover:text-[var(--text)]"
+                        className="ml-2 text-[var(--text-sub)] hover:text-[var(--text)] transition-colors duration-200"
                         onClick={e => {
                           e.stopPropagation();
                           handleRemove(noti.id);
                           setOpen(false);
                         }}
                       >
-                        <BiX />
+                        <BiX className="h-4 w-4" />
                       </button>
                     </li>
                   ))}
@@ -164,7 +169,7 @@ export default function NotificationMenu() {
               <Link
                 href="/login"
                 onClick={() => setOpen(false)}
-                className="text-base font-semibold text-[var(--primary)]"
+                className="text-base font-semibold text-[var(--primary)] hover:text-[var(--primary-sub01)] transition-colors duration-200"
               >
                 로그인 하기
               </Link>

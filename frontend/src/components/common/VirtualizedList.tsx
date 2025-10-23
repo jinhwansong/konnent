@@ -1,6 +1,11 @@
 'use client';
 
-import React, { useEffect, useRef, useImperativeHandle, type ReactNode } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useImperativeHandle,
+  type ReactNode,
+} from 'react';
 import { Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 
 interface BaseVirtualizedListProps<T> {
@@ -60,7 +65,10 @@ function ChatList<T>({
   loadingPrevious = false,
   virtuosoRef: externalRef,
   onAtBottomStateChange,
-}: Omit<ChatListProps<T>, 'mode' | 'loading' | 'error' | 'emptyText' | 'height'>) {
+}: Omit<
+  ChatListProps<T>,
+  'mode' | 'loading' | 'error' | 'emptyText' | 'height'
+>) {
   const virtuosoRef = useRef<VirtuosoHandle>(null);
   const scrollerRef = useRef<HTMLElement | null>(null);
   const isLoadingPreviousRef = useRef(false);
@@ -96,17 +104,16 @@ function ChatList<T>({
 
     // 디바운싱: 마지막 로드로부터 1초 이내면 무시
     if (now - lastLoadTimeRef.current < 1000) {
-      // console.log('⏱️ 디바운싱: 1초 이내');
+      // ('⏱️ 디바운싱: 1초 이내');
       return;
     }
 
     // loadingPrevious는 React Query의 isFetchingNextPage와 연동됨
     // 이미 로딩 중이거나 플래그가 설정되어 있으면 무시
     if (!hasPrevious || loadingPrevious || isLoadingPreviousRef.current) {
-      // console.log('🚫 조건 불충족');
+      // ('🚫 조건 불충족');
       return;
     }
-
 
     // 즉시 플래그 설정 및 시간 기록
     isLoadingPreviousRef.current = true;
@@ -118,10 +125,10 @@ function ChatList<T>({
       isLoadingPreviousRef.current = false;
       return;
     }
-    
+
     const beforeScrollHeight = scrollEl.scrollHeight;
     const beforeScrollTop = scrollEl.scrollTop;
-    
+
     // 기존 타임아웃 취소
     if (scrollRestorationTimeoutRef.current) {
       clearTimeout(scrollRestorationTimeoutRef.current);
@@ -135,7 +142,6 @@ function ChatList<T>({
         }
       })
       .then(() => {
-        
         // 3. scrollHeight 차이 기반 스크롤 위치 복원 (즉시 + 2단계 보정)
         // 첫 번째: 즉시 대략적인 복원 (튐 방지)
         const immediateAfterHeight = scrollEl.scrollHeight;
@@ -143,18 +149,18 @@ function ChatList<T>({
         if (immediateHeightDiff > 0) {
           scrollEl.scrollTop = beforeScrollTop + immediateHeightDiff;
         }
-        
+
         // 두 번째: RAF로 정확한 복원
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             const afterScrollHeight = scrollEl.scrollHeight;
             const heightDiff = afterScrollHeight - beforeScrollHeight;
-            
+
             if (heightDiff > 0) {
               // 추가된 높이만큼 스크롤 위치를 아래로 이동
               scrollEl.scrollTop = beforeScrollTop + heightDiff;
             }
-            
+
             // 스크롤 복원 완료 후 500ms 대기 (안정화 감소)
             scrollRestorationTimeoutRef.current = setTimeout(() => {
               isLoadingPreviousRef.current = false;
@@ -163,7 +169,7 @@ function ChatList<T>({
           });
         });
       })
-      .catch((_) => {
+      .catch(_ => {
         // 에러 발생 시에도 플래그 해제
         scrollRestorationTimeoutRef.current = setTimeout(() => {
           isLoadingPreviousRef.current = false;
@@ -176,7 +182,7 @@ function ChatList<T>({
   useEffect(() => {
     if (data.length > 0 && !hasInitializedRef.current) {
       hasInitializedRef.current = true;
-      
+
       // Virtuoso의 렌더링 완료 대기 후 스크롤
       setTimeout(() => {
         requestAnimationFrame(() => {
@@ -185,8 +191,8 @@ function ChatList<T>({
               const scrollEl = scrollerRef.current;
               if (scrollEl) {
                 // 스크롤을 맨 아래로 강제 이동
-                scrollEl.scrollTop = scrollEl.scrollHeight - scrollEl.clientHeight;
-                
+                scrollEl.scrollTop =
+                  scrollEl.scrollHeight - scrollEl.clientHeight;
               }
             });
           });
@@ -205,10 +211,17 @@ function ChatList<T>({
   }, []);
 
   return (
-    <div className={`flex-1 ${className}`} style={{ height: '100%', overflow: 'hidden', willChange: 'scroll-position' }}>
+    <div
+      className={`flex-1 ${className}`}
+      style={{
+        height: '100%',
+        overflow: 'hidden',
+        willChange: 'scroll-position',
+      }}
+    >
       <Virtuoso
         ref={virtuosoRef}
-        scrollerRef={(ref) => {
+        scrollerRef={ref => {
           if (ref instanceof HTMLElement) {
             scrollerRef.current = ref;
           }
@@ -223,23 +236,27 @@ function ChatList<T>({
         initialTopMostItemIndex={data.length - 1}
         alignToBottom
         // 스크롤 동작
-        followOutput={(isAtBottom) => (isAtBottom ? 'smooth' : false)}
+        followOutput={isAtBottom => (isAtBottom ? 'smooth' : false)}
         // 무한 스크롤 트리거 - rangeChanged로 변경
-        rangeChanged={(range) => {
+        rangeChanged={range => {
           // 초기화 완료 전에는 무시
           if (!hasInitializedRef.current) {
             return;
           }
-          
-          console.log('📍 rangeChanged', range);
+
           // 상단 아주 가까이 도달하면 이전 메시지 로드 (2개 이하)
-          if (range.startIndex <= 2 && hasPrevious && !loadingPrevious && !isLoadingPreviousRef.current) {
+          if (
+            range.startIndex <= 2 &&
+            hasPrevious &&
+            !loadingPrevious &&
+            !isLoadingPreviousRef.current
+          ) {
             handleStartReached();
           }
         }}
         atTopThreshold={200}
         atBottomThreshold={100}
-        atBottomStateChange={(atBottom) => {
+        atBottomStateChange={atBottom => {
           onAtBottomStateChange?.(atBottom);
         }}
         // 성능 최적화
@@ -258,7 +275,10 @@ function ChatList<T>({
         components={{
           Header: () =>
             loadingPrevious ? (
-              <div className="flex animate-pulse justify-center py-3" style={{ minHeight: '60px' }}>
+              <div
+                className="flex animate-pulse justify-center py-3"
+                style={{ minHeight: '60px' }}
+              >
                 <div className="flex items-center gap-2">
                   <div
                     className="h-2 w-2 animate-bounce rounded-full bg-[var(--primary)]"
@@ -275,7 +295,10 @@ function ChatList<T>({
                 </div>
               </div>
             ) : hasPrevious ? (
-              <div className="flex justify-center py-2 opacity-0 transition-opacity hover:opacity-50" style={{ minHeight: '40px' }}>
+              <div
+                className="flex justify-center py-2 opacity-0 transition-opacity hover:opacity-50"
+                style={{ minHeight: '40px' }}
+              >
                 <p className="text-xs text-[var(--text-sub)]">
                   위로 스크롤하여 이전 메시지 보기
                 </p>
@@ -300,7 +323,6 @@ export default function VirtualizedList<T>({
   ...rest
 }: VirtualizedListProps<T>) {
   const mode = 'mode' in rest ? rest.mode : 'chat';
-
 
   /** 공통 에러 처리 */
   if (error) {
@@ -358,7 +380,7 @@ export default function VirtualizedList<T>({
   // CHAT 모드 (TanStack Virtual 기반 채팅, 하단 고정)
   if (mode === 'chat') {
     const chatProps = rest as ChatListProps<T>;
-    
+
     return (
       <ChatList
         data={data}

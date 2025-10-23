@@ -10,6 +10,7 @@ import { login, logout, socialLogin } from './libs/user';
 
 const JWT_PRIVATE_KEY = process.env.JWT_PRIVATE_KEY!.replace(/\\n/g, '\n');
 const JWT_PUBLIC_KEY = process.env.JWT_PUBLIC_KEY!.replace(/\\n/g, '\n');
+
 export const {
   handlers,
   signIn,
@@ -53,6 +54,7 @@ export const {
       clientId: process.env.KAKAO_CLIENT_ID!,
       clientSecret: process.env.KAKAO_CLIENT_SECRET!,
     }),
+
     NaverProvider({
       clientId: process.env.NAVER_CLIENT_ID!,
       clientSecret: process.env.NAVER_CLIENT_SECRET!,
@@ -98,7 +100,7 @@ export const {
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
-
+  trustHost: true,
   pages: {
     signIn: '/login',
     error: '/auth/error',
@@ -158,19 +160,19 @@ export const {
           image: token.image as string | null,
           socials: token.socials ?? [],
         };
-          session.accessToken = sign(
-            {
-              sub: token.id,
-              email: token.email,
-              role: token.role,
-              name: token.name,
-            },
-            JWT_PRIVATE_KEY,
-            {
-              algorithm: 'RS256',
-              expiresIn: '1h',
-            }
-          );
+        session.accessToken = sign(
+          {
+            sub: token.id,
+            email: token.email,
+            role: token.role,
+            name: token.name,
+          },
+          JWT_PRIVATE_KEY,
+          {
+            algorithm: 'RS256',
+            expiresIn: '1h',
+          }
+        );
       }
       return session;
     },

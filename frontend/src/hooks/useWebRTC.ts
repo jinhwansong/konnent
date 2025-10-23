@@ -27,9 +27,17 @@ interface WebRTCSignalPayload {
 }
 
 // 화면 공유 제약 조건 타입 (DOM lib 일부 환경 호환)
-type DisplaySurfaceType = 'browser' | 'window' | 'application' | 'monitor' | 'screen' | 'tab';
+type DisplaySurfaceType =
+  | 'browser'
+  | 'window'
+  | 'application'
+  | 'monitor'
+  | 'screen'
+  | 'tab';
 type DisplayMediaConstraints = {
-  video: boolean | (MediaTrackConstraints & { displaySurface?: DisplaySurfaceType });
+  video:
+    | boolean
+    | (MediaTrackConstraints & { displaySurface?: DisplaySurfaceType });
   audio?: boolean | MediaTrackConstraints;
 };
 
@@ -43,9 +51,9 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
   const [remoteStreams, setRemoteStreams] = useState<Map<string, MediaStream>>(
     new Map()
   );
-  const [remoteTrackStates, setRemoteTrackStates] = useState<Map<string, RemoteTrackState>>(
-    new Map()
-  );
+  const [remoteTrackStates, setRemoteTrackStates] = useState<
+    Map<string, RemoteTrackState>
+  >(new Map());
   const [isConnected, setIsConnected] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -63,19 +71,24 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
     try {
       setIsLoading(true);
       setError(null);
-      
-      console.log('🎥 Initializing local stream...', audioDeviceId ? `with device: ${audioDeviceId}` : 'default device');
-      
-      const audioConstraints = audioDeviceId ? {
-        deviceId: { exact: audioDeviceId },
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
-      } : {
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
-      };
+
+      console.log(
+        '🎥 Initializing local stream...',
+        audioDeviceId ? `with device: ${audioDeviceId}` : 'default device'
+      );
+
+      const audioConstraints = audioDeviceId
+        ? {
+            deviceId: { exact: audioDeviceId },
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+          }
+        : {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+          };
 
       let stream: MediaStream | null = null;
 
@@ -91,7 +104,7 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
         console.log('✅ Video + Audio stream initialized');
       } catch (videoError) {
         console.warn('⚠️ Video failed, trying audio only:', videoError);
-        
+
         // 비디오 실패 시 오디오만 시도
         try {
           stream = await navigator.mediaDevices.getUserMedia({
@@ -110,13 +123,16 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
           video: stream.getVideoTracks().length,
           audio: stream.getAudioTracks().length,
         });
-        
-        console.log('Audio tracks:', stream.getAudioTracks().map(t => ({
-          id: t.id,
-          label: t.label,
-          enabled: t.enabled,
-          settings: t.getSettings(),
-        })));
+
+        console.log(
+          'Audio tracks:',
+          stream.getAudioTracks().map(t => ({
+            id: t.id,
+            label: t.label,
+            enabled: t.enabled,
+            settings: t.getSettings(),
+          }))
+        );
 
         setLocalStream(stream);
 
@@ -126,30 +142,46 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
 
         // 기존 peer들에게 새 트랙 전달 (마이크 변경 시)
         if (peersRef.current.size > 0) {
-          console.log(`🔄 Updating tracks for ${peersRef.current.size} existing peers`);
+          console.log(
+            `🔄 Updating tracks for ${peersRef.current.size} existing peers`
+          );
           peersRef.current.forEach((peer, targetUserId) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const peerConnection = (peer as any)._pc;
-            
+
             if (peerConnection) {
               const videoTrack = stream.getVideoTracks()[0];
               const audioTrack = stream.getAudioTracks()[0];
-              
+
               if (videoTrack) {
-                const videoSender = peerConnection.getSenders().find((s: RTCRtpSender) => s.track?.kind === 'video');
+                const videoSender = peerConnection
+                  .getSenders()
+                  .find((s: RTCRtpSender) => s.track?.kind === 'video');
                 if (videoSender) {
-                  videoSender.replaceTrack(videoTrack)
-                    .then(() => console.log(`✅ Video track replaced for ${targetUserId}`))
-                    .catch((err: Error) => console.error(`❌ Failed to replace video track:`, err));
+                  videoSender
+                    .replaceTrack(videoTrack)
+                    .then(() =>
+                      console.log(`✅ Video track replaced for ${targetUserId}`)
+                    )
+                    .catch((err: Error) =>
+                      console.error(`❌ Failed to replace video track:`, err)
+                    );
                 }
               }
-              
+
               if (audioTrack) {
-                const audioSender = peerConnection.getSenders().find((s: RTCRtpSender) => s.track?.kind === 'audio');
+                const audioSender = peerConnection
+                  .getSenders()
+                  .find((s: RTCRtpSender) => s.track?.kind === 'audio');
                 if (audioSender) {
-                  audioSender.replaceTrack(audioTrack)
-                    .then(() => console.log(`✅ Audio track replaced for ${targetUserId}`))
-                    .catch((err: Error) => console.error(`❌ Failed to replace audio track:`, err));
+                  audioSender
+                    .replaceTrack(audioTrack)
+                    .then(() =>
+                      console.log(`✅ Audio track replaced for ${targetUserId}`)
+                    )
+                    .catch((err: Error) =>
+                      console.error(`❌ Failed to replace audio track:`, err)
+                    );
                 }
               }
             }
@@ -169,8 +201,10 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
   // Peer 연결 생성
   const createPeer = useCallback(
     (targetUserId: string, isInitiator: boolean): PeerInstance => {
-      console.log(`🔗 Creating peer for ${targetUserId}, initiator: ${isInitiator}`);
-      
+      console.log(
+        `🔗 Creating peer for ${targetUserId}, initiator: ${isInitiator}`
+      );
+
       const peer = new SimplePeer({
         initiator: isInitiator,
         trickle: true, // true로 변경하여 ICE candidate를 즉시 전송
@@ -178,19 +212,40 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
         config: {
           iceServers: [
             { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' },
+            {
+              urls: ['turn:openrelay.metered.ca:80'],
+              username: 'openrelayproject',
+              credential: 'openrelayproject',
+            },
           ],
+          iceCandidatePoolSize: 10, // ICE candidate 풀 크기 증가
+        },
+        // 연결 안정성을 위한 추가 설정
+        objectMode: false,
+        channelConfig: {
+          ordered: false, // 순서 보장 비활성화로 성능 향상
+          maxRetransmits: 0, // 재전송 비활성화
         },
       });
-
+      peer.on('iceStateChange', state => {
+        console.log('ICE state:', state);
+      });
       peer.on('signal', (signal: SignalData) => {
         console.log(`📡 Sending signal to ${targetUserId}:`, signal.type);
+        if ('candidate' in signal && signal.candidate)
+          console.log('ICE candidate:', signal.candidate);
+
         const payload: WebRTCSignalPayload = {
           roomId,
           userId,
           targetUserId,
           signal,
-          type: signal.type === 'offer' ? 'offer' : signal.type === 'answer' ? 'answer' : 'ice_candidate',
+          type:
+            signal.type === 'offer'
+              ? 'offer'
+              : signal.type === 'answer'
+                ? 'answer'
+                : 'ice_candidate',
         };
         socket?.emit('webrtc_signal', payload);
       });
@@ -199,20 +254,25 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
         console.log(`📹 Received stream from ${targetUserId}`);
         const audioTrack = stream.getAudioTracks()[0];
         const videoTrack = stream.getVideoTracks()[0];
-        
+
         console.log(`Stream tracks:`, {
           video: stream.getVideoTracks().length,
           audio: stream.getAudioTracks().length,
           audioEnabled: audioTrack?.enabled,
           videoEnabled: videoTrack?.enabled,
         });
-        
+
         // 초기 트랙 상태 저장
-        setRemoteTrackStates(prev => new Map(prev.set(targetUserId, {
-          isAudioEnabled: audioTrack?.enabled ?? false,
-          isVideoEnabled: videoTrack?.enabled ?? false,
-        })));
-        
+        setRemoteTrackStates(
+          prev =>
+            new Map(
+              prev.set(targetUserId, {
+                isAudioEnabled: audioTrack?.enabled ?? false,
+                isVideoEnabled: videoTrack?.enabled ?? false,
+              })
+            )
+        );
+
         // 트랙 상태 변경 리스너 추가
         stream.getTracks().forEach(track => {
           track.onended = () => {
@@ -225,7 +285,7 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
             console.log(`🔊 Track unmuted for ${targetUserId}:`, track.kind);
           };
         });
-        
+
         setRemoteStreams(prev => new Map(prev.set(targetUserId, stream)));
       });
 
@@ -300,7 +360,7 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
     (userData: WebRTCUser) => {
       console.log(`👤 User joined:`, userData);
       if (userData.id === userId) return;
-      
+
       // 이미 연결 시도 중이면 무시
       if (peersRef.current.has(userData.id)) {
         console.log(`⚠️ Already have peer for ${userData.id}`);
@@ -311,8 +371,10 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
       if (localStream) {
         // userId 비교로 initiator 결정 (문자열 비교로 일관성 보장)
         const shouldInitiate = userId < userData.id;
-        console.log(`🔗 ${shouldInitiate ? 'Initiating' : 'Waiting for'} connection to ${userData.id} (my ID: ${userId})`);
-        
+        console.log(
+          `🔗 ${shouldInitiate ? 'Initiating' : 'Waiting for'} connection to ${userData.id} (my ID: ${userId})`
+        );
+
         if (shouldInitiate) {
           const peer = createPeer(userData.id, true);
           peersRef.current.set(userData.id, peer);
@@ -337,7 +399,7 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
       newMap.delete(leftUserId);
       return newMap;
     });
-    
+
     setRemoteTrackStates(prev => {
       const newMap = new Map(prev);
       newMap.delete(leftUserId);
@@ -352,7 +414,7 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
         setRemoteTrackStates(prev => {
           const newMap = new Map(prev);
           let hasChanges = false;
-          
+
           remoteStreams.forEach((stream, userId) => {
             const audioTrack = stream.getAudioTracks()[0];
             const videoTrack = stream.getVideoTracks()[0];
@@ -361,17 +423,19 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
               isAudioEnabled: audioTrack?.enabled ?? false,
               isVideoEnabled: videoTrack?.enabled ?? false,
             };
-            
+
             // 상태가 변경된 경우에만 업데이트
-            if (!currentState || 
-                currentState.isAudioEnabled !== newState.isAudioEnabled ||
-                currentState.isVideoEnabled !== newState.isVideoEnabled) {
+            if (
+              !currentState ||
+              currentState.isAudioEnabled !== newState.isAudioEnabled ||
+              currentState.isVideoEnabled !== newState.isVideoEnabled
+            ) {
               newMap.set(userId, newState);
               hasChanges = true;
               console.log(`🔄 Track state changed for ${userId}:`, newState);
             }
           });
-          
+
           return hasChanges ? newMap : prev;
         });
       }
@@ -385,20 +449,30 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
     if (!socket) return;
 
     // stream_ready 이벤트 핸들러 (백엔드에서 userId로 보냄 → id로 변환)
-    const handleStreamReady = (data: { userId: string; userName: string; socketId: string }) => {
+    const handleStreamReady = (data: {
+      userId: string;
+      userName: string;
+      socketId: string;
+    }) => {
       console.log('📹 Stream ready event:', data);
       handleUserJoined({
-        id: data.userId,  // ✅ userId → id 변환
+        id: data.userId, // ✅ userId → id 변환
         name: data.userName,
         isMentor: false,
       });
     };
 
     // user_joined 이벤트 핸들러 (백엔드에서 userId로 보냄 → id로 변환)
-    const handleUserJoinedEvent = (data: { userId: string; userName: string; userImage?: string; isMentor?: boolean; socketId: string }) => {
+    const handleUserJoinedEvent = (data: {
+      userId: string;
+      userName: string;
+      userImage?: string;
+      isMentor?: boolean;
+      socketId: string;
+    }) => {
       console.log('👤 User joined event:', data);
       handleUserJoined({
-        id: data.userId,  // ✅ userId → id 변환
+        id: data.userId, // ✅ userId → id 변환
         name: data.userName,
         image: data.userImage,
         isMentor: data.isMentor ?? false,
@@ -443,15 +517,16 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
     if (audioTrack) audioTrack.enabled = !audioTrack.enabled;
   }, [localStream]);
 
-  
   // 화면 공유 중지
   const stopScreenShare = useCallback(async () => {
-    console.log('🛑 Stopping screen share...');
     try {
       if (!originalStream) {
         console.warn('⚠️ No original stream to restore');
         return;
       }
+
+      // 화면공유 상태를 먼저 false로 설정
+      setIsScreenSharing(false);
 
       // 현재 화면 공유 스트림 정지
       if (localStream) {
@@ -465,48 +540,136 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
       // 원래 스트림으로 복원
       console.log('🔄 Restoring original camera stream');
       setLocalStream(originalStream);
-      setIsScreenSharing(false);
 
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = originalStream;
       }
 
-      // 모든 Peer에 원래 스트림으로 복원
-      console.log(`🔄 Replacing tracks for ${peersRef.current.size} peers`);
-      peersRef.current.forEach((peer, userId) => {
+      // 모든 Peer에 원래 스트림으로 복원 (안정적인 방식)
+      const restoreTracksForPeer = async (peer: any, userId: string) => {
         const videoTrack = originalStream.getVideoTracks()[0];
         const audioTrack = originalStream.getAudioTracks()[0];
-        
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const peerConnection = (peer as any)._pc;
-        
-        if (peerConnection) {
-          console.log(`🔄 Replacing tracks for peer: ${userId}`);
-          
-          if (videoTrack) {
-            const videoSender = peerConnection.getSenders().find((s: RTCRtpSender) => s.track?.kind === 'video');
-            if (videoSender) {
-              videoSender.replaceTrack(videoTrack)
-                .then(() => console.log(`✅ Video track replaced for ${userId}`))
-                .catch((err: Error) => console.error(`❌ Failed to replace video track:`, err));
-            }
-          }
-          
-          if (audioTrack) {
-            const audioSender = peerConnection.getSenders().find((s: RTCRtpSender) => s.track?.kind === 'audio');
-            if (audioSender) {
-              audioSender.replaceTrack(audioTrack)
-                .then(() => console.log(`✅ Audio track replaced for ${userId}`))
-                .catch((err: Error) => console.error(`❌ Failed to replace audio track:`, err));
-            }
+
+        if (!peerConnection) {
+          console.warn(`⚠️ No peer connection for ${userId}`);
+          return;
+        }
+
+        // 연결 상태 확인 (더 엄격한 검사)
+        if (
+          peerConnection.connectionState === 'closed' ||
+          peerConnection.connectionState === 'failed' ||
+          peerConnection.connectionState === 'disconnected'
+        ) {
+          console.warn(
+            `⚠️ Peer connection is ${peerConnection.connectionState} for ${userId}, skipping track restoration`
+          );
+          return;
+        }
+
+        // 연결이 아직 설정 중인 경우 잠시 대기
+        if (peerConnection.connectionState === 'connecting') {
+          console.log(
+            `⏳ Peer connection is connecting for ${userId}, waiting...`
+          );
+          await new Promise(resolve => setTimeout(resolve, 200));
+
+          // 다시 확인
+          if (peerConnection.connectionState !== 'connected') {
+            console.warn(
+              `⚠️ Peer connection still not connected for ${userId}, skipping`
+            );
+            return;
           }
         }
-      });
+
+        console.log(`🔄 Restoring tracks for peer: ${userId}`);
+
+        try {
+          if (videoTrack) {
+            const videoSender = peerConnection
+              .getSenders()
+              .find((s: RTCRtpSender) => s.track?.kind === 'video');
+            if (videoSender) {
+              await videoSender.replaceTrack(videoTrack);
+              console.log(`✅ Video track restored for ${userId}`);
+            }
+          }
+
+          if (audioTrack) {
+            const audioSender = peerConnection
+              .getSenders()
+              .find((s: RTCRtpSender) => s.track?.kind === 'audio');
+            if (audioSender) {
+              await audioSender.replaceTrack(audioTrack);
+              console.log(`✅ Audio track restored for ${userId}`);
+            }
+          }
+
+          console.log(
+            `📊 Connection state after track restoration: ${peerConnection.connectionState}`
+          );
+        } catch (error) {
+          console.error(`❌ Failed to restore tracks for ${userId}:`, error);
+        }
+      };
+
+      // 각 peer에 대해 순차적으로 트랙 복원
+      const restoreTracksSequentially = async () => {
+        for (const [userId, peer] of peersRef.current.entries()) {
+          await restoreTracksForPeer(peer, userId);
+          // 각 peer 사이에 약간의 지연
+          await new Promise(resolve => setTimeout(resolve, 50));
+        }
+      };
+
+       // 트랙 복원 실행 (에러가 발생해도 계속 진행)
+       try {
+         await restoreTracksSequentially();
+         
+         // 화면공유 중지 후 재협상 트리거
+         for (const [targetUserId, peer] of peersRef.current.entries()) {
+           try {
+             console.log(`📡 Triggering renegotiation after restore with ${targetUserId}`);
+             
+             // SimplePeer의 renegotiate 메서드 사용
+             if (typeof (peer as any).renegotiate === 'function') {
+               (peer as any).renegotiate();
+               console.log(`✅ Restore renegotiation triggered for ${targetUserId}`);
+             } else {
+               // fallback: 직접 offer 생성
+               const pc: RTCPeerConnection | undefined = (peer as any)?._pc;
+               if (pc && pc.connectionState === 'connected') {
+                 const offer = await pc.createOffer();
+                 await pc.setLocalDescription(offer);
+                 
+                 const payload: WebRTCSignalPayload = {
+                   roomId,
+                   userId,
+                   targetUserId,
+                   signal: offer as unknown as SignalData,
+                   type: 'offer',
+                 };
+                 
+                 socket?.emit('webrtc_signal', payload);
+                 console.log(`✅ Fallback restore renegotiation sent for ${targetUserId}`);
+               }
+             }
+           } catch (err) {
+             console.error(`❌ Restore renegotiation failed for ${targetUserId}:`, err);
+           }
+         }
+       } catch (error) {
+         console.error('❌ Error during track restoration:', error);
+       }
 
       // 소켓으로 화면 공유 중지 상태 전송
       socket?.emit('screen_share_stopped', { roomId, userId });
       console.log('✅ Screen share stopped successfully');
-      
+
       setOriginalStream(null);
     } catch (err) {
       console.error('❌ Error stopping screen share:', err);
@@ -534,8 +697,15 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
           audio: true,
         };
 
-        const screenStream =
-          await navigator.mediaDevices.getDisplayMedia(constraints as MediaStreamConstraints);
+        const screenStream = await navigator.mediaDevices.getDisplayMedia(
+          constraints as MediaStreamConstraints
+        );
+
+        console.log('📺 Screen share stream created:', {
+          videoTracks: screenStream.getVideoTracks().length,
+          audioTracks: screenStream.getAudioTracks().length,
+          videoTrack: screenStream.getVideoTracks()[0]?.getSettings(),
+        });
 
         setLocalStream(screenStream);
         setIsScreenSharing(true);
@@ -544,20 +714,138 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
           localVideoRef.current.srcObject = screenStream;
         }
 
-        // 모든 Peer에 새 스트림 전송
-        peersRef.current.forEach(peer => {
+        // 모든 Peer에 새 스트림 전송 (더 안정적인 방식)
+        const replaceTracksForPeer = async (
+          peer: any,
+          targetUserId: string
+        ) => {
           const videoTrack = screenStream.getVideoTracks()[0];
-          
+          const audioTrack = screenStream.getAudioTracks()[0];
+
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const peerConnection = (peer as any)._pc;
-          
-          if (videoTrack && peerConnection) {
-            const sender = peerConnection.getSenders().find((s: RTCRtpSender) => s.track?.kind === 'video');
-            if (sender) {
-              sender.replaceTrack(videoTrack);
-            }
+
+          if (!peerConnection) {
+            console.warn(`⚠️ No peer connection for ${targetUserId}`);
+            return;
           }
-        });
+
+           // 연결 상태 확인 (더 엄격한 검사)
+           if (
+             peerConnection.connectionState === 'closed' ||
+             peerConnection.connectionState === 'failed' ||
+             peerConnection.connectionState === 'disconnected'
+           ) {
+             console.warn(
+               `⚠️ Peer connection is ${peerConnection.connectionState} for ${targetUserId}, skipping track replacement`
+             );
+             return;
+           }
+
+           // 연결이 아직 설정 중인 경우 잠시 대기
+           if (peerConnection.connectionState === 'connecting') {
+             console.log(
+               `⏳ Peer connection is connecting for ${targetUserId}, waiting...`
+             );
+             await new Promise(resolve => setTimeout(resolve, 300));
+
+             // 다시 확인
+             if (peerConnection.connectionState === 'connecting' || peerConnection.connectionState === 'disconnected') {
+               console.warn(
+                 `⚠️ Peer connection still not ready for ${targetUserId}, skipping`
+               );
+               return;
+             }
+           }
+
+          console.log(
+            `🔄 Replacing tracks for screen share to ${targetUserId}`
+          );
+
+          try {
+            // 비디오 트랙 교체
+            if (videoTrack) {
+              const videoSender = peerConnection
+                .getSenders()
+                .find((s: RTCRtpSender) => s.track?.kind === 'video');
+              if (videoSender) {
+                await videoSender.replaceTrack(videoTrack);
+                console.log(
+                  `✅ Video track replaced for screen share to ${targetUserId}`
+                );
+              } else {
+                console.warn(`⚠️ No video sender found for ${targetUserId}`);
+              }
+            }
+
+            // 오디오 트랙 교체 (화면공유에 오디오가 포함된 경우)
+            if (audioTrack) {
+              const audioSender = peerConnection
+                .getSenders()
+                .find((s: RTCRtpSender) => s.track?.kind === 'audio');
+              if (audioSender) {
+                await audioSender.replaceTrack(audioTrack);
+                console.log(
+                  `✅ Audio track replaced for screen share to ${targetUserId}`
+                );
+              }
+            }
+
+            console.log(
+              `📊 Connection state after track replacement: ${peerConnection.connectionState}`
+            );
+          } catch (error) {
+            console.error(
+              `❌ Failed to replace tracks for ${targetUserId}:`,
+              error
+            );
+          }
+        };
+
+        // 각 peer에 대해 순차적으로 트랙 교체
+        const replaceTracksSequentially = async () => {
+          for (const [targetUserId, peer] of peersRef.current.entries()) {
+            await replaceTracksForPeer(peer, targetUserId);
+            // 각 peer 사이에 약간의 지연
+            await new Promise(resolve => setTimeout(resolve, 50));
+          }
+        };
+
+         // 트랙 교체 실행
+         await replaceTracksSequentially();
+
+         // 화면공유 후 재협상 트리거 (더 안전한 방식)
+         for (const [targetUserId, peer] of peersRef.current.entries()) {
+           try {
+             console.log(`📡 Triggering renegotiation with ${targetUserId}`);
+             
+             // SimplePeer의 renegotiate 메서드 사용
+             if (typeof (peer as any).renegotiate === 'function') {
+               (peer as any).renegotiate();
+               console.log(`✅ Renegotiation triggered for ${targetUserId}`);
+             } else {
+               // fallback: 직접 offer 생성
+               const pc: RTCPeerConnection | undefined = (peer as any)?._pc;
+               if (pc && pc.connectionState === 'connected') {
+                 const offer = await pc.createOffer();
+                 await pc.setLocalDescription(offer);
+                 
+                 const payload: WebRTCSignalPayload = {
+                   roomId,
+                   userId,
+                   targetUserId,
+                   signal: offer as unknown as SignalData,
+                   type: 'offer',
+                 };
+                 
+                 socket?.emit('webrtc_signal', payload);
+                 console.log(`✅ Fallback renegotiation sent for ${targetUserId}`);
+               }
+             }
+           } catch (err) {
+             console.error(`❌ Renegotiation failed for ${targetUserId}:`, err);
+           }
+         }
 
         // 화면 공유 종료 이벤트 처리 (사용자가 브라우저에서 직접 중지)
         screenStream.getVideoTracks()[0].onended = () => {
@@ -569,7 +857,7 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
       } catch (err) {
         console.error('Error starting screen share:', err);
         setError('화면 공유를 시작할 수 없습니다.');
-        
+
         // 화면 공유 취소 시 원래 스트림 복원
         if (isScreenSharing && originalStream) {
           setLocalStream(originalStream);
@@ -580,7 +868,15 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
         setIsLoading(false);
       }
     },
-    [localStream, isScreenSharing, roomId, userId, socket, stopScreenShare, originalStream]
+    [
+      localStream,
+      isScreenSharing,
+      roomId,
+      userId,
+      socket,
+      stopScreenShare,
+      originalStream,
+    ]
   );
 
   return {

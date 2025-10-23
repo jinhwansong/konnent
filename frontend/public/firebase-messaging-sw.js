@@ -17,15 +17,26 @@ firebase.initializeApp({
   appId: '1:788221283642:web:beece8f32e7f18e4e65403',
 });
 
+// Initialize messaging (compat)
+const messaging = firebase.messaging();
+
 // 백그라운드 메시지 처리
 messaging.onBackgroundMessage(payload => {
-  console.log('📩 background message:', payload);
+  try {
+    // Some payloads may not include notification
+    const title = payload?.notification?.title || 'Konnect 알림';
+    const body = payload?.notification?.body || '';
+    const data = payload?.data || {};
 
-  self.registration.showNotification(payload.notification.title, {
-    body: payload.notification.body,
-    icon: '/icon.png',
-    data: payload.data,
-  });
+    self.registration.showNotification(title, {
+      body,
+      icon: '/icon.png',
+      data,
+    });
+  } catch (err) {
+    // Avoid crashing the SW on malformed payloads
+    console.error('FCM onBackgroundMessage error:', err);
+  }
 });
 
 // 알림 클릭 처리

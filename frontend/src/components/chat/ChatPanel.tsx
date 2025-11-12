@@ -94,7 +94,6 @@ export default function ChatPanel({ roomId, currentUser }: ChatPanelProps) {
       try {
         // TODO: 파일 업로드 로직 추가
         if (files && files.length > 0) {
-          ('Files to upload:', files);
           // 1. 파일을 먼저 업로드하고 URL 받기
           // const formData = new FormData();
           // files.forEach(file => formData.append('files', file));
@@ -137,16 +136,13 @@ export default function ChatPanel({ roomId, currentUser }: ChatPanelProps) {
   useEffect(() => {
     if (isAtBottom && messagesData && messagesData.pages.length > 2) {
       // 하단에 도달했고 3페이지 이상이면 캐시 초기화 (2페이지는 유지)
-      ('🔄 캐시 초기화 예약', { pagesCount: messagesData.pages.length });
       const timer = setTimeout(() => {
         requestAnimationFrame(() => {
-          ('🔄 캐시 초기화 실행');
           resetToLatest(roomId);
         });
       }, 2000); // 2초 딜레이로 증가
 
       return () => {
-        ('🔄 캐시 초기화 취소');
         clearTimeout(timer);
       };
     }

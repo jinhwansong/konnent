@@ -8,7 +8,7 @@ import {
   usePostComment,
 } from '@/hooks/query/useArticle';
 import { useToastStore } from '@/stores/useToast';
-import { PatchComment, CommentItem } from '@/types/article';
+import { PatchComment } from '@/types/article';
 
 import VirtualizedList from '../common/VirtualizedList';
 
@@ -104,15 +104,16 @@ export default function CommentSection({ articleId }: CommentSectionProps) {
       </h3>
       <CommentForm onSubmit={handleCreateComment} />
       <div className="my-10 h-px bg-[var(--border-color)]" />
-      <VirtualizedList<CommentItem>
-        list={comments}
+      <VirtualizedList
+        data={comments}
         emptyText="아직 댓글이 없습니다."
-        window={true}
+        useWindowScroll={true}
+        mode="feed"
         loadMore={fetchNextPage}
         hasMore={hasNextPage}
         loading={isFetchingNextPage}
         error={isError ? '댓글을 불러오지 못했습니다.' : undefined}
-        item={item => (
+        renderItem={item => (
           <CommentItems
             data={item}
             isMine={session?.user.nickname}

@@ -38,16 +38,6 @@ export default function VideoTile({
   const videoRef = externalVideoRef || internalVideoRef;
   const [_isSpeaking, _setIsSpeaking] = useState(false);
 
-  // 디버깅: props 확인
-  ('🎬 VideoTile rendered:',
-    {
-      userName: user.name,
-      isLocal,
-      isAudioEnabled,
-      isVideoEnabled,
-      hasStream: !!stream,
-    });
-
   useEffect(() => {
     const videoElement = videoRef.current;
     if (videoElement && stream) {
@@ -63,7 +53,7 @@ export default function VideoTile({
         if (playPromise !== undefined) {
           playPromise
             .then(() => {
-              ('✅ Remote video playing with audio');
+              console.log('✅ Remote video playing with audio');
             })
             .catch(err => {
               console.warn('⚠️ Remote video autoplay failed:', err);

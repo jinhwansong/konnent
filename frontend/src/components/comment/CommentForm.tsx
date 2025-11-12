@@ -70,12 +70,12 @@ export default function CommentForm({ onSubmit }: CommentProps) {
             type="button"
             onClick={() => reset()}
             disabled={!session || isSubmitting || content.length === 0}
-            size="smWide"
+            size="md"
             variant="danger"
           >
             취소
           </Button>
-          <Button type="submit" disabled={!session || !isValid} size="smWide">
+          <Button type="submit" disabled={!session || !isValid} size="md">
             댓글남기기
           </Button>
         </div>

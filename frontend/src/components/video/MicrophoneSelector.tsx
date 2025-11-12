@@ -24,7 +24,6 @@ export default function MicrophoneSelector({
           device => device.kind === 'audioinput'
         );
 
-        ('🎤 Available microphones:', audioInputs);
         setDevices(audioInputs);
 
         if (audioInputs.length > 0 && !selectedDevice) {
@@ -45,7 +44,6 @@ export default function MicrophoneSelector({
   }, [selectedDevice]);
 
   const handleChange = (deviceId: string) => {
-    ('🎤 Switching to microphone:', deviceId);
     setSelectedDevice(deviceId);
     onDeviceChange(deviceId);
   };

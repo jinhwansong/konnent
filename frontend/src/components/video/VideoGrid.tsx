@@ -112,7 +112,7 @@ export default function VideoGrid({
       isVideoEnabled: boolean;
       isAudioEnabled: boolean;
     }) => {
-      ('📻 Received track state change:', data);
+      console.debug('📻 Received track state change:', data);
       if (data.userId !== session?.user?.id) {
         setRemoteTrackStatesSocket(prev => {
           const newMap = new Map(prev);
@@ -180,15 +180,13 @@ export default function VideoGrid({
     const socketState = remoteTrackStatesSocket.get(userId);
     const trackState = remoteTrackStates.get(userId);
     const finalState = socketState || trackState;
-
-    ('🎯 VideoGrid - Connected user state:',
-      {
-        userId,
-        userName: user?.name || '상대방',
-        socketState,
-        trackState,
-        finalState,
-      });
+    console.debug('🎯 VideoGrid - Connected user state:', {
+      userId,
+      userName: user?.name || '상대방',
+      socketState,
+      trackState,
+      finalState,
+    });
 
     return {
       id: userId,
@@ -233,8 +231,15 @@ export default function VideoGrid({
   const screenSharingStream = isScreenSharing
     ? localStream
     : remoteScreenSharing
-      ? remoteStreams.get(remoteScreenSharing.userId)
+      ? remoteStreams.get(remoteScreenSharing.userId) ?? null
       : null;
+  const screenSharingAudioEnabled = isScreenSharing
+    ? isAudioEnabled
+    : (screenSharingUser &&
+        'isAudioEnabled' in screenSharingUser &&
+        typeof screenSharingUser.isAudioEnabled === 'boolean'
+        ? screenSharingUser.isAudioEnabled
+        : true);
 
   return (
     <div className="relative h-full p-4">
@@ -248,7 +253,7 @@ export default function VideoGrid({
               user={screenSharingUser}
               isLocal={isScreenSharing}
               isVideoEnabled={true}
-              isAudioEnabled={screenSharingUser.isAudioEnabled}
+              isAudioEnabled={screenSharingAudioEnabled}
               videoRef={
                 isScreenSharing
                   ? (localVideoRef as React.RefObject<HTMLVideoElement>)

@@ -17,8 +17,6 @@ import Button from '../common/Button';
 import Modal from '../common/Modal';
 import Select from '../common/Select';
 
-
-
 interface ScheduleFormProps {
   onSubmit: (data: ScheduleRequest) => void;
   defaultValues?: ScheduleRequest;

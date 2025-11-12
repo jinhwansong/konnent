@@ -231,15 +231,15 @@ export default function VideoGrid({
   const screenSharingStream = isScreenSharing
     ? localStream
     : remoteScreenSharing
-      ? remoteStreams.get(remoteScreenSharing.userId) ?? null
+      ? (remoteStreams.get(remoteScreenSharing.userId) ?? null)
       : null;
   const screenSharingAudioEnabled = isScreenSharing
     ? isAudioEnabled
-    : (screenSharingUser &&
+    : screenSharingUser &&
         'isAudioEnabled' in screenSharingUser &&
         typeof screenSharingUser.isAudioEnabled === 'boolean'
-        ? screenSharingUser.isAudioEnabled
-        : true);
+      ? screenSharingUser.isAudioEnabled
+      : true;
 
   return (
     <div className="relative h-full p-4">

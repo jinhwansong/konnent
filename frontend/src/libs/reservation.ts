@@ -36,7 +36,9 @@ export const createReservation = (
   });
 };
 
-export const createPayment = (data: PaymentRequest): Promise<PaymentResponse> => {
+export const createPayment = (
+  data: PaymentRequest
+): Promise<PaymentResponse> => {
   return fetcher<PaymentResponse>('payment/confirm', {
     method: 'POST',
     body: JSON.stringify(data),

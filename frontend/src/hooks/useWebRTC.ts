@@ -626,45 +626,54 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
         }
       };
 
-       // 트랙 복원 실행 (에러가 발생해도 계속 진행)
-       try {
-         await restoreTracksSequentially();
-         
-         // 화면공유 중지 후 재협상 트리거
-         for (const [targetUserId, peer] of peersRef.current.entries()) {
-           try {
-             console.log(`📡 Triggering renegotiation after restore with ${targetUserId}`);
-             
-             // SimplePeer의 renegotiate 메서드 사용
-             if (typeof (peer as any).renegotiate === 'function') {
-               (peer as any).renegotiate();
-               console.log(`✅ Restore renegotiation triggered for ${targetUserId}`);
-             } else {
-               // fallback: 직접 offer 생성
-               const pc: RTCPeerConnection | undefined = (peer as any)?._pc;
-               if (pc && pc.connectionState === 'connected') {
-                 const offer = await pc.createOffer();
-                 await pc.setLocalDescription(offer);
-                 
-                 const payload: WebRTCSignalPayload = {
-                   roomId,
-                   userId,
-                   targetUserId,
-                   signal: offer as unknown as SignalData,
-                   type: 'offer',
-                 };
-                 
-                 socket?.emit('webrtc_signal', payload);
-                 console.log(`✅ Fallback restore renegotiation sent for ${targetUserId}`);
-               }
-             }
-           } catch (err) {
-             console.error(`❌ Restore renegotiation failed for ${targetUserId}:`, err);
-           }
-         }
-       } catch (error) {
-         console.error('❌ Error during track restoration:', error);
-       }
+      // 트랙 복원 실행 (에러가 발생해도 계속 진행)
+      try {
+        await restoreTracksSequentially();
+
+        // 화면공유 중지 후 재협상 트리거
+        for (const [targetUserId, peer] of peersRef.current.entries()) {
+          try {
+            console.log(
+              `📡 Triggering renegotiation after restore with ${targetUserId}`
+            );
+
+            // SimplePeer의 renegotiate 메서드 사용
+            if (typeof (peer as any).renegotiate === 'function') {
+              (peer as any).renegotiate();
+              console.log(
+                `✅ Restore renegotiation triggered for ${targetUserId}`
+              );
+            } else {
+              // fallback: 직접 offer 생성
+              const pc: RTCPeerConnection | undefined = (peer as any)?._pc;
+              if (pc && pc.connectionState === 'connected') {
+                const offer = await pc.createOffer();
+                await pc.setLocalDescription(offer);
+
+                const payload: WebRTCSignalPayload = {
+                  roomId,
+                  userId,
+                  targetUserId,
+                  signal: offer as unknown as SignalData,
+                  type: 'offer',
+                };
+
+                socket?.emit('webrtc_signal', payload);
+                console.log(
+                  `✅ Fallback restore renegotiation sent for ${targetUserId}`
+                );
+              }
+            }
+          } catch (err) {
+            console.error(
+              `❌ Restore renegotiation failed for ${targetUserId}:`,
+              err
+            );
+          }
+        }
+      } catch (error) {
+        console.error('❌ Error during track restoration:', error);
+      }
 
       // 소켓으로 화면 공유 중지 상태 전송
       socket?.emit('screen_share_stopped', { roomId, userId });
@@ -730,33 +739,36 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
             return;
           }
 
-           // 연결 상태 확인 (더 엄격한 검사)
-           if (
-             peerConnection.connectionState === 'closed' ||
-             peerConnection.connectionState === 'failed' ||
-             peerConnection.connectionState === 'disconnected'
-           ) {
-             console.warn(
-               `⚠️ Peer connection is ${peerConnection.connectionState} for ${targetUserId}, skipping track replacement`
-             );
-             return;
-           }
+          // 연결 상태 확인 (더 엄격한 검사)
+          if (
+            peerConnection.connectionState === 'closed' ||
+            peerConnection.connectionState === 'failed' ||
+            peerConnection.connectionState === 'disconnected'
+          ) {
+            console.warn(
+              `⚠️ Peer connection is ${peerConnection.connectionState} for ${targetUserId}, skipping track replacement`
+            );
+            return;
+          }
 
-           // 연결이 아직 설정 중인 경우 잠시 대기
-           if (peerConnection.connectionState === 'connecting') {
-             console.log(
-               `⏳ Peer connection is connecting for ${targetUserId}, waiting...`
-             );
-             await new Promise(resolve => setTimeout(resolve, 300));
+          // 연결이 아직 설정 중인 경우 잠시 대기
+          if (peerConnection.connectionState === 'connecting') {
+            console.log(
+              `⏳ Peer connection is connecting for ${targetUserId}, waiting...`
+            );
+            await new Promise(resolve => setTimeout(resolve, 300));
 
-             // 다시 확인
-             if (peerConnection.connectionState === 'connecting' || peerConnection.connectionState === 'disconnected') {
-               console.warn(
-                 `⚠️ Peer connection still not ready for ${targetUserId}, skipping`
-               );
-               return;
-             }
-           }
+            // 다시 확인
+            if (
+              peerConnection.connectionState === 'connecting' ||
+              peerConnection.connectionState === 'disconnected'
+            ) {
+              console.warn(
+                `⚠️ Peer connection still not ready for ${targetUserId}, skipping`
+              );
+              return;
+            }
+          }
 
           console.log(
             `🔄 Replacing tracks for screen share to ${targetUserId}`
@@ -811,41 +823,43 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
           }
         };
 
-         // 트랙 교체 실행
-         await replaceTracksSequentially();
+        // 트랙 교체 실행
+        await replaceTracksSequentially();
 
-         // 화면공유 후 재협상 트리거 (더 안전한 방식)
-         for (const [targetUserId, peer] of peersRef.current.entries()) {
-           try {
-             console.log(`📡 Triggering renegotiation with ${targetUserId}`);
-             
-             // SimplePeer의 renegotiate 메서드 사용
-             if (typeof (peer as any).renegotiate === 'function') {
-               (peer as any).renegotiate();
-               console.log(`✅ Renegotiation triggered for ${targetUserId}`);
-             } else {
-               // fallback: 직접 offer 생성
-               const pc: RTCPeerConnection | undefined = (peer as any)?._pc;
-               if (pc && pc.connectionState === 'connected') {
-                 const offer = await pc.createOffer();
-                 await pc.setLocalDescription(offer);
-                 
-                 const payload: WebRTCSignalPayload = {
-                   roomId,
-                   userId,
-                   targetUserId,
-                   signal: offer as unknown as SignalData,
-                   type: 'offer',
-                 };
-                 
-                 socket?.emit('webrtc_signal', payload);
-                 console.log(`✅ Fallback renegotiation sent for ${targetUserId}`);
-               }
-             }
-           } catch (err) {
-             console.error(`❌ Renegotiation failed for ${targetUserId}:`, err);
-           }
-         }
+        // 화면공유 후 재협상 트리거 (더 안전한 방식)
+        for (const [targetUserId, peer] of peersRef.current.entries()) {
+          try {
+            console.log(`📡 Triggering renegotiation with ${targetUserId}`);
+
+            // SimplePeer의 renegotiate 메서드 사용
+            if (typeof (peer as any).renegotiate === 'function') {
+              (peer as any).renegotiate();
+              console.log(`✅ Renegotiation triggered for ${targetUserId}`);
+            } else {
+              // fallback: 직접 offer 생성
+              const pc: RTCPeerConnection | undefined = (peer as any)?._pc;
+              if (pc && pc.connectionState === 'connected') {
+                const offer = await pc.createOffer();
+                await pc.setLocalDescription(offer);
+
+                const payload: WebRTCSignalPayload = {
+                  roomId,
+                  userId,
+                  targetUserId,
+                  signal: offer as unknown as SignalData,
+                  type: 'offer',
+                };
+
+                socket?.emit('webrtc_signal', payload);
+                console.log(
+                  `✅ Fallback renegotiation sent for ${targetUserId}`
+                );
+              }
+            }
+          } catch (err) {
+            console.error(`❌ Renegotiation failed for ${targetUserId}:`, err);
+          }
+        }
 
         // 화면 공유 종료 이벤트 처리 (사용자가 브라우저에서 직접 중지)
         screenStream.getVideoTracks()[0].onended = () => {

@@ -8,7 +8,6 @@ import { BiCaretDown } from 'react-icons/bi';
 
 import { FAQ_OPTIONS, REASON_OPTIONS } from '@/contact/mentor';
 
-
 export default function MentorPage() {
   const router = useRouter();
   const { data: sessions } = useSession();

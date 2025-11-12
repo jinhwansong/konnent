@@ -8,7 +8,11 @@ interface AudioDebuggerProps {
   index?: number;
 }
 
-export default function AudioDebugger({ stream, label, index = 0 }: AudioDebuggerProps) {
+export default function AudioDebugger({
+  stream,
+  label,
+  index = 0,
+}: AudioDebuggerProps) {
   const [audioInfo, setAudioInfo] = useState({
     hasAudio: false,
     trackCount: 0,
@@ -21,7 +25,7 @@ export default function AudioDebugger({ stream, label, index = 0 }: AudioDebugge
     if (stream) {
       const audioTracks = stream.getAudioTracks();
       const audioTrack = audioTracks[0];
-      
+
       setAudioInfo({
         hasAudio: audioTracks.length > 0,
         trackCount: audioTracks.length,
@@ -47,13 +51,13 @@ export default function AudioDebugger({ stream, label, index = 0 }: AudioDebugge
   const topOffset = 4 + index * 120; // 각 박스마다 120px 간격
 
   return (
-    <div 
-      className={`fixed left-4 ${bgColor} text-white text-xs p-2 rounded font-mono z-50 border-2 ${
+    <div
+      className={`fixed left-4 ${bgColor} z-50 rounded border-2 p-2 font-mono text-xs text-white ${
         label.includes('Remote') ? 'border-blue-500' : 'border-gray-600'
       }`}
       style={{ bottom: `${topOffset}px` }}
     >
-      <div className="font-bold mb-1">{label}</div>
+      <div className="mb-1 font-bold">{label}</div>
       <div>Stream: {stream ? '✅' : '❌'}</div>
       <div>Audio tracks: {audioInfo.trackCount}</div>
       <div>Enabled: {audioInfo.enabled ? '✅' : '❌'}</div>
@@ -62,4 +66,3 @@ export default function AudioDebugger({ stream, label, index = 0 }: AudioDebugge
     </div>
   );
 }
-

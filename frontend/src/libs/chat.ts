@@ -1,4 +1,12 @@
-import { ChatMessageListResponse, GetRoomMessagesParams, IssueWebRTCTokenParams, IssueWebRTCTokenResponse, JoinRoomResponse, SendMessageParams, SendMessageResponse } from '@/types/chat';
+import {
+  ChatMessageListResponse,
+  GetRoomMessagesParams,
+  IssueWebRTCTokenParams,
+  IssueWebRTCTokenResponse,
+  JoinRoomResponse,
+  SendMessageParams,
+  SendMessageResponse,
+} from '@/types/chat';
 import { fetcher } from '@/utils/fetcher';
 
 export const joinRoomRequest = (id: string) => {
@@ -6,9 +14,6 @@ export const joinRoomRequest = (id: string) => {
     method: 'POST',
   });
 };
-
-
-
 
 export const getRoomMessages = async ({
   roomId,
@@ -27,7 +32,6 @@ export const getRoomMessages = async ({
     }
   );
 };
-
 
 export const sendMessage = async ({
   roomId,

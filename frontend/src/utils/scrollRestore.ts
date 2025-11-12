@@ -7,7 +7,6 @@ export interface ScrollAnchor {
   scrollTop: number;
 }
 
-
 export function captureScrollAnchor(
   scrollContainer: HTMLElement | null
 ): ScrollAnchor | null {
@@ -73,4 +72,3 @@ export function restoreScrollByHeightDiff(
     }
   });
 }
-

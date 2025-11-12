@@ -50,12 +50,12 @@ async function proxy(req: NextRequest): Promise<Response> {
   //   status: res.status,
   //   headers: res.headers,
   // });
- const responseHeaders = new Headers(res.headers);
- responseHeaders.delete('content-encoding');
- responseHeaders.delete('content-length'); 
+  const responseHeaders = new Headers(res.headers);
+  responseHeaders.delete('content-encoding');
+  responseHeaders.delete('content-length');
 
- return new Response(res.body, {
-   status: res.status,
-   headers: responseHeaders,
- });
+  return new Response(res.body, {
+    status: res.status,
+    headers: responseHeaders,
+  });
 }

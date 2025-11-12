@@ -8,7 +8,6 @@ import Input from '@/components/common/Input';
 
 import FilePreview from './FilePreview';
 
-
 interface ChatInputProps {
   onSendMessage: (message: string, files?: File[]) => void;
 }
@@ -22,7 +21,7 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
 
   const handleSend = () => {
     if (!message.trim() && files.length === 0) return;
-    
+
     onSendMessage(message, files.length > 0 ? files : undefined);
     setMessage('');
     setFiles([]);
@@ -53,7 +52,7 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
   const handleDrop = (e: DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
-    
+
     const droppedFiles = Array.from(e.dataTransfer.files);
     setFiles(prev => [...prev, ...droppedFiles]);
   };
@@ -71,7 +70,7 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
   };
 
   return (
-    <div 
+    <div
       className={`p-4 transition-colors ${isDragOver ? 'bg-[var(--primary-sub02)]' : 'bg-[var(--card-bg)]'}`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
@@ -79,10 +78,7 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
     >
       {/* 파일 미리보기 */}
       {files.length > 0 && (
-        <FilePreview
-          files={files} 
-          onRemove={handleRemoveFile}
-        />
+        <FilePreview files={files} onRemove={handleRemoveFile} />
       )}
 
       {/* 입력 영역 */}
@@ -90,16 +86,16 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
         {/* 파일 첨부 버튼 */}
         <button
           onClick={() => fileInputRef.current?.click()}
-          className="flex-shrink-0 p-2 text-[var(--text-sub)] hover:text-[var(--text)] transition-colors"
+          className="flex-shrink-0 p-2 text-[var(--text-sub)] transition-colors hover:text-[var(--text)]"
         >
-          <FiPaperclip className="w-4 h-4" />
+          <FiPaperclip className="h-4 w-4" />
         </button>
 
         {/* 메시지 입력 */}
         <div className="flex-1">
           <Input
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={e => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
             onCompositionStart={handleCompositionStart}
             onCompositionEnd={handleCompositionEnd}
@@ -112,11 +108,11 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
         <Button
           onClick={handleSend}
           disabled={!message.trim() && files.length === 0}
-          className="flex-shrink-0 w-8 h-8 rounded-full p-0"
+          className="h-8 w-8 flex-shrink-0 rounded-full p-0"
           size="icon"
           variant={message.trim() || files.length > 0 ? 'primary' : 'secondary'}
         >
-          <FiSend className="w-4 h-4" />
+          <FiSend className="h-4 w-4" />
         </Button>
       </div>
 
@@ -132,10 +128,12 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
 
       {/* 드래그 앤 드롭 안내 */}
       {isDragOver && (
-        <div className="absolute inset-0 bg-[var(--primary-sub02)]/80 backdrop-blur-sm flex items-center justify-center rounded-lg border-2 border-dashed border-[var(--primary)]">
+        <div className="absolute inset-0 flex items-center justify-center rounded-lg border-2 border-dashed border-[var(--primary)] bg-[var(--primary-sub02)]/80 backdrop-blur-sm">
           <div className="text-center">
-            <FiImage className="w-8 h-8 text-[var(--primary)] mx-auto mb-2" />
-            <p className="text-sm text-[var(--primary)] font-medium">파일을 여기에 놓으세요</p>
+            <FiImage className="mx-auto mb-2 h-8 w-8 text-[var(--primary)]" />
+            <p className="text-sm font-medium text-[var(--primary)]">
+              파일을 여기에 놓으세요
+            </p>
           </div>
         </div>
       )}

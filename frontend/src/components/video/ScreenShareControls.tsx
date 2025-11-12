@@ -15,14 +15,14 @@ export default function ScreenShareControls({
   onStartShare,
   onStopShare,
   onToggleFullscreen,
-  isFullscreen = false
+  isFullscreen = false,
 }: ScreenShareControlsProps) {
   return (
     <div className="flex items-center gap-2">
       {/* 화면 공유 버튼 */}
       <button
         onClick={isSharing ? onStopShare : onStartShare}
-        className={`p-2 rounded-full transition-all ${
+        className={`rounded-full p-2 transition-all ${
           isSharing
             ? 'bg-[var(--color-danger)] text-white hover:bg-red-600'
             : 'bg-[var(--card-bg-sub)] text-[var(--text)] hover:bg-[var(--hover-bg)]'
@@ -30,9 +30,9 @@ export default function ScreenShareControls({
         title={isSharing ? '화면 공유 중지' : '화면 공유 시작'}
       >
         {isSharing ? (
-          <FiCameraOff className="w-4 h-4" />
+          <FiCameraOff className="h-4 w-4" />
         ) : (
-          <FiMonitor className="w-4 h-4" />
+          <FiMonitor className="h-4 w-4" />
         )}
       </button>
 
@@ -40,10 +40,10 @@ export default function ScreenShareControls({
       {isSharing && onToggleFullscreen && (
         <button
           onClick={onToggleFullscreen}
-          className="p-2 rounded-full bg-[var(--card-bg-sub)] text-[var(--text)] hover:bg-[var(--hover-bg)] transition-all"
+          className="rounded-full bg-[var(--card-bg-sub)] p-2 text-[var(--text)] transition-all hover:bg-[var(--hover-bg)]"
           title={isFullscreen ? '전체화면 종료' : '전체화면'}
         >
-          <FiMaximize2 className="w-4 h-4" />
+          <FiMaximize2 className="h-4 w-4" />
         </button>
       )}
     </div>

@@ -46,7 +46,7 @@ export default function ChatWindow({ roomId, currentUser }: ChatWindowProps) {
     // TODO: Socket.IO 연결 및 채팅 이벤트 리스너
     // TODO: 기존 메시지 로드
     setIsConnected(true);
-    
+
     // 임시 메시지 데이터
     setMessages([
       {
@@ -85,18 +85,18 @@ export default function ChatWindow({ roomId, currentUser }: ChatWindowProps) {
     };
 
     setMessages(prev => [...prev, newMessage]);
-    
+
     // TODO: Socket.IO로 메시지 전송
   };
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex h-full flex-col bg-white">
       {/* 채팅 헤더 */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-gray-50">
+      <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-4 py-3">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
             <svg
-              className="w-4 h-4 text-blue-600"
+              className="h-4 w-4 text-blue-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -121,7 +121,7 @@ export default function ChatWindow({ roomId, currentUser }: ChatWindowProps) {
           {/* 참여자 수 */}
           <div className="flex items-center gap-1 text-xs text-gray-500">
             <svg
-              className="w-3 h-3"
+              className="h-3 w-3"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -139,12 +139,12 @@ export default function ChatWindow({ roomId, currentUser }: ChatWindowProps) {
       </div>
 
       {/* 메시지 목록 */}
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 custom-scrollbar">
+      <div className="custom-scrollbar flex-1 space-y-3 overflow-y-auto px-4 py-3">
         {messages.length === 0 ? (
-          <div className="flex items-center justify-center h-full">
+          <div className="flex h-full items-center justify-center">
             <div className="text-center">
               <svg
-                className="w-12 h-12 text-gray-300 mx-auto mb-3"
+                className="mx-auto mb-3 h-12 w-12 text-gray-300"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -156,12 +156,12 @@ export default function ChatWindow({ roomId, currentUser }: ChatWindowProps) {
                   d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                 />
               </svg>
-              <p className="text-gray-500 text-sm">아직 메시지가 없습니다</p>
-              <p className="text-gray-400 text-xs">첫 메시지를 보내보세요!</p>
+              <p className="text-sm text-gray-500">아직 메시지가 없습니다</p>
+              <p className="text-xs text-gray-400">첫 메시지를 보내보세요!</p>
             </div>
           </div>
         ) : (
-          messages.map((message) => (
+          messages.map(message => (
             <ChatMessage
               key={message.id}
               message={message}

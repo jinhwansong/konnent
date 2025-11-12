@@ -17,17 +17,28 @@ interface PaginationProps {
 }
 
 const Pagination = React.forwardRef<HTMLDivElement, PaginationProps>(
-  ({ page, totalPages, onChange, className, showFirstLast = true, showPrevNext = true }, ref) => {
-  const group = Math.ceil(page / 10);
-  const start = (group - 1) * 10 + 1;
-  const end = Math.min(group * 10, totalPages);
-  const handlePage = (p: number) => {
-    if (p >= 1 && p <= totalPages) onChange(p);
-  };
-    const buttonClasses = "flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border-color)] hover:border-[var(--primary)] hover:text-[var(--primary)] focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60";
+  (
+    {
+      page,
+      totalPages,
+      onChange,
+      className,
+      showFirstLast = true,
+      showPrevNext = true,
+    },
+    ref
+  ) => {
+    const group = Math.ceil(page / 10);
+    const start = (group - 1) * 10 + 1;
+    const end = Math.min(group * 10, totalPages);
+    const handlePage = (p: number) => {
+      if (p >= 1 && p <= totalPages) onChange(p);
+    };
+    const buttonClasses =
+      'flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border-color)] hover:border-[var(--primary)] hover:text-[var(--primary)] focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60';
 
     return (
-      <nav 
+      <nav
         ref={ref}
         className={`mt-5 flex w-full items-center justify-center gap-1.5 ${className || ''}`}
         role="navigation"

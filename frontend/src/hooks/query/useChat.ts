@@ -6,13 +6,12 @@ import {
 } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
+import { getRoomMessages, sendMessage, issueWebRTCToken } from '@/libs/chat';
 import {
-  getRoomMessages,
-  sendMessage,
-  issueWebRTCToken,
-} from '@/libs/chat';
-import { ChatMessage, ChatMessageListResponse, GetRoomMessagesParams } from '@/types/chat';
-
+  ChatMessage,
+  ChatMessageListResponse,
+  GetRoomMessagesParams,
+} from '@/types/chat';
 
 export function useChatMessages(params: Omit<GetRoomMessagesParams, 'cursor'>) {
   return useInfiniteQuery({
@@ -28,7 +27,7 @@ export function useChatMessages(params: Omit<GetRoomMessagesParams, 'cursor'>) {
       return result;
     },
     initialPageParam: undefined as string | undefined,
-    getNextPageParam: (lastPage) => {
+    getNextPageParam: lastPage => {
       return lastPage.hasMore ? lastPage.nextCursor : undefined;
     },
     staleTime: 1000 * 60 * 5,
@@ -38,7 +37,7 @@ export function useChatMessages(params: Omit<GetRoomMessagesParams, 'cursor'>) {
     refetchInterval: false,
     networkMode: 'always',
     retry: 1,
-    placeholderData: (previousData) => previousData,
+    placeholderData: previousData => previousData,
   });
 }
 
@@ -49,7 +48,7 @@ export function useAddRealtimeMessage() {
     (roomId: string, message: ChatMessage) => {
       queryClient.setQueryData<InfiniteData<ChatMessageListResponse>>(
         ['chatMessages', roomId],
-        (oldData) => {
+        oldData => {
           if (!oldData || !oldData.pages.length) return oldData;
 
           const pages = [...oldData.pages];
@@ -57,8 +56,8 @@ export function useAddRealtimeMessage() {
 
           if (!firstPage) return oldData;
 
-          const isDuplicate = pages.some((page) =>
-            page.data.some((msg) => msg.id === message.id)
+          const isDuplicate = pages.some(page =>
+            page.data.some(msg => msg.id === message.id)
           );
           if (isDuplicate) return oldData;
 
@@ -105,4 +104,3 @@ export function useIssueWebRTCToken() {
     mutationFn: issueWebRTCToken,
   });
 }
-

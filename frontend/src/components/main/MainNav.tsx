@@ -14,21 +14,22 @@ export default function MainNav() {
     <nav className="hidden lg:block">
       <ul className="flex space-x-8">
         {mainNav.map(item => {
-          const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
-          
+          const isActive =
+            pathname === item.href || pathname.startsWith(item.href + '/');
+
           return (
             <li key={item.name}>
               <Link
                 href={item.href}
                 className={`relative text-sm font-medium transition-colors duration-200 ${
-                  isActive 
-                    ? 'text-[var(--primary)]' 
+                  isActive
+                    ? 'text-[var(--primary)]'
                     : 'text-[var(--text-sub)] hover:text-[var(--text)]'
                 }`}
               >
                 {item.name}
                 {isActive && (
-                  <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[var(--primary)] rounded-full" />
+                  <span className="absolute right-0 -bottom-1 left-0 h-0.5 rounded-full bg-[var(--primary)]" />
                 )}
               </Link>
             </li>

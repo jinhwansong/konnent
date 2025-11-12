@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import Toast from "@/components/common/Toast";
+import Toast from '@/components/common/Toast';
 
 interface MentoringLayoutProps {
   children: ReactNode;

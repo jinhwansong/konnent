@@ -58,20 +58,22 @@ export default function MobileNav({ isOpen, onClose }: MobileNavProps) {
   return (
     <>
       {/* 오버레이 */}
-      <div 
+      <div
         className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
         onClick={onClose}
       />
-      
+
       {/* 모바일 메뉴 */}
       <div className="fixed inset-y-0 right-0 z-50 w-full max-w-sm bg-[var(--background)] shadow-xl lg:hidden">
         <div className="flex h-full flex-col">
           {/* 헤더 */}
           <div className="flex items-center justify-between border-b border-[var(--border-color)] px-6 py-4">
-            <h2 className="text-lg font-semibold text-[var(--text-bold)]">메뉴</h2>
+            <h2 className="text-lg font-semibold text-[var(--text-bold)]">
+              메뉴
+            </h2>
             <button
               type="button"
-              className="inline-flex items-center justify-center p-2 rounded-lg text-[var(--text-sub)] hover:text-[var(--text)] hover:bg-[var(--hover-bg)] transition-colors duration-200"
+              className="inline-flex items-center justify-center rounded-lg p-2 text-[var(--text-sub)] transition-colors duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--text)]"
               onClick={onClose}
             >
               <span className="sr-only">메뉴 닫기</span>
@@ -82,11 +84,11 @@ export default function MobileNav({ isOpen, onClose }: MobileNavProps) {
           {/* 네비게이션 메뉴 */}
           <nav className="flex-1 px-6 py-6">
             <ul className="space-y-2">
-              {mainNav.map((item) => (
+              {mainNav.map(item => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="block px-4 py-3 text-sm font-medium text-[var(--text)] rounded-lg hover:bg-[var(--hover-bg)] hover:text-[var(--text-bold)] transition-colors duration-200"
+                    className="block rounded-lg px-4 py-3 text-sm font-medium text-[var(--text)] transition-colors duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--text-bold)]"
                     onClick={onClose}
                   >
                     {item.name}
@@ -103,12 +105,12 @@ export default function MobileNav({ isOpen, onClose }: MobileNavProps) {
                 {/* 알림 */}
                 <Link
                   href="/notifications"
-                  className="flex items-center justify-between px-4 py-3 text-sm font-medium text-[var(--text)] rounded-lg hover:bg-[var(--hover-bg)] hover:text-[var(--text-bold)] transition-colors duration-200"
+                  className="flex items-center justify-between rounded-lg px-4 py-3 text-sm font-medium text-[var(--text)] transition-colors duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--text-bold)]"
                   onClick={onClose}
                 >
                   <span>알림</span>
                   {unreadCount > 0 && (
-                    <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold text-white bg-[var(--color-danger)] rounded-full min-w-[20px] h-5">
+                    <span className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[var(--color-danger)] px-2 py-1 text-xs font-bold text-white">
                       {unreadCount}
                     </span>
                   )}
@@ -117,18 +119,24 @@ export default function MobileNav({ isOpen, onClose }: MobileNavProps) {
                 {/* 프로필 */}
                 <Link
                   href="/my/profile"
-                  className="flex items-center px-4 py-3 text-sm font-medium text-[var(--text)] rounded-lg hover:bg-[var(--hover-bg)] hover:text-[var(--text-bold)] transition-colors duration-200"
+                  className="flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[var(--text)] transition-colors duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--text-bold)]"
                   onClick={onClose}
                 >
                   <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-[var(--primary-sub02)] rounded-full flex items-center justify-center">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--primary-sub02)]">
                       <span className="text-sm font-medium text-[var(--text-sub)]">
-                        {session.user.nickname?.[0] || session.user.name?.[0] || 'U'}
+                        {session.user.nickname?.[0] ||
+                          session.user.name?.[0] ||
+                          'U'}
                       </span>
                     </div>
                     <div>
-                      <p className="font-medium">{session.user.nickname || session.user.name}</p>
-                      <p className="text-sm text-[var(--text-sub)]">{session.user.email}</p>
+                      <p className="font-medium">
+                        {session.user.nickname || session.user.name}
+                      </p>
+                      <p className="text-sm text-[var(--text-sub)]">
+                        {session.user.email}
+                      </p>
                     </div>
                   </div>
                 </Link>
@@ -136,7 +144,7 @@ export default function MobileNav({ isOpen, onClose }: MobileNavProps) {
                 {/* 로그아웃 */}
                 <button
                   type="button"
-                  className="w-full px-4 py-3 text-sm font-medium text-[var(--color-danger)] rounded-lg hover:bg-[var(--primary-sub02)] transition-colors duration-200"
+                  className="w-full rounded-lg px-4 py-3 text-sm font-medium text-[var(--color-danger)] transition-colors duration-200 hover:bg-[var(--primary-sub02)]"
                   onClick={() => {
                     // 로그아웃 로직은 UserMenu에서 가져와야 함
                     onClose();
@@ -149,14 +157,14 @@ export default function MobileNav({ isOpen, onClose }: MobileNavProps) {
               <div className="space-y-3">
                 <Link
                   href="/login"
-                  className="block w-full px-4 py-3 text-sm font-medium text-center text-[var(--text)] bg-[var(--hover-bg)] rounded-lg hover:bg-[var(--primary-sub02)] transition-colors duration-200"
+                  className="block w-full rounded-lg bg-[var(--hover-bg)] px-4 py-3 text-center text-sm font-medium text-[var(--text)] transition-colors duration-200 hover:bg-[var(--primary-sub02)]"
                   onClick={onClose}
                 >
                   로그인
                 </Link>
                 <Link
                   href="/signup"
-                  className="block w-full px-4 py-3 text-sm font-medium text-center text-white bg-[var(--primary)] rounded-lg hover:bg-[var(--primary-sub01)] transition-colors duration-200"
+                  className="block w-full rounded-lg bg-[var(--primary)] px-4 py-3 text-center text-sm font-medium text-white transition-colors duration-200 hover:bg-[var(--primary-sub01)]"
                   onClick={onClose}
                 >
                   회원가입

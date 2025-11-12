@@ -1,17 +1,15 @@
 'use client';
 
-
 import LogoLink from './LogoLink';
 import MainNav from './MainNav';
 import NotificationMenu from './NotificationMenu';
 import UserMenu from './UserMenu';
 
 export default function Header() {
-
   return (
     <>
-      <header className="z-50 border-b border-[var(--border-color)]  ">
-        <div className="mx-auto flex w-full items-center justify-between px-4 py-3 max-w-7xl">
+      <header className="z-50 border-b border-[var(--border-color)]">
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-10">
             {/* 로고 */}
             <div className="flex items-center">
@@ -31,8 +29,6 @@ export default function Header() {
           </div>
         </div>
       </header>
-
-
     </>
   );
 }

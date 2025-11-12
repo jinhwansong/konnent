@@ -63,7 +63,7 @@ export default function UserMenu() {
         <li>
           <Link
             href="/login"
-            className="inline-flex items-center px-4 py-2 text-sm font-medium text-[var(--text)] rounded-lg hover:bg-[var(--hover-bg)] transition-colors duration-200"
+            className="inline-flex items-center rounded-lg px-4 py-2 text-sm font-medium text-[var(--text)] transition-colors duration-200 hover:bg-[var(--hover-bg)]"
           >
             로그인
           </Link>
@@ -71,7 +71,7 @@ export default function UserMenu() {
         <li>
           <Link
             href="/signup"
-            className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-[var(--primary)] rounded-lg hover:bg-[var(--primary-sub01)] transition-colors duration-200"
+            className="inline-flex items-center rounded-lg bg-[var(--primary)] px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-[var(--primary-sub01)]"
           >
             회원가입
           </Link>
@@ -85,14 +85,14 @@ export default function UserMenu() {
     <li className="relative" ref={openRef}>
       <button
         onClick={() => setOpen(prev => !prev)}
-        className="flex items-center justify-center overflow-hidden rounded-full ring-2 ring-transparent hover:ring-[var(--border-color)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] transition-all duration-200"
+        className="flex items-center justify-center overflow-hidden rounded-full ring-2 ring-transparent transition-all duration-200 hover:ring-[var(--border-color)] focus:ring-2 focus:ring-[var(--primary)] focus:outline-none"
       >
         <Image
           src={buildImageUrl(session?.user.image?.trim())}
           alt={session.user.name}
           width={32}
           height={32}
-          className="h-8 w-8 object-cover rounded-full"
+          className="h-8 w-8 rounded-full object-cover"
         />
       </button>
 
@@ -111,7 +111,9 @@ export default function UserMenu() {
                 <p className="font-semibold text-[var(--text-bold)]">
                   {session.user.nickname}
                 </p>
-                <p className="truncate text-sm text-[var(--text-sub)]">{session.user.email}</p>
+                <p className="truncate text-sm text-[var(--text-sub)]">
+                  {session.user.email}
+                </p>
               </div>
             </div>
             <Button
@@ -134,7 +136,7 @@ export default function UserMenu() {
                   <Link
                     onClick={() => setOpen(false)}
                     href={item.href}
-                    className="block px-6 py-4 text-[var(--text)] hover:bg-[var(--hover-bg)] hover:text-[var(--primary)] transition-colors duration-200"
+                    className="block px-6 py-4 text-[var(--text)] transition-colors duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--primary)]"
                   >
                     {item.name}
                   </Link>
@@ -144,7 +146,7 @@ export default function UserMenu() {
             <li className="border-t border-[var(--border-color)]">
               <button
                 onClick={handleLogout}
-                className="block w-full px-6 py-4 text-[var(--text)] hover:bg-[var(--hover-bg)] hover:text-[var(--color-danger)] transition-colors duration-200"
+                className="block w-full px-6 py-4 text-[var(--text)] transition-colors duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--color-danger)]"
               >
                 로그아웃
               </button>

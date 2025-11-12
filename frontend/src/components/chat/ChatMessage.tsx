@@ -19,12 +19,15 @@ interface ChatMessageProps {
   isCurrentUser: boolean;
 }
 
-export default function ChatMessage({ message, isCurrentUser }: ChatMessageProps) {
+export default function ChatMessage({
+  message,
+  isCurrentUser,
+}: ChatMessageProps) {
   // 시스템 메시지 처리
   if (message.type === 'system') {
     return (
       <div className="flex items-center justify-center py-2">
-        <div className="bg-[var(--card-bg-sub)] text-[var(--text-sub)] text-xs px-3 py-1 rounded-full">
+        <div className="rounded-full bg-[var(--card-bg-sub)] px-3 py-1 text-xs text-[var(--text-sub)]">
           {message.message}
         </div>
       </div>
@@ -33,7 +36,7 @@ export default function ChatMessage({ message, isCurrentUser }: ChatMessageProps
 
   const getFileIcon = (fileName: string) => {
     const extension = fileName.split('.').pop()?.toLowerCase();
-    
+
     switch (extension) {
       case 'jpg':
       case 'jpeg':

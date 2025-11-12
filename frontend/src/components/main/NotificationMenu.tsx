@@ -35,7 +35,7 @@ export default function NotificationMenu() {
 
   const notifications = getNotification ?? [];
   const readCount = getUnreadCount?.count ?? 0;
-  
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -58,11 +58,11 @@ export default function NotificationMenu() {
     deleteAllNotifications();
   };
   return (
-    <li className="relative flex items-center gap-1 " ref={popupRef}>
+    <li className="relative flex items-center gap-1" ref={popupRef}>
       {/* 검색 버튼 */}
       <button
         type="button"
-        className="inline-flex items-center justify-center p-2 rounded-lg text-[var(--text-sub)] hover:text-[var(--text)] hover:bg-[var(--hover-bg)]  transition-colors duration-200"
+        className="inline-flex items-center justify-center rounded-lg p-2 text-[var(--text-sub)] transition-colors duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--text)]"
       >
         <FiSearch className="h-5 w-5" />
       </button>
@@ -70,12 +70,12 @@ export default function NotificationMenu() {
       {/* 알림 버튼 */}
       <button
         type="button"
-        className="relative inline-flex items-center justify-center p-2 rounded-lg text-[var(--text-sub)] hover:text-[var(--text)] hover:bg-[var(--hover-bg)]  transition-colors duration-200"
+        className="relative inline-flex items-center justify-center rounded-lg p-2 text-[var(--text-sub)] transition-colors duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--text)]"
         onClick={() => setOpen(prev => !prev)}
       >
         <BiBell className="h-5 w-5" />
         {mounted && readCount > 0 && (
-          <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold text-white bg-[var(--color-danger)] rounded-full min-w-[18px] h-[18px]">
+          <span className="absolute -top-1 -right-1 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[var(--color-danger)] px-1.5 py-0.5 text-xs font-bold text-white">
             {readCount > 9 ? '9+' : readCount}
           </span>
         )}
@@ -98,7 +98,7 @@ export default function NotificationMenu() {
                         handleReadAll();
                         setOpen(false);
                       }}
-                      className="hover:text-[var(--primary)] transition-colors duration-200"
+                      className="transition-colors duration-200 hover:text-[var(--primary)]"
                     >
                       모두 읽음
                     </button>
@@ -108,7 +108,7 @@ export default function NotificationMenu() {
                         handleRemoveAll();
                         setOpen(false);
                       }}
-                      className="hover:text-[var(--primary)] transition-colors duration-200"
+                      className="transition-colors duration-200 hover:text-[var(--primary)]"
                     >
                       모두 삭제
                     </button>
@@ -141,7 +141,7 @@ export default function NotificationMenu() {
 
                       <button
                         type="button"
-                        className="ml-2 text-[var(--text-sub)] hover:text-[var(--text)] transition-colors duration-200"
+                        className="ml-2 text-[var(--text-sub)] transition-colors duration-200 hover:text-[var(--text)]"
                         onClick={e => {
                           e.stopPropagation();
                           handleRemove(noti.id);
@@ -169,7 +169,7 @@ export default function NotificationMenu() {
               <Link
                 href="/login"
                 onClick={() => setOpen(false)}
-                className="text-base font-semibold text-[var(--primary)] hover:text-[var(--primary-sub01)] transition-colors duration-200"
+                className="text-base font-semibold text-[var(--primary)] transition-colors duration-200 hover:text-[var(--primary-sub01)]"
               >
                 로그인 하기
               </Link>

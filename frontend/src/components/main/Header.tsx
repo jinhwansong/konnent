@@ -23,8 +23,9 @@ export default function Header() {
 
             {/* 데스크톱 액션 버튼들 */}
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3">
             <NotificationMenu />
+            
             <UserMenu />
           </div>
         </div>

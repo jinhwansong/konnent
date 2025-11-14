@@ -10,8 +10,16 @@ export default function useNotificationInitializer() {
   const { requestToken } = useFirebase(userId);
 
   useEffect(() => {
-    requestToken();
-  }, [requestToken]);
+    if (typeof window === 'undefined') return;
+    if (!userId) return;
 
-  return null; // 렌더링할 UI는 없음
+    // 이미 허용(granted)이면 여기서 굳이 requestToken() 안 호출
+    //    → useFirebase 안의 "자동 등록 useEffect"가 토큰 서버 등록을 담당
+    if (Notification.permission !== 'default') return;
+
+    // 아직 허용/차단 선택 안 했을 때만 권한 + 토큰 요청
+    requestToken();
+  }, [userId, requestToken]);
+
+  return null;
 }

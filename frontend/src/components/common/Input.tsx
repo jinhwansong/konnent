@@ -23,7 +23,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     const inputClass = clsx(
-      'text-sm h-11 rounded-lg px-4',
+      'text-sm h-12 rounded-lg px-4',
       'border transition-colors duration-200',
       'bg-[var(--editor-bg)] text-[var(--text)] placeholder-[var(--text-sub)]',
       'hover:border-[var(--primary-sub01)]',

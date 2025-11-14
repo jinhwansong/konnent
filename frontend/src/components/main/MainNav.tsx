@@ -3,8 +3,8 @@ import { usePathname } from 'next/navigation';
 
 const mainNav = [
   { href: '/mentors', name: '멘토 찾기' },
-  { href: '/schedule', name: '멘토링 일정' },
   { href: '/articles', name: '아티클' },
+  { href: '/mentor', name: '멘토 신청' },
 ];
 
 export default function MainNav() {
@@ -28,9 +28,6 @@ export default function MainNav() {
                 }`}
               >
                 {item.name}
-                {isActive && (
-                  <span className="absolute right-0 -bottom-1 left-0 h-0.5 rounded-full bg-[var(--primary)]" />
-                )}
               </Link>
             </li>
           );

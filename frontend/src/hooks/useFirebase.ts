@@ -64,27 +64,46 @@ export function useFirebase(userId?: string) {
   }, []);
 
   // 토큰 요청
-  const requestToken = useCallback(async () => {
-    if (!userId || !messaging) return;
+  // 👉 실제 토큰을 가져오고 서버에 등록하는 공통 함수
+  const fetchAndRegisterToken = useCallback(
+    async (m: Messaging) => {
+      if (!userId) return;
 
-    try {
-      const perm = await Notification.requestPermission();
-      if (perm === 'granted') {
-        const currentToken = await getToken(messaging, {
-          vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
-        });
+      const currentToken = await getToken(m, {
+        vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
+      });
 
-        if (currentToken && currentToken !== session?.user?.fcm) {
-          setToken(currentToken);
-
-          // 서버에 등록
-          await fcm(currentToken);
-        }
+      if (currentToken && currentToken !== session?.user?.fcm) {
+        setToken(currentToken);
+        await fcm(currentToken); // 서버에 등록
       }
-    } catch (err) {
-      console.error('🚨 FCM token request failed:', err);
-    }
-  }, [userId, messaging, session?.user?.fcm]);
+    },
+    [userId, session?.user?.fcm]
+  );
 
+  // 👉 1) 로그인 할 때, 이미 권한이 허용된 상태라면 자동으로 토큰 등록
+  useEffect(() => {
+    if (!messaging) return;
+    if (!userId) return;
+    if (typeof window === 'undefined') return;
+
+    if (Notification.permission === 'granted') {
+      // 알림 허용 팝업은 안 뜨고, 바로 토큰만 받아서 서버에 매핑
+      fetchAndRegisterToken(messaging).catch(err =>
+        console.error('🚨 auto FCM token fetch failed:', err)
+      );
+    }
+  }, [messaging, userId, fetchAndRegisterToken]);
+
+  // 👉 2) 유저가 “알림 허용” 버튼을 눌렀을 때 호출할 함수
+  const requestToken = useCallback(async () => {
+    if (!messaging) return;
+    if (!userId) return;
+
+    const perm = await Notification.requestPermission();
+    if (perm === 'granted') {
+      await fetchAndRegisterToken(messaging);
+    }
+  }, [messaging, userId, fetchAndRegisterToken]);
   return { token, requestToken };
 }

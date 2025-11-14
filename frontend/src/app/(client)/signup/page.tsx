@@ -140,7 +140,8 @@ export default function SignPage() {
     () => isValid && isDuplicateChecked && isVerified && email && nickname,
     [isValid, isDuplicateChecked, isVerified, email, nickname]
   );
-
+  console.log(isDuplicateChecked, isDuplicateChecked, isVerified);
+  console.log(isValid, email, nickname);
   return (
     <section className="mx-auto mt-10 mb-16 w-[380px]">
       <h4 className="mb-5 text-center text-xl font-bold text-[var(--text-bold)]">
@@ -163,7 +164,7 @@ export default function SignPage() {
             />
             <FormErrorMessage message={errors.email?.message} />
             <button
-              className="absolute top-8 right-1 bg-[var(--editor-bg)] px-2.5 py-2.5 text-sm text-[var(--primary)] disabled:text-[var(--text-sub)]"
+              className="absolute top-8 right-1  px-2.5 py-2.5 text-sm text-[var(--primary)] disabled:text-[var(--text-sub)]"
               disabled={!email || !!errors.email}
               type="button"
               onClick={checkEmailDuplicate}
@@ -192,7 +193,7 @@ export default function SignPage() {
                       ? handleVerifyCode
                       : handleSendCode
                 }
-                className="absolute top-8 right-1 bg-[var(--editor-bg)] px-2.5 py-2.5 text-sm text-[var(--primary)] disabled:text-[var(--text-sub)]"
+                className="absolute top-8 right-1 px-2.5 py-2.5 text-sm text-[var(--primary)] disabled:text-[var(--text-sub)]"
                 disabled={!email || !!errors.email || isVerified}
               >
                 {isVerified ? '인증완료' : isCodeSent ? '인증하기' : '코드전송'}
@@ -251,7 +252,7 @@ export default function SignPage() {
             <FormErrorMessage message={errors.nickname?.message} />
             <button
               type="button"
-              className="absolute top-8 right-1 bg-[var(--editor-bg)] px-2.5 py-2.5 text-sm text-[var(--primary)] disabled:text-[var(--text-sub)]"
+              className="absolute top-8 right-1  px-2.5 py-2.5 text-sm text-[var(--primary)] disabled:text-[var(--text-sub)]"
               disabled={!nickname || !!errors.nickname}
               onClick={checkNicknameDuplicate}
             >

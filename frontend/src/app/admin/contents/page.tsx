@@ -1,29 +1,27 @@
 'use client';
 
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   usePathname,
   useRouter,
   useSearchParams,
 } from 'next/navigation';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 
 import AdminShell from '@/components/common/AdminShell';
-import PageHeader from '@/components/common/PageHeader';
 import AdminToolbar from '@/components/common/AdminToolbar';
-import SearchInput from '@/components/common/SearchInput';
-import DataTable from '@/components/common/DataTable';
-import Pagination from '@/components/common/Pagination';
 import Button from '@/components/common/Button';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
+import DataTable from '@/components/common/DataTable';
 import EmptyState from '@/components/common/EmptyState';
-
-import {
-  fetchAdminArticles,
-  fetchAdminReviews,
+import PageHeader from '@/components/common/PageHeader';
+import Pagination from '@/components/common/Pagination';
+import SearchInput from '@/components/common/SearchInput';
+import { useAdminArticles, useAdminReviews } from '@/hooks/query/useAdmin';
+import type {
   AdminArticleRow,
   AdminReviewRow,
-} from '@/lib/admin/contents';
+} from '@/types/admin';
 
 const ARTICLE_STATUS_OPTIONS = [
   { label: '전체', value: 'all' },
@@ -99,40 +97,20 @@ export default function ContentsAdminPage() {
     []
   );
 
-  const articlesQuery = useQuery({
-    queryKey: [
-      'admin',
-      'contents',
-      'articles',
-      { q, articleStatus, articlePage, articleLimit, articleSort },
-    ],
-    queryFn: () =>
-      fetchAdminArticles({
-        q,
-        status: articleStatus,
-        page: articlePage,
-        limit: articleLimit,
-        sort: articleSort,
-      }),
-    keepPreviousData: true,
+  const articlesQuery = useAdminArticles({
+    q,
+    status: articleStatus,
+    page: articlePage,
+    limit: articleLimit,
+    sort: articleSort,
   });
 
-  const reviewsQuery = useQuery({
-    queryKey: [
-      'admin',
-      'contents',
-      'reviews',
-      { q, reviewReported, reviewPage, reviewLimit, reviewSort },
-    ],
-    queryFn: () =>
-      fetchAdminReviews({
-        q,
-        reported: reviewReported,
-        page: reviewPage,
-        limit: reviewLimit,
-        sort: reviewSort,
-      }),
-    keepPreviousData: true,
+  const reviewsQuery = useAdminReviews({
+    q,
+    reported: reviewReported,
+    page: reviewPage,
+    limit: reviewLimit,
+    sort: reviewSort,
   });
 
   const articleMutation = useMutation({
@@ -344,7 +322,7 @@ export default function ContentsAdminPage() {
           />
           <Pagination
             page={articlePage}
-            totalPages={articlesQuery.data?.meta.totalPages ?? 1}
+            totalPages={articlesQuery.data?.meta?.totalPages ?? 1}
             onChange={nextPage => setParams({ articlePage: nextPage })}
           />
         </section>
@@ -444,7 +422,7 @@ export default function ContentsAdminPage() {
           />
           <Pagination
             page={reviewPage}
-            totalPages={reviewsQuery.data?.meta.totalPages ?? 1}
+            totalPages={reviewsQuery.data?.meta?.totalPages ?? 1}
             onChange={nextPage => setParams({ reviewPage: nextPage })}
           />
         </section>
@@ -505,7 +483,7 @@ function FilterButtons<T extends string>({
 }: {
   legend: string;
   value: T;
-  options: Array<{ label: string; value: T }>;
+  options: ReadonlyArray<{ label: string; value: T }>;
   onChange: (value: T) => void;
 }) {
   return (

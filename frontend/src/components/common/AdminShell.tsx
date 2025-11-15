@@ -83,7 +83,7 @@ export default function AdminShell({ title, children }: AdminShellProps) {
         </header>
 
         <main className="flex-1 overflow-y-auto bg-[var(--background)]">
-          <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-10">
+          <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 ">
             {children}
           </div>
         </main>

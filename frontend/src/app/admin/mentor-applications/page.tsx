@@ -6,7 +6,7 @@ import {
   useRouter,
   useSearchParams,
 } from 'next/navigation';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import AdminShell from '@/components/common/AdminShell';
 import PageHeader from '@/components/common/PageHeader';
@@ -19,11 +19,11 @@ import ConfirmDialog from '@/components/common/ConfirmDialog';
 import Modal from '@/components/common/Modal';
 import EmptyState from '@/components/common/EmptyState';
 
-import {
-  fetchMentorApplications,
+import { useMentorApplications } from '@/hooks/query/useAdmin';
+import type {
   MentorApplicationRow,
   ApplicationStatus,
-} from '@/lib/admin/mentorApplications';
+} from '@/types/admin';
 
 const STATUS_OPTIONS: Array<{ label: string; value: 'all' | ApplicationStatus }> = [
   { label: '대기', value: 'pending' },
@@ -71,17 +71,12 @@ export default function MentorApplicationsPage() {
     []
   );
 
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['admin', 'mentor-applications', { page, limit, q, status, sort: sortParam }],
-    queryFn: () =>
-      fetchMentorApplications({
-        page,
-        limit,
-        q,
-        status,
-        sort: sortParam,
-      }),
-    keepPreviousData: true,
+  const { data, isLoading, isError, error } = useMentorApplications({
+    page,
+    limit,
+    q,
+    status,
+    sort: sortParam,
   });
 
   const totalPages = data?.meta.totalPages ?? 1;

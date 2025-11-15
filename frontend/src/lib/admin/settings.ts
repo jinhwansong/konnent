@@ -1,4 +1,7 @@
-import { simulateLatency } from './types';
+// 간단한 지연 시뮬레이션 함수
+const simulateLatency = <T>(data: T, delay: number): Promise<T> => {
+  return new Promise(resolve => setTimeout(() => resolve(data), delay));
+};
 
 export interface PaymentKeyState {
   label: string;

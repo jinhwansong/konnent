@@ -42,12 +42,38 @@ export default function UserMenu() {
 
   const handleLogout = async () => {
     try {
-      const fcm = session?.user?.fcm;
-      if (fcm) await removeFcm(fcm);
+      // 세션에서가 아니라 브라우저에 저장해 둔 현재 FCM 토큰을 기준으로 삭제
+      let storedFcm: string | null = null;
+      if (typeof window !== 'undefined') {
+        try {
+          storedFcm = window.localStorage.getItem('fcmToken');
+        } catch {
+          storedFcm = null;
+        }
+      }
+
+      // FCM 토큰 삭제 시도 (실패해도 로그아웃은 계속 진행)
+      if (storedFcm) {
+        try {
+          await removeFcm(storedFcm);
+        } catch (error) {
+          // FCM 토큰 삭제 실패는 로그만 남기고 계속 진행
+          console.warn('FCM 토큰 삭제 실패 (로그아웃은 계속 진행):', error);
+        }
+        // 로컬 스토리지는 항상 정리
+        if (typeof window !== 'undefined') {
+          try {
+            window.localStorage.removeItem('fcmToken');
+          } catch {
+            // 무시
+          }
+        }
+      }
 
       await signOut({ callbackUrl: '/' });
       show('로그아웃을 완료했습니다.', 'success');
-    } catch {
+    } catch (error) {
+      console.error('로그아웃 실패:', error);
       show('로그아웃에 실패했습니다.', 'error');
     }
   };

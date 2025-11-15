@@ -68,23 +68,42 @@ export function useFirebase(userId?: string) {
   const fetchAndRegisterToken = useCallback(
     async (m: Messaging) => {
       if (!userId) return;
+      // 세션이 아직 로드되지 않았으면 대기
+      if (!session) {
+        console.log('⏳ 세션 로딩 중... FCM 토큰 등록 대기');
+        return;
+      }
 
-      const currentToken = await getToken(m, {
-        vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
-      });
+      try {
+        const currentToken = await getToken(m, {
+          vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
+        });
 
-      if (currentToken && currentToken !== session?.user?.fcm) {
-        setToken(currentToken);
-        await fcm(currentToken); // 서버에 등록
+        if (currentToken && currentToken !== session?.user?.fcm) {
+          setToken(currentToken);
+          // 브라우저에 현재 FCM 토큰을 저장해두어 로그아웃 시 사용
+          if (typeof window !== 'undefined') {
+            try {
+              window.localStorage.setItem('fcmToken', currentToken);
+            } catch {
+              // localStorage 사용 실패해도 치명적이지 않으므로 무시
+            }
+          }
+          await fcm(currentToken); // 서버에 등록
+        }
+      } catch (error) {
+        // FCM 토큰 등록 실패는 치명적이지 않으므로 에러만 로그
+        console.error('🚨 FCM 토큰 등록 실패:', error);
       }
     },
-    [userId, session?.user?.fcm]
+    [userId, session, session?.user?.fcm]
   );
 
   // 👉 1) 로그인 할 때, 이미 권한이 허용된 상태라면 자동으로 토큰 등록
   useEffect(() => {
     if (!messaging) return;
     if (!userId) return;
+    if (!session) return; // 세션이 준비될 때까지 대기
     if (typeof window === 'undefined') return;
 
     if (Notification.permission === 'granted') {
@@ -93,7 +112,7 @@ export function useFirebase(userId?: string) {
         console.error('🚨 auto FCM token fetch failed:', err)
       );
     }
-  }, [messaging, userId, fetchAndRegisterToken]);
+  }, [messaging, userId, session, fetchAndRegisterToken]);
 
   // 👉 2) 유저가 “알림 허용” 버튼을 눌렀을 때 호출할 함수
   const requestToken = useCallback(async () => {

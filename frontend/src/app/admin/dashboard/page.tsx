@@ -1,51 +1,39 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
-
 import AdminShell from '@/components/common/AdminShell';
 import DataTable from '@/components/common/DataTable';
 import EmptyState from '@/components/common/EmptyState';
 import PageHeader from '@/components/common/PageHeader';
 import StatCard from '@/components/common/StatCard';
-import {
-  fetchAdminDashboard,
+import { useAdminDashboard } from '@/hooks/query/useAdmin';
+import type {
   DashboardMetric,
   DashboardRecentPayment,
   DashboardRecentApplication,
-} from '@/lib/admin/dashboard';
+} from '@/types/admin';
 
 export default function AdminDashboardPage() {
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['admin', 'dashboard'],
-    queryFn: fetchAdminDashboard,
-    staleTime: 60_000,
-  });
+  const { data, isLoading, isError, error } = useAdminDashboard();
 
   const metrics = data?.metrics ?? [];
+  const trends = data?.trends ?? [];
   const payments = data?.recentPayments ?? [];
   const applications = data?.recentApplications ?? [];
-  const trends = data?.trends ?? [];
 
-  const paymentColumns = useMemo(
-    () => [
-      { key: 'userName', label: '사용자', sortable: false },
-      { key: 'amount', label: '금액', sortable: false, align: 'right' as const },
-      { key: 'status', label: '상태', sortable: false },
-      { key: 'paidAt', label: '결제일시', sortable: false },
-    ],
-    []
-  );
+  const paymentColumns = [
+    { key: 'userName', label: '사용자', sortable: false },
+    { key: 'amount', label: '금액', sortable: false },
+    { key: 'status', label: '상태', sortable: false },
+    { key: 'paidAt', label: '결제일시', sortable: false },
+  ];
 
-  const applicationColumns = useMemo(
-    () => [
-      { key: 'applicantName', label: '신청자', sortable: false },
-      { key: 'careerYears', label: '경력', sortable: false },
-      { key: 'submittedAt', label: '신청일시', sortable: false },
-      { key: 'status', label: '상태', sortable: false },
-    ],
-    []
-  );
+  const applicationColumns = [
+    { key: 'applicantName', label: '신청자', sortable: false },
+    { key: 'careerYears', label: '경력', sortable: false },
+    { key: 'submittedAt', label: '신청일시', sortable: false },
+    { key: 'status', label: '상태', sortable: false },
+  ];
+
 
   return (
     <AdminShell title="대시보드">

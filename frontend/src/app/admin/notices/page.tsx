@@ -7,7 +7,6 @@ import {
   useSearchParams,
 } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import AdminShell from '@/components/common/AdminShell';
 import PageHeader from '@/components/common/PageHeader';
@@ -21,12 +20,12 @@ import ConfirmDialog from '@/components/common/ConfirmDialog';
 import { Toggle } from '@/components/common/Toggle';
 
 import {
-  fetchAdminNotices,
-  createNotice,
-  updateNotice,
-  deleteNotice,
-  AdminNoticeRow,
-} from '@/lib/admin/notices';
+  useAdminNotices,
+  useCreateNotice,
+  useUpdateNotice,
+  useDeleteNotice,
+} from '@/hooks/query/useAdmin';
+import type { AdminNoticeRow } from '@/types/admin';
 
 interface NoticeFormValues {
   title: string;
@@ -44,7 +43,6 @@ export default function NoticesAdminPage() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const queryClient = useQueryClient();
 
   const page = Number(searchParams.get('page') ?? '1');
   const limit = Number(searchParams.get('limit') ?? '10');
@@ -75,22 +73,12 @@ export default function NoticesAdminPage() {
     setSearchTerm(q);
   }, [q]);
 
-  const queryKey = useMemo(
-    () => ['admin', 'notices', { page, limit, q, published, sort }],
-    [page, limit, q, published, sort]
-  );
-
-  const noticesQuery = useQuery({
-    queryKey,
-    queryFn: () =>
-      fetchAdminNotices({
-        page,
-        limit,
-        q,
-        published,
-        sort,
-      }),
-    keepPreviousData: true,
+  const noticesQuery = useAdminNotices({
+    page,
+    limit,
+    q,
+    published,
+    sort,
   });
 
   const setParams = (updates: Record<string, string | number | null | undefined>) => {
@@ -110,95 +98,9 @@ export default function NoticesAdminPage() {
     setParams({ q: searchTerm || null, page: 1 });
   };
 
-  const createMutation = useMutation({
-    mutationFn: createNotice,
-    onMutate: async payload => {
-      await queryClient.cancelQueries({ queryKey });
-      const previous = queryClient.getQueryData<typeof noticesQuery.data>(queryKey);
-      const optimistic: AdminNoticeRow = {
-        id: 'optimistic',
-        title: payload.title,
-        content: payload.content,
-        published: payload.published,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      queryClient.setQueryData(queryKey, (old?: typeof noticesQuery.data) =>
-        old
-          ? {
-              ...old,
-              data: [optimistic, ...old.data],
-              meta: {
-                ...old.meta,
-                totalCount: old.meta.totalCount + 1,
-              },
-            }
-          : old
-      );
-      return { previous };
-    },
-    onError: (_err, _variables, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(queryKey, context.previous);
-      }
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey });
-    },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: Partial<AdminNoticeRow> }) =>
-      updateNotice(id, payload),
-    onMutate: async ({ id, payload }) => {
-      await queryClient.cancelQueries({ queryKey });
-      const previous = queryClient.getQueryData<typeof noticesQuery.data>(queryKey);
-      queryClient.setQueryData(queryKey, (old?: typeof noticesQuery.data) =>
-        old
-          ? {
-              ...old,
-              data: old.data.map(item =>
-                item.id === id ? { ...item, ...payload, updatedAt: new Date().toISOString() } : item
-              ),
-            }
-          : old
-      );
-      return { previous };
-    },
-    onError: (_err, _variables, context) => {
-      if (context?.previous) queryClient.setQueryData(queryKey, context.previous);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey });
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => deleteNotice(id),
-    onMutate: async id => {
-      await queryClient.cancelQueries({ queryKey });
-      const previous = queryClient.getQueryData<typeof noticesQuery.data>(queryKey);
-      queryClient.setQueryData(queryKey, (old?: typeof noticesQuery.data) =>
-        old
-          ? {
-              ...old,
-              data: old.data.filter(item => item.id !== id),
-              meta: {
-                ...old.meta,
-                totalCount: Math.max(0, old.meta.totalCount - 1),
-              },
-            }
-          : old
-      );
-      return { previous };
-    },
-    onError: (_err, _variables, context) => {
-      if (context?.previous) queryClient.setQueryData(queryKey, context.previous);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey });
-    },
-  });
+  const createMutation = useCreateNotice();
+  const updateMutation = useUpdateNotice();
+  const deleteMutation = useDeleteNotice();
 
   const columns = useMemo(
     () => [
@@ -216,7 +118,7 @@ export default function NoticesAdminPage() {
     if (editingNotice) {
       await updateMutation.mutateAsync({
         id: editingNotice.id,
-        payload: values,
+        ...values,
       });
     } else {
       await createMutation.mutateAsync(values);

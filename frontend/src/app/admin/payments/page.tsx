@@ -6,7 +6,7 @@ import {
   useRouter,
   useSearchParams,
 } from 'next/navigation';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import AdminShell from '@/components/common/AdminShell';
 import PageHeader from '@/components/common/PageHeader';
@@ -18,11 +18,11 @@ import Button from '@/components/common/Button';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
 import EmptyState from '@/components/common/EmptyState';
 
-import {
-  fetchAdminPayments,
+import { useAdminPayments } from '@/hooks/query/useAdmin';
+import type {
   AdminPaymentRow,
   PaymentStatus,
-} from '@/lib/admin/payments';
+} from '@/types/admin';
 
 const STATUS_FILTERS: Array<{ label: string; value: 'all' | PaymentStatus }> = [
   { label: '전체', value: 'all' },
@@ -65,17 +65,12 @@ export default function PaymentsAdminPage() {
     []
   );
 
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['admin', 'payments', { page, limit, q, status, sort, dateFrom, dateTo }],
-    queryFn: () =>
-      fetchAdminPayments({
-        page,
-        limit,
-        q,
-        status,
-        sort,
-      }),
-    keepPreviousData: true,
+  const { data, isLoading, isError, error } = useAdminPayments({
+    page,
+    limit,
+    q,
+    status,
+    sort,
   });
 
   const refundMutation = useMutation({

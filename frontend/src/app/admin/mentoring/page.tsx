@@ -1,29 +1,30 @@
 'use client';
-
-import { FormEvent, useEffect, useMemo, useState } from 'react';
 import {
   usePathname,
   useRouter,
   useSearchParams,
 } from 'next/navigation';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 
 import AdminShell from '@/components/common/AdminShell';
-import PageHeader from '@/components/common/PageHeader';
 import AdminToolbar from '@/components/common/AdminToolbar';
-import SearchInput from '@/components/common/SearchInput';
-import DataTable from '@/components/common/DataTable';
-import Pagination from '@/components/common/Pagination';
 import Button from '@/components/common/Button';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
+import DataTable from '@/components/common/DataTable';
 import EmptyState from '@/components/common/EmptyState';
-
+import PageHeader from '@/components/common/PageHeader';
+import Pagination from '@/components/common/Pagination';
+import SearchInput from '@/components/common/SearchInput';
 import {
-  fetchMentoringSessions,
-  fetchMentoringReservations,
+  useMentoringReservations,
+  useMentoringSessions,
+  useToggleSessionPublic,
+  useUpdateReservationStatus,
+} from '@/hooks/query/useAdmin';
+import type {
   MentoringSessionRow,
   ReservationRow,
-} from '@/lib/admin/mentoring';
+} from '@/types/admin';
 
 const SESSION_STATUS_FILTERS = [
   { label: '전체', value: 'all' },
@@ -48,7 +49,6 @@ export default function MentoringAdminPage() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const queryClient = useQueryClient();
 
   const q = searchParams.get('q') ?? '';
   const sessionStatus = searchParams.get('sessionStatus') ?? 'all';
@@ -100,75 +100,34 @@ export default function MentoringAdminPage() {
     []
   );
 
-  const { data: sessionsData, isLoading: sessionLoading, isError: sessionError, error: sessionErrorObj } =
-    useQuery({
-      queryKey: [
-        'admin',
-        'mentoring',
-        'sessions',
-        { q, sessionStatus, sessionPage, sessionLimit, sessionSort },
-      ],
-      queryFn: () =>
-        fetchMentoringSessions({
-          q,
-          status: sessionStatus,
-          page: sessionPage,
-          limit: sessionLimit,
-          sort: sessionSort,
-        }),
-      keepPreviousData: true,
-    });
+  const {
+    data: sessionsData,
+    isLoading: sessionLoading,
+    isError: sessionError,
+    error: sessionErrorObj,
+  } = useMentoringSessions({
+    q,
+    status: sessionStatus,
+    page: sessionPage,
+    limit: sessionLimit,
+    sort: sessionSort,
+  });
 
   const {
     data: reservationsData,
     isLoading: reservationLoading,
     isError: reservationError,
     error: reservationErrorObj,
-  } = useQuery({
-    queryKey: [
-      'admin',
-      'mentoring',
-      'reservations',
-      { q, reservationStatus, reservationPage, reservationLimit, reservationSort },
-    ],
-    queryFn: () =>
-      fetchMentoringReservations({
-        q,
-        status: reservationStatus,
-        page: reservationPage,
-        limit: reservationLimit,
-        sort: reservationSort,
-      }),
-    keepPreviousData: true,
+  } = useMentoringReservations({
+    q,
+    status: reservationStatus,
+    page: reservationPage,
+    limit: reservationLimit,
+    sort: reservationSort,
   });
 
-  const toggleSessionMutation = useMutation({
-    mutationFn: async ({ id }: { id: string }) => {
-      await new Promise(resolve => setTimeout(resolve, 400));
-      return id;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'mentoring', 'sessions'] });
-    },
-  });
-
-  const reservationStatusMutation = useMutation({
-    mutationFn: async ({
-      id,
-      action,
-    }: {
-      id: string;
-      action: 'confirm' | 'cancel';
-    }) => {
-      await new Promise(resolve => setTimeout(resolve, 400));
-      return { id, action };
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['admin', 'mentoring', 'reservations'],
-      });
-    },
-  });
+  const toggleSessionMutation = useToggleSessionPublic();
+  const reservationStatusMutation = useUpdateReservationStatus();
 
   const setParams = (updates: Record<string, string | number | null | undefined>) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -215,7 +174,7 @@ export default function MentoringAdminPage() {
           </form>
         }
         filters={
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-3">
             <FilterGroup
               legend="세션 상태"
               value={sessionStatus}
@@ -353,7 +312,7 @@ export default function MentoringAdminPage() {
           />
           <Pagination
             page={sessionPage}
-            totalPages={sessionsData?.meta.totalPages ?? 1}
+            totalPages={sessionsData?.meta?.totalPages ?? 1}
             onChange={nextPage => setParams({ sessionPage: nextPage })}
           />
         </section>
@@ -477,7 +436,7 @@ export default function MentoringAdminPage() {
           />
           <Pagination
             page={reservationPage}
-            totalPages={reservationsData?.meta.totalPages ?? 1}
+            totalPages={reservationsData?.meta?.totalPages ?? 1}
             onChange={nextPage => setParams({ reservationPage: nextPage })}
           />
         </section>
@@ -490,7 +449,10 @@ export default function MentoringAdminPage() {
         confirmText="변경"
         onConfirm={() => {
           if (!sessionAction) return;
-          toggleSessionMutation.mutate({ id: sessionAction.session.id });
+          toggleSessionMutation.mutate({
+            sessionId: sessionAction.session.id,
+            isPublic: !sessionAction.session.isPublic,
+          });
           setSessionAction(null);
         }}
         onCancel={() => setSessionAction(null)}
@@ -513,8 +475,8 @@ export default function MentoringAdminPage() {
         onConfirm={() => {
           if (!reservationAction) return;
           reservationStatusMutation.mutate({
-            id: reservationAction.reservation.id,
-            action: reservationAction.type,
+            reservationId: reservationAction.reservation.id,
+            status: reservationAction.type === 'confirm' ? 'confirmed' : 'cancelled',
           });
           setReservationAction(null);
         }}
@@ -532,7 +494,7 @@ function FilterGroup<T extends string>({
 }: {
   legend: string;
   value: T;
-  options: Array<{ label: string; value: T }>;
+  options: ReadonlyArray<{ label: string; value: T }>;
   onChange: (value: T) => void;
 }) {
   return (

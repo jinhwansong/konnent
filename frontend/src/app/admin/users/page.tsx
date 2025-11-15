@@ -6,7 +6,6 @@ import {
   useRouter,
   useSearchParams,
 } from 'next/navigation';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import AdminShell from '@/components/common/AdminShell';
 import PageHeader from '@/components/common/PageHeader';
@@ -19,12 +18,12 @@ import Modal from '@/components/common/Modal';
 import Button from '@/components/common/Button';
 import EmptyState from '@/components/common/EmptyState';
 
-import {
+import { useAdminUsers, useUpdateUserStatus } from '@/hooks/query/useAdmin';
+import type {
   AdminUserRow,
-  fetchAdminUsers,
   UserRole,
   UserStatus,
-} from '@/lib/admin/users';
+} from '@/types/admin';
 
 const LIMIT_OPTIONS = [10, 20, 30] as const;
 const ROLE_FILTERS: Array<{ label: string; value: 'all' | UserRole }> = [
@@ -46,7 +45,6 @@ export default function AdminUsersPage() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const queryClient = useQueryClient();
 
   const page = Number(searchParams.get('page') ?? '1');
   const limit = Number(searchParams.get('limit') ?? '10');
@@ -79,41 +77,18 @@ export default function AdminUsersPage() {
     []
   );
 
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['admin', 'users', { page, limit, q, role, status, sort: sortParam }],
-    queryFn: () =>
-      fetchAdminUsers({
-        page,
-        limit,
-        q,
-        role,
-        status,
-        sort: sortParam,
-      }),
-    keepPreviousData: true,
+  const { data, isLoading, isError, error } = useAdminUsers({
+    page,
+    limit,
+    q,
+    role,
+    status,
+    sort: sortParam,
   });
 
   const totalPages = data?.meta.totalPages ?? 1;
 
-  const suspendMutation = useMutation({
-    mutationFn: async ({ id }: { id: string }) => {
-      await new Promise(resolve => setTimeout(resolve, 400));
-      return id;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
-    },
-  });
-
-  const restoreMutation = useMutation({
-    mutationFn: async ({ id }: { id: string }) => {
-      await new Promise(resolve => setTimeout(resolve, 400));
-      return id;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
-    },
-  });
+  const updateStatusMutation = useUpdateUserStatus();
 
   const setParams = (updates: Record<string, string | number | null | undefined>) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -319,9 +294,10 @@ export default function AdminUsersPage() {
         confirmVariant={actionTarget?.type === 'suspend' ? 'danger' : 'primary'}
         onConfirm={() => {
           if (!actionTarget) return;
-          const mutation =
-            actionTarget.type === 'suspend' ? suspendMutation : restoreMutation;
-          mutation.mutate({ id: actionTarget.user.id });
+          updateStatusMutation.mutate({
+            userId: actionTarget.user.id,
+            suspended: actionTarget.type === 'suspend',
+          });
           setActionTarget(null);
         }}
         onCancel={() => setActionTarget(null)}

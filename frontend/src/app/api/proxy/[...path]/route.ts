@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
-import { getToken } from 'next-auth/jwt';
+
+import { auth } from '@/auth';
 
 export const runtime = 'nodejs';
 
@@ -18,12 +19,11 @@ export async function DELETE(req: NextRequest) {
 
 async function proxy(req: NextRequest): Promise<Response> {
   const backendUrl = process.env.NEXT_PUBLIC_AUTH_URL!;
-  const token = await getToken({
-    req,
-    secret: process.env.NEXTAUTH_SECRET,
-    raw: true,
-    cookieName: '__Secure-authjs.session-token',
-  });
+  
+  // 세션에서 accessToken 가져오기
+  const session = await auth();
+  const token = session?.accessToken;
+  
   const path = req.nextUrl.pathname.replace(/^\/api\/proxy/, '');
   const url = `${backendUrl}${path}${req.nextUrl.search}`;
 

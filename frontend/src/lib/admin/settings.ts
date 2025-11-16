@@ -72,14 +72,18 @@ export async function fetchAdminSettings(): Promise<SettingsSummary> {
   );
 }
 
-export async function updatePaymentKey(index: number): Promise<PaymentKeyState> {
+export async function updatePaymentKey(
+  index: number
+): Promise<PaymentKeyState> {
   const updated: PaymentKeyState = {
     ...paymentKeyStore[index],
     maskedKey: paymentKeyStore[index].maskedKey.replace(/\*{4}/, '****'),
     lastUpdated: new Date().toISOString(),
     status: 'active',
   };
-  paymentKeyStore = paymentKeyStore.map((item, idx) => (idx === index ? updated : item));
+  paymentKeyStore = paymentKeyStore.map((item, idx) =>
+    idx === index ? updated : item
+  );
   return simulateLatency(updated, 600);
 }
 
@@ -98,4 +102,3 @@ export async function updateNotificationSetting(
   if (!updated) throw new Error('Notification setting not found');
   return simulateLatency(updated, 400);
 }
-

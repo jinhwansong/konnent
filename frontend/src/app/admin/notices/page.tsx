@@ -63,7 +63,9 @@ function NoticesAdminPageInner() {
   const sort = searchParams.get('sort') ?? 'createdAt:desc';
 
   const [searchTerm, setSearchTerm] = useState(q);
-  const [editingNotice, setEditingNotice] = useState<AdminNoticeRow | null>(null);
+  const [editingNotice, setEditingNotice] = useState<AdminNoticeRow | null>(
+    null
+  );
   const [deleteTarget, setDeleteTarget] = useState<AdminNoticeRow | null>(null);
 
   const {
@@ -92,7 +94,9 @@ function NoticesAdminPageInner() {
     sort,
   });
 
-  const setParams = (updates: Record<string, string | number | null | undefined>) => {
+  const setParams = (
+    updates: Record<string, string | number | null | undefined>
+  ) => {
     const params = new URLSearchParams(searchParams.toString());
     Object.entries(updates).forEach(([key, value]) => {
       if (value === null || value === undefined || value === '') {
@@ -248,7 +252,9 @@ function NoticesAdminPageInner() {
               }
               renderRow={row => (
                 <>
-                  <td className="px-6 py-4 text-xs text-[var(--text-sub)]">{row.id}</td>
+                  <td className="px-6 py-4 text-xs text-[var(--text-sub)]">
+                    {row.id}
+                  </td>
                   <td className="px-6 py-4 text-sm font-semibold text-[var(--text-bold)]">
                     {row.title}
                   </td>
@@ -271,7 +277,9 @@ function NoticesAdminPageInner() {
                         size="sm"
                         variant="outline"
                         onClick={() => {
-                          setEditingNotice(row.id === 'optimistic' ? null : row);
+                          setEditingNotice(
+                            row.id === 'optimistic' ? null : row
+                          );
                           reset({
                             title: row.title,
                             content: row.content,
@@ -285,7 +293,9 @@ function NoticesAdminPageInner() {
                         type="button"
                         size="sm"
                         variant="ghost"
-                        onClick={() => row.id !== 'optimistic' && setDeleteTarget(row)}
+                        onClick={() =>
+                          row.id !== 'optimistic' && setDeleteTarget(row)
+                        }
                         disabled={row.id === 'optimistic'}
                       >
                         삭제
@@ -321,7 +331,7 @@ function NoticesAdminPageInner() {
                 <input
                   {...register('title', { required: true })}
                   placeholder="공지 제목을 입력하세요"
-                  className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--text)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                  className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] focus:outline-none"
                 />
               </div>
 
@@ -333,7 +343,7 @@ function NoticesAdminPageInner() {
                   {...register('content', { required: true })}
                   rows={8}
                   placeholder="공지 내용을 입력하세요"
-                  className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--text)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                  className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] focus:outline-none"
                 />
               </div>
 
@@ -420,7 +430,7 @@ function FilterBar({
 }) {
   return (
     <fieldset className="space-y-2">
-      <legend className="text-xs font-semibold uppercase tracking-wide text-[var(--text-sub)]">
+      <legend className="text-xs font-semibold tracking-wide text-[var(--text-sub)] uppercase">
         공개 상태
       </legend>
       <div className="flex flex-wrap gap-2">
@@ -431,7 +441,7 @@ function FilterBar({
               key={option.value}
               type="button"
               onClick={() => onChange(option.value)}
-              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 ${
+              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 focus-visible:outline-none ${
                 isActive
                   ? 'border-[var(--primary)] bg-[var(--primary-sub02)] text-[var(--primary)]'
                   : 'border-[var(--border-color)] text-[var(--text-sub)] hover:border-[var(--primary)] hover:text-[var(--primary)]'
@@ -465,4 +475,3 @@ function StatusTag({
     </span>
   );
 }
-

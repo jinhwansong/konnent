@@ -1,9 +1,5 @@
 'use client';
-import {
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, Suspense, useEffect, useMemo, useState } from 'react';
 
 import AdminShell from '@/components/common/AdminShell';
@@ -21,10 +17,7 @@ import {
   useToggleSessionPublic,
   useUpdateReservationStatus,
 } from '@/hooks/query/useAdmin';
-import type {
-  MentoringSessionRow,
-  ReservationRow,
-} from '@/types/admin';
+import type { MentoringSessionRow, ReservationRow } from '@/types/admin';
 
 const SESSION_STATUS_FILTERS = [
   { label: '전체', value: 'all' },
@@ -147,7 +140,9 @@ function MentoringAdminPageInner() {
   const toggleSessionMutation = useToggleSessionPublic();
   const reservationStatusMutation = useUpdateReservationStatus();
 
-  const setParams = (updates: Record<string, string | number | null | undefined>) => {
+  const setParams = (
+    updates: Record<string, string | number | null | undefined>
+  ) => {
     const params = new URLSearchParams(searchParams.toString());
     Object.entries(updates).forEach(([key, value]) => {
       if (value === null || value === undefined || value === '') {
@@ -177,7 +172,10 @@ function MentoringAdminPageInner() {
 
       <AdminToolbar
         search={
-          <form onSubmit={handleSearchSubmit} className="flex items-center gap-3">
+          <form
+            onSubmit={handleSearchSubmit}
+            className="flex items-center gap-3"
+          >
             <div className="flex-1">
               <SearchInput
                 value={searchTerm}
@@ -210,22 +208,26 @@ function MentoringAdminPageInner() {
               }
             />
             <div className="space-y-2">
-              <span className="text-xs font-semibold uppercase tracking-wide text-[var(--text-sub)]">
+              <span className="text-xs font-semibold tracking-wide text-[var(--text-sub)] uppercase">
                 기간 필터
               </span>
               <div className="flex flex-wrap items-center gap-2">
                 <input
                   type="date"
                   value={dateFrom}
-                  onChange={event => handleDateChange('dateFrom', event.target.value)}
-                  className="rounded-md border border-[var(--border-color)] px-3 py-2 text-sm text-[var(--text)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                  onChange={event =>
+                    handleDateChange('dateFrom', event.target.value)
+                  }
+                  className="rounded-md border border-[var(--border-color)] px-3 py-2 text-sm text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] focus:outline-none"
                 />
                 <span className="text-sm text-[var(--text-sub)]">~</span>
                 <input
                   type="date"
                   value={dateTo}
-                  onChange={event => handleDateChange('dateTo', event.target.value)}
-                  className="rounded-md border border-[var(--border-color)] px-3 py-2 text-sm text-[var(--text)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                  onChange={event =>
+                    handleDateChange('dateTo', event.target.value)
+                  }
+                  className="rounded-md border border-[var(--border-color)] px-3 py-2 text-sm text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] focus:outline-none"
                 />
               </div>
             </div>
@@ -280,21 +282,27 @@ function MentoringAdminPageInner() {
             getRowKey={row => row.id}
             sortState={{
               key: sessionSort.split(':')[0],
-              direction: (sessionSort.split(':')[1] as 'asc' | 'desc') ?? 'none',
+              direction:
+                (sessionSort.split(':')[1] as 'asc' | 'desc') ?? 'none',
             }}
             onSort={(key, direction) =>
               setParams({
-                sessionSort: direction === 'none' ? null : `${key}:${direction}`,
+                sessionSort:
+                  direction === 'none' ? null : `${key}:${direction}`,
                 sessionPage: 1,
               })
             }
             renderRow={row => (
               <>
-                <td className="px-6 py-4 text-xs text-[var(--text-sub)]">{row.id}</td>
+                <td className="px-6 py-4 text-xs text-[var(--text-sub)]">
+                  {row.id}
+                </td>
                 <td className="px-6 py-4 text-sm font-semibold text-[var(--text-bold)]">
                   {row.title}
                 </td>
-                <td className="px-6 py-4 text-sm text-[var(--text)]">{row.mentorName}</td>
+                <td className="px-6 py-4 text-sm text-[var(--text)]">
+                  {row.mentorName}
+                </td>
                 <td className="px-6 py-4 text-sm text-[var(--text-sub)]">
                   {row.category}
                 </td>
@@ -316,7 +324,9 @@ function MentoringAdminPageInner() {
                       type="button"
                       size="sm"
                       variant="outline"
-                      onClick={() => setSessionAction({ type: 'toggle', session: row })}
+                      onClick={() =>
+                        setSessionAction({ type: 'toggle', session: row })
+                      }
                     >
                       {row.isPublic ? '비공개' : '공개'} 전환
                     </Button>
@@ -339,7 +349,9 @@ function MentoringAdminPageInner() {
       {reservationError && !reservationsData ? (
         <EmptyState
           title="예약 정보를 불러오지 못했습니다."
-          description={reservationErrorObj?.message ?? '잠시 후 다시 시도하세요.'}
+          description={
+            reservationErrorObj?.message ?? '잠시 후 다시 시도하세요.'
+          }
         />
       ) : (
         <section className="mt-8 rounded-[var(--radius-lg,1rem)] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
@@ -383,22 +395,30 @@ function MentoringAdminPageInner() {
             getRowKey={row => row.id}
             sortState={{
               key: reservationSort.split(':')[0],
-              direction: (reservationSort.split(':')[1] as 'asc' | 'desc') ?? 'none',
+              direction:
+                (reservationSort.split(':')[1] as 'asc' | 'desc') ?? 'none',
             }}
             onSort={(key, direction) =>
               setParams({
-                reservationSort: direction === 'none' ? null : `${key}:${direction}`,
+                reservationSort:
+                  direction === 'none' ? null : `${key}:${direction}`,
                 reservationPage: 1,
               })
             }
             renderRow={row => (
               <>
-                <td className="px-6 py-4 text-xs text-[var(--text-sub)]">{row.id}</td>
+                <td className="px-6 py-4 text-xs text-[var(--text-sub)]">
+                  {row.id}
+                </td>
                 <td className="px-6 py-4 text-sm font-semibold text-[var(--text-bold)]">
                   {row.sessionTitle}
                 </td>
-                <td className="px-6 py-4 text-sm text-[var(--text)]">{row.menteeName}</td>
-                <td className="px-6 py-4 text-sm text-[var(--text-sub)]">{row.time}</td>
+                <td className="px-6 py-4 text-sm text-[var(--text)]">
+                  {row.menteeName}
+                </td>
+                <td className="px-6 py-4 text-sm text-[var(--text-sub)]">
+                  {row.time}
+                </td>
                 <td className="px-6 py-4 text-sm">
                   <StatusPill
                     label={
@@ -430,7 +450,10 @@ function MentoringAdminPageInner() {
                       size="sm"
                       variant="outline"
                       onClick={() =>
-                        setReservationAction({ type: 'confirm', reservation: row })
+                        setReservationAction({
+                          type: 'confirm',
+                          reservation: row,
+                        })
                       }
                       disabled={row.status === 'confirmed'}
                     >
@@ -441,7 +464,10 @@ function MentoringAdminPageInner() {
                       size="sm"
                       variant="ghost"
                       onClick={() =>
-                        setReservationAction({ type: 'cancel', reservation: row })
+                        setReservationAction({
+                          type: 'cancel',
+                          reservation: row,
+                        })
                       }
                       disabled={row.status === 'cancelled'}
                     >
@@ -489,12 +515,15 @@ function MentoringAdminPageInner() {
             : '취소 시 멘티에게 취소 안내가 발송됩니다.'
         }
         confirmText={reservationAction?.type === 'confirm' ? '확정' : '취소'}
-        confirmVariant={reservationAction?.type === 'cancel' ? 'danger' : 'primary'}
+        confirmVariant={
+          reservationAction?.type === 'cancel' ? 'danger' : 'primary'
+        }
         onConfirm={() => {
           if (!reservationAction) return;
           reservationStatusMutation.mutate({
             reservationId: reservationAction.reservation.id,
-            status: reservationAction.type === 'confirm' ? 'confirmed' : 'cancelled',
+            status:
+              reservationAction.type === 'confirm' ? 'confirmed' : 'cancelled',
           });
           setReservationAction(null);
         }}
@@ -517,7 +546,7 @@ function FilterGroup<T extends string>({
 }) {
   return (
     <fieldset className="space-y-2">
-      <legend className="text-xs font-semibold uppercase tracking-wide text-[var(--text-sub)]">
+      <legend className="text-xs font-semibold tracking-wide text-[var(--text-sub)] uppercase">
         {legend}
       </legend>
       <div className="flex flex-wrap gap-2">
@@ -528,7 +557,7 @@ function FilterGroup<T extends string>({
               key={option.value}
               type="button"
               onClick={() => onChange(option.value)}
-              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 ${
+              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 focus-visible:outline-none ${
                 isActive
                   ? 'border-[var(--primary)] bg-[var(--primary-sub02)] text-[var(--primary)]'
                   : 'border-[var(--border-color)] text-[var(--text-sub)] hover:border-[var(--primary)] hover:text-[var(--primary)]'
@@ -558,9 +587,10 @@ function StatusPill({
         : 'bg-[var(--hover-bg)] text-[var(--text-sub)]';
 
   return (
-    <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${appearance}`}>
+    <span
+      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${appearance}`}
+    >
       {label}
     </span>
   );
 }
-

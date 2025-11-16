@@ -13,10 +13,7 @@ import PageHeader from '@/components/common/PageHeader';
 import Pagination from '@/components/common/Pagination';
 import SearchInput from '@/components/common/SearchInput';
 import { useAdminPayments } from '@/hooks/query/useAdmin';
-import type {
-  AdminPaymentRow,
-  PaymentStatus,
-} from '@/types/admin';
+import type { AdminPaymentRow, PaymentStatus } from '@/types/admin';
 
 const STATUS_FILTERS: Array<{ label: string; value: 'all' | PaymentStatus }> = [
   { label: '전체', value: 'all' },
@@ -58,7 +55,9 @@ function PaymentsAdminPageInner() {
   const dateTo = searchParams.get('dateTo') ?? '';
 
   const [searchTerm, setSearchTerm] = useState(q);
-  const [refundTarget, setRefundTarget] = useState<AdminPaymentRow | null>(null);
+  const [refundTarget, setRefundTarget] = useState<AdminPaymentRow | null>(
+    null
+  );
 
   useEffect(() => {
     setSearchTerm(q);
@@ -96,7 +95,9 @@ function PaymentsAdminPageInner() {
       }),
   });
 
-  const setParams = (updates: Record<string, string | number | null | undefined>) => {
+  const setParams = (
+    updates: Record<string, string | number | null | undefined>
+  ) => {
     const params = new URLSearchParams(searchParams.toString());
     Object.entries(updates).forEach(([key, value]) => {
       if (value === null || value === undefined || value === '') {
@@ -114,7 +115,10 @@ function PaymentsAdminPageInner() {
   };
 
   const handleSort = (key: string, direction: 'asc' | 'desc' | 'none') => {
-    setParams({ sort: direction === 'none' ? null : `${key}:${direction}`, page: 1 });
+    setParams({
+      sort: direction === 'none' ? null : `${key}:${direction}`,
+      page: 1,
+    });
   };
 
   return (
@@ -126,7 +130,10 @@ function PaymentsAdminPageInner() {
 
       <AdminToolbar
         search={
-          <form onSubmit={handleSearchSubmit} className="flex items-center gap-3">
+          <form
+            onSubmit={handleSearchSubmit}
+            className="flex items-center gap-3"
+          >
             <div className="flex-1">
               <SearchInput
                 value={searchTerm}
@@ -149,22 +156,26 @@ function PaymentsAdminPageInner() {
               onChange={value => setParams({ status: value, page: 1 })}
             />
             <div className="space-y-2">
-              <span className="text-xs font-semibold uppercase tracking-wide text-[var(--text-sub)]">
+              <span className="text-xs font-semibold tracking-wide text-[var(--text-sub)] uppercase">
                 기간
               </span>
               <div className="flex flex-wrap items-center gap-2">
                 <input
                   type="date"
                   value={dateFrom}
-                  onChange={event => setParams({ dateFrom: event.target.value, page: 1 })}
-                  className="rounded-md border border-[var(--border-color)] px-3 py-2 text-sm text-[var(--text)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                  onChange={event =>
+                    setParams({ dateFrom: event.target.value, page: 1 })
+                  }
+                  className="rounded-md border border-[var(--border-color)] px-3 py-2 text-sm text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] focus:outline-none"
                 />
                 <span className="text-sm text-[var(--text-sub)]">~</span>
                 <input
                   type="date"
                   value={dateTo}
-                  onChange={event => setParams({ dateTo: event.target.value, page: 1 })}
-                  className="rounded-md border border-[var(--border-color)] px-3 py-2 text-sm text-[var(--text)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                  onChange={event =>
+                    setParams({ dateTo: event.target.value, page: 1 })
+                  }
+                  className="rounded-md border border-[var(--border-color)] px-3 py-2 text-sm text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] focus:outline-none"
                 />
               </div>
             </div>
@@ -213,11 +224,15 @@ function PaymentsAdminPageInner() {
             onSort={handleSort}
             renderRow={row => (
               <>
-                <td className="px-6 py-4 text-xs text-[var(--text-sub)]">{row.id}</td>
+                <td className="px-6 py-4 text-xs text-[var(--text-sub)]">
+                  {row.id}
+                </td>
                 <td className="px-6 py-4 text-sm font-semibold text-[var(--text-bold)]">
                   {row.orderId}
                 </td>
-                <td className="px-6 py-4 text-sm text-[var(--text)]">{row.userName}</td>
+                <td className="px-6 py-4 text-sm text-[var(--text)]">
+                  {row.userName}
+                </td>
                 <td className="px-6 py-4 text-sm font-semibold text-[var(--text-bold)]">
                   ₩{row.amount.toLocaleString()}
                 </td>
@@ -280,7 +295,7 @@ function FilterGroup<T extends string>({
 }) {
   return (
     <fieldset className="space-y-2">
-      <legend className="text-xs font-semibold uppercase tracking-wide text-[var(--text-sub)]">
+      <legend className="text-xs font-semibold tracking-wide text-[var(--text-sub)] uppercase">
         {legend}
       </legend>
       <div className="flex flex-wrap gap-2">
@@ -291,7 +306,7 @@ function FilterGroup<T extends string>({
               key={option.value}
               type="button"
               onClick={() => onChange(option.value)}
-              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 ${
+              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 focus-visible:outline-none ${
                 isActive
                   ? 'border-[var(--primary)] bg-[var(--primary-sub02)] text-[var(--primary)]'
                   : 'border-[var(--border-color)] text-[var(--text-sub)] hover:border-[var(--primary)] hover:text-[var(--primary)]'
@@ -314,9 +329,10 @@ function StatusBadge({ status }: { status: PaymentStatus }) {
         ? 'bg-[var(--color-danger)]/10 text-[var(--color-danger)]'
         : 'bg-[var(--hover-bg)] text-[var(--text-sub)]';
   return (
-    <span className={`inline-flex min-w-[64px] justify-center rounded-full px-3 py-1 text-xs font-semibold ${tone}`}>
+    <span
+      className={`inline-flex min-w-[64px] justify-center rounded-full px-3 py-1 text-xs font-semibold ${tone}`}
+    >
       {status}
     </span>
   );
 }
-

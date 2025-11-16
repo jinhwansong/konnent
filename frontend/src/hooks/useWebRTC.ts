@@ -578,7 +578,8 @@ export const useWebRTC = ({ roomId, userId, socket }: UseWebRTCOptions) => {
           await new Promise(resolve => setTimeout(resolve, 200));
 
           // 다시 확인
-          const stateAfterWait: RTCPeerConnectionState = peerConnection.connectionState;
+          const stateAfterWait: RTCPeerConnectionState =
+            peerConnection.connectionState;
           if (stateAfterWait !== 'connected') {
             console.warn(
               `⚠️ Peer connection still not connected for ${userId}, skipping`

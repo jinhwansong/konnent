@@ -24,14 +24,16 @@ export default function StatCard({
 
   return (
     <article className="rounded-[var(--radius-lg,1rem)] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm transition duration-200 hover:shadow-md">
-      <p className="text-xs font-medium uppercase tracking-wide text-[var(--text-sub)]">
+      <p className="text-xs font-medium tracking-wide text-[var(--text-sub)] uppercase">
         {title}
       </p>
       <p className="mt-3 text-2xl font-semibold text-[var(--text-bold)]">
         {typeof value === 'number' ? value.toLocaleString() : value}
       </p>
       {changeLabel && (
-        <p className={`mt-2 text-xs font-medium ${trendColor}`}>{changeLabel}</p>
+        <p className={`mt-2 text-xs font-medium ${trendColor}`}>
+          {changeLabel}
+        </p>
       )}
       {subText && (
         <p className="mt-2 text-xs text-[var(--text-sub)]">{subText}</p>
@@ -39,4 +41,3 @@ export default function StatCard({
     </article>
   );
 }
-

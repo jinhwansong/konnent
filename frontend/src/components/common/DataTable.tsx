@@ -132,13 +132,15 @@ export default function DataTable<T extends object>({
             <tr>
               {columns.map(column => {
                 const isActive = sortState?.key === column.key;
-                const direction = isActive ? sortState?.direction ?? 'none' : 'none';
+                const direction = isActive
+                  ? (sortState?.direction ?? 'none')
+                  : 'none';
                 return (
                   <th
                     key={String(column.key)}
                     scope="col"
                     style={column.width ? { width: column.width } : undefined}
-                    className={`px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-[var(--text-sub)] ${getAlignmentClasses(column.align)}`}
+                    className={`px-6 py-4 text-left text-xs font-semibold tracking-wide text-[var(--text-sub)] uppercase ${getAlignmentClasses(column.align)}`}
                     aria-sort={
                       column.sortable
                         ? direction === 'none'
@@ -152,14 +154,20 @@ export default function DataTable<T extends object>({
                     <button
                       type="button"
                       onClick={() => handleSort(column)}
-                      className={`flex items-center gap-2 text-xs font-semibold text-[var(--text-sub)] transition hover:text-[var(--text-bold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] ${column.sortable ? '' : 'cursor-default'}`}
-                      aria-label={column.sortable ? `${column.label} 정렬` : undefined}
+                      className={`flex items-center gap-2 text-xs font-semibold text-[var(--text-sub)] transition hover:text-[var(--text-bold)] focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] focus-visible:outline-none ${column.sortable ? '' : 'cursor-default'}`}
+                      aria-label={
+                        column.sortable ? `${column.label} 정렬` : undefined
+                      }
                       disabled={!column.sortable}
                     >
                       {column.label}
                       {column.sortable && (
                         <span className="text-[10px]">
-                          {direction === 'none' ? '↕' : direction === 'asc' ? '↑' : '↓'}
+                          {direction === 'none'
+                            ? '↕'
+                            : direction === 'asc'
+                              ? '↑'
+                              : '↓'}
                         </span>
                       )}
                     </button>
@@ -185,4 +193,3 @@ function getAlignmentClasses(align: Column<object>['align']) {
       return 'text-left';
   }
 }
-

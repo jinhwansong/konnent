@@ -45,7 +45,6 @@ export default function AdminDashboardPage() {
     { key: 'status', label: '상태', sortable: false },
   ];
 
-
   return (
     <AdminShell title="대시보드">
       <PageHeader
@@ -65,7 +64,11 @@ export default function AdminDashboardPage() {
               <StatCard
                 key={metric.id}
                 title={metric.label}
-                value={metric.value >= 1000 ? metric.value.toLocaleString() : metric.value}
+                value={
+                  metric.value >= 1000
+                    ? metric.value.toLocaleString()
+                    : metric.value
+                }
                 changeLabel={
                   typeof metric.delta === 'number'
                     ? `${metric.delta >= 0 ? '+' : ''}${metric.delta}%`
@@ -233,23 +236,65 @@ function MiniTrendChart({
   return (
     <div className="flex flex-col gap-4">
       <div className="rounded-md border border-[var(--border-color)] bg-[var(--background)] p-3">
-        <div style={{ width: '100%', height: 200 }} aria-label="7일 가입 및 결제 추이" role="img">
+        <div
+          style={{ width: '100%', height: 200 }}
+          aria-label="7일 가입 및 결제 추이"
+          role="img"
+        >
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={points} margin={{ top: 10, right: 20, bottom: 0, left: 0 }}>
-              <CartesianGrid stroke="var(--border-color)" strokeDasharray="3 3" />
-              <XAxis dataKey="date" tick={{ fill: 'var(--text-sub)' }} axisLine={{ stroke: 'var(--border-color)' }} tickLine={{ stroke: 'var(--border-color)' }} />
-              <YAxis tick={{ fill: 'var(--text-sub)' }} axisLine={{ stroke: 'var(--border-color)' }} tickLine={{ stroke: 'var(--border-color)' }} />
+            <LineChart
+              data={points}
+              margin={{ top: 10, right: 20, bottom: 0, left: 0 }}
+            >
+              <CartesianGrid
+                stroke="var(--border-color)"
+                strokeDasharray="3 3"
+              />
+              <XAxis
+                dataKey="date"
+                tick={{ fill: 'var(--text-sub)' }}
+                axisLine={{ stroke: 'var(--border-color)' }}
+                tickLine={{ stroke: 'var(--border-color)' }}
+              />
+              <YAxis
+                tick={{ fill: 'var(--text-sub)' }}
+                axisLine={{ stroke: 'var(--border-color)' }}
+                tickLine={{ stroke: 'var(--border-color)' }}
+              />
               <Tooltip
-                contentStyle={{ background: 'var(--card-bg)', border: `1px solid var(--border-color)`, color: 'var(--text)' }}
+                contentStyle={{
+                  background: 'var(--card-bg)',
+                  border: `1px solid var(--border-color)`,
+                  color: 'var(--text)',
+                }}
                 labelStyle={{ color: 'var(--text-sub)' }}
-                formatter={(value: number, name: string) => [value, name === 'signup' ? '가입자' : '결제']}
+                formatter={(value: number, name: string) => [
+                  value,
+                  name === 'signup' ? '가입자' : '결제',
+                ]}
               />
               <Legend
                 wrapperStyle={{ color: 'var(--text-sub)' }}
-                formatter={(value: string) => (value === 'signup' ? '가입자' : '결제')}
+                formatter={(value: string) =>
+                  value === 'signup' ? '가입자' : '결제'
+                }
               />
-              <Line type="monotone" dataKey="signup" stroke="var(--primary-sub04)" strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} />
-              <Line type="monotone" dataKey="payment" stroke="var(--primary)" strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} />
+              <Line
+                type="monotone"
+                dataKey="signup"
+                stroke="var(--primary-sub04)"
+                strokeWidth={2}
+                dot={{ r: 3 }}
+                activeDot={{ r: 5 }}
+              />
+              <Line
+                type="monotone"
+                dataKey="payment"
+                stroke="var(--primary)"
+                strokeWidth={2}
+                dot={{ r: 3 }}
+                activeDot={{ r: 5 }}
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -257,4 +302,3 @@ function MiniTrendChart({
     </div>
   );
 }
-

@@ -210,4 +210,3 @@ export interface UpdateReservationStatusParams {
   reservationId: string;
   status: 'confirmed' | 'cancelled';
 }
-

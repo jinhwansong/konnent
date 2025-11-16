@@ -1,8 +1,4 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
   createNotice,
@@ -60,8 +56,7 @@ export function useUpdateUserStatus() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (params: UpdateUserStatusParams) =>
-      updateUserStatus(params),
+    mutationFn: (params: UpdateUserStatusParams) => updateUserStatus(params),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
     },
@@ -152,7 +147,7 @@ export function useMentoringSessions(params: GetMentoringSessionsParams) {
     queryKey: ['admin', 'mentoring', 'sessions', params],
     queryFn: () => getMentoringSessions(params),
     staleTime: 30 * 1000, // 30초
-    placeholderData: (previousData) => previousData,
+    placeholderData: previousData => previousData,
   });
 }
 
@@ -163,18 +158,22 @@ export function useToggleSessionPublic() {
     mutationFn: (params: ToggleSessionPublicParams) =>
       toggleSessionPublic(params),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'mentoring', 'sessions'] });
+      queryClient.invalidateQueries({
+        queryKey: ['admin', 'mentoring', 'sessions'],
+      });
     },
   });
 }
 
 // 멘토링 예약 관리
-export function useMentoringReservations(params: GetMentoringReservationsParams) {
+export function useMentoringReservations(
+  params: GetMentoringReservationsParams
+) {
   return useQuery({
     queryKey: ['admin', 'mentoring', 'reservations', params],
     queryFn: () => getMentoringReservations(params),
     staleTime: 30 * 1000, // 30초
-    placeholderData: (previousData) => previousData,
+    placeholderData: previousData => previousData,
   });
 }
 
@@ -185,8 +184,9 @@ export function useUpdateReservationStatus() {
     mutationFn: (params: UpdateReservationStatusParams) =>
       updateReservationStatus(params),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'mentoring', 'reservations'] });
+      queryClient.invalidateQueries({
+        queryKey: ['admin', 'mentoring', 'reservations'],
+      });
     },
   });
 }
-

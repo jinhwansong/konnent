@@ -18,10 +18,11 @@ export default function EmptyState({
   return (
     <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-[var(--border-color)] bg-[var(--card-bg)] px-6 py-16 text-center shadow-sm">
       {icon && <div className="text-3xl text-[var(--text-sub)]">{icon}</div>}
-      <h3 className="text-base font-semibold text-[var(--text-bold)]">{title}</h3>
+      <h3 className="text-base font-semibold text-[var(--text-bold)]">
+        {title}
+      </h3>
       <p className="max-w-md text-sm text-[var(--text-sub)]">{description}</p>
       {action && <div className="mt-2">{action}</div>}
     </div>
   );
 }
-

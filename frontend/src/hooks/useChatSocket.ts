@@ -119,7 +119,7 @@ export function useChatSocket(options: UseChatSocketOptions) {
     }
 
     // Cloudflare 터널 환경에서는 백엔드 터널 URL 사용
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
     // 소켓 연결 생성
     const socket = io(`${apiUrl}/chat`, {

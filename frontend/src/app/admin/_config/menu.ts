@@ -14,4 +14,3 @@ export const adminMenu: AdminMenuItem[] = [
   { href: '/admin/notices', label: '공지' },
   { href: '/admin/settings', label: '설정' },
 ];
-

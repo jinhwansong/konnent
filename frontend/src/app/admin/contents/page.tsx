@@ -1,11 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, Suspense, useEffect, useMemo, useState } from 'react';
 
 import AdminShell from '@/components/common/AdminShell';
@@ -18,10 +14,7 @@ import PageHeader from '@/components/common/PageHeader';
 import Pagination from '@/components/common/Pagination';
 import SearchInput from '@/components/common/SearchInput';
 import { useAdminArticles, useAdminReviews } from '@/hooks/query/useAdmin';
-import type {
-  AdminArticleRow,
-  AdminReviewRow,
-} from '@/types/admin';
+import type { AdminArticleRow, AdminReviewRow } from '@/types/admin';
 
 const ARTICLE_STATUS_OPTIONS = [
   { label: '전체', value: 'all' },
@@ -143,7 +136,9 @@ function ContentsAdminPageInner() {
       return { id, action };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'contents', 'articles'] });
+      queryClient.invalidateQueries({
+        queryKey: ['admin', 'contents', 'articles'],
+      });
     },
   });
 
@@ -159,11 +154,15 @@ function ContentsAdminPageInner() {
       return { id, action };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'contents', 'reviews'] });
+      queryClient.invalidateQueries({
+        queryKey: ['admin', 'contents', 'reviews'],
+      });
     },
   });
 
-  const setParams = (updates: Record<string, string | number | null | undefined>) => {
+  const setParams = (
+    updates: Record<string, string | number | null | undefined>
+  ) => {
     const params = new URLSearchParams(searchParams.toString());
     Object.entries(updates).forEach(([key, value]) => {
       if (value === null || value === undefined || value === '') {
@@ -221,7 +220,9 @@ function ContentsAdminPageInner() {
               legend="후기 신고 상태"
               value={reviewReported}
               options={REVIEW_REPORT_OPTIONS}
-              onChange={value => setParams({ reviewReported: value, reviewPage: 1 })}
+              onChange={value =>
+                setParams({ reviewReported: value, reviewPage: 1 })
+              }
             />
           </div>
         }
@@ -230,7 +231,11 @@ function ContentsAdminPageInner() {
       {articlesQuery.isError && !articlesQuery.data ? (
         <EmptyState
           title="아티클 정보를 불러오지 못했습니다."
-          description={articlesQuery.error instanceof Error ? articlesQuery.error.message : '잠시 후 다시 시도하세요.'}
+          description={
+            articlesQuery.error instanceof Error
+              ? articlesQuery.error.message
+              : '잠시 후 다시 시도하세요.'
+          }
         />
       ) : (
         <section className="mt-8 rounded-[var(--radius-lg,1rem)] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
@@ -248,7 +253,10 @@ function ContentsAdminPageInner() {
               <select
                 value={articleLimit}
                 onChange={event =>
-                  setParams({ articleLimit: Number(event.target.value), articlePage: 1 })
+                  setParams({
+                    articleLimit: Number(event.target.value),
+                    articlePage: 1,
+                  })
                 }
                 className="rounded-md border border-[var(--border-color)] px-2 py-1 text-xs"
               >
@@ -265,26 +273,36 @@ function ContentsAdminPageInner() {
             data={articlesQuery.data?.data ?? []}
             isLoading={articlesQuery.isLoading}
             isError={articlesQuery.isError}
-            errorMessage={articlesQuery.error instanceof Error ? articlesQuery.error.message : undefined}
+            errorMessage={
+              articlesQuery.error instanceof Error
+                ? articlesQuery.error.message
+                : undefined
+            }
             emptyMessage="조건에 맞는 아티클이 없습니다."
             getRowKey={row => row.id}
             sortState={{
               key: articleSort.split(':')[0],
-              direction: (articleSort.split(':')[1] as 'asc' | 'desc') ?? 'none',
+              direction:
+                (articleSort.split(':')[1] as 'asc' | 'desc') ?? 'none',
             }}
             onSort={(key, direction) =>
               setParams({
-                articleSort: direction === 'none' ? null : `${key}:${direction}`,
+                articleSort:
+                  direction === 'none' ? null : `${key}:${direction}`,
                 articlePage: 1,
               })
             }
             renderRow={row => (
               <>
-                <td className="px-6 py-4 text-xs text-[var(--text-sub)]">{row.id}</td>
+                <td className="px-6 py-4 text-xs text-[var(--text-sub)]">
+                  {row.id}
+                </td>
                 <td className="px-6 py-4 text-sm font-semibold text-[var(--text-bold)]">
                   {row.title}
                 </td>
-                <td className="px-6 py-4 text-sm text-[var(--text)]">{row.author}</td>
+                <td className="px-6 py-4 text-sm text-[var(--text)]">
+                  {row.author}
+                </td>
                 <td className="px-6 py-4 text-sm text-[var(--text-sub)]">
                   {row.views.toLocaleString()}
                 </td>
@@ -318,7 +336,9 @@ function ContentsAdminPageInner() {
                       type="button"
                       size="sm"
                       variant="outline"
-                      onClick={() => setArticleAction({ type: 'toggle', article: row })}
+                      onClick={() =>
+                        setArticleAction({ type: 'toggle', article: row })
+                      }
                     >
                       {row.status === 'published' ? '비공개' : '발행'}
                     </Button>
@@ -329,7 +349,9 @@ function ContentsAdminPageInner() {
                       type="button"
                       size="sm"
                       variant="ghost"
-                      onClick={() => setArticleAction({ type: 'delete', article: row })}
+                      onClick={() =>
+                        setArticleAction({ type: 'delete', article: row })
+                      }
                     >
                       삭제
                     </Button>
@@ -349,7 +371,11 @@ function ContentsAdminPageInner() {
       {reviewsQuery.isError && !reviewsQuery.data ? (
         <EmptyState
           title="후기 정보를 불러오지 못했습니다."
-          description={reviewsQuery.error instanceof Error ? reviewsQuery.error.message : '잠시 후 다시 시도하세요.'}
+          description={
+            reviewsQuery.error instanceof Error
+              ? reviewsQuery.error.message
+              : '잠시 후 다시 시도하세요.'
+          }
         />
       ) : (
         <section className="mt-8 rounded-[var(--radius-lg,1rem)] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
@@ -367,7 +393,10 @@ function ContentsAdminPageInner() {
               <select
                 value={reviewLimit}
                 onChange={event =>
-                  setParams({ reviewLimit: Number(event.target.value), reviewPage: 1 })
+                  setParams({
+                    reviewLimit: Number(event.target.value),
+                    reviewPage: 1,
+                  })
                 }
                 className="rounded-md border border-[var(--border-color)] px-2 py-1 text-xs"
               >
@@ -384,7 +413,11 @@ function ContentsAdminPageInner() {
             data={reviewsQuery.data?.data ?? []}
             isLoading={reviewsQuery.isLoading}
             isError={reviewsQuery.isError}
-            errorMessage={reviewsQuery.error instanceof Error ? reviewsQuery.error.message : undefined}
+            errorMessage={
+              reviewsQuery.error instanceof Error
+                ? reviewsQuery.error.message
+                : undefined
+            }
             emptyMessage="조건에 맞는 후기가 없습니다."
             getRowKey={row => row.id}
             sortState={{
@@ -399,7 +432,9 @@ function ContentsAdminPageInner() {
             }
             renderRow={row => (
               <>
-                <td className="px-6 py-4 text-xs text-[var(--text-sub)]">{row.id}</td>
+                <td className="px-6 py-4 text-xs text-[var(--text-sub)]">
+                  {row.id}
+                </td>
                 <td className="px-6 py-4 text-sm text-[var(--text)]">
                   {row.targetSession}
                 </td>
@@ -474,7 +509,9 @@ function ContentsAdminPageInner() {
       <ConfirmDialog
         open={!!reviewAction}
         title={
-          reviewAction?.type === 'hide' ? '후기를 숨길까요?' : '후기를 복구할까요?'
+          reviewAction?.type === 'hide'
+            ? '후기를 숨길까요?'
+            : '후기를 복구할까요?'
         }
         description="조치 즉시 사용자에게 반영됩니다."
         confirmText={reviewAction?.type === 'hide' ? '숨김' : '복구'}
@@ -506,7 +543,7 @@ function FilterButtons<T extends string>({
 }) {
   return (
     <fieldset className="space-y-2">
-      <legend className="text-xs font-semibold uppercase tracking-wide text-[var(--text-sub)]">
+      <legend className="text-xs font-semibold tracking-wide text-[var(--text-sub)] uppercase">
         {legend}
       </legend>
       <div className="flex flex-wrap gap-2">
@@ -517,7 +554,7 @@ function FilterButtons<T extends string>({
               key={option.value}
               type="button"
               onClick={() => onChange(option.value)}
-              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 ${
+              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 focus-visible:outline-none ${
                 isActive
                   ? 'border-[var(--primary)] bg-[var(--primary-sub02)] text-[var(--primary)]'
                   : 'border-[var(--border-color)] text-[var(--text-sub)] hover:border-[var(--primary)] hover:text-[var(--primary)]'
@@ -548,9 +585,10 @@ function StatusBadge({
           ? 'bg-[var(--primary-sub04)]/10 text-[var(--primary-sub04)]'
           : 'bg-[var(--hover-bg)] text-[var(--text-sub)]';
   return (
-    <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${appearance}`}>
+    <span
+      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${appearance}`}
+    >
       {label}
     </span>
   );
 }
-

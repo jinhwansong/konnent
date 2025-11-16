@@ -141,7 +141,7 @@ export const getMentorApplications = async (
   });
 
   return {
-    data: response.data.map((item) => ({
+    data: response.data.map(item => ({
       id: item.id,
       applicantName: item.name,
       careerYears: 0, // TODO: career 정보 추가 필요
@@ -300,10 +300,13 @@ export const toggleSessionPublic = async ({
   sessionId,
   isPublic,
 }: ToggleSessionPublicParams) => {
-  return fetcher<{ message: string }>(`admin/mentoring/sessions/${sessionId}/public`, {
-    method: 'PATCH',
-    body: JSON.stringify({ isPublic }),
-  });
+  return fetcher<{ message: string }>(
+    `admin/mentoring/sessions/${sessionId}/public`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify({ isPublic }),
+    }
+  );
 };
 
 // 멘토링 예약 관리
@@ -347,4 +350,3 @@ export const updateReservationStatus = async ({
     }
   );
 };
-

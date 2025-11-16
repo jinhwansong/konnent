@@ -164,7 +164,7 @@ export default function SignPage() {
             />
             <FormErrorMessage message={errors.email?.message} />
             <button
-              className="absolute top-8 right-1  px-2.5 py-2.5 text-sm text-[var(--primary)] disabled:text-[var(--text-sub)]"
+              className="absolute top-8 right-1 px-2.5 py-2.5 text-sm text-[var(--primary)] disabled:text-[var(--text-sub)]"
               disabled={!email || !!errors.email}
               type="button"
               onClick={checkEmailDuplicate}
@@ -252,7 +252,7 @@ export default function SignPage() {
             <FormErrorMessage message={errors.nickname?.message} />
             <button
               type="button"
-              className="absolute top-8 right-1  px-2.5 py-2.5 text-sm text-[var(--primary)] disabled:text-[var(--text-sub)]"
+              className="absolute top-8 right-1 px-2.5 py-2.5 text-sm text-[var(--primary)] disabled:text-[var(--text-sub)]"
               disabled={!nickname || !!errors.nickname}
               onClick={checkNicknameDuplicate}
             >

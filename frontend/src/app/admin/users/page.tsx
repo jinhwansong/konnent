@@ -13,11 +13,7 @@ import PageHeader from '@/components/common/PageHeader';
 import Pagination from '@/components/common/Pagination';
 import SearchInput from '@/components/common/SearchInput';
 import { useAdminUsers, useUpdateUserStatus } from '@/hooks/query/useAdmin';
-import type {
-  AdminUserRow,
-  UserRole,
-  UserStatus,
-} from '@/types/admin';
+import type { AdminUserRow, UserRole, UserStatus } from '@/types/admin';
 
 const LIMIT_OPTIONS = [10, 20, 30] as const;
 const ROLE_FILTERS: Array<{ label: string; value: 'all' | UserRole }> = [
@@ -102,7 +98,9 @@ function AdminUsersPageInner() {
 
   const updateStatusMutation = useUpdateUserStatus();
 
-  const setParams = (updates: Record<string, string | number | null | undefined>) => {
+  const setParams = (
+    updates: Record<string, string | number | null | undefined>
+  ) => {
     const params = new URLSearchParams(searchParams.toString());
     Object.entries(updates).forEach(([key, value]) => {
       if (value === null || value === undefined || value === '') {
@@ -145,7 +143,10 @@ function AdminUsersPageInner() {
 
       <AdminToolbar
         search={
-          <form onSubmit={handleSearchSubmit} className="flex items-center gap-3">
+          <form
+            onSubmit={handleSearchSubmit}
+            className="flex items-center gap-3"
+          >
             <div className="flex-1">
               <SearchInput
                 value={searchTerm}
@@ -181,8 +182,10 @@ function AdminUsersPageInner() {
               페이지당
               <select
                 value={limit}
-                onChange={event => handleLimitChange(Number(event.target.value))}
-                className="rounded-md border border-[var(--border-color)] bg-transparent px-2 py-1 text-xs text-[var(--text)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                onChange={event =>
+                  handleLimitChange(Number(event.target.value))
+                }
+                className="rounded-md border border-[var(--border-color)] bg-transparent px-2 py-1 text-xs text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] focus:outline-none"
               >
                 {LIMIT_OPTIONS.map(option => (
                   <option key={option} value={option}>
@@ -239,8 +242,12 @@ function AdminUsersPageInner() {
                 <td className="px-6 py-4 text-sm font-semibold text-[var(--text-bold)]">
                   {row.name}
                 </td>
-                <td className="px-6 py-4 text-sm text-[var(--text)]">{row.email}</td>
-                <td className="px-6 py-4 text-sm text-[var(--text-sub)]">{row.role}</td>
+                <td className="px-6 py-4 text-sm text-[var(--text)]">
+                  {row.email}
+                </td>
+                <td className="px-6 py-4 text-sm text-[var(--text-sub)]">
+                  {row.role}
+                </td>
                 <td className="px-6 py-4 text-sm text-[var(--text-sub)]">
                   {row.createdAt}
                 </td>
@@ -316,13 +323,19 @@ function AdminUsersPageInner() {
       />
 
       {selectedUser && (
-        <Modal title="사용자 상세" onClose={() => setSelectedUser(null)} size="lg">
+        <Modal
+          title="사용자 상세"
+          onClose={() => setSelectedUser(null)}
+          size="lg"
+        >
           <div className="space-y-4">
             <header>
               <h3 className="text-lg font-semibold text-[var(--text-bold)]">
                 {selectedUser.name}
               </h3>
-              <p className="text-sm text-[var(--text-sub)]">{selectedUser.email}</p>
+              <p className="text-sm text-[var(--text-sub)]">
+                {selectedUser.email}
+              </p>
             </header>
             <dl className="space-y-3 text-sm text-[var(--text)]">
               <div className="flex justify-between">
@@ -344,7 +357,11 @@ function AdminUsersPageInner() {
                 </dd>
               </div>
             </dl>
-            <Button variant="primary" size="sm" onClick={() => setSelectedUser(null)}>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => setSelectedUser(null)}
+            >
               닫기
             </Button>
           </div>
@@ -367,7 +384,7 @@ function FilterGroup<T extends string>({
 }) {
   return (
     <fieldset>
-      <legend className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--text-sub)]">
+      <legend className="mb-2 text-xs font-semibold tracking-wide text-[var(--text-sub)] uppercase">
         {label}
       </legend>
       <div className="flex flex-wrap gap-2">
@@ -378,7 +395,7 @@ function FilterGroup<T extends string>({
               key={option.value}
               type="button"
               onClick={() => onChange(option.value)}
-              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 ${
+              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 focus-visible:outline-none ${
                 isActive
                   ? 'border-[var(--primary)] bg-[var(--primary-sub02)] text-[var(--primary)]'
                   : 'border-[var(--border-color)] text-[var(--text-sub)] hover:border-[var(--primary)] hover:text-[var(--primary)]'
@@ -408,4 +425,3 @@ function StatusBadge({ status }: { status: UserStatus }) {
     </span>
   );
 }
-

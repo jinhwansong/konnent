@@ -51,7 +51,8 @@ export default function SettingsAdminPage() {
       return { previous };
     },
     onError: (_err, _variables, context) => {
-      if (context?.previous) queryClient.setQueryData(queryKey, context.previous);
+      if (context?.previous)
+        queryClient.setQueryData(queryKey, context.previous);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey });
@@ -69,7 +70,9 @@ export default function SettingsAdminPage() {
           ? {
               ...old,
               notifications: old.notifications.map(notification =>
-                notification.id === id ? { ...notification, enabled } : notification
+                notification.id === id
+                  ? { ...notification, enabled }
+                  : notification
               ),
             }
           : old
@@ -77,7 +80,8 @@ export default function SettingsAdminPage() {
       return { previous };
     },
     onError: (_err, _variables, context) => {
-      if (context?.previous) queryClient.setQueryData(queryKey, context.previous);
+      if (context?.previous)
+        queryClient.setQueryData(queryKey, context.previous);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey });
@@ -94,7 +98,9 @@ export default function SettingsAdminPage() {
       {isError && !data ? (
         <EmptyState
           title="설정 정보를 불러오지 못했습니다."
-          description={error instanceof Error ? error.message : '잠시 후 다시 시도하세요.'}
+          description={
+            error instanceof Error ? error.message : '잠시 후 다시 시도하세요.'
+          }
         />
       ) : (
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
@@ -103,7 +109,8 @@ export default function SettingsAdminPage() {
               결제 키 상태
             </h2>
             <p className="mt-1 text-xs text-[var(--text-sub)]">
-              실제 키는 마스킹 처리되어 표시됩니다. 갱신을 통해 보안을 유지하세요.
+              실제 키는 마스킹 처리되어 표시됩니다. 갱신을 통해 보안을
+              유지하세요.
             </p>
             <div className="mt-4 space-y-4">
               {(data?.paymentKeys ?? []).map((key, index) => (
@@ -115,7 +122,9 @@ export default function SettingsAdminPage() {
                     <p className="text-sm font-semibold text-[var(--text-bold)]">
                       {key.label}
                     </p>
-                    <p className="text-sm text-[var(--text-sub)]">{key.maskedKey}</p>
+                    <p className="text-sm text-[var(--text-sub)]">
+                      {key.maskedKey}
+                    </p>
                     <p className="text-xs text-[var(--text-sub)]">
                       마지막 갱신: {key.lastUpdated}
                     </p>
@@ -161,7 +170,10 @@ export default function SettingsAdminPage() {
                   <Toggle
                     checked={notification.enabled}
                     onCheckedChange={checked =>
-                      notificationMutation.mutate({ id: notification.id, enabled: checked })
+                      notificationMutation.mutate({
+                        id: notification.id,
+                        enabled: checked,
+                      })
                     }
                     aria-label={`${notification.label} 알림 토글`}
                   />
@@ -178,11 +190,12 @@ export default function SettingsAdminPage() {
               관리자 권한 요약
             </h2>
             <p className="mt-1 text-xs text-[var(--text-sub)]">
-              관리자 접근은 역할 기반으로 제한됩니다. 상위 권한에서만 설정 변경이 가능합니다.
+              관리자 접근은 역할 기반으로 제한됩니다. 상위 권한에서만 설정
+              변경이 가능합니다.
             </p>
             <div className="mt-6 flex flex-wrap gap-6">
               <div>
-                <p className="text-xs uppercase tracking-wide text-[var(--text-sub)]">
+                <p className="text-xs tracking-wide text-[var(--text-sub)] uppercase">
                   전체 관리자
                 </p>
                 <p className="mt-2 text-2xl font-semibold text-[var(--text-bold)]">
@@ -190,7 +203,7 @@ export default function SettingsAdminPage() {
                 </p>
               </div>
               <div>
-                <p className="text-xs uppercase tracking-wide text-[var(--text-sub)]">
+                <p className="text-xs tracking-wide text-[var(--text-sub)] uppercase">
                   슈퍼 관리자
                 </p>
                 <p className="mt-2 text-2xl font-semibold text-[var(--text-bold)]">
@@ -202,7 +215,9 @@ export default function SettingsAdminPage() {
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => router.push(data?.adminRoleSummary.link ?? '/admin/roles')}
+                  onClick={() =>
+                    router.push(data?.adminRoleSummary.link ?? '/admin/roles')
+                  }
                 >
                   권한 관리 이동
                 </Button>
@@ -210,7 +225,8 @@ export default function SettingsAdminPage() {
             </div>
 
             <div className="mt-6 rounded-lg border border-[var(--border-color)] bg-[var(--background)] px-4 py-3 text-xs text-[var(--text-sub)]">
-              이 페이지는 관리자 전용입니다. 접근 권한이 필요하면 상위 관리자에게 요청하세요.
+              이 페이지는 관리자 전용입니다. 접근 권한이 필요하면 상위
+              관리자에게 요청하세요.
             </div>
           </section>
         </div>
@@ -218,4 +234,3 @@ export default function SettingsAdminPage() {
     </AdminShell>
   );
 }
-

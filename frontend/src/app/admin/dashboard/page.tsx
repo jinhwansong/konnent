@@ -1,5 +1,16 @@
 'use client';
 
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  Legend,
+} from 'recharts';
+
 import AdminShell from '@/components/common/AdminShell';
 import DataTable from '@/components/common/DataTable';
 import EmptyState from '@/components/common/EmptyState';
@@ -69,7 +80,7 @@ export default function AdminDashboardPage() {
                 {Array.from({ length: 4 }).map((_, index) => (
                   <div
                     key={`metric-skeleton-${index}`}
-                    className="h-32 animate-pulse rounded-[var(--radius-lg,1rem)] border border-[var(--border-color)] bg-[var(--card-bg)]"
+                    className="h-32 animate-pulse rounded-md border border-[var(--border-color)] bg-[var(--card-bg)]"
                   />
                 ))}
               </>
@@ -77,7 +88,7 @@ export default function AdminDashboardPage() {
           </section>
 
           <section className="mt-8 grid gap-6 lg:grid-cols-2">
-            <article className="rounded-[var(--radius-lg,1rem)] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
+            <article className="rounded-md border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
               <header className="mb-4 flex items-center justify-between">
                 <div>
                   <h3 className="text-base font-semibold text-[var(--text-bold)]">
@@ -91,7 +102,7 @@ export default function AdminDashboardPage() {
               <MiniTrendChart points={trends} isLoading={isLoading} />
             </article>
 
-            <article className="rounded-[var(--radius-lg,1rem)] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
+            <article className="rounded-md border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
               <header className="mb-4 flex items-center justify-between">
                 <div>
                   <h3 className="text-base font-semibold text-[var(--text-bold)]">
@@ -130,7 +141,7 @@ export default function AdminDashboardPage() {
             </article>
           </section>
 
-          <section className="mt-8 rounded-[var(--radius-lg,1rem)] border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
+          <section className="mt-8 rounded-md border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-sm">
             <header className="mb-4 flex items-center justify-between">
               <div>
                 <h3 className="text-base font-semibold text-[var(--text-bold)]">
@@ -207,83 +218,40 @@ function MiniTrendChart({
 }) {
   if (isLoading && points.length === 0) {
     return (
-      <div className="h-48 animate-pulse rounded-[var(--radius-lg,1rem)] bg-[var(--hover-bg)]" />
+      <div className="h-48 animate-pulse rounded-md bg-[var(--hover-bg)]" />
     );
   }
 
   if (!points.length) {
     return (
-      <div className="flex h-48 flex-col items-center justify-center rounded-[var(--radius-lg,1rem)] border border-dashed border-[var(--border-color)] text-sm text-[var(--text-sub)]">
+      <div className="flex h-48 flex-col items-center justify-center rounded-md border border-dashed border-[var(--border-color)] text-sm text-[var(--text-sub)]">
         데이터가 충분하지 않습니다.
       </div>
     );
   }
 
-  const width = 360;
-  const height = 160;
-  const padding = 20;
-
-  const signupValues = points.map(point => point.signup);
-  const paymentValues = points.map(point => point.payment);
-  const maxValue = Math.max(...signupValues, ...paymentValues, 1);
-
-  const toPolyline = (values: number[]) =>
-    values
-      .map((value, index) => {
-        const x =
-          padding + (index / Math.max(1, values.length - 1)) * (width - padding * 2);
-        const y = height - padding - (value / maxValue) * (height - padding * 2);
-        return `${x.toFixed(1)},${y.toFixed(1)}`;
-      })
-      .join(' ');
-
   return (
     <div className="flex flex-col gap-4">
-      <svg
-        width="100%"
-        height={height}
-        viewBox={`0 0 ${width} ${height}`}
-        role="img"
-        aria-label="7일 가입 및 결제 추이"
-        className="rounded-[var(--radius-lg,1rem)] border border-[var(--border-color)] bg-[var(--background)]"
-      >
-        <polyline
-          fill="none"
-          stroke="var(--primary-sub04)"
-          strokeWidth={2}
-          strokeLinecap="round"
-          points={toPolyline(signupValues)}
-        />
-        <polyline
-          fill="none"
-          stroke="var(--primary)"
-          strokeWidth={2}
-          strokeLinecap="round"
-          points={toPolyline(paymentValues)}
-        />
-        {points.map((point, index) => {
-          const x =
-            padding + (index / Math.max(1, points.length - 1)) * (width - padding * 2);
-          const ySignup =
-            height - padding - (point.signup / maxValue) * (height - padding * 2);
-          const yPayment =
-            height - padding - (point.payment / maxValue) * (height - padding * 2);
-          return (
-            <g key={point.date}>
-              <circle cx={x} cy={ySignup} r={3} fill="var(--primary-sub04)" />
-              <circle cx={x} cy={yPayment} r={3} fill="var(--primary)" />
-            </g>
-          );
-        })}
-      </svg>
-      <div className="flex items-center justify-between text-xs text-[var(--text-sub)]">
-        <div className="flex items-center gap-2">
-          <span className="inline-flex h-2 w-2 rounded-full bg-[var(--primary-sub04)]" />
-          가입자
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="inline-flex h-2 w-2 rounded-full bg-[var(--primary)]" />
-          결제
+      <div className="rounded-md border border-[var(--border-color)] bg-[var(--background)] p-3">
+        <div style={{ width: '100%', height: 200 }} aria-label="7일 가입 및 결제 추이" role="img">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={points} margin={{ top: 10, right: 20, bottom: 0, left: 0 }}>
+              <CartesianGrid stroke="var(--border-color)" strokeDasharray="3 3" />
+              <XAxis dataKey="date" tick={{ fill: 'var(--text-sub)' }} axisLine={{ stroke: 'var(--border-color)' }} tickLine={{ stroke: 'var(--border-color)' }} />
+              <YAxis tick={{ fill: 'var(--text-sub)' }} axisLine={{ stroke: 'var(--border-color)' }} tickLine={{ stroke: 'var(--border-color)' }} />
+              <Tooltip
+                contentStyle={{ background: 'var(--card-bg)', border: `1px solid var(--border-color)`, color: 'var(--text)' }}
+                labelStyle={{ color: 'var(--text-sub)' }}
+                formatter={(value: number, name: string) => [value, name === 'signup' ? '가입자' : '결제']}
+              />
+              <Legend
+                wrapperStyle={{ color: 'var(--text-sub)' }}
+                formatter={(value: string) => (value === 'signup' ? '가입자' : '결제')}
+              />
+              <Line type="monotone" dataKey="signup" stroke="var(--primary-sub04)" strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} />
+              <Line type="monotone" dataKey="payment" stroke="var(--primary)" strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
       </div>
     </div>

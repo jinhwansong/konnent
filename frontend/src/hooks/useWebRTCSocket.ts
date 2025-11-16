@@ -35,7 +35,7 @@ export function useWebRTCSocket({
   const socketRef = useRef<Socket | null>(null);
 
   // Cloudflare 터널 환경에서는 백엔드 터널 URL 사용
-  const apiUrl = 'https://interim-cow-connector-prominent.trycloudflare.com';
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   // 소켓 연결
   useEffect(() => {
@@ -129,7 +129,7 @@ export function useWebRTCSocket({
         socketRef.current = null;
       }
     };
-  }, [enabled, roomId, user.id, user.name, user.image, user.isMentor]);
+  }, [enabled, roomId, user.id, user.name, user.image, user.isMentor, apiUrl]);
 
   // 스트림 준비 알림
   const notifyStreamReady = useCallback(() => {

@@ -1,24 +1,18 @@
 'use client';
-
-import { FormEvent, useEffect, useMemo, useState } from 'react';
-import {
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { FormEvent, Suspense, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 import AdminShell from '@/components/common/AdminShell';
-import PageHeader from '@/components/common/PageHeader';
 import AdminToolbar from '@/components/common/AdminToolbar';
-import SearchInput from '@/components/common/SearchInput';
-import DataTable from '@/components/common/DataTable';
-import Pagination from '@/components/common/Pagination';
 import Button from '@/components/common/Button';
-import EmptyState from '@/components/common/EmptyState';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
+import DataTable from '@/components/common/DataTable';
+import EmptyState from '@/components/common/EmptyState';
+import PageHeader from '@/components/common/PageHeader';
+import Pagination from '@/components/common/Pagination';
+import SearchInput from '@/components/common/SearchInput';
 import { Toggle } from '@/components/common/Toggle';
-
 import {
   useAdminNotices,
   useCreateNotice,
@@ -40,6 +34,24 @@ const PUBLISHED_FILTERS = [
 ] as const;
 
 export default function NoticesAdminPage() {
+  return (
+    <Suspense
+      fallback={
+        <AdminShell title="공지">
+          <PageHeader
+            title="공지 관리"
+            description="서비스 공지를 등록하고 업데이트하세요."
+          />
+          <div className="mt-6 h-48 animate-pulse rounded-md border border-[var(--border-color)] bg-[var(--card-bg)]" />
+        </AdminShell>
+      }
+    >
+      <NoticesAdminPageInner />
+    </Suspense>
+  );
+}
+
+function NoticesAdminPageInner() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -59,7 +71,6 @@ export default function NoticesAdminPage() {
     handleSubmit,
     control,
     reset,
-    watch,
     formState: { isSubmitting },
   } = useForm<NoticeFormValues>({
     defaultValues: {
@@ -126,8 +137,6 @@ export default function NoticesAdminPage() {
     reset({ title: '', content: '', published: true });
     setEditingNotice(null);
   };
-
-  const formPublished = watch('published');
 
   return (
     <AdminShell title="공지">

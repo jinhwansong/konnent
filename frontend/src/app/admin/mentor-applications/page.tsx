@@ -1,31 +1,25 @@
 'use client';
-
-import { FormEvent, useEffect, useMemo, useState } from 'react';
-import {
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { FormEvent, Suspense, useEffect, useMemo, useState } from 'react';
 
 import AdminShell from '@/components/common/AdminShell';
-import PageHeader from '@/components/common/PageHeader';
 import AdminToolbar from '@/components/common/AdminToolbar';
-import SearchInput from '@/components/common/SearchInput';
-import DataTable from '@/components/common/DataTable';
-import Pagination from '@/components/common/Pagination';
 import Button from '@/components/common/Button';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
-import Modal from '@/components/common/Modal';
+import DataTable from '@/components/common/DataTable';
 import EmptyState from '@/components/common/EmptyState';
-
+import Modal from '@/components/common/Modal';
+import PageHeader from '@/components/common/PageHeader';
+import Pagination from '@/components/common/Pagination';
+import SearchInput from '@/components/common/SearchInput';
 import { useMentorApplications } from '@/hooks/query/useAdmin';
-import type {
-  MentorApplicationRow,
-  ApplicationStatus,
-} from '@/types/admin';
+import type { MentorApplicationRow, ApplicationStatus } from '@/types/admin';
 
-const STATUS_OPTIONS: Array<{ label: string; value: 'all' | ApplicationStatus }> = [
+const STATUS_OPTIONS: Array<{
+  label: string;
+  value: 'all' | ApplicationStatus;
+}> = [
   { label: '대기', value: 'pending' },
   { label: '승인', value: 'approved' },
   { label: '거절', value: 'rejected' },
@@ -34,6 +28,24 @@ const STATUS_OPTIONS: Array<{ label: string; value: 'all' | ApplicationStatus }>
 type ActionType = 'approve' | 'reject';
 
 export default function MentorApplicationsPage() {
+  return (
+    <Suspense
+      fallback={
+        <AdminShell title="멘토 신청">
+          <PageHeader
+            title="멘토 신청 관리"
+            description="신규 멘토 신청을 검토하고 승인 또는 거절 처리하세요."
+          />
+          <div className="mt-6 h-48 animate-pulse rounded-md border border-[var(--border-color)] bg-[var(--card-bg)]" />
+        </AdminShell>
+      }
+    >
+      <MentorApplicationsPageInner />
+    </Suspense>
+  );
+}
+
+function MentorApplicationsPageInner() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -42,7 +54,9 @@ export default function MentorApplicationsPage() {
   const page = Number(searchParams.get('page') ?? '1');
   const limit = Number(searchParams.get('limit') ?? '10');
   const q = searchParams.get('q') ?? '';
-  const status = (searchParams.get('status') ?? 'pending') as 'all' | ApplicationStatus;
+  const status = (searchParams.get('status') ?? 'pending') as
+    | 'all'
+    | ApplicationStatus;
   const sortParam = searchParams.get('sort') ?? 'submittedAt:desc';
 
   const [searchTerm, setSearchTerm] = useState(q);
@@ -108,7 +122,9 @@ export default function MentorApplicationsPage() {
     },
   });
 
-  const setParams = (updates: Record<string, string | number | null | undefined>) => {
+  const setParams = (
+    updates: Record<string, string | number | null | undefined>
+  ) => {
     const params = new URLSearchParams(searchParams.toString());
     Object.entries(updates).forEach(([key, value]) => {
       if (value === null || value === undefined || value === '') {
@@ -148,7 +164,10 @@ export default function MentorApplicationsPage() {
     setSelectedIds(allSelected ? [] : ids);
   };
 
-  const openAction = (type: ActionType, applications: MentorApplicationRow[]) => {
+  const openAction = (
+    type: ActionType,
+    applications: MentorApplicationRow[]
+  ) => {
     setActionTarget({ type, applications });
     if (type === 'reject') {
       setRejectReason('');
@@ -164,7 +183,10 @@ export default function MentorApplicationsPage() {
 
       <AdminToolbar
         search={
-          <form onSubmit={handleSearchSubmit} className="flex items-center gap-3">
+          <form
+            onSubmit={handleSearchSubmit}
+            className="flex items-center gap-3"
+          >
             <div className="flex-1">
               <SearchInput
                 value={searchTerm}
@@ -196,7 +218,9 @@ export default function MentorApplicationsPage() {
               onClick={() =>
                 openAction(
                   'approve',
-                  (data?.data ?? []).filter(item => selectedIds.includes(item.id))
+                  (data?.data ?? []).filter(item =>
+                    selectedIds.includes(item.id)
+                  )
                 )
               }
             >
@@ -210,7 +234,9 @@ export default function MentorApplicationsPage() {
               onClick={() =>
                 openAction(
                   'reject',
-                  (data?.data ?? []).filter(item => selectedIds.includes(item.id))
+                  (data?.data ?? []).filter(item =>
+                    selectedIds.includes(item.id)
+                  )
                 )
               }
             >
@@ -261,7 +287,11 @@ export default function MentorApplicationsPage() {
                   {row.careerYears}년
                 </td>
                 <td className="px-6 py-4 text-sm text-[var(--primary-sub03)] underline">
-                  <a href={row.portfolioUrl} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={row.portfolioUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     포트폴리오 보기
                   </a>
                 </td>
@@ -334,7 +364,11 @@ export default function MentorApplicationsPage() {
       />
 
       {actionTarget && actionTarget.type === 'reject' && (
-        <Modal title="거절 사유 입력" onClose={() => setActionTarget(null)} size="md">
+        <Modal
+          title="거절 사유 입력"
+          onClose={() => setActionTarget(null)}
+          size="md"
+        >
           <form
             className="flex h-full flex-col gap-4"
             onSubmit={event => {
@@ -347,14 +381,15 @@ export default function MentorApplicationsPage() {
             }}
           >
             <p className="text-sm text-[var(--text-sub)]">
-              선택한 신청 {actionTarget.applications.length}건에 대한 거절 사유를 입력해주세요.
+              선택한 신청 {actionTarget.applications.length}건에 대한 거절
+              사유를 입력해주세요.
             </p>
             <textarea
               value={rejectReason}
               onChange={event => setRejectReason(event.target.value)}
               rows={6}
               placeholder="거절 사유를 작성하세요."
-              className="flex-1 rounded-lg border border-[var(--border-color)] bg-[var(--background)] p-3 text-sm text-[var(--text)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+              className="flex-1 rounded-lg border border-[var(--border-color)] bg-[var(--background)] p-3 text-sm text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] focus:outline-none"
             />
             <div className="flex justify-end gap-3">
               <Button
@@ -389,7 +424,7 @@ function FilterTabs<T extends string>({
 }) {
   return (
     <fieldset className="flex flex-col gap-2">
-      <legend className="text-xs font-semibold uppercase tracking-wide text-[var(--text-sub)]">
+      <legend className="text-xs font-semibold tracking-wide text-[var(--text-sub)] uppercase">
         {label}
       </legend>
       <div className="flex flex-wrap gap-2">
@@ -400,7 +435,7 @@ function FilterTabs<T extends string>({
               key={option.value}
               type="button"
               onClick={() => onChange(option.value)}
-              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 ${
+              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 focus-visible:outline-none ${
                 isActive
                   ? 'border-[var(--primary)] bg-[var(--primary-sub02)] text-[var(--primary)]'
                   : 'border-[var(--border-color)] text-[var(--text-sub)] hover:border-[var(--primary)] hover:text-[var(--primary)]'
@@ -433,4 +468,3 @@ function ApplicationStatusBadge({ status }: { status: ApplicationStatus }) {
     </span>
   );
 }
-

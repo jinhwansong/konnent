@@ -4,7 +4,7 @@ import {
   useRouter,
   useSearchParams,
 } from 'next/navigation';
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, Suspense, useEffect, useMemo, useState } from 'react';
 
 import AdminShell from '@/components/common/AdminShell';
 import AdminToolbar from '@/components/common/AdminToolbar';
@@ -46,6 +46,24 @@ type ReservationAction =
   | null;
 
 export default function MentoringAdminPage() {
+  return (
+    <Suspense
+      fallback={
+        <AdminShell title="멘토링">
+          <PageHeader
+            title="멘토링 운영"
+            description="멘토링 세션과 예약 현황을 모니터링하고 신속하게 조치하세요."
+          />
+          <div className="mt-6 h-48 animate-pulse rounded-md border border-[var(--border-color)] bg-[var(--card-bg)]" />
+        </AdminShell>
+      }
+    >
+      <MentoringAdminPageInner />
+    </Suspense>
+  );
+}
+
+function MentoringAdminPageInner() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

@@ -1,23 +1,17 @@
 'use client';
-
-import { FormEvent, useEffect, useMemo, useState } from 'react';
-import {
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { FormEvent, Suspense, useEffect, useMemo, useState } from 'react';
 
 import AdminShell from '@/components/common/AdminShell';
-import PageHeader from '@/components/common/PageHeader';
 import AdminToolbar from '@/components/common/AdminToolbar';
-import SearchInput from '@/components/common/SearchInput';
-import DataTable from '@/components/common/DataTable';
-import Pagination from '@/components/common/Pagination';
 import Button from '@/components/common/Button';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
+import DataTable from '@/components/common/DataTable';
 import EmptyState from '@/components/common/EmptyState';
-
+import PageHeader from '@/components/common/PageHeader';
+import Pagination from '@/components/common/Pagination';
+import SearchInput from '@/components/common/SearchInput';
 import { useAdminPayments } from '@/hooks/query/useAdmin';
 import type {
   AdminPaymentRow,
@@ -32,6 +26,24 @@ const STATUS_FILTERS: Array<{ label: string; value: 'all' | PaymentStatus }> = [
 ];
 
 export default function PaymentsAdminPage() {
+  return (
+    <Suspense
+      fallback={
+        <AdminShell title="결제">
+          <PageHeader
+            title="결제 내역"
+            description="결제 기록을 모니터링하고 환불 요청을 처리하세요."
+          />
+          <div className="mt-6 h-48 animate-pulse rounded-md border border-[var(--border-color)] bg-[var(--card-bg)]" />
+        </AdminShell>
+      }
+    >
+      <PaymentsAdminPageInner />
+    </Suspense>
+  );
+}
+
+function PaymentsAdminPageInner() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -104,9 +116,6 @@ export default function PaymentsAdminPage() {
   const handleSort = (key: string, direction: 'asc' | 'desc' | 'none') => {
     setParams({ sort: direction === 'none' ? null : `${key}:${direction}`, page: 1 });
   };
-
-  const formatStatus = (value: PaymentStatus) =>
-    value === '성공' ? '성공' : value === '환불' ? '환불' : '실패';
 
   return (
     <AdminShell title="결제">

@@ -96,7 +96,7 @@ export function useFirebase(userId?: string) {
         console.error('🚨 FCM 토큰 등록 실패:', error);
       }
     },
-    [userId, session, session?.user?.fcm]
+    [userId, session]
   );
 
   // 👉 1) 로그인 할 때, 이미 권한이 허용된 상태라면 자동으로 토큰 등록

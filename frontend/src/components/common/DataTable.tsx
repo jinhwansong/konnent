@@ -25,7 +25,7 @@ interface DataTableProps<T> {
   getRowKey?: (item: T, index: number) => string;
 }
 
-export default function DataTable<T extends Record<string, unknown>>({
+export default function DataTable<T extends object>({
   columns,
   data = [],
   isLoading = false,
@@ -175,7 +175,7 @@ export default function DataTable<T extends Record<string, unknown>>({
   );
 }
 
-function getAlignmentClasses(align: Column<Record<string, unknown>>['align']) {
+function getAlignmentClasses(align: Column<object>['align']) {
   switch (align) {
     case 'center':
       return 'text-center';

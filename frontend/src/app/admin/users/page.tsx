@@ -1,23 +1,17 @@
 'use client';
-
-import { FormEvent, useEffect, useMemo, useState } from 'react';
-import {
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { FormEvent, Suspense, useEffect, useMemo, useState } from 'react';
 
 import AdminShell from '@/components/common/AdminShell';
-import PageHeader from '@/components/common/PageHeader';
 import AdminToolbar from '@/components/common/AdminToolbar';
-import SearchInput from '@/components/common/SearchInput';
-import DataTable from '@/components/common/DataTable';
-import Pagination from '@/components/common/Pagination';
-import ConfirmDialog from '@/components/common/ConfirmDialog';
-import Modal from '@/components/common/Modal';
 import Button from '@/components/common/Button';
+import ConfirmDialog from '@/components/common/ConfirmDialog';
+import DataTable from '@/components/common/DataTable';
 import EmptyState from '@/components/common/EmptyState';
-
+import Modal from '@/components/common/Modal';
+import PageHeader from '@/components/common/PageHeader';
+import Pagination from '@/components/common/Pagination';
+import SearchInput from '@/components/common/SearchInput';
 import { useAdminUsers, useUpdateUserStatus } from '@/hooks/query/useAdmin';
 import type {
   AdminUserRow,
@@ -42,6 +36,24 @@ const STATUS_FILTERS: Array<{ label: string; value: 'all' | UserStatus }> = [
 type UserActionType = 'suspend' | 'restore';
 
 export default function AdminUsersPage() {
+  return (
+    <Suspense
+      fallback={
+        <AdminShell title="사용자">
+          <PageHeader
+            title="사용자 관리"
+            description="플랫폼의 모든 사용자를 조회하고 상태를 관리하세요."
+          />
+          <div className="mt-6 h-48 animate-pulse rounded-md border border-[var(--border-color)] bg-[var(--card-bg)]" />
+        </AdminShell>
+      }
+    >
+      <AdminUsersPageInner />
+    </Suspense>
+  );
+}
+
+function AdminUsersPageInner() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

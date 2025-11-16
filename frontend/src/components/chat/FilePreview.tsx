@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState } from 'react';
 import { FiX } from 'react-icons/fi';
 
@@ -77,10 +78,12 @@ export default function FilePreview({ files, onRemove }: FilePreviewProps) {
             {isImage && imagePreviews[index] ? (
               // 이미지 썸네일
               <div className="h-16 w-16 overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--card-bg-sub)]">
-                <img
+                <Image
                   src={imagePreviews[index]}
                   alt={file.name}
                   className="h-full w-full object-cover"
+                  width={64}
+                  height={64}
                 />
                 <button
                   onClick={() => onRemove(index)}

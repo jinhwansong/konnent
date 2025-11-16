@@ -6,7 +6,7 @@ import {
   useRouter,
   useSearchParams,
 } from 'next/navigation';
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, Suspense, useEffect, useMemo, useState } from 'react';
 
 import AdminShell from '@/components/common/AdminShell';
 import AdminToolbar from '@/components/common/AdminToolbar';
@@ -47,6 +47,24 @@ type ReviewAction =
   | null;
 
 export default function ContentsAdminPage() {
+  return (
+    <Suspense
+      fallback={
+        <AdminShell title="콘텐츠">
+          <PageHeader
+            title="콘텐츠 관리"
+            description="아티클과 후기 콘텐츠를 관리하고 신고된 항목을 처리하세요."
+          />
+          <div className="mt-6 h-48 animate-pulse rounded-md border border-[var(--border-color)] bg-[var(--card-bg)]" />
+        </AdminShell>
+      }
+    >
+      <ContentsAdminPageInner />
+    </Suspense>
+  );
+}
+
+function ContentsAdminPageInner() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

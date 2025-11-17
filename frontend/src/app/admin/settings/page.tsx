@@ -13,7 +13,7 @@ import {
   updatePaymentKey,
   updateNotificationSetting,
   SettingsSummary,
-} from '@/lib/admin/settings';
+} from '@/libs/settings';
 
 export default function SettingsAdminPage() {
   const queryClient = useQueryClient();

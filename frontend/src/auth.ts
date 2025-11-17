@@ -183,13 +183,10 @@ export const {
       }
       return true;
     },
-    async redirect({ baseUrl }) {
-      const session = await auth();
-      if (session?.user?.role === 'admin') {
-        return `${baseUrl}/admin/dashboard`;
-      }
-
-      return baseUrl;
+    async redirect({ url, baseUrl }) {
+      // 관리자 자동 이동은 세션이 완전히 설정된 후 처리되므로
+      // 기본 URL로 리다이렉트하고, 실제 리다이렉트는 클라이언트/미들웨어에서 처리
+      return url.startsWith(baseUrl) ? url : baseUrl;
     },
   },
 

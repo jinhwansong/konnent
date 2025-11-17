@@ -4,8 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
-import { useCallback, useMemo } from 'react';
+import { signIn, useSession } from 'next-auth/react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { IcGoogle, IcKakao, IcNaver } from '@/assets';
@@ -17,6 +17,7 @@ import { useToastStore } from '@/stores/useToast';
 export default function LoginPage() {
   const { show } = useToastStore();
   const router = useRouter();
+  const { data: session } = useSession();
   const methods = useForm<LoginRequest>({
     mode: 'all',
     resolver: zodResolver(loginSchema),
@@ -27,6 +28,14 @@ export default function LoginPage() {
     handleSubmit,
     formState: { isValid },
   } = methods;
+
+  // 로그인 성공 후 관리자 자동 리다이렉트
+  useEffect(() => {
+    if (session?.user?.role === 'admin') {
+      router.push('/admin/dashboard');
+    }
+  }, [session, router]);
+
   const handleLogin = useCallback(
     async (data: LoginRequest) => {
       const { email, password } = data;
@@ -41,13 +50,15 @@ export default function LoginPage() {
           show('이메일 또는 비밀번호가 잘못되었습니다.', 'error');
         } else {
           show('로그인에 성공했습니다.', 'success');
-          router.push('/');
+          if (session?.user?.role !== 'admin') {
+            router.push('/');
+          }
         }
       } catch {
         show('로그인에 실패했습니다.', 'error');
       }
     },
-    [show, router]
+    [show, router, session]
   );
 
   const handleSocialLogin = useCallback((provider: string) => {

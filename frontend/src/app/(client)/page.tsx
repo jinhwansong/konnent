@@ -9,6 +9,8 @@ import MentorContent from '@/components/main/MentorContent';
 import Slider from '@/components/main/Slider';
 import { fetchArticles } from '@/libs/article';
 import { fetchSessions } from '@/libs/main';
+import AdminRedirect from '@/components/common/AdminRedirect';
+
 export default async function Home() {
   const queryClient = new QueryClient();
 
@@ -22,10 +24,13 @@ export default async function Home() {
     queryFn: () => fetchArticles(1, 'all', 6, 'likes'),
   });
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <Slider />
-      <MentorContent initialCategory="all" />
-      <ArticleList type="likes" />
-    </HydrationBoundary>
+    <>
+      <AdminRedirect />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <Slider />
+        <MentorContent initialCategory="all" />
+        <ArticleList type="likes" />
+      </HydrationBoundary>
+    </>
   );
 }

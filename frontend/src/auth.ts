@@ -183,6 +183,14 @@ export const {
       }
       return true;
     },
+    async redirect({ baseUrl }) {
+      const session = await auth();
+      if (session?.user?.role === 'admin') {
+        return `${baseUrl}/admin/dashboard`;
+      }
+
+      return baseUrl;
+    },
   },
 
   events: {

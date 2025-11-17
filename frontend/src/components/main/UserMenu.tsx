@@ -40,6 +40,8 @@ export default function UserMenu() {
     { name: '내 수익', href: '/my/earnings' },
   ];
 
+
+  
   const handleLogout = async () => {
     try {
       // 세션에서가 아니라 브라우저에 저장해 둔 현재 FCM 토큰을 기준으로 삭제

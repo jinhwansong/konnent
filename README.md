@@ -13,8 +13,6 @@
 
 </div>
 
----
-
 <div align="center">
 🌐 실 서버 (Production)
 
@@ -33,6 +31,9 @@
 🔗 https://github.com/jinhwansong/konnect-back
 
 </div>
+
+---
+
 ## 📖 프로젝트 소개
 
 **Konnect**는 멘토와 멘티를 실시간으로 연결하는 1:1 멘토링 플랫폼입니다.

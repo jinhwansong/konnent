@@ -15,6 +15,13 @@
 
 ---
 
+## 🔗 Links
+
+[![Production](https://img.shields.io/badge/Service_Release-Konnect-4A90E2?style=for-the-badge&logo=vercel&logoColor=white)](https://konnect-front-phi.vercel.app/)
+[![Frontend Repo](https://img.shields.io/badge/GitHub-Frontend_Repository-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/jinhwansong/konnect-front)
+[![Backend Repo](https://img.shields.io/badge/GitHub-Backend_Repository-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/jinhwansong/konnect-back)
+[![Tech Blog](https://img.shields.io/badge/Tistory-Tech_Blog-FF6F00?style=for-the-badge&logo=tistory&logoColor=white)](https://song7022556.tistory.com/)
+
 ## 📖 프로젝트 소개
 
 **Konnect**는 멘토와 멘티를 실시간으로 연결하는 1:1 멘토링 플랫폼입니다.

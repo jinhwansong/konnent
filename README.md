@@ -13,22 +13,14 @@
 
 </div>
 
-<div align="center">
-🌐 실 서버 (Production)
+<div align="left">
+🌐 실 서버 (Production) 🔗 https://konnect-front-phi.vercel.app/
 
-🔗 https://konnect-front-phi.vercel.app/
+📘 블로그 (개발 기록 & 기술 정리) 🔗 https://song7022556.tistory.com/
 
-📘 블로그 (개발 기록 & 기술 정리)
+🖥️ Frontend GitHub Repo 🔗 https://github.com/jinhwansong/konnect-front
 
-🔗 https://song7022556.tistory.com/
-
-🖥️ Frontend GitHub Repo
-
-🔗 https://github.com/jinhwansong/konnect-front
-
-🛠️ Backend GitHub Repo
-
-🔗 https://github.com/jinhwansong/konnect-back
+🛠️ Backend GitHub Repo 🔗 https://github.com/jinhwansong/konnect-back
 
 </div>
 

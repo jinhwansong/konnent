@@ -11,8 +11,6 @@
 [![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=flat-square&logo=nestjs&logoColor=white)](https://nestjs.com/)
 [![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?style=flat-square&logo=socket.io&logoColor=white)](https://socket.io/)
 
-[데모 보기](#) | [API 문서](#) | [기술 블로그](#)
-
 </div>
 
 ---
@@ -35,63 +33,47 @@
 
 ---
 
-## 🎨 미리보기
-
-![preview](./docs/preview.png)
-
-<details>
-<summary>📱 더 많은 스크린샷 보기</summary>
-
-- 메인 페이지
-- 멘토 검색
-- 예약 캘린더
-- 채팅 & 화상 세션
-- 결제 화면
-
-</details>
-
----
-
 ## 🛠️ 기술 스택
 
 ### Frontend
 
 | Category | Technologies |
 |----------|-------------|
-| **Framework** | ![Next.js](https://img.shields.io/badge/Next.js_15-000000?style=flat-square&logo=next.js&logoColor=white) ![React 19](https://img.shields.io/badge/React_19-61DAFB?style=flat-square&logo=react&logoColor=black) |
-| **Language** | ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white) |
-| **Styling** | ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white) ![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=flat-square&logo=framer&logoColor=white) |
-| **State Management** | ![React Query](https://img.shields.io/badge/React_Query-FF4154?style=flat-square&logo=react-query&logoColor=white) ![Zustand](https://img.shields.io/badge/Zustand-000000?style=flat-square) |
-| **Form** | ![React Hook Form](https://img.shields.io/badge/React_Hook_Form-EC5990?style=flat-square&logo=reacthookform&logoColor=white) ![Zod](https://img.shields.io/badge/Zod-3E67B1?style=flat-square) |
-| **Real-time** | ![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?style=flat-square&logo=socket.io&logoColor=white) ![WebRTC](https://img.shields.io/badge/WebRTC-333333?style=flat-square&logo=webrtc&logoColor=white) |
-| **Auth** | ![NextAuth.js](https://img.shields.io/badge/NextAuth.js-000000?style=flat-square&logo=next.js&logoColor=white) |
-| **Payment** | ![Toss Payments](https://img.shields.io/badge/Toss_Payments-0064FF?style=flat-square) |
-| **Editor** | ![TipTap](https://img.shields.io/badge/TipTap-000000?style=flat-square) |
-| **Notification** | ![Firebase](https://img.shields.io/badge/Firebase_FCM-FFCA28?style=flat-square&logo=firebase&logoColor=black) |
+| **Framework** | Next.js 15, React 19 |
+| **Language** | TypeScript |
+| **Styling** | Tailwind CSS 4, Framer Motion |
+| **State Management** | React Query (TanStack Query), Zustand |
+| **Form** | React Hook Form, Zod |
+| **Real-time** | Socket.IO Client, WebRTC (Simple Peer) |
+| **Auth** | NextAuth.js v5 |
+| **Payment** | Toss Payments SDK |
+| **Editor** | TipTap |
+| **Notification** | Firebase FCM |
 
 ### Backend
 
 | Category | Technologies |
 |----------|-------------|
-| **Framework** | ![NestJS](https://img.shields.io/badge/NestJS_10-E0234E?style=flat-square&logo=nestjs&logoColor=white) ![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white) |
-| **Language** | ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white) |
-| **ORM** | ![TypeORM](https://img.shields.io/badge/TypeORM-FE0902?style=flat-square) ![Mongoose](https://img.shields.io/badge/Mongoose-880000?style=flat-square&logo=mongoose&logoColor=white) |
-| **Database** | ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white) ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat-square&logo=mongodb&logoColor=white) ![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white) |
-| **Real-time** | ![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?style=flat-square&logo=socket.io&logoColor=white) ![WebRTC](https://img.shields.io/badge/WebRTC-333333?style=flat-square&logo=webrtc&logoColor=white) |
-| **Auth** | ![JWT](https://img.shields.io/badge/JWT-000000?style=flat-square&logo=json-web-tokens&logoColor=white) ![Passport](https://img.shields.io/badge/Passport-34E27A?style=flat-square&logo=passport&logoColor=white) ![OAuth](https://img.shields.io/badge/OAuth_2.0-EB5424?style=flat-square) |
-| **API Docs** | ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=flat-square&logo=swagger&logoColor=black) |
-| **Email** | ![Nodemailer](https://img.shields.io/badge/Nodemailer-0072C6?style=flat-square) |
-| **Notification** | ![Firebase Admin](https://img.shields.io/badge/Firebase_Admin-FFCA28?style=flat-square&logo=firebase&logoColor=black) |
-| **Scheduling** | ![Cron](https://img.shields.io/badge/Cron_Jobs-000000?style=flat-square) |
+| **Framework** | NestJS 10, Node.js |
+| **Language** | TypeScript |
+| **ORM** | TypeORM, Mongoose |
+| **Database** | MySQL, MongoDB, Redis |
+| **Real-time** | Socket.IO, WebRTC |
+| **Auth** | JWT (RS256), Passport.js, OAuth 2.0 |
+| **API Docs** | Swagger/OpenAPI |
+| **Email** | Nodemailer |
+| **Notification** | Firebase Admin SDK |
+| **Scheduling** | @nestjs/schedule (Cron) |
+| **File Upload** | Multer |
 
 ### Infrastructure & DevOps
 
 | Category | Technologies |
 |----------|-------------|
-| **Cloud** | ![AWS](https://img.shields.io/badge/AWS-232F3E?style=flat-square&logo=amazon-aws&logoColor=white) (EC2, RDS) |
-| **Web Server** | ![Nginx](https://img.shields.io/badge/Nginx-009639?style=flat-square&logo=nginx&logoColor=white) |
-| **Process Manager** | ![PM2](https://img.shields.io/badge/PM2-2B037A?style=flat-square&logo=pm2&logoColor=white) |
-| **Version Control** | ![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white) |
+| **Cloud** | Vultr (Server), GitHub Actions (CI/CD) |
+| **Process Manager** | PM2 |
+| **Version Control** | Git, GitHub |
+| **Database Migration** | TypeORM Migrations, typeorm-extension (Seeds) |
 
 ---
 
@@ -121,11 +103,11 @@
   - 파일 첨부 (이미지, 문서)
   - 메시지 히스토리 (MongoDB)
   - 커서 기반 무한스크롤
-  - 타이핑 인디케이터 (예정)
+  - 채팅방 참여자 관리
 
 - **화상 채팅** (WebRTC)
   - P2P 화상 통화
-  - 화면 공유 (예정)
+  - 시그널링 서버 (Socket.IO)
   - 네트워크 품질 모니터링
 
 ### 🔔 알림 시스템
@@ -151,17 +133,15 @@
   - 신용카드, 계좌이체, 간편결제
   - 에스크로 결제 (멘토링 완료 후 정산)
   - 결제 실패 시 자동 재시도
-  - 부분 환불 지원
 
 - **정산 시스템**
   - 멘토 수익 대시보드
   - 자동 정산 스케줄링
-  - 세금계산서 발행
 
 ### 📝 아티클 & 커뮤니티
 
 - **아티클 작성** (TipTap)
-  - 마크다운 지원 에디터
+  - 리치 텍스트 에디터
   - 이미지 업로드 & 리사이징
   - 태그 및 카테고리 분류
   - 좋아요 & 북마크
@@ -169,7 +149,6 @@
 - **댓글 시스템**
   - 대댓글 지원
   - 실시간 댓글 알림
-  - 신고 기능
 
 ### 🧑‍💼 관리자 페이지
 
@@ -191,97 +170,132 @@
 
 ## 🏗️ 시스템 아키텍처
 
-```text
-┌─────────────────────────────────────────────────────────────────┐
-│                          Client Layer                            │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
-│  │   Next.js    │  │ Socket.IO    │  │   WebRTC     │          │
-│  │  (SSR/CSR)   │  │   Client     │  │  (P2P Call)  │          │
-│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘          │
-│         │                 │                  │                   │
-│         │                 │                  │                   │
-└─────────┼─────────────────┼──────────────────┼───────────────────┘
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        Client Layer                          │
+├─────────────────────────────────────────────────────────────┤
+│                                                               │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │   Next.js    │  │ Socket.IO    │  │   WebRTC     │       │
+│  │  (SSR/CSR)   │  │   Client     │  │  (P2P Call)  │       │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘       │
+│         │                 │                  │                │
+└─────────┼─────────────────┼──────────────────┼────────────────┘
           │                 │                  │
           │  REST API       │  WebSocket       │  Signaling
           │  (HTTP/HTTPS)   │  (Socket.IO)     │
           │                 │                  │
-┌─────────┼─────────────────┼──────────────────┼───────────────────┐
-│         ▼                 ▼                  ▼                   │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │                    Nginx (Reverse Proxy)                 │    │
-│  │           SSL/TLS Termination + Load Balancing           │    │
-│  └─────────────────────────────────────────────────────────┘    │
-│                              │                                   │
-│         ┌────────────────────┼────────────────────┐             │
-│         ▼                    ▼                    ▼             │
-│  ┌─────────────┐      ┌─────────────┐      ┌─────────────┐    │
-│  │   NestJS    │      │  Socket.IO  │      │   WebRTC    │    │
-│  │ API Server  │      │   Gateway   │      │  Signaling  │    │
-│  │             │      │  (Chat/Noti)│      │   Server    │    │
-│  └──────┬──────┘      └──────┬──────┘      └─────────────┘    │
-│         │                    │                                  │
-│         │                    │                                  │
-│  Backend Layer (AWS EC2)                                        │
-├─────────┼────────────────────┼──────────────────────────────────┤
-│         │                    │                                  │
-│         ▼                    ▼                                  │
-│  ┌─────────────────────────────────────────────────┐           │
-│  │           Data Access & Caching Layer            │           │
-│  ├─────────────┬──────────────┬─────────────────────┤           │
-│  │   TypeORM   │   Mongoose   │   Redis (ioredis)   │           │
-│  └──────┬──────┴──────┬───────┴──────┬──────────────┘           │
-│         │             │              │                          │
-│         ▼             ▼              ▼                          │
-│  ┌────────────┐ ┌────────────┐ ┌────────────┐                 │
-│  │   MySQL    │ │  MongoDB   │ │   Redis    │                 │
-│  │  (AWS RDS) │ │ (Chat/Log) │ │  (Cache)   │                 │
-│  │            │ │            │ │            │                 │
-│  │ • Users    │ │ • Messages │ │ • Session  │                 │
-│  │ • Mentors  │ │ • Notifi.  │ │ • Queue    │                 │
-│  │ • Reserv.  │ │ • Logs     │ │ • Lock     │                 │
-│  │ • Payments │ │            │ │            │                 │
-│  └────────────┘ └────────────┘ └────────────┘                 │
-│                                                                  │
-│  Database Layer (AWS RDS + MongoDB Atlas)                       │
-└──────────────────────────────────────────────────────────────────┘
+┌─────────┼─────────────────┼──────────────────┼────────────────┐
+│         ▼                 ▼                  ▼                │
+│  ┌──────────────────────────────────────────────────────┐    │
+│  │              NestJS Backend Server                   │    │
+│  │  ┌──────────────────┬──────────────────────┐        │    │
+│  │  │  REST API        │  Socket.IO Gateway   │        │    │
+│  │  │  (Controllers)   │  (Chat, Notification)│        │    │
+│  │  └──────────────────┴──────────────────────┘        │    │
+│  └──────────────────────────────────────────────────────┘    │
+│                          │                                    │
+│  Backend Layer (Vultr Server)                                │
+├──────────────────────────┼────────────────────────────────────┤
+│                          ▼                                    │
+│  ┌─────────────────────────────────────────────────┐          │
+│  │      Data Access & Caching Layer                 │          │
+│  ├─────────────┬──────────────┬────────────────────┤          │
+│  │   TypeORM   │   Mongoose   │   Redis (ioredis)  │          │
+│  └──────┬──────┴──────┬───────┴──────┬─────────────┘          │
+│         │             │              │                         │
+│         ▼             ▼              ▼                         │
+│  ┌────────────┐ ┌────────────┐ ┌────────────┐                │
+│  │   MySQL    │ │  MongoDB   │ │   Redis    │                │
+│  │            │ │            │ │            │                │
+│  │ • Users    │ │ • Messages │ │ • Session  │                │
+│  │ • Mentors  │ │ • Notifi.  │ │ • Cache    │                │
+│  │ • Reserv.  │ │ • Logs     │ │ • Queue    │                │
+│  │ • Payments │ │            │ │ • Lock     │                │
+│  └────────────┘ └────────────┘ └────────────┘                │
+│                                                                │
+│  Database Layer                                                │
+└────────────────────────────────────────────────────────────────┘
 
 External Services:
 ┌────────────────────────────────────────────────────────────────┐
 │  • Toss Payments API      (결제)                              │
 │  • Firebase FCM           (푸시 알림)                         │
 │  • OAuth Providers        (Google, Kakao, Naver)             │
-│  • AWS S3                 (파일 스토리지)                     │
 │  • SMTP Server            (이메일 발송)                       │
 └────────────────────────────────────────────────────────────────┘
 ```
 
-### 📊 데이터베이스 구조
+---
 
-```text
-MySQL (관계형 데이터)
-├── users              # 사용자 정보
-├── mentors            # 멘토 프로필
-├── mentoring_schedules # 멘토 스케줄
-├── mentoring_reservations # 예약 정보
-├── mentoring_sessions # 세션 기록
-├── payments           # 결제 내역
-├── reviews            # 리뷰
-├── articles           # 아티클
-└── comments           # 댓글
+## 📂 프로젝트 구조
 
-MongoDB (비관계형 데이터)
-├── chatMessages       # 채팅 메시지
-├── chatRooms          # 채팅방
-├── notifications      # 알림
-└── activityLogs       # 활동 로그
-
-Redis (캐싱 & 세션)
-├── user:sessions      # 사용자 세션
-├── cache:*            # API 캐시
-├── queue:emails       # 이메일 큐
-└── lock:*             # 분산 락
+```
+konnect/
+├── backend/                    # NestJS 백엔드
+│   ├── src/
+│   │   ├── admin/              # 관리자 기능
+│   │   ├── auth/               # 인증/인가
+│   │   ├── users/              # 사용자 관리
+│   │   ├── mentors/            # 멘토 관리
+│   │   ├── mentoring/          # 멘토링 관리
+│   │   ├── schedule/           # 스케줄 관리
+│   │   ├── reservation/        # 예약 시스템
+│   │   ├── session/            # 세션 관리
+│   │   ├── payment/            # 결제 시스템
+│   │   ├── review/             # 리뷰
+│   │   ├── article/            # 아티클
+│   │   ├── chat/               # 채팅 (REST API)
+│   │   ├── realtime/           # 실시간 통신
+│   │   │   ├── chat/           # 채팅 게이트웨이
+│   │   │   └── webrtc/         # WebRTC 시그널링
+│   │   ├── notification/       # 알림
+│   │   ├── mail/               # 이메일
+│   │   ├── fcm/                # Firebase FCM
+│   │   ├── scheduler/          # 크론 작업
+│   │   ├── redis/              # Redis 모듈
+│   │   ├── listener/           # 이벤트 리스너
+│   │   ├── entities/           # TypeORM 엔티티
+│   │   ├── schema/             # Mongoose 스키마
+│   │   ├── migrations/         # 데이터베이스 마이그레이션
+│   │   ├── database/           # 시드 데이터
+│   │   │   └── seeds/
+│   │   ├── common/             # 공통 모듈
+│   │   │   ├── decorators/     # 커스텀 데코레이터
+│   │   │   ├── guards/         # 가드
+│   │   │   ├── interceptors/   # 인터셉터
+│   │   │   └── util/           # 유틸리티
+│   │   ├── middlewares/        # 미들웨어
+│   │   └── main.ts             # 진입점
+│   ├── scripts/                # 유틸리티 스크립트
+│   │   ├── generate-migration.js
+│   │   ├── setup-test-env.js
+│   │   └── setup-test-schema.ts
+│   ├── test/                   # E2E 테스트
+│   ├── .github/
+│   │   └── workflows/
+│   │       └── deploy.yml      # CI/CD 파이프라인
+│   ├── dataSource.ts           # TypeORM DataSource
+│   └── package.json
+│
+├── frontend/                   # Next.js 프론트엔드
+│   ├── src/
+│   │   ├── app/                # App Router 페이지
+│   │   │   ├── (auth)/         # 인증 페이지
+│   │   │   ├── (main)/         # 메인 페이지
+│   │   │   ├── (mentoring)/    # 멘토링 페이지
+│   │   │   └── admin/          # 관리자 페이지
+│   │   ├── components/         # React 컴포넌트
+│   │   ├── hooks/              # 커스텀 훅
+│   │   ├── libs/               # API 클라이언트
+│   │   ├── stores/             # Zustand 스토어
+│   │   ├── types/              # TypeScript 타입
+│   │   ├── utils/              # 유틸리티 함수
+│   │   └── styles/             # 전역 스타일
+│   ├── public/                 # 정적 파일
+│   └── package.json
+│
+└── README.md
 ```
 
 ---
@@ -296,62 +310,171 @@ Redis (캐싱 & 세션)
 - **MongoDB** 6.0 이상
 - **Redis** 7.0 이상
 
+### Backend 설정
 
-## 📂 프로젝트 구조
+1. **저장소 클론**
+   ```bash
+   git clone <repository-url>
+   cd konnect/backend
+   ```
 
-```text
-konnect/
-├── backend/                    # NestJS 백엔드
-│   ├── src/
-│   │   ├── admin/              # 관리자 기능
-│   │   ├── auth/               # 인증/인가
-│   │   ├── users/              # 사용자 관리
-│   │   ├── mentors/            # 멘토 관리
-│   │   ├── reservation/        # 예약 시스템
-│   │   ├── session/            # 세션 관리
-│   │   ├── chat/               # 채팅 (REST API)
-│   │   ├── realtime/           # 실시간 통신 (Socket.IO)
-│   │   │   ├── chat/           # 채팅 게이트웨이
-│   │   │   └── notification/   # 알림 게이트웨이
-│   │   ├── payment/            # 결제 시스템
-│   │   ├── article/            # 아티클
-│   │   ├── review/             # 리뷰
-│   │   ├── notification/       # 알림
-│   │   ├── mail/               # 이메일
-│   │   ├── fcm/                # Firebase FCM
-│   │   ├── scheduler/          # 크론 작업
-│   │   ├── entities/           # TypeORM 엔티티
-│   │   ├── schema/             # Mongoose 스키마
-│   │   ├── common/             # 공통 모듈
-│   │   └── main.ts             # 진입점
-│   ├── test/                   # E2E 테스트
-│   └── package.json
-│
-├── frontend/                   # Next.js 프론트엔드
-│   ├── src/
-│   │   ├── app/                # App Router 페이지
-│   │   │   ├── (auth)/         # 인증 페이지
-│   │   │   ├── (main)/         # 메인 페이지
-│   │   │   ├── (mentoring)/    # 멘토링 페이지
-│   │   │   └── admin/          # 관리자 페이지
-│   │   ├── components/         # React 컴포넌트
-│   │   │   ├── chat/           # 채팅 컴포넌트
-│   │   │   ├── video/          # 화상 컴포넌트
-│   │   │   └── ...
-│   │   ├── hooks/              # 커스텀 훅
-│   │   │   ├── query/          # React Query 훅
-│   │   │   ├── useChatSocket.ts
-│   │   │   └── ...
-│   │   ├── libs/               # API 클라이언트
-│   │   ├── stores/             # Zustand 스토어
-│   │   ├── types/              # TypeScript 타입
-│   │   ├── utils/              # 유틸리티 함수
-│   │   └── styles/             # 전역 스타일
-│   ├── public/                 # 정적 파일
-│   └── package.json
-│
-└── README.md
+2. **의존성 설치**
+   ```bash
+   npm install
+   ```
+
+3. **환경 변수 설정**
+   ```bash
+   # .env 파일 생성
+   cp .env.example .env  # 예시 파일이 있다면
+   ```
+   
+   필요한 환경 변수:
+   ```env
+   # Database
+   DB_HOST=localhost
+   DB_PORT=3306
+   DB_USERNAME=root
+   DB_PASSWORD=your_password
+   DB_DATABASE=konnect
+   
+   # MongoDB
+   MONGO_URL=mongodb://localhost:27017/konnect
+   
+   # Redis
+   REDIS_URL=redis://localhost:6379
+   
+   # JWT
+   JWT_SECRET=your_jwt_secret
+   JWT_PUBLIC_KEY=your_public_key
+   JWT_PRIVATE_KEY=your_private_key
+   
+   # OAuth (선택)
+   GOOGLE_CLIENT_ID=your_google_client_id
+   GOOGLE_CLIENT_SECRET=your_google_client_secret
+   KAKAO_CLIENT_ID=your_kakao_client_id
+   KAKAO_CLIENT_SECRET=your_kakao_client_secret
+   
+   # Firebase
+   FIREBASE_PROJECT_ID=your_project_id
+   FIREBASE_PRIVATE_KEY=your_private_key
+   FIREBASE_CLIENT_EMAIL=your_client_email
+   
+   # Email (SMTP)
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=587
+   SMTP_USER=your_email@gmail.com
+   SMTP_PASS=your_password
+   
+   # Toss Payments
+   TOSS_PAYMENTS_SECRET_KEY=your_secret_key
+   
+   # Server
+   PORT=3001
+   NODE_ENV=development
+   ```
+
+4. **데이터베이스 마이그레이션**
+   ```bash
+   # 마이그레이션 실행
+   npm run db:migrate
+   
+   # 초기 데이터 시드 (선택)
+   npm run seed
+   ```
+
+5. **개발 서버 실행**
+   ```bash
+   npm run start:dev
+   ```
+
+   서버가 실행되면:
+   - API: http://localhost:3001
+   - Swagger 문서: http://localhost:3001/api
+
+### Frontend 설정
+
+1. **프로젝트 디렉토리로 이동**
+   ```bash
+   cd ../frontend
+   ```
+
+2. **의존성 설치**
+   ```bash
+   npm install
+   ```
+
+3. **환경 변수 설정**
+   ```bash
+   # .env.local 파일 생성
+   ```
+   
+   필요한 환경 변수:
+   ```env
+   # API
+   NEXT_PUBLIC_API_URL=http://localhost:3001
+   
+   # Socket.IO
+   NEXT_PUBLIC_SOCKET_URL=http://localhost:3001
+   
+   # NextAuth
+   NEXTAUTH_URL=http://localhost:3000
+   NEXTAUTH_SECRET=your_nextauth_secret
+   
+   # Firebase (FCM)
+   NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
+   NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+   NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+   
+   # Toss Payments
+   NEXT_PUBLIC_TOSS_PAYMENTS_CLIENT_KEY=your_client_key
+   ```
+
+4. **개발 서버 실행**
+   ```bash
+   npm run dev
+   ```
+
+   브라우저에서 http://localhost:3000 접속
+
+---
+
+## 🗄️ 데이터베이스 관리
+
+### 마이그레이션
+
+```bash
+cd backend
+
+# 마이그레이션 파일 생성 (자동 이름)
+npm run db:generate-migration
+
+# 마이그레이션 파일 생성 (이름 지정)
+npm run db:generate-migration AddUserTable
+
+# 마이그레이션 실행
+npm run db:migrate
+
+# 마이그레이션 되돌리기
+npm run db:migrate:revert
+
+# 마이그레이션 상태 확인
+npm run db:migrate:show
 ```
+
+### 시드 데이터
+
+```bash
+# 초기 데이터 시드 (관리자 계정 생성)
+npm run seed
+```
+
+- 기본 관리자 계정:
+  - Email: `admin@naver.com`
+  - Password: `admin123!#`
 
 ---
 
@@ -365,11 +488,17 @@ cd backend
 # 단위 테스트
 npm run test
 
-# E2E 테스트
-npm run test:e2e
+# 테스트 감시 모드
+npm run test:watch
 
 # 커버리지
 npm run test:cov
+
+# E2E 테스트
+npm run test:e2e
+
+# 디버그 모드
+npm run test:debug
 ```
 
 ### Frontend 테스트
@@ -380,6 +509,141 @@ cd frontend
 # 단위 테스트
 npm run test
 
+# 테스트 감시 모드
+npm run test:watch
+
 # 커버리지
 npm run test:coverage
 ```
+
+---
+
+## 🚢 배포 (CI/CD)
+
+프로젝트는 GitHub Actions를 통한 자동 배포를 지원합니다.
+
+### 배포 프로세스
+
+1. `main` 브랜치에 코드 푸시
+2. GitHub Actions 워크플로우 자동 실행
+3. Vultr 서버에 SSH 연결
+4. 최신 코드 풀
+5. 프로덕션 의존성 설치 (`--omit=dev`)
+6. NestJS 빌드
+7. PM2로 애플리케이션 재시작
+
+### 환경 설정
+
+GitHub Secrets에 다음 값들을 설정해야 합니다:
+- `VULTR_HOST`: 서버 호스트 주소
+- `VULTR_SSH_KEY`: SSH private key
+
+### 수동 배포
+
+```bash
+# 서버에 SSH 접속
+ssh root@your-server-ip
+
+# 프로젝트 디렉토리로 이동
+cd /var/www/konnect-back
+
+# 최신 코드 가져오기
+git pull origin main
+
+# 의존성 설치 (프로덕션)
+npm ci --omit=dev
+
+# 빌드
+npm run build
+
+# PM2 재시작
+pm2 restart konnect-back
+```
+
+---
+
+## 📝 개발 가이드
+
+### 코드 스타일
+
+- **Backend**: ESLint + Prettier 사용
+  ```bash
+  npm run lint
+  npm run format
+  ```
+
+- **Frontend**: ESLint + Prettier 사용
+  ```bash
+  npm run lint
+  npm run lint:fix
+  npm run format
+  ```
+
+### 브랜치 전략
+
+- `main`: 프로덕션 브랜치
+- `develop`: 개발 브랜치
+- `feature/*`: 기능 개발 브랜치
+- `fix/*`: 버그 수정 브랜치
+
+### 커밋 컨벤션
+
+```
+feat: 새로운 기능 추가
+fix: 버그 수정
+docs: 문서 수정
+style: 코드 포맷팅
+refactor: 코드 리팩토링
+test: 테스트 추가/수정
+chore: 빌드 설정, 패키지 매니저 등
+```
+
+---
+
+## 🔒 보안
+
+- JWT 인증 (RS256 알고리즘)
+- 환경 변수를 통한 민감 정보 관리
+- CORS 설정
+- Helmet.js를 통한 HTTP 헤더 보안
+- 입력 검증 (class-validator)
+- SQL Injection 방지 (TypeORM)
+- XSS 방지 (React 기본 보호)
+
+---
+
+## 📄 라이선스
+
+이 프로젝트는 비공개 프로젝트입니다.
+
+---
+
+## 👥 팀
+
+프로젝트 개발팀 정보
+
+---
+
+## 🤝 기여
+
+프로젝트에 기여하고 싶으시다면:
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'feat: Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📞 문의
+
+프로젝트 관련 문의사항이 있으시면 이슈를 등록해주세요.
+
+---
+
+<div align="center">
+
+Made with ❤️ by Konnect Team
+
+</div>

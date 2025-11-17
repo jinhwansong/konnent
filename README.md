@@ -11,20 +11,8 @@
 [![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=flat-square&logo=nestjs&logoColor=white)](https://nestjs.com/)
 [![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?style=flat-square&logo=socket.io&logoColor=white)](https://socket.io/)
 
-</div>
-
----
-
-<div align="left">
-
-🌐 실 서버 (Production) 🔗 https://konnect-front-phi.vercel.app/
-
-📘 블로그 (개발 기록 & 기술 정리) 🔗 https://song7022556.tistory.com/
-
-🖥️ Frontend GitHub Repo 🔗 https://github.com/jinhwansong/konnect-front
-
-🛠️ Backend GitHub Repo 🔗 https://github.com/jinhwansong/konnect-back
-
+[데모 보기](https://konnect-front-phi.vercel.app) | [API 문서](https://konee.shop/api) | [기술 블로그](https://song7022556.tistory.com) 
+[프론트 깃허브](https://github.com/jinhwansong/konnect-front/tree/main/frontend) | [백 깃허브](https://github.com/jinhwansong/konnect-back)
 </div>
 
 ---

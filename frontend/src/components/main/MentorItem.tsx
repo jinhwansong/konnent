@@ -15,7 +15,8 @@ export default function MentorItem(props: SessionItem) {
   return (
     <Link
       href={`/mentors/${props.id}`}
-      className="rounded-lg border border-[var(--border-color)] p-5 shadow transition duration-200 hover:-translate-y-3 hover:shadow-md"
+      prefetch={false}
+      className="rounded-lg border border-[var(--border-color)] p-5 shadow-sm transition-transform duration-200 hover:-translate-y-1 hover:shadow-md"
     >
       <em className="mb-2.5 line-clamp-2 block h-12 font-semibold break-words text-[var(--text-bold)]">
         {props.title}

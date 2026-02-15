@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 
 import { CategoryTabType, MentoringSortType } from '@/contact/mentoring';
 import { withQueryDefaults } from '@/hooks/query/options';
@@ -15,6 +15,9 @@ export const useGetSession = (
     withQueryDefaults({
       queryKey: ['sessions', page, category, limit, sort],
       queryFn: () => fetchSessions(page, category, limit, sort),
+      placeholderData: keepPreviousData,
+      staleTime: 1000 * 60 * 5, // 5분간 fresh 상태 유지
+      gcTime: 1000 * 60 * 30, // 30분간 캐시 유지
     })
   );
 };

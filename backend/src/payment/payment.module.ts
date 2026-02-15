@@ -1,0 +1,21 @@
+import { MentoringReservation, Payment, Users } from '@/entities';
+import { HttpModule } from '@nestjs/axios';
+import { Module } from '@nestjs/common';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { PaymentController } from './payment.controller';
+import { PaymentService } from './payment.service';
+import { NotificationModule } from '@/notification/notification.module';
+
+@Module({
+  imports: [
+    TypeOrmModule.forFeature([Payment, Users, MentoringReservation]),
+    HttpModule,
+    EventEmitterModule,
+    NotificationModule,
+  ],
+  providers: [PaymentService],
+  controllers: [PaymentController],
+  exports: [PaymentService],
+})
+export class PaymentModule {}

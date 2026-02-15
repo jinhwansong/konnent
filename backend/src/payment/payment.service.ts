@@ -1,0 +1,339 @@
+import { PaginationDto } from '@/common/dto/page.dto';
+import {
+  MentoringStatus,
+  NotificationType,
+  PaymentStatus,
+} from '@/common/enum/status.enum';
+import { MentoringReservation, Notification, Payment, Users } from '@/entities';
+import { HttpService } from '@nestjs/axios';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { firstValueFrom } from 'rxjs';
+import { DataSource, EntityManager, Repository } from 'typeorm';
+import { ConfirmPaymentDto, RefundPaymentDto } from './dto/payment.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { NotificationService } from '@/notification/notification.service';
+
+@Injectable()
+export class PaymentService {
+  private readonly logger = new Logger(PaymentService.name);
+
+  constructor(
+    @InjectRepository(Payment)
+    private paymentRepository: Repository<Payment>,
+    @InjectRepository(Users)
+    private userRepository: Repository<Users>,
+    @InjectRepository(MentoringReservation)
+    private reservationRepository: Repository<MentoringReservation>,
+    private eventEmitter: EventEmitter2,
+    private readonly httpService: HttpService,
+    private readonly notificationService: NotificationService,
+
+    private readonly dataSource: DataSource,
+  ) {}
+
+  async confirmPayment(body: ConfirmPaymentDto, userId: string) {
+    // 사용자 조회
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    try {
+      // 중복 결제 방지
+      const exist = await this.paymentRepository.findOne({
+        where: { orderId: body.orderId, status: PaymentStatus.SUCCESS },
+      });
+      if (exist) {
+        return {
+          message: '이미 결제 완료된 예약입니다.',
+          receiptUrl: exist.receiptUrl,
+        };
+      }
+      // 예약 정보 조회
+      const reservation = await this.reservationRepository.findOne({
+        where: { id: body.orderId },
+        relations: [
+          'session',
+          'session.mentor',
+          'session.mentor.user',
+          'mentee',
+        ],
+      });
+
+      if (!reservation) {
+        throw new BadRequestException('해당 예약을 찾을 수 없습니다.');
+      }
+      if (body.price !== reservation.session.price) {
+        throw new BadRequestException(
+          '결제 금액이 예약 금액과 일치하지 않습니다.',
+        );
+      }
+      const res = await firstValueFrom(
+        this.httpService.post(
+          'https://api.tosspayments.com/v1/payments/confirm',
+          {
+            orderId: body.orderId,
+            amount: body.price,
+            paymentKey: body.paymentKey,
+          },
+          {
+            headers: {
+              Authorization: `Basic ${Buffer.from(
+                `${process.env.TOSS_SECRET_KEY}:`,
+              ).toString('base64')}`,
+              'Content-Type': 'application/json',
+            },
+          },
+        ),
+      );
+      let savedNotification: Notification;
+
+      await this.dataSource.transaction(async (manager) => {
+        const payments = manager.getRepository(Payment);
+        const reservations = manager.getRepository(MentoringReservation);
+
+        // 결제 정보 저장
+        const payment = payments.create({
+          paymentKey: body.paymentKey,
+          orderId: body.orderId,
+          price: body.price,
+          receiptUrl: res.data.receipt.url,
+          status: PaymentStatus.SUCCESS,
+          user,
+          reservation,
+        });
+        await payments.save(payment);
+        await reservations.update(
+          { id: body.orderId },
+          { status: MentoringStatus.CONFIRMED, paidAt: new Date() },
+        );
+
+        this.logger.log(
+          `Payment confirmed successfully for order ${body.orderId}`,
+        );
+
+        // 알림 DB 저장
+        savedNotification = await this.notificationService.save(
+          manager,
+          reservation.session.mentor.user.id,
+          NotificationType.PAYMENT,
+          `${user.nickname}님이 멘토링 예약 결제를 완료했습니다.`,
+          `/reservations/${reservation.id}`,
+        );
+      });
+
+      this.eventEmitter.emit('payment.confirmed', {
+        reservationId: reservation.id,
+      });
+
+      return {
+        message: '결제에 성공했습니다.',
+      };
+    } catch (error) {
+      // Toss 응답이 있는 경우: 잔액 부족, 카드 거절 등
+      const reason = error?.response?.data?.message || '알 수 없는 오류';
+      const code = error?.response?.data?.code || 'UNKNOWN';
+      this.logger.error(
+        `Payment failed for order ${body.orderId}: ${code} - ${reason}`,
+      );
+      const reservation = await this.reservationRepository.findOne({
+        where: { id: body.orderId },
+      });
+
+      const failLog = this.paymentRepository.create({
+        orderId: body.orderId,
+        paymentKey: body.paymentKey,
+        price: body.price,
+        status: PaymentStatus.FAILED,
+        failReason: `${code}: ${reason}`,
+        user,
+        reservation,
+      });
+      await this.paymentRepository.save(failLog);
+
+      throw new BadRequestException(`결제 실패: ${reason}`);
+    }
+  }
+
+  async getMentorIncome(
+    userId: string,
+    { page = 1, limit = 10 }: PaginationDto,
+  ) {
+    const [payment, total] = await this.paymentRepository
+      .createQueryBuilder('payment')
+      .leftJoinAndSelect('payment.user', 'mentee')
+      .leftJoinAndSelect('payment.reservation', 'reservation')
+      .leftJoinAndSelect('reservation.session', 'session')
+      .leftJoinAndSelect('session.mentor', 'mentor')
+      .where('mentor.user.id = :userId', { userId })
+      .andWhere('payment.status = :status', { status: PaymentStatus.SUCCESS })
+      .orderBy('payment.createdAt', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+    // 누적된 돈
+    const { totalIncome } = await this.paymentRepository
+      .createQueryBuilder('payment')
+      .leftJoin('payment.reservation', 'reservation')
+      .leftJoin('reservation.session', 'session')
+      .leftJoin('session.mentor', 'mentor')
+      .where('mentor.user.id = :userId', { userId })
+      .andWhere('payment.status = :status', { status: PaymentStatus.SUCCESS })
+      .select('COALESCE(SUM(payment.price), 0)', 'totalIncome')
+      .getRawOne();
+    // 이번달에 번돈
+    const { monthlyIncome } = await this.paymentRepository
+      .createQueryBuilder('payment')
+      .leftJoin('payment.reservation', 'reservation')
+      .leftJoin('reservation.session', 'session')
+      .leftJoin('session.mentor', 'mentor')
+      .where('mentor.user.id = :userId', { userId })
+      .andWhere('payment.status = :status', { status: PaymentStatus.SUCCESS })
+      .andWhere('MONTH(payment.createdAt) = MONTH(CURRENT_DATE())')
+      .andWhere('YEAR(payment.createdAt) = YEAR(CURRENT_DATE())')
+      .select('COALESCE(SUM(payment.price), 0)', 'monthlyIncome')
+      .getRawOne();
+    const income = payment.map((p) => ({
+      id: p.id,
+      price: p.price,
+      menteeName: p.user.name,
+      createdAt: p.createdAt,
+      programTitle: p.reservation.session.title,
+    }));
+
+    return {
+      totalPage: Math.ceil(total / limit),
+      items: income,
+      totalIncome,
+      monthlyIncome,
+      message: '멘토 수입 내역을 조회했습니다.',
+    };
+  }
+
+  async getMenteeIncome(
+    userId: string,
+    { page = 1, limit = 10 }: PaginationDto,
+  ) {
+    const [payment, total] = await this.paymentRepository
+      .createQueryBuilder('payment')
+      .leftJoinAndSelect('payment.reservation', 'reservation')
+      .leftJoinAndSelect('reservation.session', 'session')
+      .leftJoinAndSelect('session.mentor', 'mentor')
+      .leftJoinAndSelect('mentor.user', 'mentorUser')
+      .where('payment.user.id = :userId', { userId })
+      .andWhere('payment.status IN (:...statuses)', {
+        statuses: [PaymentStatus.SUCCESS, PaymentStatus.REFUNDED],
+      })
+      .orderBy('payment.createdAt', 'DESC')
+
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+    const income = payment.map((p) => ({
+      id: p.id,
+      price: p.price,
+      receiptUrl: p.receiptUrl,
+      orderId: p.orderId,
+      status: p.status,
+      mentorName: p.reservation.session.mentor.user.name,
+      programTitle: p.reservation.session.title,
+      createdAt: p.createdAt,
+      paymentKey: p.paymentKey,
+    }));
+
+    return {
+      totalPage: Math.ceil(total / limit),
+      items: income,
+      message: '멘티 거래 내역을 조회했습니다.',
+    };
+  }
+
+  async refundPayment(userId: string, body: RefundPaymentDto) {
+    return this.dataSource.transaction(async (manager) => {
+      const payment = await this.paymentRepository.findOne({
+        where: { paymentKey: body.paymentKey },
+        relations: [
+          'reservation',
+          'reservation.session',
+          'reservation.session.mentor',
+          'user',
+        ],
+      });
+      if (!payment || payment.user.id !== userId) {
+        throw new BadRequestException(
+          '결제 정보를 찾을 수 없거나 권한이 없습니다.',
+        );
+      }
+
+      if (payment.reservation.status === MentoringStatus.COMPLETED) {
+        throw new BadRequestException('이미 진행된 멘토링 입니다.');
+      }
+      if (payment.reservation.status === MentoringStatus.PROGRESS) {
+        throw new BadRequestException('이미 승인된 멘토링 입니다.');
+      }
+      await this.cancelAndRefund(manager, payment, '구매자가 취소를 원함');
+
+      // 알림 (멘티 본인)
+      const menteeNotification = await this.notificationService.save(
+        manager,
+        userId,
+        NotificationType.PAYMENT,
+        '결제가 취소되었습니다.',
+        `/reservations/${payment.reservation.id}`,
+      );
+
+      // 알림 (멘토)
+      const mentorNotification = await this.notificationService.save(
+        manager,
+        payment.reservation.session.mentor.user.id,
+        NotificationType.PAYMENT,
+        `${payment.user.nickname}님이 예약을 취소하여 환불되었습니다.`,
+        `/reservations/${payment.reservation.id}`,
+      );
+      await this.notificationService.sendFcm(userId, menteeNotification);
+      await this.notificationService.sendFcm(
+        payment.reservation.session.mentor.user.id,
+        mentorNotification,
+      );
+      return {
+        message: '환불 및 예약이 취소되었습니다.',
+      };
+    });
+  }
+
+  async cancelAndRefund(
+    manager: EntityManager,
+    payment: Payment,
+    reason: string,
+  ) {
+    const secretKey = Buffer.from(`${process.env.TOSS_SECRET_KEY}:`).toString(
+      'base64',
+    );
+    const response = await firstValueFrom(
+      this.httpService.post(
+        `https://api.tosspayments.com/v1/payments/${payment.paymentKey}/cancel`,
+        { cancelReason: reason },
+        {
+          headers: {
+            Authorization: `Basic ${secretKey}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      ),
+    );
+
+    if (response.data.status !== 'CANCELED') {
+      throw new BadRequestException('환불 처리 중 오류가 발생했습니다.');
+    }
+
+    // DB 상태 업데이트
+    payment.status = PaymentStatus.REFUNDED;
+    await manager.save(payment);
+
+    payment.reservation.status = MentoringStatus.CANCELLED;
+    payment.reservation.rejectReason = reason;
+    await manager.save(payment.reservation);
+
+    // 이벤트 발행
+    this.eventEmitter.emit('reservation.refunded', {
+      reservationId: payment.reservation.id,
+    });
+  }
+}
